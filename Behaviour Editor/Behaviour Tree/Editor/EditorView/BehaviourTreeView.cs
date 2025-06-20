@@ -20,8 +20,8 @@ namespace BehaviourSystemEditor.BT
             this.AddManipulator(new RectangleSelector());
             this.AddManipulator(new ContentZoomer()
             {
-                maxScale = BehaviourTreeEditor.Settings.maxZoomScale,
-                minScale = BehaviourTreeEditor.Settings.minZoomScale
+                maxScale = 2f,
+                minScale = 0.2f
             });
 
             styleSheets.Add(BehaviourTreeEditor.Settings.behaviourTreeStyle);
@@ -99,12 +99,12 @@ namespace BehaviourSystemEditor.BT
         /// <summary>주어진 노드에 해당하는 NodeView를 찾아 반환합니다.</summary>
         public NodeView FindNodeView(NodeBase node)
         {
-            if (node is null || node.guid is null)
+            if (node is null || node.guid.IsEmpty())
             {
                 return null;
             }
 
-            return this.GetNodeByGuid(node.guid) as NodeView;
+            return this.GetNodeByGuid(node.guid.ToString()) as NodeView;
         }
 
         

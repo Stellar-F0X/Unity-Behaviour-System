@@ -79,7 +79,7 @@ namespace BehaviourSystem.BT
             if (tickUpdateMode == ETickUpdateMode.NormalUpdate)
             {
 #if UNITY_EDITOR
-                Profiler.BeginSample("BehaviourTreeRunner.Update");
+                Profiler.BeginSample("BehaviourTreeRunner.RuntimeUpdate");
 #endif
                 _rootNode.UpdateNode();
 #if UNITY_EDITOR
@@ -99,7 +99,7 @@ namespace BehaviourSystem.BT
             if (tickUpdateMode == ETickUpdateMode.FixedUpdate)
             {
 #if UNITY_EDITOR
-                Profiler.BeginSample("BehaviourTreeRunner.FixedUpdate");
+                Profiler.BeginSample("BehaviourTreeRunner.RuntimeFixedUpdate");
 #endif
                 _rootNode.UpdateNode();
 #if UNITY_EDITOR
@@ -121,7 +121,7 @@ namespace BehaviourSystem.BT
             if (tickUpdateMode == ETickUpdateMode.LateUpdate)
             {
 #if UNITY_EDITOR
-                Profiler.BeginSample("BehaviourTreeRunner.LateUpdate");
+                Profiler.BeginSample("BehaviourTreeRunner.RuntimeLateUpdate");
 #endif
                 _rootNode.UpdateNode();
 #if UNITY_EDITOR
@@ -159,7 +159,7 @@ namespace BehaviourSystem.BT
             if (tickUpdateMode == ETickUpdateMode.ExternalUpdate)
             {
 #if UNITY_EDITOR
-                Profiler.BeginSample("BehaviourTreeRunner.ExternalUpdate");
+                Profiler.BeginSample("BehaviourTreeRunner.RuntimeExternalUpdate");
 #endif
                 _rootNode.UpdateNode();
 #if UNITY_EDITOR
@@ -237,7 +237,7 @@ namespace BehaviourSystem.BT
         }
 
 
-        public bool TryGetNodeByTag(string nodeTag, out NodeAccessor[] accessors)
+        public bool TryGetNodeByTag(string nodeTag, out NodeBase[] resultNodes)
         {
             int count = _runtimeTree.nodeSet.nodeList.Count;
 
@@ -255,17 +255,11 @@ namespace BehaviourSystem.BT
             if (nodeListPool.Count == 0)
             {
                 ListPool<NodeBase>.Release(nodeListPool);
-                accessors = null;
+                resultNodes = null;
                 return false;
             }
 
-            accessors = new NodeAccessor[nodeListPool.Count];
-            
-            for (int i= 0; i < nodeListPool.Count; ++i)
-            {
-                accessors[i] = new NodeAccessor(nodeListPool[i]);
-            }
-
+            resultNodes = nodeListPool.ToArray();
             ListPool<NodeBase>.Release(nodeListPool);
             return true;
         }
