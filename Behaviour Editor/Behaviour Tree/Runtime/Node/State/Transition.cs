@@ -2,22 +2,35 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace BehaviourSystem.BT.State
+namespace BehaviourSystem.BT
 {
     [Serializable]
-    public class Transition
+    public struct Transition
     {
-        [HideInInspector]
-        public UGUID nextStateNodeUGUID;
+        public Transition(UGUID targetState, bool isUnconditional = false)
+        {
+            this.isUnconditional = isUnconditional; 
+            this.nextStateNodeGuid = targetState;
+            
+            this.conditions = new List<BlackboardBasedCondition>();
+        }
+
+        public bool isUnconditional;
         
-        public List<BlackboardBasedCondition> conditions = new List<BlackboardBasedCondition>();
+        public UGUID nextStateNodeGuid;
+        public List<BlackboardBasedCondition> conditions;
 
 
         public bool CheckConditions()
         {
-            for (int i = 0; i < conditions.Count; ++i)
+            if (this.isUnconditional)
             {
-                if (conditions[i].Execute())
+                return true;
+            }
+            
+            for (int i = 0; i < this.conditions.Count; ++i)
+            {
+                if (this.conditions[i].Execute())
                 {
                     return true;
                 }

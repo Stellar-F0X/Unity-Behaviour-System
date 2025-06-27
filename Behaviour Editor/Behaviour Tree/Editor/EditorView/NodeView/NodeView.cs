@@ -8,11 +8,11 @@ using UnityEngine.UIElements;
 
 namespace BehaviourSystemEditor.BT
 {
-    public class NodeView : Node
+    public abstract class NodeView : Node
     {
         public NodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(AssetDatabase.GetAssetPath(nodeUxml))
         {
-            this.targetNode = targetNode as BehaviourNodeBase;
+            this.targetNode = targetNode;
             this.title = targetNode.name;
             this.tooltip = targetNode.tooltip;
             this.viewDataKey = targetNode.guid.ToString();
@@ -31,11 +31,11 @@ namespace BehaviourSystemEditor.BT
         public event Action<NodeView> OnNodeSelected;
         public event Action<NodeView> OnNodeUnselected;
 
-        public readonly BehaviourNodeBase targetNode;
-        
-        private readonly VisualElement _elementGroup;
-        private readonly VisualElement _nodeBorder;
-        private readonly TextElement _nodeTypeLabel;
+        public readonly NodeBase targetNode;
+
+        protected readonly VisualElement _elementGroup;
+        protected readonly VisualElement _nodeBorder;
+        protected readonly TextElement _nodeTypeLabel;
 
         public Port inputPort;
         public Port outputPort;
@@ -47,9 +47,8 @@ namespace BehaviourSystemEditor.BT
         private ulong _lastProcessedCallCount;
 
 
-        private void Initialize()
+        protected virtual void Initialize()
         {
-            _elementGroup.AddToClassList($"behaviour-node-{targetNode.nodeType}");
             _nodeTypeLabel.text = NodeFactory.ApplySpacing(targetNode.GetType().Name);
 
             if (Application.isPlaying)
@@ -60,15 +59,24 @@ namespace BehaviourSystemEditor.BT
                 }
                 else
                 {
-                    _nodeBorder.style.SetBorderColor(Color.gray * 0.3f);
+                    this.SetBorderColor(style, Color.gray * 0.3f);
                 }
             }
             else
             {
                 //NodeBase CustomEditor에서 그려지는 NodeBase의 Name Field를 수정시, 에디터에서 값 변경을 확인 후, 알림이 전달.
                 //등록된 TrackPropertyValue에 등록된 람다가 호출되고 변경된 이름이 property.stringValue로 전돨되며 NodeView의 Title도 변경됨.
-                SerializedProperty nameProperty = new SerializedObject(targetNode).FindProperty("m_Name");
-                this.TrackPropertyValue(nameProperty, p => this.title = p.stringValue);
+                SerializedProperty nameProp = new SerializedObject(targetNode).FindProperty("m_Name");
+                
+                this.TrackPropertyValue(nameProp, delegate(SerializedProperty p)
+                {
+                    if (targetNode is ISubGraphNode subGraphNode)
+                    {
+                        subGraphNode.subGraphAsset.name = p.stringValue;
+                    }
+
+                    this.title = p.stringValue;
+                });
             }
         }
 
@@ -85,45 +93,19 @@ namespace BehaviourSystemEditor.BT
         }
 
 
-        public override Port InstantiatePort(Orientation orientation, Direction direction, Port.Capacity capacity, Type type)
+        public void SetBorderColor(IStyle elementStyle, Color color)
         {
-            return new PortView(direction, capacity);
+            elementStyle.borderTopColor = color;
+            elementStyle.borderBottomColor = color;
+            elementStyle.borderLeftColor = color;
+            elementStyle.borderRightColor = color;
         }
 
 
-        private void CreatePorts()
+        public void SetEdgeColor(EdgeControl control, Color color)
         {
-            switch (targetNode.nodeType)
-            {
-                case BehaviourNodeBase.ENodeType.Root:
-                {
-                    outputPort = InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Single, typeof(bool));
-                    break;
-                }
-
-                case BehaviourNodeBase.ENodeType.Action:
-                {
-                    inputPort = InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Single, typeof(bool));
-                    break;
-                }
-
-                case BehaviourNodeBase.ENodeType.Composite:
-                {
-                    inputPort = InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Single, typeof(bool));
-                    outputPort = InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Multi, typeof(bool));
-                    break;
-                }
-
-                case BehaviourNodeBase.ENodeType.Decorator:
-                {
-                    inputPort = InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Single, typeof(bool));
-                    outputPort = InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Single, typeof(bool));
-                    break;
-                }
-            }
-
-            this.SetupPort(inputPort, string.Empty, FlexDirection.Column, base.inputContainer);
-            this.SetupPort(outputPort, string.Empty, FlexDirection.ColumnReverse, base.outputContainer);
+            control.inputColor = color;
+            control.outputColor = color;
         }
 
 
@@ -131,7 +113,7 @@ namespace BehaviourSystemEditor.BT
         {
             base.SetPosition(newPos);
 
-            Undo.RecordObject(targetNode, "Behaviour Tree (Set Position)");
+            Undo.RecordObject(targetNode, "Behaviour System (Set Position)");
 
             targetNode.position.x = Mathf.RoundToInt(newPos.xMin);
             targetNode.position.y = Mathf.RoundToInt(newPos.yMin);
@@ -140,17 +122,17 @@ namespace BehaviourSystemEditor.BT
         }
 
 
-        public void SortChildren()
+        protected void SetupPort(Port port, string portName, FlexDirection direction, VisualElement container)
         {
-            if (this.targetNode.nodeType != BehaviourNodeBase.ENodeType.Composite)
+            if (port is null)
             {
                 return;
             }
 
-            if (targetNode is CompositeNode compositeNode)
-            {
-                compositeNode.children.Sort((l, r) => l.position.x < r.position.x ? -1 : 1);
-            }
+            port.pickingMode = BehaviorEditor.canEditGraph ? PickingMode.Position : PickingMode.Ignore;
+            port.style.flexDirection = direction;
+            port.portName = portName;
+            container.Add(port);
         }
 
 
@@ -169,15 +151,15 @@ namespace BehaviourSystemEditor.BT
                 return;
             }
 
-            BehaviourTreeEditorSettings settings = BehaviourTreeEditor.Settings;
+            BehaviourTreeEditorSettings settings = BehaviorEditor.settings;
 
             if (this.UpdateNodeHighlightState(deltaTime, settings.nodeViewHighlightingDuration))
             {
                 float progress = _highlightDuration / settings.nodeViewHighlightingDuration;
 
-                _nodeBorder?.style.SetBorderColor(settings.nodeStatusLinearColor.Evaluate(progress));
+                this.SetBorderColor(style, settings.nodeStatusLinearColor.Evaluate(progress));
 
-                parentConnectionEdge?.edgeControl.SetEdgeColor(settings.edgeStatusLinearColor.Evaluate(progress));
+                this.SetEdgeColor(this.parentConnectionEdge.edgeControl, settings.edgeStatusLinearColor.Evaluate(progress));
             }
         }
 
@@ -227,32 +209,12 @@ namespace BehaviourSystemEditor.BT
         }
 
 
-        private void SetBorderColorByStatus()
-        {
-            switch (targetNode.status)
-            {
-                case EStatus.Failure: _nodeBorder?.style.SetBorderColor(BehaviourTreeEditor.Settings.nodeFailureColor); break;
-
-                case EStatus.Success: _nodeBorder?.style.SetBorderColor(BehaviourTreeEditor.Settings.nodeSuccessColor); break;
-            }
-        }
+        protected virtual void SetBorderColorByStatus() { }
 
 #endregion
 
-
-        private void SetupPort(Port port, string portName, FlexDirection direction, VisualElement container)
-        {
-            if (port is null)
-            {
-                return;
-            }
-
-            port.pickingMode = BehaviourTreeEditor.CanEditGraph ? PickingMode.Position : PickingMode.Ignore;
-            port.style.flexDirection = direction;
-            port.portName = portName;
-            container.Add(port);
-        }
-
+        //NodeView에 포트를 생성합니다.
+        protected abstract void CreatePorts();
 
         //상속받은 상위 클래스에서 Disconnect All이라는 ContextualMenu 생성을 방지하기 위해서 오버라이드
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt) { }

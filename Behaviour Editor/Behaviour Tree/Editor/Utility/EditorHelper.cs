@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using BehaviourSystem.BT;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -87,22 +88,6 @@ namespace BehaviourSystemEditor.BT
 
             Array.Sort(array, (a, b) => a.Name[0].CompareTo(b.Name[0]));
             return array;
-        }
-
-
-        public static void SetBorderColor(this IStyle style, Color color)
-        {
-            style.borderTopColor = color;
-            style.borderBottomColor = color;
-            style.borderLeftColor = color;
-            style.borderRightColor = color;
-        }
-
-
-        public static void SetEdgeColor(this EdgeControl control, Color color)
-        {
-            control.inputColor = color;
-            control.outputColor = color;
         }
 
 
