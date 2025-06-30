@@ -1,0 +1,155 @@
+using System.Collections.Generic;
+using TaskStreamer.Utility;
+using UnityEngine;
+
+namespace TaskStreamer.FSM
+{
+    public abstract class StateBase : NodeBase
+    {
+        private bool _blockTransition;
+
+        private StateMachine _machine;
+
+        [SerializeField, HideInInspector]
+        private List<Transition> _transitions = new List<Transition>();
+
+
+        public StateMachine machine
+        {
+            get { return _machine; }
+
+            internal set { _machine = value; }
+        }
+
+        public List<Transition> transitions
+        {
+            get { return _transitions; }
+        }
+
+        public float enteredTime
+        {
+            get;
+            private set;
+        }
+
+        public float elapsedTime
+        {
+            get { return Time.time - enteredTime; }
+        }
+
+        public bool blockTransition
+        {
+            get { return _blockTransition; }
+            
+            set { _blockTransition = value; }
+        }
+
+        public abstract EStateNodeType nodeType
+        {
+            get;
+        }
+
+
+
+        public virtual void UpdateNode()
+        {
+            this.callCount++;
+
+            this.OnUpdate();
+        }
+
+
+        public bool TryGetTransition(UGUID nextStateNodeGuid, out Transition resultTransition)
+        {
+            foreach (Transition transition in this._transitions)
+            {
+                if (transition.targetStateGuid == nextStateNodeGuid)
+                {
+                    resultTransition = transition;
+                    return true;
+                }
+            }
+
+            resultTransition = null;
+            return false;
+        }
+
+
+        public bool CheckTransition(out UGUID nextStateNodeGuid)
+        {
+            if (_blockTransition || _transitions.Count == 0)
+            {
+                nextStateNodeGuid = UGUID.Empty;
+                return false;
+            }
+
+            foreach (Transition transition in _transitions)
+            {
+                if (transition.CheckConditions())
+                {
+                    nextStateNodeGuid = transition.targetStateGuid;
+                    return true;
+                }
+            }
+
+            nextStateNodeGuid = UGUID.Empty;
+            return false;
+        }
+
+
+        public override sealed void EnterNode()
+        {
+            this.enteredTime = Time.time;
+            this.OnEnter();
+            this.onNodeEnter?.Invoke();
+            this.callState = ENodeCallState.Updating;
+        }
+
+
+        public override sealed void ExitNode()
+        {
+            this.OnExit();
+            this.onNodeExit?.Invoke();
+            this.callState = ENodeCallState.BeforeEnter;
+            this.enteredTime = 0;
+        }
+
+
+        protected abstract void OnUpdate();
+
+
+#if UNITY_EDITOR
+        internal void AddTransition(in Transition transition)
+        {
+            if (transition == null)
+            {
+                Debug.LogError("Cannot add a null transition.");
+                return;
+            }
+
+            if (this._transitions.Contains(transition))
+            {
+                Debug.LogWarning("Transition already exists in the state node.");
+                return;
+            }
+
+            this._transitions.Add(transition);
+        }
+
+
+        internal void RemoveTransition(in Transition transition)
+        {
+            if (transition == null)
+            {
+                Debug.LogError("Cannot remove a null transition.");
+                return;
+            }
+
+            if (this._transitions.Remove(transition) == false)
+            {
+                Debug.LogError("Transition not found in the state node.");
+            }
+        }
+        #endif
+    }
+}

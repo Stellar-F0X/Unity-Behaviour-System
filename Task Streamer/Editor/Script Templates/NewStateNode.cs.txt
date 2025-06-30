@@ -1,0 +1,23 @@
+using System;
+using UnityEngine;
+using TaskStreamer.FSM;
+
+    #ROOTNAMESPACEBEGIN#
+public class #SCRIPTNAME# : CustomStateNode
+{
+    protected override void OnEnter() 
+    {
+    #NOTRIM#
+    }
+
+    protected override void OnUpdate()
+    {
+    #NOTRIM#
+    }
+
+    protected override void OnExit()
+    {
+    #NOTRIM#
+    }
+}
+#ROOTNAMESPACEEND#

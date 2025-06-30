@@ -1,0 +1,19 @@
+using System;
+using UnityEngine;
+
+    #ROOTNAMESPACEBEGIN#
+[Serializable]
+public class #SCRIPTNAME# : ConditionModule<>
+{
+    public override EComparison availableOperators
+    {
+       get { return EComparison.None; }
+    }
+    
+
+    public override bool Execute()
+    {
+       return false;
+    }
+}
+#ROOTNAMESPACEEND#

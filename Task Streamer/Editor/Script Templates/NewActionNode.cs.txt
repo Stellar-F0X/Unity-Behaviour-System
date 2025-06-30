@@ -1,0 +1,23 @@
+using System;
+using UnityEngine;
+using TaskStreamer.BT;
+
+    #ROOTNAMESPACEBEGIN#
+public class #SCRIPTNAME# : ActionNode
+{
+    protected override void OnEnter() 
+    {
+    #NOTRIM#
+    }
+
+    protected override NodeBase.EStatus OnUpdate()
+    {
+        return NodeBase.EStatus.Failure;
+    }
+
+    protected override void OnExit()
+    {
+    #NOTRIM#
+    }
+}
+#ROOTNAMESPACEEND#
