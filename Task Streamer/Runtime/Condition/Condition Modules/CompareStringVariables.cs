@@ -5,9 +5,9 @@ namespace TaskStreamer
     [Serializable]
     public class CompareStringVariables : ConditionModule<string>
     {
-        public override EComparison availableOperators
+        public override ComparisonType availableOperators
         {
-            get { return EComparison.Equal | EComparison.NotEqual; }
+            get { return ComparisonType.Equal | ComparisonType.NotEqual; }
         }
 
         
@@ -15,9 +15,9 @@ namespace TaskStreamer
         {
             switch (availableOperators)
             {
-                case EComparison.Equal: return variableA.value.CompareTo(variableB.value) == 0; 
+                case ComparisonType.Equal: return variableA.value.CompareTo(variableB.value) == 0; 
                     
-                case EComparison.NotEqual: return variableA.value.CompareTo(variableB.value) != 0;
+                case ComparisonType.NotEqual: return variableA.value.CompareTo(variableB.value) != 0;
                 
                 default: throw new NotImplementedException();
             }

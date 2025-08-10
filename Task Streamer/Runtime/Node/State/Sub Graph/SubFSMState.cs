@@ -2,9 +2,9 @@ namespace TaskStreamer.FSM
 {
     public class SubFSMState : SubGraphState
     {
-        public override EGraphType subGraphType
+        public override GraphType subGraphType
         {
-            get { return EGraphType.FSM; }
+            get { return GraphType.FSM; }
         }
     }
 }

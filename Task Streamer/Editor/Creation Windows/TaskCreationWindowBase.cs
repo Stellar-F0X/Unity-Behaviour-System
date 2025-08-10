@@ -5,7 +5,6 @@ using TaskStreamer.FSM;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
@@ -77,8 +76,8 @@ namespace TaskStreamer.Tool
 
             switch (graphNode.subGraphType)
             {
-                case EGraphType.BT: newGraph = BehaviorTree.CreateGraph(graphName, graphAsset); break;
-                case EGraphType.FSM: newGraph = StateMachine.CreateGraph(graphName, graphAsset); break;
+                case GraphType.BT: newGraph = BehaviorTree.CreateGraph(graphName, graphAsset); break;
+                case GraphType.FSM: newGraph = StateMachine.CreateGraph(graphName, graphAsset); break;
             }
 
             Debug.Assert(newGraph is not null, $"{nameof(TaskCreationWindowBase)}: NewGraph is null");

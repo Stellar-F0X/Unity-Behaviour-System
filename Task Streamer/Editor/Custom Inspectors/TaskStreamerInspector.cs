@@ -1,6 +1,4 @@
 using System;
-using TaskStreamer.BT;
-using TaskStreamer.FSM;
 using UnityEditor;
 using UnityEngine;
 
@@ -9,7 +7,7 @@ namespace TaskStreamer.Tool
     [CustomEditor(typeof(TaskStreamer))]
     public class TaskStreamerInspector : Editor
     {
-        private readonly string[] _graphTypeNames = Enum.GetNames(typeof(EGraphType));
+        private readonly string[] _graphTypeNames = Enum.GetNames(typeof(GraphType));
 
         public override void OnInspectorGUI()
         {

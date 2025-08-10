@@ -2,9 +2,9 @@ namespace TaskStreamer.FSM
 {
     public class AnyState : StateBase
     {
-        public override EStateNodeType nodeType
+        public override StateNodeType nodeType
         {
-            get { return EStateNodeType.Any; }
+            get { return StateNodeType.Any; }
         }
 
         protected override void OnUpdate()

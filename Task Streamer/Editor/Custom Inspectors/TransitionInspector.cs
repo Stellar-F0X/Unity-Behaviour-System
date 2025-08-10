@@ -35,11 +35,10 @@ namespace TaskStreamer.Tool
             SerializedProperty isConditionalProp = serializedObject.FindProperty("conditional");
             SerializedProperty desProp = serializedObject.FindProperty("description");
             SerializedProperty conditionsProp = serializedObject.FindProperty("conditions");
-            SerializedProperty completeTypeProp = serializedObject.FindProperty("completeType");
 
             
-            bool foundStartNode = TaskStreamerEditor.Instance.view.focusGraph.TryGetNodeByGuid(transition.startStateGuid, out NodeBase startNode);
-            bool foundDestinationNode = TaskStreamerEditor.Instance.view.focusGraph.TryGetNodeByGuid(transition.targetStateGuid, out NodeBase endNode);
+            bool foundStartNode = TaskStreamerEditor.Instance.view.focusGraph.TryGetNodeByGuid(transition.fromNodeGuid, out NodeBase startNode);
+            bool foundDestinationNode = TaskStreamerEditor.Instance.view.focusGraph.TryGetNodeByGuid(transition.toStateGuid, out NodeBase endNode);
 
             
             if (foundStartNode == false || foundDestinationNode == false)
@@ -66,11 +65,6 @@ namespace TaskStreamer.Tool
                 serializedObject.ApplyModifiedProperties(); //early return.
                 return;
             }
-            
-            // 어떤 방식으로 성공 시킬지.
-            ECompleteType completeType = (ECompleteType)completeTypeProp.enumValueIndex;
-            completeType = (ECompleteType)EditorGUILayout.EnumPopup(completeTypeProp.displayName, completeType);
-            completeTypeProp.enumValueIndex = (int)completeType;
 
             
             using (new EditorGUI.DisabledScope(!TaskStreamerEditor.canEditGraph))

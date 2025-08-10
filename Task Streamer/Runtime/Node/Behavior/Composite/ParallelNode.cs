@@ -6,7 +6,7 @@ namespace TaskStreamer.BT
     public class ParallelNode : CompositeNode
     {
         [Tooltip("Determines how success or failure is evaluated among child nodes.")]
-        public EParallelPolicy parallelPolicy;
+        public ParallelPolicy parallelPolicy;
 
         [Tooltip("Stop updating children as soon as the policy resolves to Success or Failure. If disabled, all children are evaluated every tick.")]
         public bool shortCircuit = true;
@@ -57,7 +57,7 @@ namespace TaskStreamer.BT
         }
 
 
-        protected override EStatus OnUpdate()
+        protected override Status OnUpdate()
         {
             int count = children.Count;
             
@@ -68,7 +68,7 @@ namespace TaskStreamer.BT
                     continue;
                 }
 
-                if (this.CanContinue(i, out EStatus result) == false)
+                if (this.CanContinue(i, out Status result) == false)
                 {
                     return result;
                 }
@@ -78,18 +78,18 @@ namespace TaskStreamer.BT
         }
 
         
-        private bool CanContinue(int index, out EStatus result)
+        private bool CanContinue(int index, out Status result)
         {
             switch (children[index].UpdateNode())
             {
-                case EStatus.Success:
+                case Status.Success:
                 {
                     _isChildStopped[index] = true;
                     ++_successfulCount;
                     break;
                 }
 
-                case EStatus.Failure:
+                case Status.Failure:
                 {
                     _isChildStopped[index] = true;
                     ++_failedCount;
@@ -101,7 +101,7 @@ namespace TaskStreamer.BT
             {
                 result = this.EvaluatePolicy();
 
-                if (result != EStatus.Running)
+                if (result != Status.Running)
                 {
                     return false;
                 }
@@ -111,7 +111,7 @@ namespace TaskStreamer.BT
                 }
             }
 
-            result = EStatus.Running;
+            result = Status.Running;
             return true;
         }
 
@@ -142,72 +142,72 @@ namespace TaskStreamer.BT
         }
 
 
-        protected virtual EStatus EvaluatePolicy()
+        protected virtual Status EvaluatePolicy()
         {
             switch (parallelPolicy)
             {
-                case EParallelPolicy.RequireAllSuccess:
+                case ParallelPolicy.RequireAllSuccess:
                 {
                     if (_successfulCount == children.Count)
                     {
-                        return EStatus.Success;
+                        return Status.Success;
                     }
 
                     if (_failedCount > 0)
                     {
-                        return EStatus.Failure;
+                        return Status.Failure;
                     }
 
                     break;
                 }
 
-                case EParallelPolicy.RequireAllFailure:
+                case ParallelPolicy.RequireAllFailure:
                 {
                     if (_failedCount == children.Count)
                     {
-                        return EStatus.Success;
+                        return Status.Success;
                     }
 
                     if (_successfulCount > 0)
                     {
-                        return EStatus.Failure;
+                        return Status.Failure;
                     }
 
                     break;
                 }
 
-                case EParallelPolicy.RequireOneSuccess:
+                case ParallelPolicy.RequireOneSuccess:
                 {
                     if (_successfulCount > 0)
                     {
-                        return EStatus.Success;
+                        return Status.Success;
                     }
 
                     if (_successfulCount + _failedCount == children.Count)
                     {
-                        return EStatus.Failure;
+                        return Status.Failure;
                     }
 
                     break;
                 }
 
-                case EParallelPolicy.RequireOneFailure:
+                case ParallelPolicy.RequireOneFailure:
                 {
                     if (_failedCount > 0)
                     {
-                        return EStatus.Success;
+                        return Status.Success;
                     }
 
                     if (_successfulCount + _failedCount == children.Count)
                     {
-                        return EStatus.Failure;
+                        return Status.Failure;
                     }
 
                     break;
                 }
             }
 
-            return EStatus.Running;
+            return Status.Running;
         }
     }
 }

@@ -30,7 +30,7 @@ namespace TaskStreamer
 #endif
 
 #region Properties
-        public ENodeCallState callState
+        public NodeCallState callState
         {
             get;
             protected set;

@@ -22,7 +22,7 @@ namespace TaskStreamer
         /// </summary>
         /// <value> BT or FSM </value>
         [DontCreateProperty]
-        public EGraphType mainGraphType;
+        public GraphType mainGraphType;
 
         /// <summary>
         /// 현재 사용 중인 블랙보드이다.

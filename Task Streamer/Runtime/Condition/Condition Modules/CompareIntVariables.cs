@@ -5,9 +5,9 @@ namespace TaskStreamer
     [Serializable]
     public class CompareIntVariables : ConditionModule<int>
     {
-        public override EComparison availableOperators
+        public override ComparisonType availableOperators
         {
-            get { return EComparison.NumericPreset; }
+            get { return ComparisonType.NumericPreset; }
         }
 
         
@@ -15,19 +15,19 @@ namespace TaskStreamer
         {
             switch (comparison)
             {
-                case EComparison.None: return false;
+                case ComparisonType.None: return false;
 
-                case EComparison.Equal: return variableA.value == variableB.value;
+                case ComparisonType.Equal: return variableA.value == variableB.value;
 
-                case EComparison.NotEqual: return variableA.value != variableB.value;
+                case ComparisonType.NotEqual: return variableA.value != variableB.value;
 
-                case EComparison.GreaterThan: return variableA.value > variableB.value;
+                case ComparisonType.GreaterThan: return variableA.value > variableB.value;
 
-                case EComparison.GreaterThanOrEqual: return variableA.value >= variableB.value;
+                case ComparisonType.GreaterThanOrEqual: return variableA.value >= variableB.value;
 
-                case EComparison.LessThan: return variableA.value < variableB.value;
+                case ComparisonType.LessThan: return variableA.value < variableB.value;
 
-                case EComparison.LessThanOrEqual: return variableA.value <= variableB.value;
+                case ComparisonType.LessThanOrEqual: return variableA.value <= variableB.value;
                 
                 default: return false;
             }

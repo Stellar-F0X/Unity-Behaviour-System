@@ -8,16 +8,16 @@ namespace TaskStreamer.BT
         }
 
 
-        protected override EStatus OnUpdate()
+        protected override Status OnUpdate()
         {
             if (conditions != null && this.CheckCondition())
             {
-                return EStatus.Success;
+                return Status.Success;
             }
             else
             {
                 child.UpdateNode();
-                return EStatus.Running;
+                return Status.Running;
             }
         }
     }

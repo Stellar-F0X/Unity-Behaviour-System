@@ -2,9 +2,9 @@ namespace TaskStreamer.FSM
 {
     public class ExitState : StateBase
     {
-        public override EStateNodeType nodeType
+        public override StateNodeType nodeType
         {
-            get { return EStateNodeType.Exit; }
+            get { return StateNodeType.Exit; }
         }
 
         protected override void OnUpdate()

@@ -8,11 +8,14 @@ namespace TaskStreamer
     [Serializable, GeneratePropertyBag]
     public class BlackboardBasedCondition
     {
+        [DontCreateProperty]
+        public EvaluationPolicy evaluationPolicy;
+        
         [SerializeReference]
         public List<ConditionModule> modules = new List<ConditionModule>();
         
 
-        public bool Execute(ECompleteType completeType)
+        public bool Execute()
         {
             if (modules is null)
             {
@@ -25,11 +28,11 @@ namespace TaskStreamer
                 return false;
             }
 
-            switch (completeType)
+            switch (evaluationPolicy)
             {
-                case ECompleteType.Any: return EvaluateWithOrLogic(modules.Count);
+                case EvaluationPolicy.Any: return EvaluateWithOrLogic(modules.Count);
 
-                case ECompleteType.All: return EvaluateWithAndLogic(modules.Count);
+                case EvaluationPolicy.All: return EvaluateWithAndLogic(modules.Count);
                 
                 default: return false;
             }

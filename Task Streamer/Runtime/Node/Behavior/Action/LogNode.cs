@@ -20,14 +20,14 @@ namespace TaskStreamer.BT
         }
 
 
-        protected override EStatus OnUpdate()
+        protected override Status OnUpdate()
         {
             if (string.IsNullOrEmpty(onUpdateMessages) == false)
             {
                 Debug.Log(onUpdateMessages);
             }
 
-            return EStatus.Success;
+            return Status.Success;
         }
 
 

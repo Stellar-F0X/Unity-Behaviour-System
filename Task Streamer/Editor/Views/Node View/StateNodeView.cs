@@ -27,7 +27,7 @@ namespace TaskStreamer.Tool
         
         public override Port InstantiatePort(Orientation orientation, Direction direction, Port.Capacity capacity, Type type)
         {
-            return new PortView(EGraphType.FSM, direction, capacity);
+            return new PortView(GraphType.FSM, direction, capacity);
         }
         
 
@@ -35,32 +35,32 @@ namespace TaskStreamer.Tool
         {
             switch (((StateBase)targetNode).nodeType)
             {
-                case EStateNodeType.Enter:
+                case StateNodeType.Enter:
                 {
                     outputPort = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Single, typeof(bool));
                     break;
                 }
                 
-                case EStateNodeType.Exit:
+                case StateNodeType.Exit:
                 {
                     inputPort = this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Multi, typeof(bool));
                     break;
                 }
 
-                case EStateNodeType.SubGraph:
+                case StateNodeType.SubGraph:
                 {
                     inputPort = this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Multi, typeof(bool));
                     outputPort = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Multi, typeof(bool));
                     break;
                 }
                 
-                case EStateNodeType.Any:
+                case StateNodeType.Any:
                 {
                     outputPort = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Multi, typeof(bool));
                     break;
                 }
                 
-                case EStateNodeType.Action:
+                case StateNodeType.Action:
                 {
                     inputPort = this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Multi, typeof(bool));
                     outputPort = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Multi, typeof(bool));

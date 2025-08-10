@@ -7,13 +7,13 @@ namespace TaskStreamer.Tool
 {
     public class PortView : Port
     {
-        public PortView(EGraphType graphType, Direction direction, Capacity capacity) : base(Orientation.Vertical, direction, capacity, typeof(bool))
+        public PortView(GraphType graphType, Direction direction, Capacity capacity) : base(Orientation.Vertical, direction, capacity, typeof(bool))
         {
             switch (graphType)
             {
-                case EGraphType.BT: base.m_EdgeConnector = new EdgeConnector<Edge>(new BTEdgeConnectorListener()); break;
+                case GraphType.BT: base.m_EdgeConnector = new EdgeConnector<Edge>(new BTEdgeConnectorListener()); break;
 
-                case EGraphType.FSM: base.m_EdgeConnector = new EdgeConnector<TransitionEdgeView>(new FSMEdgeConnectorListener()); break;
+                case GraphType.FSM: base.m_EdgeConnector = new EdgeConnector<TransitionEdgeView>(new FSMEdgeConnectorListener()); break;
                 
                 default: throw new ArgumentOutOfRangeException(nameof(graphType), graphType, null);
             }

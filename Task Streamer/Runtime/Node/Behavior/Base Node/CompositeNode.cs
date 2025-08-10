@@ -18,9 +18,9 @@ namespace TaskStreamer.BT
             get { return base._children; }
         }
 
-        public override sealed EBehaviorNodeType nodeType
+        public override sealed BehaviorNodeType nodeType
         {
-            get { return EBehaviorNodeType.Composite; }
+            get { return BehaviorNodeType.Composite; }
         }
 
         public int childCount

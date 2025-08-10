@@ -11,29 +11,29 @@ namespace TaskStreamer.BT
         }
 
 
-        protected override EStatus OnUpdate()
+        protected override Status OnUpdate()
         {
             if (_childrenIsInvalid)
             {
-                return EStatus.Failure;
+                return Status.Failure;
             }
 
             switch (children[_currentChildrenIndex].UpdateNode())
             {
-                case EStatus.Running: return EStatus.Running;
+                case Status.Running: return Status.Running;
 
-                case EStatus.Failure: return EStatus.Failure;
+                case Status.Failure: return Status.Failure;
 
-                case EStatus.Success: _currentChildrenIndex++; break;
+                case Status.Success: _currentChildrenIndex++; break;
             }
 
             if (_currentChildrenIndex == children.Count)
             {
-                return EStatus.Success;
+                return Status.Success;
             }
             else
             {
-                return EStatus.Running;
+                return Status.Running;
             }
         }
     }

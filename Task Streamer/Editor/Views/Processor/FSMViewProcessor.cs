@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using TaskStreamer.FSM;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Edge = UnityEditor.Experimental.GraphView.Edge;
 
 namespace TaskStreamer.Tool
@@ -96,7 +95,7 @@ namespace TaskStreamer.Tool
                 foreach (Transition child in parentNodeBase.transitions)
                 {
                     NodeView sourceView = graphView.FindNodeView(parentNodeBase);
-                    NodeView targetView = graphView.FindNodeView(child.targetStateGuid.ToString());
+                    NodeView targetView = graphView.FindNodeView(child.toStateGuid.ToString());
 
                     this.TryConnectNodesByEdge(graphView, sourceView, targetView, out _);
                 }
@@ -119,13 +118,13 @@ namespace TaskStreamer.Tool
                     continue;
                 }
 
-                EStateNodeType type = targetNode.nodeType;
+                StateNodeType type = targetNode.nodeType;
 
                 bool exclude = false;
                 
-                exclude |= type == EStateNodeType.Any;
-                exclude |= type == EStateNodeType.Enter;
-                exclude |= type == EStateNodeType.Exit;
+                exclude |= type == StateNodeType.Any;
+                exclude |= type == StateNodeType.Enter;
+                exclude |= type == StateNodeType.Exit;
 
                 if (exclude == false)
                 {
@@ -148,16 +147,11 @@ namespace TaskStreamer.Tool
             NodeView sourceStateView = edge.output.node as NodeView;
             NodeView targetStateView = edge.input.node as NodeView;
 
-            if (sourceStateView is null || targetStateView is null)
+            if (sourceStateView?.targetNode is StateBase sourceNode && targetStateView?.targetNode is StateBase targetNode)
             {
-                return;
+                fsm.DisconnectStates(sourceNode, targetNode);
+                edge.RemoveFromHierarchy();
             }
-
-            StateBase sourceNode = sourceStateView.targetNode as StateBase;
-            StateBase targetNode = targetStateView.targetNode as StateBase;
-            
-            fsm.DisconnectStates(sourceNode, targetNode);
-            edge.RemoveFromHierarchy();
         }
 
         

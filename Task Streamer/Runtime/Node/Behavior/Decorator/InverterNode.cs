@@ -7,15 +7,15 @@ namespace TaskStreamer.BT
             get { return "Inverts the result of the child node (Success to Failure, Failure to Success)"; }
         }
 
-        protected override EStatus OnUpdate()
+        protected override Status OnUpdate()
         {
             switch (child.UpdateNode())
             {
-                case EStatus.Failure: return EStatus.Success;
+                case Status.Failure: return Status.Success;
 
-                case EStatus.Success: return EStatus.Failure;
+                case Status.Success: return Status.Failure;
                 
-                default: return EStatus.Running;
+                default: return Status.Running;
             }
         }
     }

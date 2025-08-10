@@ -85,7 +85,7 @@ namespace TaskStreamer
             set;
         }
 
-        public abstract EGraphType graphType
+        public abstract GraphType graphType
         {
             get;
         }
@@ -161,7 +161,7 @@ namespace TaskStreamer
         public abstract IGraphIterator GetGraphIterator();
 
 
-        public abstract EStatus UpdateGraph();
+        public abstract Status UpdateGraph();
 
 
         public abstract void ResetGraph();

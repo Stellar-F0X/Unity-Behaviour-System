@@ -4,7 +4,6 @@ using TaskStreamer.BT;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Pool;
-using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
@@ -81,7 +80,7 @@ namespace TaskStreamer.Tool
 
                 BehaviorNodeBase node = (BehaviorNodeBase)view.targetNode;
 
-                if (node.nodeType == EBehaviorNodeType.Root)
+                if (node.nodeType == BehaviorNodeType.Root)
                 {
                     view.selected = false;
                     selection.RemoveAt(i);
@@ -217,8 +216,8 @@ namespace TaskStreamer.Tool
 
             bool isSingleChildNode = false;
             
-            isSingleChildNode |= node.nodeType is EBehaviorNodeType.Decorator;
-            isSingleChildNode |= node.nodeType is EBehaviorNodeType.Root;
+            isSingleChildNode |= node.nodeType is BehaviorNodeType.Decorator;
+            isSingleChildNode |= node.nodeType is BehaviorNodeType.Root;
 
             // 부모 노드에서 Edge 연결을 시작할 경우로, 부모 노드가 하나의 자식만 가질 수 있으며, 이미 자식으로 연결된 노드가 있다면 그 노드와의 연결을 해제한다.
             if (isSingleChildNode == false)

@@ -8,45 +8,46 @@ namespace TaskStreamer.FSM
     {
         [DontCreateProperty]
         private Graph _subGraph;
-        
+
         [SerializeField, HideInInspector]
         private UGUID _subGraphGuid;
 
-        
-        public override EStateNodeType nodeType
+
+        public override StateNodeType nodeType
         {
-            get { return EStateNodeType.SubGraph; }
+            get { return StateNodeType.SubGraph; }
         }
 
         public UGUID subGraphGuid
         {
-            get { return _subGraphGuid;}
+            get { return _subGraphGuid; }
             set { _subGraphGuid = value; }
         }
 
-        public abstract EGraphType subGraphType
+        public abstract GraphType subGraphType
         {
             get;
         }
-        
+
         public override void OnAwake()
         {
             _subGraph = streamer.graphAsset.GetGraph(subGraphGuid);
 
             Debug.Assert(_subGraph != null, "SubGraph not found");
         }
-        
-        
+
+
         protected override void OnEnter()
         {
             if (_subGraph is null)
             {
                 Debug.LogError($"{name} {nameof(OnEnter)}: SubGraph is null");
+                return;
             }
-            else
-            {
-                _subGraph.ResetGraph();
-            }
+
+            _subGraph.ResetGraph();
+
+            this.blockTransition = true;
         }
 
         protected override void OnUpdate()
@@ -54,10 +55,12 @@ namespace TaskStreamer.FSM
             if (_subGraph is null)
             {
                 Debug.LogError($"{name} {nameof(OnUpdate)}: SubGraph is null");
+                return;
             }
-            else
+
+            if (_subGraph.UpdateGraph() != Status.Running)
             {
-                _subGraph.UpdateGraph();
+                this.blockTransition = false;
             }
         }
 
@@ -66,11 +69,10 @@ namespace TaskStreamer.FSM
             if (_subGraph is null)
             {
                 Debug.LogError($"{name} {nameof(OnExit)}: SubGraph is null");
+                return;
             }
-            else
-            {
-                _subGraph.StopGraph();
-            }
+
+            _subGraph.StopGraph();
         }
     }
 }

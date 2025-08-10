@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -38,11 +36,32 @@ namespace TaskStreamer.Tool
                 return;
             }
             
+            
+            
+            SerializedProperty completeTypeProp = property.FindPropertyRelative("evaluationPolicy");
+            
+            if (SerializedProperty.DataEquals(completeTypeProp, null))
+            {
+                Debug.LogError("Evaluation policy property is null");
+                return;
+            }
+            
+            Rect evaluationPolicyRect = new Rect(_position.x, _position.y, _position.width, EditorGUIUtility.singleLineHeight);
+            
+            EvaluationPolicy evaluationPolicy = (EvaluationPolicy)completeTypeProp.enumValueIndex;
+            evaluationPolicy = (EvaluationPolicy)EditorGUI.EnumPopup(evaluationPolicyRect, completeTypeProp.displayName, evaluationPolicy);
+            completeTypeProp.enumValueIndex = (int)evaluationPolicy;
+            
+            _position.y += EditorGUIUtility.singleLineHeight;
+            
+            
+            
             this.DrawList();
-            this.DrawAddConditionButton(new Rect(position.width - 30, position.y + 5, 30, EditorGUIUtility.singleLineHeight - 2));
-            this.DrawRemoveConditionButton(new Rect(position.width - 60, position.y + 5, 30, EditorGUIUtility.singleLineHeight - 2));
+            
+            this.DrawAddConditionButton(new Rect(_position.width - 30, _position.y + 5, 30, EditorGUIUtility.singleLineHeight - 2));
+            
+            this.DrawRemoveConditionButton(new Rect(_position.width - 60, _position.y + 5, 30, EditorGUIUtility.singleLineHeight - 2));
         }
-
 
 
         private void DrawList()
@@ -52,8 +71,7 @@ namespace TaskStreamer.Tool
             _conditionList.DoList(new Rect(_position.x, _position.y + 3, _position.width, _conditionList.GetHeight()));
         }
 
-
-
+        
         private void CreateList()
         {
             if (_conditionList is null)

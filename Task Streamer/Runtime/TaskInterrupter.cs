@@ -208,7 +208,7 @@ namespace TaskStreamer.BT
         {
             if (node is BehaviorNodeBase behaviourNode)
             {
-                bool isCompositeNode = behaviourNode.nodeType == EBehaviorNodeType.Composite;
+                bool isCompositeNode = behaviourNode.nodeType == BehaviorNodeType.Composite;
                 
                 if (isCompositeNode && behaviourNode is ParallelNode parallelNode)
                 {

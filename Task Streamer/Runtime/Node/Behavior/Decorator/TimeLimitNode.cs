@@ -21,14 +21,14 @@ namespace TaskStreamer.BT
         }
 
 
-        protected override EStatus OnUpdate()
+        protected override Status OnUpdate()
         {
             if (_startTime + limitTime > Time.time)
             {
                 return child.UpdateNode();
             }
 
-            return EStatus.Failure;
+            return Status.Failure;
         }
     }
 }

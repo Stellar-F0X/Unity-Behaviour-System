@@ -18,9 +18,9 @@ namespace TaskStreamer.BT
             internal set;
         }
 
-        public override EGraphType graphType
+        public override GraphType graphType
         {
-            get { return EGraphType.BT; }
+            get { return GraphType.BT; }
         }
 
 
@@ -44,7 +44,7 @@ namespace TaskStreamer.BT
         }
 
 
-        public override EStatus UpdateGraph()
+        public override Status UpdateGraph()
         {
             if (entry is BehaviorNodeBase behaviourNode)
             {
@@ -52,7 +52,7 @@ namespace TaskStreamer.BT
             }
             else
             {
-                return EStatus.Failure;
+                return Status.Failure;
             }
         }
 
@@ -108,21 +108,21 @@ namespace TaskStreamer.BT
 #endif
             switch (parent.nodeType)
             {
-                case EBehaviorNodeType.Root:
+                case BehaviorNodeType.Root:
                 {
                     ((RootNode)parent).child = child;
                     child.parent = parent;
                     break;
                 }
 
-                case EBehaviorNodeType.Decorator:
+                case BehaviorNodeType.Decorator:
                 {
                     ((DecoratorNode)parent).child = child;
                     child.parent = parent;
                     break;
                 }
 
-                case EBehaviorNodeType.Composite:
+                case BehaviorNodeType.Composite:
                 {
                     ((CompositeNode)parent).children.Add(child);
                     child.parent = parent;
@@ -151,21 +151,21 @@ namespace TaskStreamer.BT
 
             switch (parent.nodeType)
             {
-                case EBehaviorNodeType.Root:
+                case BehaviorNodeType.Root:
                 {
                     ((RootNode)parent).child = null;
                     child.parent = null;
                     break;
                 }
 
-                case EBehaviorNodeType.Decorator:
+                case BehaviorNodeType.Decorator:
                 {
                     ((DecoratorNode)parent).child = null;
                     child.parent = null;
                     break;
                 }
 
-                case EBehaviorNodeType.Composite:
+                case BehaviorNodeType.Composite:
                 {
                     ((CompositeNode)parent).children.Remove(child);
                     child.parent = null;

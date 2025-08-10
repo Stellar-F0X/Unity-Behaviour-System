@@ -23,7 +23,7 @@ namespace TaskStreamer.BT
         }
 
         
-        protected override EStatus OnUpdate()
+        protected override Status OnUpdate()
         {
             if (onUpdateMessages is not null && onUpdateMessages.Length > 0)
             {
@@ -35,7 +35,7 @@ namespace TaskStreamer.BT
 
             if (child is null)
             {
-                return EStatus.Failure;
+                return Status.Failure;
             }
             else
             {

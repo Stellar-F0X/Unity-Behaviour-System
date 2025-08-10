@@ -1,5 +1,3 @@
-using TaskStreamer.BT;
-using TaskStreamer.FSM;
 using UnityEditor;
 using UnityEngine;
 
@@ -59,7 +57,7 @@ namespace TaskStreamer.Tool
         public static void CreateFSMGraphAsset()
         {
             GraphAsset asset = ScriptableObject.CreateInstance<GraphAsset>();
-            asset.mainGraphType = EGraphType.FSM;
+            asset.mainGraphType = GraphType.FSM;
             ProjectWindowUtil.CreateAsset(asset, "New FSM Graph.asset");
         }
 
@@ -68,7 +66,7 @@ namespace TaskStreamer.Tool
         public static void CreateBTGraphAsset()
         {
             GraphAsset asset = ScriptableObject.CreateInstance<GraphAsset>();
-            asset.mainGraphType = EGraphType.BT;
+            asset.mainGraphType = GraphType.BT;
             ProjectWindowUtil.CreateAsset(asset, "New BT Graph.asset");
         }
 

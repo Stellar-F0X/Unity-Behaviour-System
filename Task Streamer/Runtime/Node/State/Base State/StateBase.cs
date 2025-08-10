@@ -44,7 +44,7 @@ namespace TaskStreamer.FSM
             set { _blockTransition = value; }
         }
 
-        public abstract EStateNodeType nodeType
+        public abstract StateNodeType nodeType
         {
             get;
         }
@@ -63,7 +63,7 @@ namespace TaskStreamer.FSM
         {
             foreach (Transition transition in this._transitions)
             {
-                if (transition.targetStateGuid == nextStateNodeGuid)
+                if (transition.toStateGuid == nextStateNodeGuid)
                 {
                     resultTransition = transition;
                     return true;
@@ -87,7 +87,7 @@ namespace TaskStreamer.FSM
             {
                 if (transition.CheckConditions())
                 {
-                    nextStateNodeGuid = transition.targetStateGuid;
+                    nextStateNodeGuid = transition.toStateGuid;
                     return true;
                 }
             }
@@ -102,7 +102,7 @@ namespace TaskStreamer.FSM
             this.enteredTime = Time.time;
             this.OnEnter();
             this.onNodeEnter?.Invoke();
-            this.callState = ENodeCallState.Updating;
+            this.callState = NodeCallState.Updating;
         }
 
 
@@ -110,7 +110,7 @@ namespace TaskStreamer.FSM
         {
             this.OnExit();
             this.onNodeExit?.Invoke();
-            this.callState = ENodeCallState.BeforeEnter;
+            this.callState = NodeCallState.BeforeEnter;
             this.enteredTime = 0;
         }
 

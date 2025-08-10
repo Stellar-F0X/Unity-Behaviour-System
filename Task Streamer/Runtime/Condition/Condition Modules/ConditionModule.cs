@@ -7,16 +7,16 @@ namespace TaskStreamer
     public abstract class ConditionModule
     {
         [DontCreateProperty]
-        public EComparison comparison;
+        public ComparisonType comparison;
         
         public virtual string tooltip
         {
             get { return "The operation is always performed with the left side as the standard."; }
         }
 
-        public virtual EComparison availableOperators
+        public virtual ComparisonType availableOperators
         {
-            get { return EComparison.Equal | EComparison.NotEqual; }
+            get { return ComparisonType.Equal | ComparisonType.NotEqual; }
         }
         
         public abstract bool Execute();

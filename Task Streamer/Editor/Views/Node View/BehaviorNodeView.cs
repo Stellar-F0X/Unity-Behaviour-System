@@ -31,7 +31,7 @@ namespace TaskStreamer.Tool
 
         public void SortChildren()
         {
-            if (((BehaviorNodeBase)targetNode).nodeType != EBehaviorNodeType.Composite)
+            if (((BehaviorNodeBase)targetNode).nodeType != BehaviorNodeType.Composite)
             {
                 return;
             }
@@ -45,7 +45,7 @@ namespace TaskStreamer.Tool
 
         public override Port InstantiatePort(Orientation orientation, Direction direction, Port.Capacity capacity, Type type)
         {
-            return new PortView(EGraphType.BT, direction, capacity);
+            return new PortView(GraphType.BT, direction, capacity);
         }
 
 
@@ -53,32 +53,32 @@ namespace TaskStreamer.Tool
         {
             switch (((BehaviorNodeBase)targetNode).nodeType)
             {
-                case EBehaviorNodeType.Root:
+                case BehaviorNodeType.Root:
                 {
                     outputPort = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Single, typeof(bool));
                     break;
                 }
 
-                case EBehaviorNodeType.Action:
+                case BehaviorNodeType.Action:
                 {
                     inputPort = this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Single, typeof(bool));
                     break;
                 }
 
-                case EBehaviorNodeType.SubGraph:
+                case BehaviorNodeType.SubGraph:
                 {
                     inputPort = this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Single, typeof(bool));
                     break;
                 }
 
-                case EBehaviorNodeType.Composite:
+                case BehaviorNodeType.Composite:
                 {
                     inputPort =  this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Single, typeof(bool));
                     outputPort = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Multi, typeof(bool));
                     break;
                 }
 
-                case EBehaviorNodeType.Decorator:
+                case BehaviorNodeType.Decorator:
                 {
                     inputPort =  this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Single, typeof(bool));
                     outputPort = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Single, typeof(bool));
@@ -101,9 +101,9 @@ namespace TaskStreamer.Tool
         {
             switch (((BehaviorNodeBase)targetNode).status)
             {
-                case EStatus.Failure: base.SetBorderColor(_nodeBorder.style, TaskStreamerEditor.settings.nodeFailureColor); break;
+                case Status.Failure: base.SetBorderColor(_nodeBorder.style, TaskStreamerEditor.settings.nodeFailureColor); break;
 
-                case EStatus.Success: base.SetBorderColor(_nodeBorder.style, TaskStreamerEditor.settings.nodeSuccessColor); break;
+                case Status.Success: base.SetBorderColor(_nodeBorder.style, TaskStreamerEditor.settings.nodeSuccessColor); break;
             }
         }
     }

@@ -36,9 +36,9 @@ namespace TaskStreamer.BT
         }
 
 
-        public override sealed EBehaviorNodeType nodeType
+        public override sealed BehaviorNodeType nodeType
         {
-            get { return EBehaviorNodeType.Decorator; }
+            get { return BehaviorNodeType.Decorator; }
         }
         
         public BehaviorNodeBase this[int index]

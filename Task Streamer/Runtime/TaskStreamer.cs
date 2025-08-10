@@ -17,7 +17,7 @@ namespace TaskStreamer
         internal event Action onNodeGizmosUpdate;
         
         [SerializeField]
-        private ETickMode _tickMode = ETickMode.MenualUpdate;
+        private TickMode _tickMode = TickMode.ManualUpdate;
 
         [SerializeField]
         private GraphAsset _graphAsset;
@@ -43,7 +43,7 @@ namespace TaskStreamer
             set { _pauseUpdate = value; }
         }
 
-        public ETickMode tickMode
+        public TickMode tickMode
         {
             get { return _tickMode; }
 
@@ -87,7 +87,7 @@ namespace TaskStreamer
         }
 
 
-        private bool TryExecuteGraph(ETickMode callingTickMethodType)
+        private bool TryExecuteGraph(TickMode callingTickMethodType)
         {
             if (callingTickMethodType != this._tickMode || this.pause)
             {
@@ -101,7 +101,7 @@ namespace TaskStreamer
                 return false;
             }
 
-            if (this._graphAsset.main.UpdateGraph() != EStatus.Running)
+            if (this._graphAsset.main.UpdateGraph() != Status.Running)
             {
                 this._graphAsset.main.ResetGraph();
             }
@@ -112,20 +112,20 @@ namespace TaskStreamer
 
         private void Update()
         {
-            this.TryExecuteGraph(ETickMode.MenualUpdate);
+            this.TryExecuteGraph(TickMode.ManualUpdate);
         }
 
 
         private void FixedUpdate()
         {
-            this.TryExecuteGraph(ETickMode.FixedUpdate);
+            this.TryExecuteGraph(TickMode.FixedUpdate);
             this.onNodeFixedUpdate?.Invoke();
         }
 
 
         private void LateUpdate()
         {
-            this.TryExecuteGraph(ETickMode.LateUpdate);
+            this.TryExecuteGraph(TickMode.LateUpdate);
             this.onNodeLateUpdate?.Invoke();
         }
 
@@ -138,9 +138,9 @@ namespace TaskStreamer
 
         public void ExternalUpdate()
         {
-            if (_tickMode == ETickMode.ExternalUpdate)
+            if (_tickMode == TickMode.ExternalUpdate)
             {
-                this.TryExecuteGraph(ETickMode.ExternalUpdate);
+                this.TryExecuteGraph(TickMode.ExternalUpdate);
             }
             else
             {

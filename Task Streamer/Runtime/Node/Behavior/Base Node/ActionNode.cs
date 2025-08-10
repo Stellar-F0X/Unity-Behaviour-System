@@ -2,9 +2,9 @@ namespace TaskStreamer.BT
 {
     public abstract class ActionNode : BehaviorNodeBase
     {
-        public override sealed EBehaviorNodeType nodeType
+        public override sealed BehaviorNodeType nodeType
         {
-            get { return EBehaviorNodeType.Action; }
+            get { return BehaviorNodeType.Action; }
         }
     }
 }

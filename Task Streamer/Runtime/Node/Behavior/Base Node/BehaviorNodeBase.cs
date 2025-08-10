@@ -15,12 +15,12 @@ namespace TaskStreamer.BT
         protected List<BehaviorNodeBase> _children = new List<BehaviorNodeBase>();
 
 
-        public abstract EBehaviorNodeType nodeType
+        public abstract BehaviorNodeType nodeType
         {
             get;
         }
 
-        public EStatus status
+        public Status status
         {
             get;
             private set;
@@ -53,22 +53,22 @@ namespace TaskStreamer.BT
         }
 
 
-        public EStatus UpdateNode()
+        public Status UpdateNode()
         {
             this.callCount++;
 
-            if (callState == ENodeCallState.BeforeEnter)
+            if (callState == NodeCallState.BeforeEnter)
             {
                 this.EnterNode();
             }
 
-            if (this.callState == ENodeCallState.Updating)
+            if (this.callState == NodeCallState.Updating)
             {
                 this.status = this.OnUpdate();
 
-                if (this.status == EStatus.Running)
+                if (this.status == Status.Running)
                 {
-                    return EStatus.Running;
+                    return Status.Running;
                 }
 
                 if (this.tree.interrupter.GetCurrentNode(callStackID) != this)
@@ -76,10 +76,10 @@ namespace TaskStreamer.BT
                     this.tree.interrupter.AbortSubtreeFrom(callStackID, this);
                 }
 
-                this.callState = ENodeCallState.BeforeExit;
+                this.callState = NodeCallState.BeforeExit;
             }
 
-            if (this.callState == ENodeCallState.BeforeExit)
+            if (this.callState == NodeCallState.BeforeExit)
             {
                 this.ExitNode();
             }
@@ -93,7 +93,7 @@ namespace TaskStreamer.BT
             this.tree.interrupter.PushInCallStack(callStackID, this);
             this.onNodeEnter?.Invoke();
             this.OnEnter();
-            this.callState = ENodeCallState.Updating;
+            this.callState = NodeCallState.Updating;
         }
 
 
@@ -102,16 +102,16 @@ namespace TaskStreamer.BT
             this.tree.interrupter.PopInCallStack(callStackID);
             this.OnExit();
             this.onNodeExit?.Invoke();
-            this.callState = ENodeCallState.BeforeEnter;
+            this.callState = NodeCallState.BeforeEnter;
 
             // If a parent node fails during execution, this node's result is set to Failure.
-            this.status = (this.status == EStatus.Running ? EStatus.Failure : this.status);
+            this.status = (this.status == Status.Running ? Status.Failure : this.status);
         }
 
 
         /// Core behavior update function that must be implemented by derived classes.
         /// Returns the execution result of the node's behavior.
-        protected abstract EStatus OnUpdate();
+        protected abstract Status OnUpdate();
 
 
 
@@ -125,11 +125,11 @@ namespace TaskStreamer.BT
 #endif
             switch (this.nodeType)
             {
-                case EBehaviorNodeType.Root: ((RootNode)this).child = child; break;
+                case BehaviorNodeType.Root: ((RootNode)this).child = child; break;
 
-                case EBehaviorNodeType.Decorator: ((DecoratorNode)this).child = child; break;
+                case BehaviorNodeType.Decorator: ((DecoratorNode)this).child = child; break;
 
-                case EBehaviorNodeType.Composite: ((CompositeNode)this).children.Add(child); break;
+                case BehaviorNodeType.Composite: ((CompositeNode)this).children.Add(child); break;
             }
 
 #if UNITY_EDITOR
@@ -153,7 +153,7 @@ namespace TaskStreamer.BT
             
             switch (this.nodeType)
             {
-                case EBehaviorNodeType.Root:
+                case BehaviorNodeType.Root:
                 {
                     RootNode root = (RootNode)this;
                     Debug.Assert(root != null, $"{newChild.name} cannot be converted");
@@ -161,7 +161,7 @@ namespace TaskStreamer.BT
                     break;
                 }
 
-                case EBehaviorNodeType.Decorator:
+                case BehaviorNodeType.Decorator:
                 {
                     DecoratorNode deco = (DecoratorNode)this;
                     Debug.Assert(deco != null, $"{newChild.name} cannot be converted");
@@ -169,7 +169,7 @@ namespace TaskStreamer.BT
                     break;
                 }
 
-                case EBehaviorNodeType.Composite:
+                case BehaviorNodeType.Composite:
                 {
                     CompositeNode compo = (CompositeNode)this;
                     int index = compo.children.IndexOf(originalChild);
@@ -202,11 +202,11 @@ namespace TaskStreamer.BT
 
             switch (this.nodeType)
             {
-                case EBehaviorNodeType.Root: ((RootNode)this).child = null; break;
+                case BehaviorNodeType.Root: ((RootNode)this).child = null; break;
 
-                case EBehaviorNodeType.Decorator: ((DecoratorNode)this).child = null; break;
+                case BehaviorNodeType.Decorator: ((DecoratorNode)this).child = null; break;
 
-                case EBehaviorNodeType.Composite: ((CompositeNode)this).children.Remove(child); break;
+                case BehaviorNodeType.Composite: ((CompositeNode)this).children.Remove(child); break;
             }
 
 #if UNITY_EDITOR

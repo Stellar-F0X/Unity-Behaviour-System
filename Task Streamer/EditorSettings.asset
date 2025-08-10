@@ -18,8 +18,8 @@ MonoBehaviour:
   nodeFailureColor: {r: 0.39215687, g: 0, b: 0, a: 1}
   nodeStatusLinearColor:
     serializedVersion: 2
-    key0: {r: 0.09411765, g: 0.3647059, b: 0.49019608, a: 1}
-    key1: {r: 0.21176471, g: 0.6039216, b: 0.8, a: 1}
+    key0: {r: 0.08627451, g: 0.32941177, b: 0.4392157, a: 1}
+    key1: {r: 0.22352941, g: 0.63529414, b: 0.8392157, a: 1}
     key2: {r: 0, g: 0, b: 0, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
@@ -49,7 +49,7 @@ MonoBehaviour:
   edgeStatusLinearColor:
     serializedVersion: 2
     key0: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    key1: {r: 0.21176471, g: 0.6039216, b: 0.8, a: 1}
+    key1: {r: 0.22352941, g: 0.63529414, b: 0.8392157, a: 1}
     key2: {r: 1, g: 1, b: 1, a: 0}
     key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}

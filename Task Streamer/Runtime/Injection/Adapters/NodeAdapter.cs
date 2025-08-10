@@ -51,11 +51,11 @@ namespace TaskStreamer.Injection
         {
             switch (_visitor.currentGraph.graphType)
             {
-                case EGraphType.BT: this.ProcessBehaviorTreeNode((BehaviorNodeBase)value); break;
+                case GraphType.BT: this.ProcessBehaviorTreeNode((BehaviorNodeBase)value); break;
 
-                case EGraphType.FSM: this.ProcessStateMachineNode((StateBase)value); break;
+                case GraphType.FSM: this.ProcessStateMachineNode((StateBase)value); break;
 
-                case EGraphType.GOAP: break; //TODO: 추후 GOAP를 추가한다면 여기도 추가로 Case를 추가해야 됨. 
+                case GraphType.GOAP: break; //TODO: 추후 GOAP를 추가한다면 여기도 추가로 Case를 추가해야 됨. 
 
                 default: throw new ArgumentOutOfRangeException();
             }
@@ -68,7 +68,7 @@ namespace TaskStreamer.Injection
         {
             if (instantiatedNode == null || instantiatedNode.parent == null || instantiatedNode.parent.guid.IsEmpty())
             {
-                if (instantiatedNode.nodeType != EBehaviorNodeType.Root)
+                if (instantiatedNode.nodeType != BehaviorNodeType.Root)
                 {
                     // Warning: This behavior node does not have a parent node.
                     Debug.LogWarning($"{instantiatedNode.name} does not have a parent node.");

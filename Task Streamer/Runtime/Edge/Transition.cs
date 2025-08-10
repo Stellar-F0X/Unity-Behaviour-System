@@ -12,26 +12,23 @@ namespace TaskStreamer.FSM
         public string description;
 #endif
         [DontCreateProperty]
-        public UGUID startStateGuid;
+        public UGUID fromNodeGuid;
         
         [DontCreateProperty]
-        public UGUID targetStateGuid;
+        public UGUID toStateGuid;
         
         [DontCreateProperty]
         public bool conditional;
-        
-        [DontCreateProperty]
-        public ECompleteType completeType;
 
         [CreateProperty]
         public BlackboardBasedCondition conditions;
 
 
-        internal void Setup(UGUID startStateGuid, UGUID targetStateGuid)
+        internal void Setup(UGUID sourceNodeGuid, UGUID destinationNodeGuid)
         {
             this.conditional = false;
-            this.startStateGuid = startStateGuid;
-            this.targetStateGuid = targetStateGuid;
+            this.fromNodeGuid = sourceNodeGuid;
+            this.toStateGuid = destinationNodeGuid;
             this.conditions = new BlackboardBasedCondition();
         }
 
@@ -40,7 +37,7 @@ namespace TaskStreamer.FSM
         {
             if (this.conditional)
             {
-                return this.conditions.Execute(completeType);
+                return this.conditions.Execute();
             }
             else
             {

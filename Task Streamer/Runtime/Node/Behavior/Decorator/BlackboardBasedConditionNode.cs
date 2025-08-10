@@ -16,7 +16,7 @@ namespace TaskStreamer.BT
         }
 
         
-        protected override EStatus OnUpdate()
+        protected override Status OnUpdate()
         {
             if (conditions is not null && this.CheckCondition())
             {
@@ -24,7 +24,7 @@ namespace TaskStreamer.BT
             }
             else
             {
-                return EStatus.Failure;
+                return Status.Failure;
             }
         }
     }

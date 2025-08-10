@@ -12,14 +12,14 @@ namespace TaskStreamer.BT
             _startTime = Time.time;
         }
 
-        protected override EStatus OnUpdate()
+        protected override Status OnUpdate()
         {
             if (Time.time < _startTime + duration)
             {
-                return EStatus.Running;
+                return Status.Running;
             }
             
-            return EStatus.Success;
+            return Status.Success;
         }
     }
 }

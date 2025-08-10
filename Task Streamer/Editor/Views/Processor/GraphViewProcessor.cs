@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -34,9 +33,9 @@ namespace TaskStreamer.Tool
             
             switch (graph.graphType)
             {
-                case EGraphType.BT: resultProcessor = new BTViewProcessor(); break;
+                case GraphType.BT: resultProcessor = new BTViewProcessor(); break;
 
-                case EGraphType.FSM: resultProcessor = new FSMViewProcessor(); break;
+                case GraphType.FSM: resultProcessor = new FSMViewProcessor(); break;
             }
 
             _ProcessorInstances[(int)graph.graphType] = resultProcessor;

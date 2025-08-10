@@ -1,4 +1,3 @@
-using System;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.SceneManagement;
@@ -6,7 +5,6 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
-using UObject = UnityEngine.Object;
 
 namespace TaskStreamer.Tool
 {
@@ -299,7 +297,7 @@ namespace TaskStreamer.Tool
         {
             bool foundTree = this.TryGetGraphAsset(out TaskStreamer newTaskStreamer);
 
-            if (foundTree)
+            if (foundTree && newTaskStreamer.graphAsset != null)
             {
                 //오브젝트를 선택해서 에디터를 활성화시킬땐, Main Graph를 연다.
                 this.ChangeGraph(newTaskStreamer.graphAsset.main);

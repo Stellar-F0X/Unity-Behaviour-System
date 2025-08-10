@@ -2,9 +2,9 @@ namespace TaskStreamer.BT
 {
     public class SubFSMNode : SubGraphNode
     {
-        public override EGraphType subGraphType
+        public override GraphType subGraphType
         {
-            get { return EGraphType.FSM; }
+            get { return GraphType.FSM; }
         }
     }
 }

@@ -65,26 +65,26 @@ namespace TaskStreamer.BT
         }
 
 
-        protected override EStatus OnUpdate()
+        protected override Status OnUpdate()
         {
             if (_animationHash == -1)
             {
-                return EStatus.Failure;
+                return Status.Failure;
             }
             
             if (waitForTransition)
             {
                 if (Time.time >= _playStartTime + transitionTime)
                 {
-                    return EStatus.Success;
+                    return Status.Success;
                 }
 
-                return EStatus.Running;
+                return Status.Running;
             }
             else
             {
                 //기다리지 않는다면, 즉시 성공 반환.
-                return EStatus.Success;
+                return Status.Success;
             }
         }
     }

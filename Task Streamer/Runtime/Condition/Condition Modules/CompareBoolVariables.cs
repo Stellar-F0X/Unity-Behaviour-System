@@ -5,9 +5,9 @@ namespace TaskStreamer
     [Serializable]
     public class CompareBoolVariables : ConditionModule<bool>
     {
-        public override EComparison availableOperators
+        public override ComparisonType availableOperators
         {
-            get { return EComparison.BooleanPreset; }
+            get { return ComparisonType.BooleanPreset; }
         }
 
         
@@ -15,9 +15,9 @@ namespace TaskStreamer
         {
             switch (comparison)
             {
-                case EComparison.Equal: return variableA.value == variableB.value;
+                case ComparisonType.Equal: return variableA.value == variableB.value;
                 
-                case EComparison.NotEqual: return variableA.value != variableB.value;
+                case ComparisonType.NotEqual: return variableA.value != variableB.value;
                 
                 default: return false;
             }

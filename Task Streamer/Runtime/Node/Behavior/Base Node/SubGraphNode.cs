@@ -13,9 +13,9 @@ namespace TaskStreamer.BT
         private UGUID _subGraphGuid;
 
         
-        public override EBehaviorNodeType nodeType
+        public override BehaviorNodeType nodeType
         {
-            get { return EBehaviorNodeType.SubGraph; }
+            get { return BehaviorNodeType.SubGraph; }
         }
 
         public UGUID subGraphGuid
@@ -24,7 +24,7 @@ namespace TaskStreamer.BT
             set { _subGraphGuid = value; }
         }
 
-        public abstract EGraphType subGraphType
+        public abstract GraphType subGraphType
         {
             get;
         }
@@ -51,7 +51,7 @@ namespace TaskStreamer.BT
         }
 
         
-        protected override EStatus OnUpdate()
+        protected override Status OnUpdate()
         {
             if (_subGraph is not null)
             {
@@ -59,7 +59,7 @@ namespace TaskStreamer.BT
             }
 
             Debug.LogError($"{name} {nameof(OnUpdate)}: SubGraph is null");
-            return EStatus.Failure;
+            return Status.Failure;
         }
 
         

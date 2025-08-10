@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -42,7 +41,7 @@ namespace TaskStreamer.Tool
             SerializedProperty variableBProp = property.FindPropertyRelative("variableB");
             SerializedProperty comparisonProp = property.FindPropertyRelative("comparison");
 
-            EComparison comparisonValue = EComparison.None;
+            ComparisonType comparisonValue = ComparisonType.None;
 
             if (property.managedReferenceValue is ConditionModule condition)
             {
@@ -53,7 +52,7 @@ namespace TaskStreamer.Tool
                 Debug.LogError("Failed to get the condition module.");
             }
 
-            if (comparisonValue == EComparison.None)
+            if (comparisonValue == ComparisonType.None)
             {
                 return;
             }
@@ -79,7 +78,7 @@ namespace TaskStreamer.Tool
         }
 
 
-        private void DrawComparisonOption(SerializedProperty conditionType, EComparison comparisonType)
+        private void DrawComparisonOption(SerializedProperty conditionType, ComparisonType comparisonType)
         {
             List<int> conditionIndex = ListPool<int>.Get();
 
@@ -98,13 +97,13 @@ namespace TaskStreamer.Tool
         }
 
 
-        private string[] GetComparisonOptionSymbols(EComparison comparisonValue, List<int> resultIndices)
+        private string[] GetComparisonOptionSymbols(ComparisonType comparisonValue, List<int> resultIndices)
         {
             List<string> conditionTypes = ListPool<string>.Get();
 
-            for (int index = (int)EComparison.Equal; index <= (int)comparisonValue; index <<= 1)
+            for (int index = (int)ComparisonType.Equal; index <= (int)comparisonValue; index <<= 1)
             {
-                EComparison currentComparisonValue = (EComparison)index;
+                ComparisonType currentComparisonValue = (ComparisonType)index;
 
                 if ((currentComparisonValue & comparisonValue) == currentComparisonValue)
                 {
@@ -119,21 +118,21 @@ namespace TaskStreamer.Tool
         }
 
 
-        private string GetSymbol(EComparison comparison)
+        private string GetSymbol(ComparisonType comparison)
         {
             switch (comparison)
             {
-                case EComparison.Equal: return "=";
+                case ComparisonType.Equal: return "=";
 
-                case EComparison.NotEqual: return "≠";
+                case ComparisonType.NotEqual: return "≠";
 
-                case EComparison.GreaterThan: return ">";
+                case ComparisonType.GreaterThan: return ">";
 
-                case EComparison.GreaterThanOrEqual: return "≥";
+                case ComparisonType.GreaterThanOrEqual: return "≥";
 
-                case EComparison.LessThan: return "<";
+                case ComparisonType.LessThan: return "<";
 
-                case EComparison.LessThanOrEqual: return "≤";
+                case ComparisonType.LessThanOrEqual: return "≤";
 
                 default: throw new ArgumentOutOfRangeException(nameof(comparison), comparison, null);
             }

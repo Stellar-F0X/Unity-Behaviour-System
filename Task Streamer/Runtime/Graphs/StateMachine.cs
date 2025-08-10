@@ -23,9 +23,9 @@ namespace TaskStreamer.FSM
         private bool _blockAllTransition;
 
 
-        public override EGraphType graphType
+        public override GraphType graphType
         {
-            get { return EGraphType.FSM; }
+            get { return GraphType.FSM; }
         }
 
         public bool blockAllTransition
@@ -94,18 +94,18 @@ namespace TaskStreamer.FSM
         }
 
 
-        public override EStatus UpdateGraph()
+        public override Status UpdateGraph()
         {
             if (_current == null)
             {
-                return EStatus.Failure;
+                return Status.Failure;
             }
 
             _current.UpdateNode();
 
             if (_current.guid == _exit.guid)
             {
-                return EStatus.Success;
+                return Status.Success;
             }
 
             if (this.TryGetNextStateGuid(out UGUID nextStateGuid))
@@ -113,7 +113,7 @@ namespace TaskStreamer.FSM
                 this.ChangeState(nextStateGuid);
             }
 
-            return EStatus.Running;
+            return Status.Running;
         }
 
 
@@ -139,12 +139,12 @@ namespace TaskStreamer.FSM
 
         public override void StopGraph()
         {
-            if (_current.callState == ENodeCallState.Updating)
+            if (_current.callState == NodeCallState.Updating)
             {
                 _current.ExitNode();
             }
 
-            if (_any.callState == ENodeCallState.Updating)
+            if (_any.callState == NodeCallState.Updating)
             {
                 _any.ExitNode();
             }

@@ -17,34 +17,34 @@ namespace TaskStreamer.BT
         }
 
 
-        protected override EStatus OnUpdate()
+        protected override Status OnUpdate()
         {
             switch (child.UpdateNode())
             {
-                case EStatus.Failure:
+                case Status.Failure:
                 {
                     if (targetResult == EUntilCondition.Failure)
                     {
-                        return EStatus.Failure;
+                        return Status.Failure;
                     }
 
                     break;
                 }
 
-                case EStatus.Success:
+                case Status.Success:
                 {
                     if (targetResult == EUntilCondition.Success)
                     {
-                        return EStatus.Success;
+                        return Status.Success;
                     }
 
                     break;
                 }
                 
-                default: return EStatus.Running;
+                default: return Status.Running;
             }
             
-            return EStatus.Running;
+            return Status.Running;
         }
     }
 }

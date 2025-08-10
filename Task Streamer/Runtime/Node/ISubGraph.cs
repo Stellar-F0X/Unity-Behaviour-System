@@ -10,7 +10,7 @@ namespace TaskStreamer
             set;
         }
 
-        public EGraphType subGraphType
+        public GraphType subGraphType
         {
             get;
         }

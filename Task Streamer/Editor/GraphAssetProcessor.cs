@@ -28,9 +28,9 @@ namespace TaskStreamer.Tool
         {
             switch (asset.mainGraphType)
             {
-                case EGraphType.FSM: asset.main = StateMachine.CreateGraph("Main", asset);  break;
+                case GraphType.FSM: asset.main = StateMachine.CreateGraph("Main", asset);  break;
                 
-                case EGraphType.BT:  asset.main = BehaviorTree.CreateGraph("Main", asset); break;
+                case GraphType.BT:  asset.main = BehaviorTree.CreateGraph("Main", asset); break;
             }
 
             if (asset.main != null)

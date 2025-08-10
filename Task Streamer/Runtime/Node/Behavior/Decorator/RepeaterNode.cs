@@ -23,19 +23,19 @@ namespace TaskStreamer.BT
         }
 
 
-        protected override EStatus OnUpdate()
+        protected override Status OnUpdate()
         {
             if (_currentCount < repeatCount)
             {
-                if (child.UpdateNode() != EStatus.Running)
+                if (child.UpdateNode() != Status.Running)
                 {
                     _currentCount++;
                 }
                 
-                return EStatus.Running;
+                return Status.Running;
             }
 
-            return EStatus.Success;
+            return Status.Success;
         }
     }
 }

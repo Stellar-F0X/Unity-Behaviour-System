@@ -34,9 +34,9 @@ namespace TaskStreamer.BT
         }
         
 
-        public override EBehaviorNodeType nodeType
+        public override BehaviorNodeType nodeType
         {
-            get { return EBehaviorNodeType.Root; }
+            get { return BehaviorNodeType.Root; }
         }
         
         public BehaviorNodeBase this[int index]
@@ -55,11 +55,11 @@ namespace TaskStreamer.BT
         }
 
         
-        protected override EStatus OnUpdate()
+        protected override Status OnUpdate()
         {
             if (child is null)
             {
-                return EStatus.Failure;
+                return Status.Failure;
             }
             else
             {
