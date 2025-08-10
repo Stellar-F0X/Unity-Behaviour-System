@@ -22,7 +22,7 @@ namespace TaskStreamer.Tool
 
         private TaskGraphView _graphView;
 
-        private NodeSearchFieldView _nodeSearchField;
+        //private NodeSearchFieldView _nodeSearchField;
 
         private BlackboardView _blackboardView;
 
@@ -163,7 +163,7 @@ namespace TaskStreamer.Tool
             _graphView = rootVisualElement.Q<TaskGraphView>();
             _miniMapView = rootVisualElement.Q<MiniMapView>();
             _inspectorView = rootVisualElement.Q<InspectorView>();
-            _nodeSearchField = rootVisualElement.Q<NodeSearchFieldView>();
+            //_nodeSearchField = rootVisualElement.Q<NodeSearchFieldView>();
             _blackboardView = rootVisualElement.Q<BlackboardView>();
             _graphBreadcrumbs = rootVisualElement.Q<GraphBreadcrumbs>();
 
@@ -173,10 +173,13 @@ namespace TaskStreamer.Tool
 
             _blackboardView.Setup(elementAddButton, blackboardBindField);
             _miniMapView.Setup(minimapActivateButton, _graphView);
-            _nodeSearchField.Setup(_inspectorView, _graphView);
+            //_nodeSearchField.Setup(_inspectorView, _graphView);
 
             _graphView.onElementSelected -= _inspectorView.UpdateSelection;
             _graphView.onElementSelected += _inspectorView.UpdateSelection;
+
+            _graphView.onElementUnselected = null;
+            _graphView.onElementUnselected += _ => _inspectorView.ClearInspectorView();
 
             this.OnSelectionChange();
         }

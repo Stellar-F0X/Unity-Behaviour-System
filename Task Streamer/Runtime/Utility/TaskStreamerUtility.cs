@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using TaskStreamer.FSM;
+using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -77,10 +79,25 @@ namespace TaskStreamer.Utility
             }
 
             newNode.guid = UGUID.Create();
-            //newNode.hideFlags = HideFlags.HideInHierarchy;
+            newNode.hideFlags = HideFlags.HideInHierarchy;
             newNode.name = ApplySpacing(nodeType.Name);
             newNode.position = position;
             return newNode;
+        }
+        
+        
+        public static Transition CreateTransition(StateBase from, StateBase to)
+        {
+            if (from.TryGetTransition(to.guid, out _))
+            {
+                throw new ArgumentException($"{typeof(TaskStreamerUtility)}: Transition already exists.");
+            }
+
+            Transition newTransition = ScriptableObject.CreateInstance<Transition>();
+            newTransition.hideFlags = HideFlags.HideInHierarchy;
+            newTransition.name = $"{from.guid}.{to.guid}";
+            newTransition.Setup(from.guid, to.guid);
+            return newTransition;
         }
     }
 }

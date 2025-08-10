@@ -1,4 +1,5 @@
 using Unity.Properties;
+using UnityEngine;
 
 namespace TaskStreamer.Injection
 {
@@ -10,12 +11,18 @@ namespace TaskStreamer.Injection
             this.graphAsset = graphAsset;
             this.taskStreamer = taskStreamer;
         }
-        
+
         public readonly TaskStreamer taskStreamer;
         public readonly Blackboard blackboard;
         public readonly GraphAsset graphAsset;
-        
+
         public Graph currentGraph;
-        public bool debug;
+        public bool debugMode;
+
+
+        protected override void VisitProperty<TContainer, TValue>(Property<TContainer, TValue> property, ref TContainer container, ref TValue value)
+        {
+            base.VisitProperty(property, ref container, ref value);
+        }
     }
 }

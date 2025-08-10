@@ -41,14 +41,16 @@ namespace TaskStreamer.Tool
         /// <summary>블랙보드 에셋이 바인딩될 때 호출되는 콜백 메서드입니다.</summary>
         private void OnBindBlackboardAsset(ChangeEvent<Object> changeEvent)
         {
-            if (TaskStreamerEditor.canEditGraph == false || changeEvent.newValue is not Blackboard newBlackboard)
+            if (TaskStreamerEditor.canEditGraph == false)
             {
                 return;
             }
+
+            Blackboard newBlackboard = changeEvent.newValue as Blackboard; 
             
-            if (this._blackboard != null)
+            if (newBlackboard == null && this._blackboard != null)
             {
-                //1. 블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
+                //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
                 TaskStreamerEditor.Instance.graphAsset.ResetBoundVariables();
             }
             
@@ -89,24 +91,24 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>Graph가 변경될 때 블랙보드 뷰를 업데이트합니다.</summary>
-        public void TrySetupBlackboard(Blackboard changeBlackboard)
+        public void TrySetupBlackboard(Blackboard newBlackboard)
         {
-            if (TaskStreamerEditor.Instance is null)
+            //새롭게 들어온 블랙보드가 null이거나, 현재 블랙보드와 동일한 경우에는 아무 작업도 하지 않는다.
+            if (newBlackboard != null && this._blackboard == newBlackboard)
             {
                 return;
             }
 
-            if (changeBlackboard != null && this._blackboard == changeBlackboard)
-            {
-                return;
-            }
-
-            this._blackboard = changeBlackboard;
-            this._blackboardBindingField.value = changeBlackboard;
+            this._blackboard = newBlackboard;
+            
+            this._blackboardBindingField.value = newBlackboard;
+            
             this._variableAddButton.enabledSelf = !Application.isPlaying;
 
-            if (this._blackboard is null)
+            
+            if (newBlackboard is null) 
             {
+                //블랙보드가 null인 경우, 아이템 소스(Variable 배열)를 초기화하고 새로고침한다.
                 this.ResetItemsOnBlackboardRemoved();
                 return;
             }
@@ -116,10 +118,13 @@ namespace TaskStreamer.Tool
 
             if (SerializedProperty.DataEquals(this._serializedList, null))
             {
+                //블랙보드의 변수 리스트가 null인 경우, 경고 메시지를 출력하고 초기화한다.
+                //이 경우 대부분의 경우는 필드 변수의 이름이 수정된 경우.
                 Debug.LogWarning("Serialized list property is null.");
                 return;
             }
 
+            //블랙보드가 null이 아닌 경우, 아이템 소스를 블랙보드의 변수 리스트로 설정하고 새로고침한다.
             this.itemsSource = this._blackboard.variables;
             this.RefreshItems();
         }
@@ -140,7 +145,8 @@ namespace TaskStreamer.Tool
         /// <summary>블랙보드 프로퍼티를 추가하는 버튼 클릭 이벤트를 처리합니다.</summary>
         public void OpenContextualMenuWindow(ClickEvent clickEvent)
         {
-            if (TaskStreamerEditor.canEditGraph == false)
+            //블랙보드가 null이거나, 현재 그래프를 편집할 수 없는 상태인 경우에는 아무 작업도 하지 않는다.
+            if (TaskStreamerEditor.canEditGraph == false || this._blackboard == null)
             {
                 return;
             }

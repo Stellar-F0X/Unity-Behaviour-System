@@ -14,6 +14,7 @@ namespace TaskStreamer
     /// Represents a container for managing and interacting with a collection of Graph objects.
     /// This class supports operations like adding, removing, and linking subgraphs.
     /// </summary>
+    [GeneratePropertyBag]
     public partial class GraphAsset : ScriptableObject, IEquatable<GraphAsset>
     {
         /// <summary>
@@ -33,7 +34,7 @@ namespace TaskStreamer
         /// <summary>
         /// 진입 그래프이자, 가장 최상위 그래프이다. 
         /// </summary>
-        [SerializeReference, DontCreateProperty]
+        [SerializeReference, DontCreateProperty, HideInInspector]
         private Graph _main;
 
         /// <summary>
@@ -63,7 +64,7 @@ namespace TaskStreamer
         {
             get { return _graphMap.Values; }
         }
-        
+
 
         /// <summary> 그래프를 런타임용으로 복제한다. </summary>
         /// <param name="streamer"> 그래프가 런타임에 필요한 객체들을 위해 그래프를 실행시키는 TaskStreamer를 매개변수로 받는다. </param>
@@ -72,7 +73,7 @@ namespace TaskStreamer
         {
             GraphAsset instantiatedGraphAsset = null;
             Blackboard instantiatedBlackboard = null;
-            GraphVisitor visitor = null;
+            GraphVisitor dataContainer = null;
 
             instantiatedGraphAsset = Object.Instantiate(this);
 
@@ -82,24 +83,49 @@ namespace TaskStreamer
                 instantiatedGraphAsset.blackboard = instantiatedBlackboard;
             }
 
-            visitor = new GraphVisitor(instantiatedBlackboard, instantiatedGraphAsset, streamer);
-            visitor.AddAdapter(new NodeAdapter(visitor));
-            visitor.AddAdapter(new GraphAdapter(visitor));
-            visitor.AddAdapter(new TransitionAdapter(visitor));
-            visitor.AddAdapter(new BlackboardVariableSetAdapter(visitor));
-#if UNITY_EDITOR
-            visitor.AddAdapter(new NodeGroupAdapter(visitor));
-#endif
+            if (PropertyBag.Exists<GraphAsset>() == false)
+            {
+                Debug.LogError("GraphAsset does not have a property bag.");
+                return null;
+            }
+
+            dataContainer = new GraphVisitor(instantiatedBlackboard, instantiatedGraphAsset, streamer);
+
+            dataContainer.AddAdapter(new RuntimeInitAdapter(dataContainer));
+
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
-            bag.Accept(visitor, ref instantiatedGraphAsset);
+            bag.Accept(dataContainer, ref instantiatedGraphAsset);
+
             return instantiatedGraphAsset;
         }
 
 
-        //TODO: 구현해야 됨.
-        public void ResetBoundVariables() { }
+#if UNITY_EDITOR
+        public void ResetBoundVariables()
+        {
+            if (this.blackboard == null || blackboard.variables.Count == 0)
+            {
+                return;
+            }
 
+            if (PropertyBag.Exists<GraphAsset>() == false)
+            {
+                Debug.LogError("GraphAsset does not have a property bag.");
+                return;
+            }
 
+            GraphVisitor dataContainer = new GraphVisitor(blackboard, this, null);
+
+            dataContainer.AddAdapter(new VariablesInitAdapter(dataContainer));
+
+            IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
+            GraphAsset reference = this;
+
+            bag.Accept(dataContainer, ref reference);
+        }
+#endif
+
+        
         public List<Graph> GetSubGraphs(UGUID baseGraphGuid)
         {
             if (baseGraphGuid.IsEmpty() || _graphTreeMap.TryGetValue(baseGraphGuid, out UGUIDList subGraphGuids) == false)
@@ -127,7 +153,7 @@ namespace TaskStreamer
             {
                 return graph;
             }
-            
+
             Debug.Log($"GetGraph: {graphGuid} is not found.");
             return null;
         }
@@ -178,9 +204,9 @@ namespace TaskStreamer
                 Debug.LogWarning($"Graph with GUID {graph.guid} already exists in the collection.");
                 return;
             }
-            
+
             _graphMap.Add(graph.guid, graph);
-            
+
             graph.baseGraphGuid = baseGuid;
             this.AddSubGraphGuid(baseGuid, graph.guid);
 
@@ -191,9 +217,9 @@ namespace TaskStreamer
         }
 
 
-        public void RemoveSubGraph(UGUID baseGuid, Graph graph) 
+        public void RemoveSubGraph(UGUID baseGuid, Graph graph)
         {
-            if (Application.isPlaying == false && Undo.isProcessing == false) 
+            if (Application.isPlaying == false && Undo.isProcessing == false)
             {
                 Undo.RecordObject(this, "Task Streamer (RemoveGraph)");
             }
@@ -230,7 +256,7 @@ namespace TaskStreamer
 
             this._graphMap.Remove(graph.guid);
             this.RemoveSubGraphGuid(baseGuid, graph.guid);
-            
+
             ListPool<Graph>.Release(subGraphs);
 
             if (Application.isPlaying == false && Undo.isProcessing == false)
@@ -238,8 +264,8 @@ namespace TaskStreamer
                 EditorUtility.SetDirty(this);
             }
         }
-        
-        
+
+
         private void AddSubGraphGuid(UGUID from, UGUID to)
         {
             if (from.IsEmpty() || to.IsEmpty())

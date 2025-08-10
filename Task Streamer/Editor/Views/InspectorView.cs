@@ -9,12 +9,14 @@ namespace TaskStreamer.Tool
     [UxmlElement]
     public partial class InspectorView : InspectorElement
     {
+        private IMGUIContainer _container;
+
         private Editor _editor;
 
 
         public void ClearInspectorView()
         {
-            base.Clear();
+            this.Clear();
             Object.DestroyImmediate(_editor);
         }
 
@@ -41,28 +43,41 @@ namespace TaskStreamer.Tool
             {
                 return;
             }
-
+            
             this._editor = Editor.CreateEditor(drawTarget);
-            base.Add(new IMGUIContainer(this.DrawInspectorGUI));
-        }
-
-
-        public void BorrowInspectorGUI(VisualElement element)
-        {
-            this.ClearInspectorView();
-            base.Add(element);
+            
+            if (_container is null || _container.parent is null)
+            {
+                // Container가 없거나 부모에서 제거된 경우에만 새로 생성
+                _container = new IMGUIContainer(this.DrawInspectorGUI);
+                
+                base.Add(_container);
+            }
         }
 
 
         private void DrawInspectorGUI()
         {
-            if (this._editor?.target is null || this._editor.serializedObject.targetObject is null)
+            bool clearFlag = false;
+
+            if (this._editor == null || this._editor.target == null)
             {
-                this.ClearInspectorView();
-                return;
+                clearFlag = true;
             }
 
-            this._editor.OnInspectorGUI();
+            if (this._editor.serializedObject.targetObject == null)
+            {
+                clearFlag = true;
+            }
+
+            if (clearFlag)
+            {
+                this.ClearInspectorView();
+            }
+            else
+            {
+                this._editor.OnInspectorGUI();
+            }
         }
     }
 }

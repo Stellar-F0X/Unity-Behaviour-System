@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEngine;
 
 [assembly: InternalsVisibleTo("TaskStreamer.Tool"), GeneratePropertyBagsForAssembly]
+
 namespace TaskStreamer
 {
     [Serializable, GeneratePropertyBag]
@@ -89,6 +90,7 @@ namespace TaskStreamer
         {
             get;
         }
+
 #endregion
 
 
@@ -120,22 +122,26 @@ namespace TaskStreamer
 #if UNITY_EDITOR
         internal void AddSubGraph(Graph subGraph)
         {
+            Undo.RecordObject(this.graphAsset, "Task Streamer (AddSubGraph)");
+
             this.graphAsset.AddSubGraph(this.guid, subGraph);
         }
 
 
         internal void RemoveSelfAndSubGraphs()
         {
-            this.graphAsset.RemoveSubGraph(this.baseGraphGuid, this);
-
-            foreach (NodeBase node in this._nodeLookup.Values) //TODO: 문제가 생길 수도 있나?
-            {
-                this.DeleteNode(node);
-            }
+            Undo.RecordObject(this.graphAsset, "Task Streamer (RemoveSubGraph)");
             
+            this.graphAsset.RemoveSubGraph(this.baseGraphGuid, this);
+            
+            this.OnRemoveGraph();
+
             EditorUtility.SetDirty(this.graphAsset);
-            AssetDatabase.SaveAssets(); 
+            AssetDatabase.SaveAssets();
         }
+
+
+        internal abstract void OnRemoveGraph();
 #endif
 
 
@@ -153,6 +159,7 @@ namespace TaskStreamer
 
             return ReferenceEquals(this, other);
         }
+
 
 
         internal abstract void InitializeOnEnterRuntime(TaskStreamer streamer);

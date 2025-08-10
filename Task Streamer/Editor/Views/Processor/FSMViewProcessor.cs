@@ -67,6 +67,9 @@ namespace TaskStreamer.Tool
             
             transitionEdge.onTransitionSelected -= view.onElementSelected;
             transitionEdge.onTransitionSelected += view.onElementSelected;
+
+            transitionEdge.onTransitionUnselected -= view.onElementUnselected;
+            transitionEdge.onTransitionUnselected += view.onElementUnselected;
             
             outputPort.Connect(transitionEdge);
             inputPort.Connect(transitionEdge);

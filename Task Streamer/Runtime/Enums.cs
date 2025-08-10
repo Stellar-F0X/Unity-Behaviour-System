@@ -5,9 +5,7 @@ using UnityEngine;
 [assembly: InternalsVisibleTo("TaskStreamer.Tool")]
 namespace TaskStreamer
 {
-    /// <summary>
-    /// 상태 머신(FSM)에서 사용되는 노드의 유형을 정의합니다.
-    /// </summary>
+    /// <summary> 상태 머신(FSM)에서 사용되는 노드의 유형을 정의합니다. </summary>
     public enum StateNodeType : byte
     {
         /// <summary>진입 상태 - 상태 머신의 시작점 (시스템에서 자동 생성됨)</summary>
@@ -32,9 +30,7 @@ namespace TaskStreamer
     };
     
     
-    /// <summary>
-    /// 행동 트리(Behavior Tree)에서 사용되는 노드의 유형을 정의합니다.
-    /// </summary>
+    /// <summary> 행동 트리(Behavior Tree)에서 사용되는 노드의 유형을 정의합니다. </summary>
     public enum BehaviorNodeType : byte
     {
         /// <summary>행동 트리의 루트 노드 - 모든 실행의 시작점</summary>
@@ -59,9 +55,7 @@ namespace TaskStreamer
     };
     
     
-    /// <summary>
-    /// 값 비교 연산에 사용되는 비교 타입을 정의합니다. (비트 플래그)
-    /// </summary>
+    /// <summary> 값 비교 연산에 사용되는 비교 타입을 정의합니다. </summary>
     [Flags]
     public enum ComparisonType : byte
     {
@@ -107,9 +101,7 @@ namespace TaskStreamer
     };
     
     
-    /// <summary>
-    /// Parallel 노드에서 자식 노드들의 성공/실패를 평가하는 정책을 정의합니다.
-    /// </summary>
+    /// <summary> Parallel 노드에서 자식 노드들의 성공/실패를 평가하는 정책을 정의합니다. </summary>
     public enum ParallelPolicy : byte
     {
         /// <summary>모든 자식 노드가 성공해야만 성공을 반환. 하나라도 실패하면 즉시 실패</summary>
@@ -130,9 +122,7 @@ namespace TaskStreamer
     };
     
     
-    /// <summary>
-    /// 노드 실행 중 호출되는 콜백의 상태를 나타냅니다.
-    /// </summary>
+    /// <summary> 노드 실행 중 호출되는 콜백의 상태를 나타냅니다. </summary>
     public enum NodeCallState : byte
     {
         /// <summary>노드 진입 직전 상태</summary>
@@ -149,9 +139,7 @@ namespace TaskStreamer
     };
     
     
-    /// <summary>
-    /// TaskStreamer에서 지원하는 그래프 타입을 정의합니다.
-    /// </summary>
+    /// <summary> TaskStreamer에서 지원하는 그래프 타입을 정의합니다. </summary>
     public enum GraphType : byte
     {
         /// <summary>행동 트리 (Behavior Tree) - 계층적 의사결정 구조</summary>
@@ -168,9 +156,7 @@ namespace TaskStreamer
     };
     
     
-    /// <summary>
-    /// 노드 실행 결과 상태를 나타냅니다.
-    /// </summary>
+    /// <summary> 노드 실행 결과 상태를 나타냅니다. </summary>
     public enum Status : byte
     {
         /// <summary>실행 중 - 노드가 아직 작업을 완료하지 않음</summary>
@@ -187,9 +173,7 @@ namespace TaskStreamer
     };
     
     
-    /// <summary>
-    /// 다중 조건 평가 시 사용되는 정책을 정의합니다.
-    /// </summary>
+    /// <summary> 다중 조건 평가 시 사용되는 정책을 정의합니다. </summary>
     public enum EvaluationPolicy : byte
     {
         /// <summary>하나라도 조건이 만족되면 true</summary>
@@ -202,9 +186,7 @@ namespace TaskStreamer
     };
     
     
-    /// <summary>
-    /// 그래프 업데이트 실행 타이밍을 정의합니다.
-    /// </summary>
+    /// <summary> 그래프 업데이트 실행 타이밍을 정의합니다. </summary>
     public enum TickMode : byte
     {
         /// <summary>업데이트 없음</summary>

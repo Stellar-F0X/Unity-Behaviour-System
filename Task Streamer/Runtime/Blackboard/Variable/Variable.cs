@@ -82,6 +82,9 @@ namespace TaskStreamer
     [Serializable]
     public abstract class Variable<T> : Variable
     {
+        public Variable() { }
+        
+        
         [SerializeField]
         protected T _value;
 

@@ -1,8 +1,12 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Pool;
+using Object = UnityEngine.Object;
 
 namespace TaskStreamer.FSM
 {
@@ -19,7 +23,7 @@ namespace TaskStreamer.FSM
 
         [SerializeField, DontCreateProperty]
         private StateBase _exit;
-        
+
         private bool _blockAllTransition;
 
 
@@ -75,6 +79,35 @@ namespace TaskStreamer.FSM
 
             _any = _nodeLookup[_any.guid] as StateBase;
             Debug.Assert(_any != null, "any node is null.");
+        }
+
+
+        internal override void OnRemoveGraph()
+        {
+            List<Transition> transitionList = ListPool<Transition>.Get();
+
+            //Foreach를 사용하는 도중에 컬렉션을 수정할 수 없으므로 ToList()를 사용하여 컬렉션을 복사한 후 원본 컬렉션을 수정.
+            foreach (StateBase node in this._nodeLookup.Values.ToList())
+            {
+                if (node.transitions is not null && node.transitions.Count > 0)
+                {
+                    transitionList.AddRange(node.transitions);
+                }
+
+                this.DeleteNode(node);
+            }
+
+            for (int i = 0; i < transitionList.Count; ++i)
+            {
+                if (AssetDatabase.Contains(transitionList[i]))
+                {
+                    AssetDatabase.RemoveObjectFromAsset(transitionList[i]);
+                }
+
+                Object.DestroyImmediate(transitionList[i]);
+            }
+            
+            ListPool<Transition>.Release(transitionList);
         }
 
 
@@ -158,7 +191,7 @@ namespace TaskStreamer.FSM
                 nextStateGuid = UGUID.Empty;
                 return false;
             }
-            
+
             //현재 상태에서 전이가 발생하면 || 기준 왼쪽 함수에서 얻어온 guid를 토대로 전이할 것이고 anyState에서 발생하면 그 반대.
             if (_current.CheckTransition(out nextStateGuid))
             {
@@ -187,16 +220,13 @@ namespace TaskStreamer.FSM
             Undo.RecordObject(_graphAsset, "State Machine (Connect)");
             Undo.RecordObject(from, "State Machine (Connect)");
 
-            Transition newTransition = ScriptableObject.CreateInstance<Transition>();
-            newTransition.name = $"{from.guid}.{to.guid}";
-            newTransition.Setup(from.guid, to.guid);
+            Transition newTransition = TaskStreamerUtility.CreateTransition(from, to);
             from.AddTransition(newTransition);
 
             // Transition을 GraphAsset의 sub-asset으로 추가
             if (AssetDatabase.Contains(_graphAsset))
             {
                 AssetDatabase.AddObjectToAsset(newTransition, _graphAsset);
-                newTransition.hideFlags = HideFlags.HideInHierarchy; // Inspector에서 숨김
             }
 
             // Undo 등록 및 저장

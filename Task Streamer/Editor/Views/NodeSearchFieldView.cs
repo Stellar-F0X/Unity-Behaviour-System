@@ -7,7 +7,8 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    [UxmlElement]
+    //TODO: 추후 별도의 SearchFieldWindow으로 분리 예정 (Unity의 Search 창 같은 느낌으로).
+    [UxmlElement, Obsolete("추후 별도의 SearchFieldWindow으로 분리 예정입니다.")]
     public partial class NodeSearchFieldView : ToolbarSearchField
     {
         private readonly List<NodeView> _itemSource = new List<NodeView>();
@@ -43,7 +44,7 @@ namespace TaskStreamer.Tool
 
         private void OnFocusInSearchField(FocusInEvent evt)
         {
-            _inspectorView.BorrowInspectorGUI(_nodeListView);
+            //_inspectorView.BorrowInspectorGUI(_nodeListView);
         }
 
 

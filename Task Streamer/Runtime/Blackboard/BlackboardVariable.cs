@@ -75,6 +75,7 @@ namespace TaskStreamer
     [Serializable, GeneratePropertyBag]
     public partial class BlackboardVariable<T> : BlackboardVariable
     {
+        //TODO: Create 정적 함수로 분리해서 함수 호출을 확실하게 명시한다.
         public BlackboardVariable()
         {
 #if UNITY_EDITOR

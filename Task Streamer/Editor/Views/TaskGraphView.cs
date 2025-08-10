@@ -268,6 +268,9 @@ namespace TaskStreamer.Tool
 
             nodeView.onNodeSelected -= this.onElementSelected;
             nodeView.onNodeSelected += this.onElementSelected;
+            
+            nodeView.onNodeUnselected -= this.onElementUnselected;
+            nodeView.onNodeUnselected += this.onElementUnselected;
 
             this.AddElement(nodeView);
         }
