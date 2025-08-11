@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using TaskStreamer.FSM;
-using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
@@ -25,7 +24,7 @@ namespace TaskStreamer.Utility
 
         public static void ChangeNodesAndGroupGuidOfGraph(Graph graph)
         {
-            foreach (NodeBase node in graph.GetGraphIterator())
+            foreach (NodeBase node in graph.GetGraphIterator(GraphIteratorType.LS))
             {
                 UGUID originalGuid = node.guid;
                 UGUID newGuid = UGUID.Create();
@@ -98,6 +97,18 @@ namespace TaskStreamer.Utility
             newTransition.name = $"{from.guid}.{to.guid}";
             newTransition.Setup(from.guid, to.guid);
             return newTransition;
+        }
+
+
+        public static Variable CreateVariable(Type type, bool isLocal = false)
+        {
+            Debug.Assert(type is not null, "Failed to create a variable.");
+            Variable newVariable = Activator.CreateInstance(type) as Variable;
+            Debug.Assert(newVariable is not null, "Failed to create a variable.");
+
+            newVariable.name = isLocal ? "#Constant Variable#" : $"New {type.Name}";
+            newVariable.type = type;
+            return newVariable;
         }
     }
 }

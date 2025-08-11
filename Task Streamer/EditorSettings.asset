@@ -76,8 +76,8 @@ MonoBehaviour:
     m_ColorSpace: 0
     m_NumColorKeys: 2
     m_NumAlphaKeys: 2
-  nodeViewHighlightingDuration: 0.15
-  nodeViewUpdateInterval: 0.03
+  highlightDuration: 0.5
+  nodeViewUpdateInterval: 0.065
   editorXml: {fileID: 9197481963319205126, guid: e97556cb6f1cfe64da771ca095336409, type: 3}
   editorStyle: {fileID: 7433441132597879392, guid: 9f7ef0b4ed1e21f4580d6f651abac776, type: 3}
   behaviorNodeViewXml: {fileID: 9197481963319205126, guid: 541193e97a9200f48afb0a976ac925c1, type: 3}

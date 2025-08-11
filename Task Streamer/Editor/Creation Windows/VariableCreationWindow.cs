@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TaskStreamer.Utility;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -34,7 +35,7 @@ namespace TaskStreamer.Tool
                 return null;
             }
 
-            Variable variable = Variable.Create(variableType);
+            Variable variable = TaskStreamerUtility.CreateVariable(variableType);
             _createCallback?.Invoke(variable);
             _createCallback = null;
             return variable;

@@ -1,4 +1,3 @@
-using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -7,14 +6,12 @@ namespace TaskStreamer.Tool
     [CustomEditor(typeof(TaskStreamer))]
     public class TaskStreamerInspector : Editor
     {
-        private readonly string[] _graphTypeNames = Enum.GetNames(typeof(GraphType));
-
         public override void OnInspectorGUI()
         {
             SerializedProperty graphAsset = serializedObject.FindProperty("_graphAsset");
             SerializedProperty pauseUpdate = serializedObject.FindProperty("_pauseUpdate");
             SerializedProperty updateMode = serializedObject.FindProperty("_tickMode");
-
+            
             graphAsset.objectReferenceValue = EditorGUILayout.ObjectField("Graph Asset", graphAsset.objectReferenceValue, typeof(GraphAsset), false);
             updateMode.enumValueIndex = EditorGUILayout.Popup("Tick Mode", updateMode.enumValueIndex, updateMode.enumDisplayNames);
             pauseUpdate.boolValue = EditorGUILayout.Toggle("Pause Update", pauseUpdate.boolValue);

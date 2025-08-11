@@ -1,9 +1,11 @@
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using System;
 using System.Collections.Generic;
 using TaskStreamer.Injection;
 using TaskStreamer.Utility;
 using Unity.Properties;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Pool;
 using Object = UnityEngine.Object;
@@ -99,32 +101,6 @@ namespace TaskStreamer
             return instantiatedGraphAsset;
         }
 
-
-#if UNITY_EDITOR
-        public void ResetBoundVariables()
-        {
-            if (this.blackboard == null || blackboard.variables.Count == 0)
-            {
-                return;
-            }
-
-            if (PropertyBag.Exists<GraphAsset>() == false)
-            {
-                Debug.LogError("GraphAsset does not have a property bag.");
-                return;
-            }
-
-            GraphVisitor dataContainer = new GraphVisitor(blackboard, this, null);
-
-            dataContainer.AddAdapter(new VariablesInitAdapter(dataContainer));
-
-            IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
-            GraphAsset reference = this;
-
-            bag.Accept(dataContainer, ref reference);
-        }
-#endif
-
         
         public List<Graph> GetSubGraphs(UGUID baseGraphGuid)
         {
@@ -186,6 +162,40 @@ namespace TaskStreamer
 
 
 #if UNITY_EDITOR
+        internal void ResetBoundVariables()
+        {
+            if (this.blackboard == null || blackboard.variables.Count == 0)
+            {
+                return;
+            }
+
+            if (PropertyBag.Exists<GraphAsset>() == false)
+            {
+                Debug.LogError("GraphAsset does not have a property bag.");
+                return;
+            }
+            
+            if (Application.isPlaying == false && Undo.isProcessing == false)
+            {
+                Undo.RecordObject(this, "Task Streamer (ResetVariables)");
+            }
+
+            GraphVisitor dataContainer = new GraphVisitor(blackboard, this, null);
+
+            dataContainer.AddAdapter(new VariablesInitAdapter(dataContainer));
+
+            IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
+            GraphAsset reference = this;
+
+            bag.Accept(dataContainer, ref reference);
+            
+            if (Application.isPlaying == false && Undo.isProcessing == false)
+            {
+                EditorUtility.SetDirty(this);
+            }
+        }
+        
+        
         public void AddSubGraph(UGUID baseGuid, Graph graph)
         {
             if (Application.isPlaying == false && Undo.isProcessing == false)

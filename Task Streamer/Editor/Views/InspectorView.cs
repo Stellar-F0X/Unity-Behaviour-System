@@ -34,7 +34,7 @@ namespace TaskStreamer.Tool
 
             switch (visualElement)
             {
-                case NodeView view: drawTarget = view.targetNode; break;
+                case NodeViewBase view: drawTarget = view.targetNode; break;
 
                 case TransitionEdgeView edge: drawTarget = edge.targetTransition; break;
             }

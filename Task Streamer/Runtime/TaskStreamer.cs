@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ using UnityEngine;
 
 namespace TaskStreamer
 {
-    [DefaultExecutionOrder(-1), AddComponentMenu("Task Streamer/Task Streamer")]
+    [DefaultExecutionOrder(-1)]
     public sealed class TaskStreamer : MonoBehaviour
     {
         internal event Action onNodeFixedUpdate;
@@ -65,15 +66,10 @@ namespace TaskStreamer
                 return;
             }
 
-            foreach (Graph graph in _graphAsset.graphs)
+            foreach (NodeBase node in _graphAsset.graphs.SelectMany(graph => graph.GetGraphIterator(GraphIteratorType.BFS)))
             {
-                foreach (NodeBase node in graph.GetGraphIterator())
-                {
-                    node.OnAwake();
-                }
+                node.OnAwake();
             }
-
-            Debug.Log("==================초기화===================");
         }
 
 
@@ -144,7 +140,7 @@ namespace TaskStreamer
             }
             else
             {
-                Debug.LogWarning("ExternalUpdate는 tickUpdateMode가 ExternalUpdate로 설정되어 있을 때만 호출해야 합니다.");
+                Debug.LogWarning("ExternalUpdate는 tickMode가 ExternalUpdate로 설정되어 있을 때만 호출해야 합니다.");
             }
         }
 

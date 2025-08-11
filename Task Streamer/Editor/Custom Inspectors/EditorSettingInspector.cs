@@ -21,8 +21,8 @@ namespace TaskStreamer.Tool
             GradientField nodeGradientField = inspectorView.Q<GradientField>("node-gradient-field");
             GradientField edgeGradientField = inspectorView.Q<GradientField>("edge-gradient-field");
 
-            updateInterval.value = settings.nodeViewUpdateInterval;
-            highlightDuration.value = settings.nodeViewHighlightingDuration;
+            updateInterval.value = settings.updateInterval;
+            highlightDuration.value = settings.highlightDuration;
             miniMapBackgroundColor.value = settings.miniMapBackgroundColor;
             nodeGroupColor.value = settings.nodeGroupColor;
             nodeSuccessColor.value = settings.nodeSuccessColor;
@@ -33,15 +33,15 @@ namespace TaskStreamer.Tool
 
             updateInterval.RegisterValueChangedCallback(evt =>
             {
-                settings.nodeViewUpdateInterval = Mathf.Clamp(evt.newValue, 0.01f, settings.nodeViewHighlightingDuration);
-                updateInterval.SetValueWithoutNotify(settings.nodeViewUpdateInterval);
+                settings.updateInterval = Mathf.Clamp(evt.newValue, 0.01f, settings.highlightDuration);
+                updateInterval.SetValueWithoutNotify(settings.updateInterval);
                 EditorUtility.SetDirty(settings);
             });
 
             highlightDuration.RegisterValueChangedCallback(evt =>
             {
-                settings.nodeViewHighlightingDuration = Mathf.Max(evt.newValue, settings.nodeViewUpdateInterval);
-                highlightDuration.SetValueWithoutNotify(settings.nodeViewHighlightingDuration);
+                settings.highlightDuration = Mathf.Max(evt.newValue, settings.updateInterval);
+                highlightDuration.SetValueWithoutNotify(settings.highlightDuration);
                 EditorUtility.SetDirty(settings);
             });
 

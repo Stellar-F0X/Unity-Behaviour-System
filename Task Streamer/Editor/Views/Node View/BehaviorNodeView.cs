@@ -1,31 +1,19 @@
 using System;
 using TaskStreamer.BT;
-using TaskStreamer.Utility;
 using UnityEditor.Experimental.GraphView;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    public class BehaviorNodeView : NodeView
+    public class BehaviorNodeView : NodeViewBase
     {
-        public BehaviorNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml) { }
-
-
-
-        public Edge parentConnectionEdge
+        public BehaviorNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
         {
-            get { return _connectionEdge[UGUID.Empty]; }
+            this._elementGroup.AddToClassList($"behaviour-node-{((BehaviorNodeBase)targetNode).nodeType}");
+            
+            this._highlighter = new BehaviorNodeHighlight(this, TaskStreamerEditor.settings);
 
-            set { _connectionEdge[UGUID.Empty] = value; }
-        }
-        
-
-        
-        protected override void Initialize()
-        {
-            _elementGroup.AddToClassList($"behaviour-node-{((BehaviorNodeBase)targetNode).nodeType}");
-            base.Initialize();
+            this.SetBorderColorByStatus();
         }
 
 
@@ -47,7 +35,7 @@ namespace TaskStreamer.Tool
         {
             return new PortView(GraphType.BT, direction, capacity);
         }
-
+        
 
         protected override void CreatePorts()
         {
@@ -73,37 +61,31 @@ namespace TaskStreamer.Tool
 
                 case BehaviorNodeType.Composite:
                 {
-                    inputPort =  this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Single, typeof(bool));
+                    inputPort = this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Single, typeof(bool));
                     outputPort = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Multi, typeof(bool));
                     break;
                 }
 
                 case BehaviorNodeType.Decorator:
                 {
-                    inputPort =  this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Single, typeof(bool));
+                    inputPort = this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Single, typeof(bool));
                     outputPort = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Single, typeof(bool));
                     break;
                 }
             }
 
-            this.SetupPort(inputPort, string.Empty, FlexDirection.Column, base.inputContainer);
-            this.SetupPort(outputPort, string.Empty, FlexDirection.ColumnReverse, base.outputContainer);
-        }
-
-        
-        public override void SetEdgeColor(EdgeDictionary control, Color color)
-        {
-            
+            this.SetPort(inputPort, string.Empty, FlexDirection.Column, base.inputContainer);
+            this.SetPort(outputPort, string.Empty, FlexDirection.ColumnReverse, base.outputContainer);
         }
 
 
-        protected override void SetBorderColorByStatus()
+        public void SetBorderColorByStatus()
         {
             switch (((BehaviorNodeBase)targetNode).status)
             {
-                case Status.Failure: base.SetBorderColor(_nodeBorder.style, TaskStreamerEditor.settings.nodeFailureColor); break;
+                case Status.Failure: _nodeBorder.style.SetBorderColor(TaskStreamerEditor.settings.nodeFailureColor); break;
 
-                case Status.Success: base.SetBorderColor(_nodeBorder.style, TaskStreamerEditor.settings.nodeSuccessColor); break;
+                case Status.Success: _nodeBorder.style.SetBorderColor(TaskStreamerEditor.settings.nodeSuccessColor); break;
             }
         }
     }

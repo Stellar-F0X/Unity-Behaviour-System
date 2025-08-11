@@ -44,28 +44,32 @@ namespace TaskStreamer.FSM
         public static StateMachine CreateGraph(string graphName, GraphAsset graphAsset)
         {
             StateMachine graph = new StateMachine(graphName, graphAsset);
-
-            if (graph.entry == null)
-            {
-                graph.entry = graph.CreateNode("Enter", typeof(EnterState), new Vector2Int(0, 0)) as StateBase;
-                graph._exit = graph.CreateNode("Exit", typeof(ExitState), new Vector2Int(0, 200)) as StateBase;
-                graph._any = graph.CreateNode("Any", typeof(AnyState), new Vector2Int(-230, 0)) as StateBase;
-                graph._current = graph.entry as StateBase;
-            }
+            
+            graph.entry = graph.CreateNode("Enter", typeof(EnterState), new Vector2Int(0, 0)) as StateBase;
+            graph._exit = graph.CreateNode("Exit", typeof(ExitState), new Vector2Int(0, 200)) as StateBase;
+            graph._any = graph.CreateNode("Any", typeof(AnyState), new Vector2Int(-230, 0)) as StateBase;
+            graph._current = graph.entry as StateBase;
 
             return graph;
         }
 #endif
 
-        public override IGraphIterator GetGraphIterator()
+        public override IGraphIterator GetGraphIterator(GraphIteratorType iteratorType)
         {
-            return new StateMachine.Iterator(this);
+            switch (iteratorType)
+            {
+                case GraphIteratorType.LS: return new StateMachine.LSIterator(this);
+
+                case GraphIteratorType.BFS: return new StateMachine.BFSIterator(this);
+            }
+            
+            throw new NotImplementedException("BreadthFirstSearch iterator is not implemented for StateMachine.");
         }
 
 
         internal override void InitializeOnEnterRuntime(TaskStreamer streamer)
         {
-            foreach (StateBase node in this.GetGraphIterator())
+            foreach (StateBase node in this.GetGraphIterator(GraphIteratorType.LS))
             {
                 node.streamer = streamer;
                 node.machine = this;
@@ -106,7 +110,7 @@ namespace TaskStreamer.FSM
 
                 Object.DestroyImmediate(transitionList[i]);
             }
-            
+
             ListPool<Transition>.Release(transitionList);
         }
 

@@ -26,14 +26,14 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            if (edge.input is not null && edge.input.node is NodeView connectionDestination) //Create and link new parent node
+            if (edge.input is not null && edge.input.node is NodeViewBase connectionDestination) //Create and link new parent node
             {
                 TaskStreamerEditor.Instance.view.OpenContextualMenuWindow(position, newParentNodeView => 
                 {
                     this.CreateAndLinkFromNewToOriginalNode(newParentNodeView, connectionDestination, position);
                 });
             }
-            else if (edge.output is not null && edge.output.node is NodeView connectionSource) //Create and link new child node
+            else if (edge.output is not null && edge.output.node is NodeViewBase connectionSource) //Create and link new child node
             {
                 TaskStreamerEditor.Instance.view.OpenContextualMenuWindow(position, newChildNodeView =>
                 {
@@ -102,13 +102,13 @@ namespace TaskStreamer.Tool
         // FSM: 기존 노드에서 새 노드로 상태 전이 관계를 생성 및 연결합니다.
         // BT: Creates and links a parent-child relationship from the original node to the new node.
         // FSM: Creates and links a state transition relationship from the original node to the new node.
-        protected abstract void CreateAndLinkFromOriginalToNewNode(NodeView sourceNodeView, NodeView targetNodeView, Vector2 position);
+        protected abstract void CreateAndLinkFromOriginalToNewNode(NodeViewBase sourceNodeView, NodeViewBase targetNodeView, Vector2 position);
 
         
         // BT: 새 노드에서 기존 노드로 부모-자식 관계를 생성 및 연결합니다.
         // FSM: 새 노드에서 기존 노드로 상태 전이 관계를 생성 및 연결합니다.
         // BT: Creates and links a parent-child relationship from the new node to the original node.
         // FSM: Creates and links a state transition relationship from the new node to the original node.
-        protected abstract void CreateAndLinkFromNewToOriginalNode(NodeView sourceNodeView, NodeView targetNodeView, Vector2 position);
+        protected abstract void CreateAndLinkFromNewToOriginalNode(NodeViewBase sourceNodeView, NodeViewBase targetNodeView, Vector2 position);
     }
 }

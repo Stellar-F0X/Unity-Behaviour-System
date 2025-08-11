@@ -11,7 +11,7 @@ namespace TaskStreamer.Tool
     [UxmlElement, Obsolete("추후 별도의 SearchFieldWindow으로 분리 예정입니다.")]
     public partial class NodeSearchFieldView : ToolbarSearchField
     {
-        private readonly List<NodeView> _itemSource = new List<NodeView>();
+        private readonly List<NodeViewBase> _itemSource = new List<NodeViewBase>();
         private readonly ListView _nodeListView = new ListView();
 
         private TaskGraphView _treeView;
@@ -60,7 +60,7 @@ namespace TaskStreamer.Tool
 
             foreach (var node in _treeView.nodes)
             {
-                NodeView nodeView = (NodeView)node;
+                NodeViewBase nodeView = (NodeViewBase)node;
                 NodeBase nodeBase = nodeView.targetNode;
                 bool found = false;
 
@@ -101,7 +101,7 @@ namespace TaskStreamer.Tool
         private void BindItem(VisualElement container, int index)
         {
             container[0].Clear();
-            NodeView view = _nodeListView.itemsSource[index] as NodeView;
+            NodeViewBase view = _nodeListView.itemsSource[index] as NodeViewBase;
 
             Label indexLabel = new Label($"{index + 1}. ");
             indexLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
@@ -126,7 +126,7 @@ namespace TaskStreamer.Tool
 
         private void OnFocusNodeViewInList(IEnumerable<object> items)
         {
-            NodeView view = items.First() as NodeView;
+            NodeViewBase view = items.First() as NodeViewBase;
             _treeView.SelectNode(view);
             _treeView.FrameSelection();
         }

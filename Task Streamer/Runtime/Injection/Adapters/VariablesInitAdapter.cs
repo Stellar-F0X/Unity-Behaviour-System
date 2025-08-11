@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using TaskStreamer.BT;
 using TaskStreamer.FSM;
@@ -13,9 +12,10 @@ namespace TaskStreamer.Injection
                                         IVisitPropertyAdapter<Graph>,
                                         IVisitPropertyAdapter<NodeDictionary>,
                                         IVisitPropertyAdapter<NodeBase>,
-                                        IVisitContravariantPropertyAdapter<BlackboardVariable>,
                                         IVisitPropertyAdapter<List<Transition>>, 
-                                        IVisitPropertyAdapter<Transition>
+                                        IVisitPropertyAdapter<Transition>,
+                                        IVisitPropertyAdapter<BlackboardBasedCondition>,
+                                        IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
         public VariablesInitAdapter(GraphVisitor dataContainer)
         {
@@ -49,6 +49,18 @@ namespace TaskStreamer.Injection
         public void Visit<TContainer>(in VisitContext<TContainer, NodeBase> context, ref TContainer container, ref NodeBase value)
         {
             context.ContinueVisitation(ref container, ref value);
+        }
+        
+        
+        
+        public void Visit<TContainer>(in VisitContext<TContainer, BlackboardBasedCondition> context, ref TContainer container, ref BlackboardBasedCondition value)
+        {
+            if (value.modules.Count == 0)
+            {
+                return;
+            }
+            
+            value.modules.Clear();
         }
         
         
@@ -99,10 +111,7 @@ namespace TaskStreamer.Injection
                 Debug.Log(context.Property.Name);
             }
 
-            //Activator.CreateInstance로 생성자를 호출하여 BlackboardVariable<T>와 Variable<T>를 생성한다.
-            BlackboardVariable newValue = Activator.CreateInstance(value.GetType()) as BlackboardVariable;
-            Debug.Assert(newValue is not null, "Failed to create a new BlackboardVariable instance.");
-            context.Property.SetValue(ref container, newValue);
+            value.variable = null;
         }
         
         
@@ -119,9 +128,8 @@ namespace TaskStreamer.Injection
                 return;
             }
 
-            IPropertyBag<List<ConditionModule>> bag = PropertyBag.GetPropertyBag<List<ConditionModule>>();
-            List<ConditionModule> conditions = value.conditions.modules;
-            bag.Accept(_dataContainer, ref conditions);
+            value.conditional = false;
+            value.conditions.modules.Clear();
         }
 
 

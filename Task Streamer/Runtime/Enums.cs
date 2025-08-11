@@ -209,4 +209,18 @@ namespace TaskStreamer
         [Tooltip("External update - controlled by external systems.")]
         ExternalUpdate,
     };
+
+
+    /// <summary> 그래프 순회 방식의 유형을 정의합니다. </summary>
+    [Tooltip("Defines the type of graph traversal using a linear search approach.")]
+    public enum GraphIteratorType : byte
+    {
+        /// <summary> Linear Search 노드를 만나는 순서대로 순차적으로 처리하는 그래프 순회 방식입니다. </summary>
+        [Tooltip("Represents a graph traversal type where nodes are processed sequentially in the order they are encountered.")]
+        LS,
+        
+        /// <summary> Breath-First Search 현재 깊이의 모든 형제 노드를 먼저 탐색한 후 다음 깊이의 노드로 진행하는 그래프 순회 방식입니다. </summary>
+        [Tooltip("Represents a graph traversal method that explores all sibling nodes at the current depth level before proceeding to nodes at the next depth level.")] 
+        BFS
+    };
 }

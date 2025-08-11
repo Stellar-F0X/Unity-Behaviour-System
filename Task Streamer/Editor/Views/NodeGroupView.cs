@@ -51,7 +51,7 @@ namespace TaskStreamer.Tool
             {
                 foreach (var element in elements)
                 {
-                    if (element.selected && element is NodeView view && view.targetNode != null)
+                    if (element.selected && element is NodeViewBase view && view.targetNode != null)
                     {
                         _data.AddNodeGuid(view.targetNode.guid);
                     }
@@ -71,7 +71,7 @@ namespace TaskStreamer.Tool
             {
                 foreach (var element in elements)
                 {
-                    if (element.selected && element is NodeView view && view.targetNode != null)
+                    if (element.selected && element is NodeViewBase view && view.targetNode != null)
                     {
                         _data.RemoveNodeGuid(view.targetNode.guid);
                     }

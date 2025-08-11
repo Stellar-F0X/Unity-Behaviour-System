@@ -1,35 +1,26 @@
 using System;
 using TaskStreamer.FSM;
-using TaskStreamer.Utility;
 using UnityEditor.Experimental.GraphView;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    public class StateNodeView : NodeView
+    public class StateNodeView : NodeViewBase
     {
-        public StateNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml) { }
-        
-
-        public EdgeDictionary connectionEdge
-        {
-            get { return _connectionEdge; }
-        }
-        
-
-        protected override void Initialize()
+        public StateNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
         {
             _elementGroup.AddToClassList($"state-node-{((StateBase)targetNode).nodeType}");
-            base.Initialize();
+            
+            _highlighter = new StateNodeHighlighter(this, TaskStreamerEditor.settings);
         }
-
         
+
+
         public override Port InstantiatePort(Orientation orientation, Direction direction, Port.Capacity capacity, Type type)
         {
             return new PortView(GraphType.FSM, direction, capacity);
         }
-        
+
 
         protected override void CreatePorts()
         {
@@ -40,7 +31,7 @@ namespace TaskStreamer.Tool
                     outputPort = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Single, typeof(bool));
                     break;
                 }
-                
+
                 case StateNodeType.Exit:
                 {
                     inputPort = this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Multi, typeof(bool));
@@ -53,13 +44,13 @@ namespace TaskStreamer.Tool
                     outputPort = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Multi, typeof(bool));
                     break;
                 }
-                
+
                 case StateNodeType.Any:
                 {
                     outputPort = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Multi, typeof(bool));
                     break;
                 }
-                
+
                 case StateNodeType.Action:
                 {
                     inputPort = this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Multi, typeof(bool));
@@ -67,15 +58,9 @@ namespace TaskStreamer.Tool
                     break;
                 }
             }
-            
-            this.SetupPort(inputPort, string.Empty, FlexDirection.Column, base.inputContainer);
-            this.SetupPort(outputPort, string.Empty, FlexDirection.ColumnReverse, base.outputContainer);
-        }
-        
-        
-        public override void SetEdgeColor(EdgeDictionary control, Color color)
-        {
-            
+
+            this.SetPort(inputPort, string.Empty, FlexDirection.Column, base.inputContainer);
+            this.SetPort(outputPort, string.Empty, FlexDirection.ColumnReverse, base.outputContainer);
         }
     }
 }

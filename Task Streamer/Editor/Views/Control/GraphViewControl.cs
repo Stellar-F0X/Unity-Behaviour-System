@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace TaskStreamer.Tool
 {
-    public abstract class GraphViewProcessor
+    public abstract class GraphViewControl
     {
-        private static GraphViewProcessor[] _ProcessorInstances = new GraphViewProcessor[2];
+        private static GraphViewControl[] _ProcessorInstances = new GraphViewControl[2];
         
         protected TaskCreationWindowBase _taskCreationWindow;
         
@@ -22,24 +22,24 @@ namespace TaskStreamer.Tool
         }
 
 
-        public static GraphViewProcessor CreateGraphViewProcessor(Graph graph)
+        public static GraphViewControl CreateGraphViewProcessor(Graph graph)
         {
             if (_ProcessorInstances[(int)graph.graphType] != null)
             {
                 return _ProcessorInstances[(int)graph.graphType];
             }
             
-            GraphViewProcessor resultProcessor = null;
+            GraphViewControl resultControl = null;
             
             switch (graph.graphType)
             {
-                case GraphType.BT: resultProcessor = new BTViewProcessor(); break;
+                case GraphType.BT: resultControl = new BTViewControl(); break;
 
-                case GraphType.FSM: resultProcessor = new FSMViewProcessor(); break;
+                case GraphType.FSM: resultControl = new FSMViewControl(); break;
             }
 
-            _ProcessorInstances[(int)graph.graphType] = resultProcessor;
-            return resultProcessor;
+            _ProcessorInstances[(int)graph.graphType] = resultControl;
+            return resultControl;
         }
         
         
@@ -74,17 +74,17 @@ namespace TaskStreamer.Tool
         
         public virtual void NotifyNodePositionChanged(TaskGraphView graphView, List<GraphElement> elements) { }
         
-        public abstract bool TryConnectNodesByEdge(TaskGraphView view, NodeView connectionTarget, NodeView nodeB, out Edge linkedEdge);
+        public abstract bool TryConnectNodesByEdge(TaskGraphView view, NodeViewBase connectionTarget, NodeViewBase nodeB);
         
         public abstract void CreateAndConnectNodes(TaskGraphView graphView, Graph graph);
 
-        public abstract void OnDeleteSelectionElements(List<ISelectable> selection);
+        public abstract void FilterSelectionElements(List<ISelectable> selection);
         
-        public abstract NodeView RecreateNodeViewOnLoad(NodeBase node);
+        public abstract NodeViewBase RecreateNodeViewOnLoad(NodeBase node);
 
-        public abstract void TryDisconnectParentToChild(NodeView parentNodeView);
+        public abstract void TryDisconnectParentToChild(NodeViewBase parentNodeView);
 
-        public abstract void TryDisconnectChildToParent(NodeView childNodeView);
+        public abstract void TryDisconnectChildToParent(NodeViewBase childNodeView);
         
         public abstract void DisconnectNodesByEdge(Graph graph, Edge edge);
         

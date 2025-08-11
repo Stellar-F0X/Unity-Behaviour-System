@@ -4,19 +4,19 @@ namespace TaskStreamer.Tool
 {
     public class FSMEdgeConnectorListener : GraphEdgeConnectorListener
     {
-        protected override void CreateAndLinkFromOriginalToNewNode(NodeView sourceNodeView, NodeView targetNodeView, Vector2 position)
+        protected override void CreateAndLinkFromOriginalToNewNode(NodeViewBase sourceNodeView, NodeViewBase targetNodeView, Vector2 position)
         {
-            GraphViewProcessor processor = TaskStreamerEditor.Instance.view.graphViewProcessor;
+            GraphViewControl control = TaskStreamerEditor.Instance.view.graphViewControl;
             
-            processor.TryDisconnectParentToChild(sourceNodeView);
+            control.TryDisconnectParentToChild(sourceNodeView);
         }
         
         
-        protected override void CreateAndLinkFromNewToOriginalNode(NodeView sourceNodeView, NodeView targetNodeView, Vector2 position)
+        protected override void CreateAndLinkFromNewToOriginalNode(NodeViewBase sourceNodeView, NodeViewBase targetNodeView, Vector2 position)
         {
-            GraphViewProcessor processor = TaskStreamerEditor.Instance.view.graphViewProcessor;
+            GraphViewControl control = TaskStreamerEditor.Instance.view.graphViewControl;
             
-            processor.TryDisconnectChildToParent(targetNodeView);
+            control.TryDisconnectChildToParent(targetNodeView);
         }
     }
 }

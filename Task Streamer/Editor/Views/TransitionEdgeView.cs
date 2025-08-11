@@ -17,27 +17,35 @@ namespace TaskStreamer.Tool
             StyleSheet styleSheet = TaskStreamerEditor.settings.transitionEdgeViewStyle;
 
             Debug.Assert(styleSheet != null, "TransitionEdgeViewStyle is null");
-            
-            this.styleSheets.Add(styleSheet); //USS 추가
+
+            this.styleSheets.Add(styleSheet);       //USS 추가
             this.AddToClassList("transition-edge"); //XML로 만들어진 VisualElement에 USS 클래스 연결.
-            
+
             isGhostEdge = !TaskStreamerEditor.isLoadingTreeToView;
-            
+
             _selectedColor = new Color(1, 0.5f, 0, 1);
-            
+
             generateVisualContent += this.DrawArrow;
         }
 
         public event Action<GraphElement> onTransitionSelected;
         public event Action<GraphElement> onTransitionUnselected;
 
+        private Transition _targetTransition;
+
         private readonly Color _selectedColor;
 
         private const float _ARROW_WIDTH = 12f;
 
-        public Transition targetTransition;
 
-        
+        public Transition targetTransition
+        {
+            get { return _targetTransition; }
+
+            set { _targetTransition = value; }
+        }
+
+
 
         public override void OnSelected()
         {
@@ -182,15 +190,15 @@ namespace TaskStreamer.Tool
             {
                 return ghostColor;
             }
-            
+
             if (selected)
             {
                 return _selectedColor;
             }
 
-            if (output != null)
+            if (edgeControl != null)
             {
-                return output.portColor;
+                return edgeControl.inputColor;
             }
 
             return defaultColor;

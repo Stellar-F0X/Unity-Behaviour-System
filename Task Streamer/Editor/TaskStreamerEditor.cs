@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.SceneManagement;
@@ -218,7 +219,7 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 하이어라키창에 변경사항이 생겼을 때 호출되며, 현재 게임 오브젝트의 TaskStreamer가 삭제됐는지 확인합니다. </summary>
+        /// <summary> 하이어라키창에 변경사항이 생겼을 때, 현재 게임 오브젝트의 graphAsset 삭제됐는지 확인합니다. </summary>
         private void OnHierarchyChange()
         {
             //유니티의 Object 타입에 구현된 Equals 함수를 사용하여 Fake null을 검사.
@@ -227,6 +228,18 @@ namespace TaskStreamer.Tool
                 return;
             }
 
+            this.Initialize();
+        }
+
+
+        /// <summary> 프로젝트에 변경사항이 생겼을 때, 현재 사용 중인 게임 Graph Asset이 삭제됐는지 확인합니다. </summary>
+        private void OnProjectChange()
+        {
+            if (_graphAsset != null)
+            {
+                return;
+            }
+            
             this.Initialize();
         }
 
@@ -251,7 +264,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            _graphView?.UpdateNodeView();
+            _graphView.UpdateNodeView();
         }
 
 

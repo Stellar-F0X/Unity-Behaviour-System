@@ -11,10 +11,10 @@ namespace TaskStreamer.Tool
     public abstract class TaskCreationWindowBase : CreationWindowBase
     {
         private readonly Vector2 _nodeOffset = new Vector2(-75, -20);
-        private event Action<NodeView> _createCallback;
+        private event Action<NodeViewBase> _createCallback;
 
 
-        public void RegisterNodeCreationCallbackOnce(Action<NodeView> callback)
+        public void RegisterNodeCreationCallbackOnce(Action<NodeViewBase> callback)
         {
             _createCallback = null;
             _createCallback = callback;
@@ -34,10 +34,10 @@ namespace TaskStreamer.Tool
         }
         
 
-        protected virtual NodeView CreateNode(Type type, SearchWindowContext context)
+        protected virtual NodeViewBase CreateNode(Type type, SearchWindowContext context)
         {
             Vector2 nodePosition = _nodeOffset + this.CalculateMousePosition(context);
-            NodeView nodeView = graphView.CreateNewNodeAndView(type, nodePosition);
+            NodeViewBase nodeView = graphView.CreateNewNodeAndView(type, nodePosition);
 
             _createCallback?.Invoke(nodeView);
             _createCallback = null;
@@ -59,7 +59,7 @@ namespace TaskStreamer.Tool
         }
 
 
-        protected virtual void CreateAndInjectSubGraph(NodeView newSubGraphNodeView)
+        protected virtual void CreateAndInjectSubGraph(NodeViewBase newSubGraphNodeView)
         {
             if (newSubGraphNodeView.targetNode is not ISubGraph graphNode)
             {

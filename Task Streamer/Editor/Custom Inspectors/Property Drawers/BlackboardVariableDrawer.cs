@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -18,21 +19,12 @@ namespace TaskStreamer.Tool
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (TaskStreamerEditor.Instance is null)
+            if (TaskStreamerEditor.Instance is null || TaskStreamerEditor.Instance.graphAsset == null)
             {
                 return;
             }
-
-            Blackboard blackboard = TaskStreamerEditor.Instance.graphAsset.blackboard;
 
             this.CreateRects(position, label);
-            
-            if (blackboard is null)
-            {
-                EditorGUI.PrefixLabel(_labelRect, label);
-                EditorHelper.DrawError(_fieldRect, "Blackboard component is NullReference");
-                return;
-            }
 
             using (new EditorGUI.DisabledScope(!TaskStreamerEditor.canEditGraph))
             {
@@ -45,7 +37,7 @@ namespace TaskStreamer.Tool
 
                 if (isGlobalProp.boolValue)
                 {
-                    this.DrawBlackboardVariablePopup(property, blackboard);
+                    this.DrawBlackboardVariablePopup(property, TaskStreamerEditor.Instance.graphAsset.blackboard);
                 }
                 else
                 {
@@ -79,8 +71,10 @@ namespace TaskStreamer.Tool
 
         private void DrawBlackboardVariablePopup(SerializedProperty property, Blackboard blackboard)
         {
+            //만약 Blackboard가 null이거나, 블랙보드에 Variable이 없다면 에러 메시지를 표시한다.
             if (blackboard == null || blackboard.variables.Count == 0)
             {
+                EditorGUI.PrefixLabel(_labelRect, new GUIContent(property.displayName));
                 EditorHelper.DrawError(_fieldRect, "No blackboard variables found.");
                 return;
             }
@@ -109,8 +103,8 @@ namespace TaskStreamer.Tool
             {
                 if (newSelectedIndex == 0)
                 {
-                    var typeCollection = TypeCache.GetTypesDerivedFrom(variableType);
-                    variableProp.managedReferenceValue = Variable.Create(typeCollection[0], true);
+                    TypeCache.TypeCollection typeCollection = TypeCache.GetTypesDerivedFrom(variableType);
+                    variableProp.managedReferenceValue = TaskStreamerUtility.CreateVariable(typeCollection[0], true);
                 }
                 else
                 {
@@ -130,20 +124,22 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            if (isChanged)
+            if (isChanged) //이 경우 한 프레임 정보 Draw가 밀리게 된다.
             {
                 Type variableType = Utility.Helper.GetImplementedType(typeof(Variable<>), fieldInfo.FieldType.GenericTypeArguments[0]);
-                variableProp.managedReferenceValue = Variable.Create(variableType, true);
+                variableProp.managedReferenceValue = TaskStreamerUtility.CreateVariable(variableType, true);
+                return;
             }
 
             SerializedProperty valueProperty = variableProp.FindPropertyRelative("_value");
 
-            if (SerializedProperty.DataEquals(valueProperty, null))
+            if (SerializedProperty.DataEquals(valueProperty, null)) //이 경우 한 프레임 정보 Draw가 밀리게 된다.
             {
-                Debug.LogError("Value serialized property is null.");
+                Type variableType = Utility.Helper.GetImplementedType(typeof(Variable<>), fieldInfo.FieldType.GenericTypeArguments[0]);
+                variableProp.managedReferenceValue = TaskStreamerUtility.CreateVariable(variableType, true);
                 return;
             }
-
+            
             // 로컬 변수 값 필드 그리기
             EditorGUI.PropertyField(fieldRect, valueProperty, GUIContent.none, true);
         }

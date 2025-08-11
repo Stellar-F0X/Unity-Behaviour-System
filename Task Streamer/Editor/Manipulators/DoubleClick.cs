@@ -36,13 +36,13 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            NodeView clickedElement = evt.target as NodeView;
+            NodeViewBase clickedElement = evt.target as NodeViewBase;
 
             if (clickedElement is null)
             {
                 VisualElement element = evt.target as VisualElement;
 
-                clickedElement = element.GetFirstAncestorOfType<NodeView>();
+                clickedElement = element.GetFirstAncestorOfType<NodeViewBase>();
             }
 
             if (clickedElement is not null)
@@ -60,7 +60,7 @@ namespace TaskStreamer.Tool
         }
 
 
-        private void OnDoubleClick(MouseDownEvent evt, NodeView clickedElement)
+        private void OnDoubleClick(MouseDownEvent evt, NodeViewBase clickedElement)
         {
             if (clickedElement.targetNode is ISubGraph subGraph)
             {

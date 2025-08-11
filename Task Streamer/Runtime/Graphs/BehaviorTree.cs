@@ -30,18 +30,22 @@ namespace TaskStreamer.BT
         {
             BehaviorTree graph = new BehaviorTree(graphName, graphAsset);
 
-            if (graph.entry == null)
-            {
-                graph.entry = graph.CreateNode("Root", typeof(RootNode), new Vector2Int(0, 0));
-            }
+            graph.entry = graph.CreateNode("Root", typeof(RootNode), new Vector2Int(0, 0));
 
             return graph;
         }
 #endif
-        
-        public override IGraphIterator GetGraphIterator()
+
+        public override IGraphIterator GetGraphIterator(GraphIteratorType iteratorType)
         {
-            return new BehaviorTree.Iterator(this);
+            switch (iteratorType)
+            {
+                case GraphIteratorType.LS: return new BehaviorTree.LSIterator(this);
+
+                case GraphIteratorType.BFS: return new BehaviorTree.BFSIterator(this);
+            }
+
+            throw new NotImplementedException("BreadthFirstSearch iterator is not implemented for BehaviorTree.");
         }
 
 
@@ -88,7 +92,7 @@ namespace TaskStreamer.BT
         {
             int callStackSize = 0;
 
-            foreach (BehaviorNodeBase node in this.GetGraphIterator())
+            foreach (BehaviorNodeBase node in this.GetGraphIterator(GraphIteratorType.BFS))
             {
                 callStackSize = Mathf.Max(callStackSize, node.callStackID);
                 node.streamer = streamer;
@@ -106,7 +110,7 @@ namespace TaskStreamer.BT
             {
                 return;
             }
-            
+
             //Foreach를 사용하는 도중에 컬렉션을 수정할 수 없으므로 ToList()를 사용하여 컬렉션을 복사한 후 원본 컬렉션을 수정.
             foreach (NodeBase node in this._nodeLookup.Values.ToList())
             {

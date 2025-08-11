@@ -150,7 +150,7 @@ namespace TaskStreamer.Injection
 
             foreach (Graph graph in value.Values)
             {
-                graph.entry = graph.GetGraphIterator().First();
+                graph.entry = graph.GetGraphIterator(GraphIteratorType.BFS).First();
                 Debug.Assert(graph.entry != null, "entry node is null.");
                 graph.InitializeOnEnterRuntime(_dataContainer.taskStreamer);
             }

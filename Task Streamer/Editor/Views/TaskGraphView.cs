@@ -30,17 +30,15 @@ namespace TaskStreamer.Tool
         
         public Action<GraphElement> onElementUnselected;
         
-        
+        private GraphViewControl _graphViewControl;
 
         private float _nextUpdateTime;
-        private float _lastUpdateTime;
         
-        private GraphViewProcessor _graphViewProcessor;
 
 
-        public GraphViewProcessor graphViewProcessor
+        public GraphViewControl graphViewControl
         {
-            get { return _graphViewProcessor; }
+            get { return _graphViewControl; }
         }
 
         public Graph focusGraph
@@ -64,14 +62,14 @@ namespace TaskStreamer.Tool
         {
             Debug.Assert(changeGraph is not null, "changeGraph is not null");
 
-            this._graphViewProcessor = GraphViewProcessor.CreateGraphViewProcessor(changeGraph);
+            this._graphViewControl = GraphViewControl.CreateGraphViewProcessor(changeGraph);
 
             this.ClearEditorView();
 
             base.graphViewChanged += this.OnGraphViewChanged;
             this.deleteSelection += this.OnDeleteSelectionElements;
 
-            this._graphViewProcessor.CreateAndConnectNodes(this, this.focusGraph);
+            this._graphViewControl.CreateAndConnectNodes(this, this.focusGraph);
             this.focusGraph.nodeGroup?.dataList.ForEach(this.RecreateNodeGroupViewOnLoad);
         }
 
@@ -91,25 +89,25 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>주어진 노드에 해당하는 NodeView를 찾아 반환합니다.</summary>
-        public NodeView FindNodeView(NodeBase node)
+        public NodeViewBase FindNodeView(NodeBase node)
         {
             if (node is null || node.guid.IsEmpty())
             {
                 return null;
             }
 
-            return this.GetNodeByGuid(node.guid.ToString()) as NodeView;
+            return this.GetNodeByGuid(node.guid.ToString()) as NodeViewBase;
         }
 
 
-        public NodeView FindNodeView(string guid)
+        public NodeViewBase FindNodeView(string guid)
         {
             if (string.IsNullOrEmpty(guid))
             {
                 return null;
             }
 
-            return this.GetNodeByGuid(guid) as NodeView;
+            return this.GetNodeByGuid(guid) as NodeViewBase;
         }
 
 
@@ -120,31 +118,32 @@ namespace TaskStreamer.Tool
             {
                 return;
             }
+            
+            float interval = TaskStreamerEditor.settings.updateInterval;
+            
+            _nextUpdateTime = Time.time + interval;
 
-            float currentTime = Time.time;
-            float updateInterval = TaskStreamerEditor.settings.nodeViewUpdateInterval;
-
-            foreach (Node view in nodes)
+            foreach (NodeViewBase view in base.nodes)
             {
-                ((NodeView)view).UpdateView(currentTime - _lastUpdateTime);
+                if (view.highlighter.CanHighlight())
+                {
+                    view.highlighter.Highlight(interval); 
+                }
             }
-
-            _lastUpdateTime = currentTime;
-            _nextUpdateTime = currentTime + updateInterval;
         }
 
 
 #region Mouse Related Events
 
         /// <summary> 마우스 위치에서 컨텍스트 메뉴(노드 생성) 창을 엽니다. </summary>
-        public void OpenContextualMenuWindow(Vector2 mousePosition, Action<NodeView> onNewNodeCreatedOnce = null)
+        public void OpenContextualMenuWindow(Vector2 mousePosition, Action<NodeViewBase> onNewNodeCreatedOnce = null)
         {
             if (TaskStreamerEditor.canEditGraph == false)
             {
                 return;
             }
 
-            TaskCreationWindowBase creationWindow = _graphViewProcessor.GetGraphNodeCreationWindow();
+            TaskCreationWindowBase creationWindow = _graphViewControl.GetGraphNodeCreationWindow();
 
             creationWindow.RegisterNodeCreationCallbackOnce(onNewNodeCreatedOnce);
 
@@ -163,7 +162,7 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>지정된 노드를 선택합니다.</summary>
-        public void SelectNode(NodeView nodeView)
+        public void SelectNode(NodeViewBase nodeView)
         {
             if (nodeView is null || nodeView.targetNode == null)
             {
@@ -189,9 +188,9 @@ namespace TaskStreamer.Tool
                 {
                     switch (element)
                     {
-                        case Edge edge: this.graphViewProcessor.DisconnectNodesByEdge(focusGraph, edge); break;
+                        case Edge edge: this.graphViewControl.DisconnectNodesByEdge(focusGraph, edge); break;
 
-                        case NodeView nodeView: this.graphViewProcessor.DeleteNodeFromGraph(focusGraph, nodeView.targetNode); break;
+                        case NodeViewBase nodeView: this.graphViewControl.DeleteNodeFromGraph(focusGraph, nodeView.targetNode); break;
 
                         case NodeGroupView groupView: this.focusGraph.nodeGroup.DeleteGroupData(groupView.data); break;
                     }
@@ -201,13 +200,13 @@ namespace TaskStreamer.Tool
             //노드가 생성되거나 이동된 경우, 노드의 위치를 업데이트하고 새롭게 생성된 간선을 연결한다.
             if (graphViewChange.edgesToCreate is not null)
             {
-                _graphViewProcessor.ConnectNodesByEdges(this, focusGraph, graphViewChange.edgesToCreate);
+                _graphViewControl.ConnectNodesByEdges(this, focusGraph, graphViewChange.edgesToCreate);
             }
 
             //노드의 위치를 업데이트된 경우, BT는 앞의 자식을 먼저 순회하기 때문에 X좌표에 따른 순서를 정렬하여 갱신해준다. 
             if (graphViewChange.movedElements is not null)
             {
-                _graphViewProcessor.NotifyNodePositionChanged(this, graphViewChange.movedElements);
+                _graphViewControl.NotifyNodePositionChanged(this, graphViewChange.movedElements);
             }
 
             return graphViewChange;
@@ -222,7 +221,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            _graphViewProcessor.OnDeleteSelectionElements(this.selection);
+            _graphViewControl.FilterSelectionElements(this.selection);
 
             //DeleteSelection는 내부적으로 Selection 배열을 이용해서 VisualElement들을 제거함.
             //따라서 삭제되면 안되는 요소들만 Selection 배열에서 제거한 뒤, 현재 선택된 요소들(Selection 배열)을 제거하면 됨.
@@ -239,7 +238,7 @@ namespace TaskStreamer.Tool
         {
             NodeGroupView nodeGroupView = new NodeGroupView(data);
 
-            nodeGroupView.AddElements(nodes.Where(n => n is NodeView v && data.Contains(v.targetNode.guid)));
+            nodeGroupView.AddElements(nodes.Where(n => n is NodeViewBase v && data.Contains(v.targetNode.guid)));
 
             nodeGroupView.SetPosition(new Rect(data.position, Vector2.zero));
 
@@ -248,18 +247,18 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>새로운 노드를 생성하고 해당하는 NodeView를 반환합니다.</summary>
-        public NodeView CreateNewNodeAndView(Type type, Vector2 mousePosition)
+        public NodeViewBase CreateNewNodeAndView(Type type, Vector2 mousePosition)
         {
             NodeBase node = focusGraph.CreateNode(type.Name, type);
             node.position = Vector2Int.CeilToInt(mousePosition);
 
-            NodeView nodeView = this._graphViewProcessor.RecreateNodeViewOnLoad(node);
+            NodeViewBase nodeView = this._graphViewControl.RecreateNodeViewOnLoad(node);
             this.AddNewNodeView(nodeView);
             return nodeView;
         }
 
 
-        public void AddNewNodeView(NodeView nodeView)
+        public void AddNewNodeView(NodeViewBase nodeView)
         {
             if (nodeView == null || nodeView.targetNode == null)
             {
