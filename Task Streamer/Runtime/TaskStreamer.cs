@@ -66,7 +66,7 @@ namespace TaskStreamer
                 return;
             }
 
-            foreach (NodeBase node in _graphAsset.graphs.SelectMany(graph => graph.GetGraphIterator(GraphIteratorType.BFS)))
+            foreach (NodeBase node in _graphAsset.graphs.SelectMany(graph => graph.GetIterator(GraphIteratorType.BFS)))
             {
                 node.OnAwake();
             }

@@ -9,9 +9,11 @@ namespace TaskStreamer.Tool
     {
         public StateNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
         {
-            _elementGroup.AddToClassList($"state-node-{((StateBase)targetNode).nodeType}");
+            this._elementGroup.AddToClassList($"state-node-{((StateBase)targetNode).nodeType}");
             
-            _highlighter = new StateNodeHighlighter(this, TaskStreamerEditor.settings);
+            this._highlighter = new StateNodeHighlighter(this, TaskStreamerEditor.settings);
+
+            this._highlighter.ApplyBorderColorByState();
         }
         
 

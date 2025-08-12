@@ -36,7 +36,7 @@ namespace TaskStreamer.BT
         }
 #endif
 
-        public override IGraphIterator GetGraphIterator(GraphIteratorType iteratorType)
+        public override IGraphIterator GetIterator(GraphIteratorType iteratorType)
         {
             switch (iteratorType)
             {
@@ -92,7 +92,7 @@ namespace TaskStreamer.BT
         {
             int callStackSize = 0;
 
-            foreach (BehaviorNodeBase node in this.GetGraphIterator(GraphIteratorType.BFS))
+            foreach (BehaviorNodeBase node in this.GetIterator(GraphIteratorType.BFS))
             {
                 callStackSize = Mathf.Max(callStackSize, node.callStackID);
                 node.streamer = streamer;

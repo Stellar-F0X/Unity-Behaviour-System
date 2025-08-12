@@ -13,6 +13,11 @@ namespace TaskStreamer.Utility
     {
         public static void ForEach<T>([NotNull] this IEnumerable<T> array, [NotNull] Action<T> action)
         {
+            if (array is null)
+            {
+                return;
+            }
+            
             foreach (T element in array)
             {
                 action.Invoke(element);

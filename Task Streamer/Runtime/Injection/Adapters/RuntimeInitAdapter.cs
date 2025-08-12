@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using TaskStreamer.BT;
 using TaskStreamer.FSM;
 using TaskStreamer.Utility;
@@ -14,7 +13,6 @@ namespace TaskStreamer.Injection
                                       IVisitPropertyAdapter<Graph>,
                                       IVisitPropertyAdapter<NodeDictionary>,
                                       IVisitPropertyAdapter<NodeBase>,
-                                      IVisitPropertyAdapter<NodeGroup>,
                                       IVisitContravariantPropertyAdapter<BlackboardVariable>,
                                       IVisitPropertyAdapter<List<Transition>>, 
                                       IVisitPropertyAdapter<Transition>
@@ -110,13 +108,6 @@ namespace TaskStreamer.Injection
 
 
 
-        public void Visit<TContainer>(in VisitContext<TContainer, NodeGroup> context, ref TContainer container, ref NodeGroup value)
-        {
-            Debug.Log($"NodeGroup : {context.Property.Name}");
-        }
-
-
-
         public void Visit<TContainer>(in VisitContext<TContainer, Graph> context, ref TContainer container, ref Graph value)
         {
             _dataContainer.currentGraph = value;
@@ -150,8 +141,8 @@ namespace TaskStreamer.Injection
 
             foreach (Graph graph in value.Values)
             {
-                graph.entry = graph.GetGraphIterator(GraphIteratorType.BFS).First();
                 Debug.Assert(graph.entry != null, "entry node is null.");
+                
                 graph.InitializeOnEnterRuntime(_dataContainer.taskStreamer);
             }
         }

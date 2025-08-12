@@ -54,7 +54,7 @@ namespace TaskStreamer.FSM
         }
 #endif
 
-        public override IGraphIterator GetGraphIterator(GraphIteratorType iteratorType)
+        public override IGraphIterator GetIterator(GraphIteratorType iteratorType)
         {
             switch (iteratorType)
             {
@@ -69,7 +69,7 @@ namespace TaskStreamer.FSM
 
         internal override void InitializeOnEnterRuntime(TaskStreamer streamer)
         {
-            foreach (StateBase node in this.GetGraphIterator(GraphIteratorType.LS))
+            foreach (StateBase node in this.GetIterator(GraphIteratorType.LS))
             {
                 node.streamer = streamer;
                 node.machine = this;

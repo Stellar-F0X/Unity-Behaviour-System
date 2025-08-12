@@ -133,8 +133,8 @@ namespace TaskStreamer.Tool
             port.portName = portName;
             container.Add(port);
         }
-
-
+        
+        
         //NodeView에 포트를 생성합니다.
         protected abstract void CreatePorts();
 

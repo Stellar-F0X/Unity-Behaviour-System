@@ -24,7 +24,7 @@ namespace TaskStreamer.Utility
 
         public static void ChangeNodesAndGroupGuidOfGraph(Graph graph)
         {
-            foreach (NodeBase node in graph.GetGraphIterator(GraphIteratorType.LS))
+            foreach (NodeBase node in graph.GetIterator(GraphIteratorType.LS))
             {
                 UGUID originalGuid = node.guid;
                 UGUID newGuid = UGUID.Create();
@@ -39,8 +39,8 @@ namespace TaskStreamer.Utility
                     continue;
                 }
                 
-                foundData.RemoveNodeGuid(originalGuid);
-                foundData.AddNodeGuid(newGuid);
+                foundData.RemoveNodeFromGroup(originalGuid);
+                foundData.AddNodeToGroup(newGuid);
             }
         }
 
@@ -56,7 +56,8 @@ namespace TaskStreamer.Utility
             {
                 nodeName = nodeName.Replace("Node", string.Empty);
             }
-            else if (nodeName.EndsWith("State"))
+            
+            if (nodeName.EndsWith("State"))
             {
                 nodeName = nodeName.Replace("State", string.Empty);
             }

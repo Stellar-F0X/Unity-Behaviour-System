@@ -32,7 +32,20 @@ namespace TaskStreamer.Tool
 
         protected override void OnHighlightEnd()
         {
-            ((BehaviorNodeView)_nodeView).SetBorderColorByStatus();
+            this.ApplyBorderColorByState();
+        }
+
+
+        public override void ApplyBorderColorByState()
+        {
+            base.ApplyBorderColorByState();
+            
+            switch (((BehaviorNodeBase)_nodeView.targetNode).status)
+            {
+                case Status.Failure: _nodeView.nodeBorder.style.SetBorderColor(TaskStreamerEditor.settings.nodeFailureColor); break;
+
+                case Status.Success: _nodeView.nodeBorder.style.SetBorderColor(TaskStreamerEditor.settings.nodeSuccessColor); break;
+            }
         }
     }
 }

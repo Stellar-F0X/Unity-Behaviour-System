@@ -13,7 +13,7 @@ namespace TaskStreamer.Tool
             
             this._highlighter = new BehaviorNodeHighlight(this, TaskStreamerEditor.settings);
 
-            this.SetBorderColorByStatus();
+            this._highlighter.ApplyBorderColorByState();
         }
 
 
@@ -76,17 +76,6 @@ namespace TaskStreamer.Tool
 
             this.SetPort(inputPort, string.Empty, FlexDirection.Column, base.inputContainer);
             this.SetPort(outputPort, string.Empty, FlexDirection.ColumnReverse, base.outputContainer);
-        }
-
-
-        public void SetBorderColorByStatus()
-        {
-            switch (((BehaviorNodeBase)targetNode).status)
-            {
-                case Status.Failure: _nodeBorder.style.SetBorderColor(TaskStreamerEditor.settings.nodeFailureColor); break;
-
-                case Status.Success: _nodeBorder.style.SetBorderColor(TaskStreamerEditor.settings.nodeSuccessColor); break;
-            }
         }
     }
 }

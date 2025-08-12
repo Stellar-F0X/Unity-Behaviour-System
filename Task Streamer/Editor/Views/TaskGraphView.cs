@@ -192,7 +192,7 @@ namespace TaskStreamer.Tool
 
                         case NodeViewBase nodeView: this.graphViewControl.DeleteNodeFromGraph(focusGraph, nodeView.targetNode); break;
 
-                        case NodeGroupView groupView: this.focusGraph.nodeGroup.DeleteGroupData(groupView.data); break;
+                        case NodeGroupView groupView: this.focusGraph.nodeGroup.DeleteGroupData(groupView.groupData); break;
                     }
                 }
             }
@@ -236,12 +236,11 @@ namespace TaskStreamer.Tool
         /// <summary>로딩 시 그룹 데이터로부터 NodeGroupView를 재생성합니다.</summary>
         private void RecreateNodeGroupViewOnLoad(NodeGroupData data)
         {
-            NodeGroupView nodeGroupView = new NodeGroupView(data);
+            NodeGroupView nodeGroupView = new NodeGroupView(data, TaskStreamerEditor.settings.nodeGroupColor);
 
             nodeGroupView.AddElements(nodes.Where(n => n is NodeViewBase v && data.Contains(v.targetNode.guid)));
-
             nodeGroupView.SetPosition(new Rect(data.position, Vector2.zero));
-
+            
             base.AddElement(nodeGroupView);
         }
 
@@ -279,12 +278,10 @@ namespace TaskStreamer.Tool
         public NodeGroupView CreateNewNodeGroupView(string title, Vector2 position)
         {
             NodeGroupData nodeNodeGroupData = focusGraph.nodeGroup.CreateGroupData(title, position);
-            NodeGroupView groupView = new NodeGroupView(nodeNodeGroupData);
+            NodeGroupView groupView = new NodeGroupView(nodeNodeGroupData, TaskStreamerEditor.settings.nodeGroupColor);
 
             groupView.SetPosition(new Rect(position, Vector2.zero));
-            groupView.style.backgroundColor = TaskStreamerEditor.settings.nodeGroupColor;
-            groupView.title = title;
-
+            
             base.AddElement(groupView);
             return groupView;
         }

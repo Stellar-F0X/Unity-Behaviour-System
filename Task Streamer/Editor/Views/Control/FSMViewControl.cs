@@ -51,12 +51,12 @@ namespace TaskStreamer.Tool
 
         public override void CreateAndConnectNodes(TaskGraphView graphView, Graph graph)
         {
-            foreach (NodeBase node in graph.GetGraphIterator(GraphIteratorType.LS))
+            foreach (NodeBase node in graph.GetIterator(GraphIteratorType.LS))
             {
                 graphView.AddNewNodeView(this.RecreateNodeViewOnLoad(node));
             }
 
-            foreach (NodeBase node in graph.GetGraphIterator(GraphIteratorType.LS))
+            foreach (NodeBase node in graph.GetIterator(GraphIteratorType.LS))
             {
                 if (node is not StateBase parentNodeBase || parentNodeBase.transitions.Count == 0)
                 {

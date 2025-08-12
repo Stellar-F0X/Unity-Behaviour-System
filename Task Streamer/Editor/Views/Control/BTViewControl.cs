@@ -40,14 +40,14 @@ namespace TaskStreamer.Tool
         public override void CreateAndConnectNodes(TaskGraphView graphView, Graph graph)
         {
             // 모든 노드뷰 생성
-            foreach (NodeBase node in graph.GetGraphIterator(GraphIteratorType.LS))
+            foreach (NodeBase node in graph.GetIterator(GraphIteratorType.LS))
             {
                 NodeViewBase recreatedNodeView = this.RecreateNodeViewOnLoad(node);
                 graphView.AddNewNodeView(recreatedNodeView);
             }
 
             // 부모-자식 관계에 따른 노드 연결
-            foreach (NodeBase parentNodeBase in graph.GetGraphIterator(GraphIteratorType.LS))
+            foreach (NodeBase parentNodeBase in graph.GetIterator(GraphIteratorType.LS))
             {
                 if (parentNodeBase is not IChildNodeProvider provider || provider.childCount == 0)
                 {

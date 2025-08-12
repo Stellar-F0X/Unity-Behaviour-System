@@ -45,7 +45,7 @@ namespace TaskStreamer.BT
                 List<TreeTraversal> queue = ListPool<TreeTraversal>.Get();
                 
                 //그래프가 생성될 때 항상 entry 노드부터 만들어지므로 항상 존재한다.
-                queue.Add(new TreeTraversal((BehaviorNodeBase)_tree._nodeLookup[_tree.entry.guid], 0, 0));
+                queue.Add(new TreeTraversal((BehaviorNodeBase)_tree.entry, 0, 0));
 
                 int pointIndex = 0;
                 int callStackSize = 0;

@@ -79,6 +79,22 @@ namespace TaskStreamer.Tool
         }
 
 
+        public virtual void ApplyBorderColorByState()
+        {
+            if (_nodeView.targetNode is null || _nodeView.targetNode.callCount == 0)
+            {
+                return;
+            }
+            
+            if (_nodeView.targetNode.callState != NodeCallState.BeforeEnter)
+            {
+                return;
+            }
+
+            _nodeView.nodeBorder.style.SetBorderColor(_settings.nodeStatusLinearColor.Evaluate(0));
+        }
+
+
         protected abstract void OnHighlightStart();
 
 

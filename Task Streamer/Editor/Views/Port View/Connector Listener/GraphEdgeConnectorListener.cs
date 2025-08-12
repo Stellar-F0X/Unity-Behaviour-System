@@ -88,8 +88,13 @@ namespace TaskStreamer.Tool
 
         protected virtual void AddToDeleteList(List<GraphElement> edgeToDeleteList, IEnumerable<Edge> edges, Edge targetEdge)
         {
-            foreach (var edge in edges)
+            foreach (Edge edge in edges)
             {
+                if (edge is null)
+                {
+                    continue;
+                }
+                
                 if (edge != targetEdge)
                 {
                     edgeToDeleteList.Add(edge);

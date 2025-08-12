@@ -101,11 +101,9 @@ namespace TaskStreamer.Tool
             }
 
             this._blackboard = newBlackboard;
-            
             this._blackboardBindingField.value = newBlackboard;
-            
             this._variableAddButton.enabledSelf = !Application.isPlaying;
-
+            this._blackboardBindingField.enabledSelf = !Application.isPlaying;
             
             if (newBlackboard is null) 
             {

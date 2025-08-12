@@ -17,26 +17,25 @@ namespace TaskStreamer
             this.name = graphName;
             this.guid = UGUID.Create();
             this.graphAsset = graphAsset;
+            this._nodeGroup = new NodeGroup(graphAsset);
             this._nodeLookup = new NodeDictionary();
         }
 
 #if UNITY_EDITOR
         [SerializeField]
         private NodeGroup _nodeGroup;
-#endif
-
-        [SerializeField, DontCreateProperty]
-        private NodeBase _entry;
-
+#endif 
         [SerializeField]
         protected NodeDictionary _nodeLookup;
+        
+        /// <summary> Entry Node Guid </summary>
+        [SerializeField, DontCreateProperty]
+        private UGUID _entryGuid;
 
         [SerializeField, DontCreateProperty]
         protected GraphAsset _graphAsset;
 
-
-#region Properties
-
+        
         public GraphAsset graphAsset
         {
             get { return _graphAsset; }
@@ -53,11 +52,19 @@ namespace TaskStreamer
         }
 #endif
 
-        public NodeBase entry //TODO: 그냥 GUID로 nodeDictionary로 가져오는 방법은 안되는지 확인.
+        public NodeBase entry
         {
-            get { return _entry; }
+            get
+            {
+                Debug.Assert(! _entryGuid.IsEmpty(), "Entry guid is empty");
+                return _nodeLookup[_entryGuid];
+            }
 
-            internal set { _entry = value; }
+            internal set
+            {
+                _entryGuid = value.guid;
+                _nodeLookup[_entryGuid] = value;
+            }
         }
 
         public int count
@@ -91,19 +98,17 @@ namespace TaskStreamer
             get;
         }
 
-#endregion
 
-
-        public bool TryGetNodeByGuid(UGUID guid, out NodeBase node)
+        public bool TryGetNodeByGuid(UGUID nodeGuid, out NodeBase node)
         {
-            if (guid.IsEmpty())
+            if (nodeGuid.IsEmpty())
             {
                 Debug.LogError("GUID is empty");
                 node = null;
                 return false;
             }
 
-            return _nodeLookup.TryGetValue(guid, out node);
+            return _nodeLookup.TryGetValue(nodeGuid, out node);
         }
 
 
@@ -151,6 +156,11 @@ namespace TaskStreamer
             {
                 return false;
             }
+            
+            if (_entryGuid != other._entryGuid)
+            {
+                return false;
+            }
 
             if (this._nodeLookup.Values != other._nodeLookup.Values)
             {
@@ -161,11 +171,10 @@ namespace TaskStreamer
         }
 
 
-
         internal abstract void InitializeOnEnterRuntime(TaskStreamer streamer);
 
 
-        public abstract IGraphIterator GetGraphIterator(GraphIteratorType iteratorType);
+        public abstract IGraphIterator GetIterator(GraphIteratorType iteratorType);
 
 
         public abstract Status UpdateGraph();
