@@ -1,8 +1,10 @@
+using System;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace TaskStreamer.Tool
 {
@@ -12,8 +14,7 @@ namespace TaskStreamer.Tool
         private SerializedProperty _serializedList;
         private SerializedObject _serializedObject;
         private Blackboard _blackboard;
-
-        private VariableCreationWindow _creationWindow;
+        
         private ObjectField _blackboardBindingField;
         private Button _variableAddButton;
 
@@ -150,18 +151,15 @@ namespace TaskStreamer.Tool
                 return;
             }
             
-            if (_creationWindow == null)
+            ICreationWindow window = CreationWindow.GetCreationWindow("Blackboard Variables", false);
+
+            if (window.modulesIsEmpty)
             {
-                _creationWindow = ScriptableObject.CreateInstance<VariableCreationWindow>();
+                window.AddFactoryModule(new VariableFactoryModule(typeof(Variable), "Variables", 0));
             }
             
-            _creationWindow.RegisterNodeCreationCallbackOnce(this.AddVariableToList);
-
-            Vector2 mousePosition = clickEvent.position;
-            Vector2 screenPoint = GUIUtility.GUIToScreenPoint(mousePosition);
-            SearchWindowContext context = new SearchWindowContext(screenPoint, 200, 240);
-
-            SearchWindow.Open(context, _creationWindow);
+            window.RegisterCreationCallbackOnce((Action<Variable>)this.AddVariableToList);
+            window.OpenWindow(clickEvent.position);
         }
 
 

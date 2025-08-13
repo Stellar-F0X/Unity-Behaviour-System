@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -9,8 +10,6 @@ namespace TaskStreamer.Tool
     [CustomPropertyDrawer(typeof(BlackboardBasedCondition))]
     public class BlackboardBasedConditionDrawer : PropertyDrawer
     {
-        private static ConditionCreationWindow _conditionCreationWindow;
-
         private const int _PROPERTY_HEIGHT = 5;
 
         private SerializedProperty _serializedProperty;
@@ -97,17 +96,15 @@ namespace TaskStreamer.Tool
 
             if (GUI.Button(addButtonRect, addButtonImg, buttonStyle))
             {
-                if (_conditionCreationWindow == null)
+                ICreationWindow window = CreationWindow.GetCreationWindow("Conditions", false);
+                    
+                if (window.modulesIsEmpty)
                 {
-                    _conditionCreationWindow = ScriptableObject.CreateInstance<ConditionCreationWindow>();
+                    window.AddFactoryModule(new ConditionFactoryModule(typeof(ConditionModule), "Conditions", 0));
                 }
 
-                _conditionCreationWindow.RegisterNodeCreationCallbackOnce(this.AddElementToList);
-
-                Vector2 screenPoint = GUIUtility.GUIToScreenPoint(addButtonRect.position);
-                SearchWindowContext context = new SearchWindowContext(screenPoint, 200, 240);
-
-                SearchWindow.Open(context, _conditionCreationWindow);
+                window.RegisterCreationCallbackOnce((Action<ConditionModule>)this.AddElementToList);
+                window.OpenWindow(addButtonRect.position);
             }
         }
 

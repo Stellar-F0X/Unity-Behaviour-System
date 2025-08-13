@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Unity.Properties;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -40,7 +41,7 @@ namespace TaskStreamer.BT
         {
             switch (iteratorType)
             {
-                case GraphIteratorType.LS: return new BehaviorTree.LSIterator(this);
+                case GraphIteratorType.LS: return new Graph.CommonLSIterator(this);
 
                 case GraphIteratorType.BFS: return new BehaviorTree.BFSIterator(this);
             }

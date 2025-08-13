@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TaskStreamer.BT;
 using TaskStreamer.Utility;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -133,7 +134,6 @@ namespace TaskStreamer.Tool
 
 
 #region Mouse Related Events
-
         /// <summary> 마우스 위치에서 컨텍스트 메뉴(노드 생성) 창을 엽니다. </summary>
         public void OpenContextualMenuWindow(Vector2 mousePosition, Action<NodeViewBase> onNewNodeCreatedOnce = null)
         {
@@ -142,14 +142,9 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            TaskCreationWindowBase creationWindow = _graphView.GetGraphNodeCreationWindow();
-
-            creationWindow.RegisterNodeCreationCallbackOnce(onNewNodeCreatedOnce);
-
-            Vector2 screenPoint = GUIUtility.GUIToScreenPoint(mousePosition);
-            SearchWindowContext context = new SearchWindowContext(screenPoint, 200, 240);
-
-            SearchWindow.Open(context, creationWindow);
+            CreationWindow creationWindow = _graphView.GetGraphNodeCreationWindow(this);
+            creationWindow.RegisterCreationCallbackOnce(onNewNodeCreatedOnce);
+            creationWindow.OpenWindow(mousePosition);
         }
 
 

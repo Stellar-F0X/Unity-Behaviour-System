@@ -87,6 +87,15 @@ namespace TaskStreamer.Utility
             newVariable.type = type;
             return newVariable;
         }
+
+
+
+        public static ConditionModule CreateConditionModule(Type type)
+        {
+            ConditionModule module = Activator.CreateInstance(type) as ConditionModule;
+            Debug.Assert(module is not null, "Failed to create a condition module.");
+            return module;
+        }
         
         
         public static void SetMainGraph(GraphAsset asset)

@@ -5,7 +5,7 @@ namespace TaskStreamer.Utility
     /// <summary> 트리 순회 정보를 담는 구조체 </summary>
     public readonly struct TreeTraversal
     {
-        public TreeTraversal(BehaviorNodeBase node, int depth, int stackID)
+        public TreeTraversal(BehaviorNodeBase node, int depth = 0, int stackID = 0)
         {
             this.node = node;
             this.depth = depth;

@@ -22,7 +22,7 @@ namespace TaskStreamer.Tool
         /// <summary>
         /// 노드 생성 창 인스턴스 (지연 초기화)
         /// </summary>
-        private TaskCreationWindowBase _taskCreationWindow;
+        private CreationWindow _taskCreationWindow;
 
 
         /// <summary>
@@ -72,15 +72,13 @@ namespace TaskStreamer.Tool
         /// 지연 초기화 패턴을 사용하여 필요할 때만 생성합니다.
         /// </summary>
         /// <returns>노드 생성 창 인스턴스</returns>
-        public TaskCreationWindowBase GetGraphNodeCreationWindow()
+        public CreationWindow GetGraphNodeCreationWindow(TaskGraphView graphView)
         {
-            // 아직 생성되지 않았다면 새로 생성
-            if (_taskCreationWindow is null)
+            if (_taskCreationWindow is null) // 아직 생성되지 않았다면 새로 생성
             {
-                _taskCreationWindow = this.CreateGraphNodeCreationWindow();
+                _taskCreationWindow = this.CreateGraphNodeCreationWindow(graphView);
+                Debug.Assert(_taskCreationWindow != null, "CreationWindow is null");
             }
-
-            Debug.Assert(_taskCreationWindow != null, "CreationWindow is null");
 
             return _taskCreationWindow;
         }
@@ -191,6 +189,6 @@ namespace TaskStreamer.Tool
         /// 하위 클래스에서 적절한 창 타입을 반환해야 합니다.
         /// </summary>
         /// <returns>생성된 노드 생성 창</returns>
-        protected abstract TaskCreationWindowBase CreateGraphNodeCreationWindow();
+        protected abstract CreationWindow CreateGraphNodeCreationWindow(TaskGraphView graphView);
     }
 }

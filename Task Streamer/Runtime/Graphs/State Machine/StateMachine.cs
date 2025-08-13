@@ -59,7 +59,7 @@ namespace TaskStreamer.FSM
         {
             switch (iteratorType)
             {
-                case GraphIteratorType.LS: return new StateMachine.LSIterator(this);
+                case GraphIteratorType.LS: return new Graph.CommonLSIterator(this);
 
                 case GraphIteratorType.BFS: return new StateMachine.BFSIterator(this);
             }

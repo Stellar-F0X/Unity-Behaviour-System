@@ -11,7 +11,7 @@ using UnityEngine;
 namespace TaskStreamer
 {
     [Serializable, GeneratePropertyBag]
-    public abstract class Graph : IEquatable<Graph>, IGraphIterable
+    public abstract partial class Graph : IEquatable<Graph>, IGraphIterable
     {
         protected Graph(string graphName, GraphAsset graphAsset)
         {
@@ -150,13 +150,13 @@ namespace TaskStreamer
         public abstract IGraphIterator GetIterator(GraphIteratorType iteratorType);
 
 
-        internal abstract Status UpdateGraph();
+        internal abstract Status UpdateGraph(); 
 
 
-        internal abstract void ResetGraph();
+        internal abstract void ResetGraph(); 
 
 
-        internal abstract void StopGraph();
+        internal abstract void StopGraph(); 
 
         
 #if UNITY_EDITOR

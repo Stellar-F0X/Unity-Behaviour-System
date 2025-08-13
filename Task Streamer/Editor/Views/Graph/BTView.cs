@@ -186,9 +186,17 @@ namespace TaskStreamer.Tool
         }
 
 
-        protected override TaskCreationWindowBase CreateGraphNodeCreationWindow()
+        protected override CreationWindow CreateGraphNodeCreationWindow(TaskGraphView graphView)
         {
-            return ScriptableObject.CreateInstance<BehaviorCreationWindow>();
+            ICreationWindow window = CreationWindow.GetCreationWindow("Behavior Tree");
+
+            window.AddFactoryModule(new NodeFactoryModule(graphView, typeof(ActionNode), "Action"))
+                  .AddFactoryModule(new NodeFactoryModule(graphView, typeof(DecoratorNode), "Decorator"))
+                  .AddFactoryModule(new NodeFactoryModule(graphView, typeof(CompositeNode), "Composite"))
+                  .AddFactoryModule(new NodeFactoryModule(graphView, typeof(SubGraphNode), "Graph"))
+                  .AddFactoryModule(new NodeGroupFactoryModule(graphView, typeof(NodeGroup), "Utility"));
+
+            return window as CreationWindow;
         }
 
 
