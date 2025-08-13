@@ -25,7 +25,6 @@ namespace TaskStreamer.Tool
         }
 
         /// <summary>노드가 선택될 때 호출되는 이벤트입니다.</summary>
-        
         public Action<GraphElement> onElementSelected;
         
         public Action<GraphElement> onElementUnselected;
@@ -70,7 +69,7 @@ namespace TaskStreamer.Tool
             this.deleteSelection += this.OnDeleteSelectionElements;
 
             this._graphView.CreateAndConnectNodes(this, this.focusGraph);
-            this.focusGraph.nodeGroup?.dataList.ForEach(this.RecreateNodeGroupViewOnLoad);
+            this.focusGraph.nodeGroup.ForEach(this.RecreateNodeGroupViewOnLoad);
         }
 
 
@@ -177,7 +176,6 @@ namespace TaskStreamer.Tool
 
 
 #region Delete Of Modify Graph Elements
-
         /// <summary>그래프 뷰가 변경될 때 호출되는 콜백 메서드입니다.</summary>
         private GraphViewChange OnGraphViewChanged(GraphViewChange graphViewChange)
         {
@@ -192,7 +190,7 @@ namespace TaskStreamer.Tool
 
                         case NodeViewBase nodeView: this.graphView.DeleteNodeFromGraph(focusGraph, nodeView.targetNode); break;
 
-                        case NodeGroupView groupView: this.focusGraph.nodeGroup.DeleteGroupData(groupView.groupData); break;
+                        case NodeGroupView groupView: this.focusGraph.DeleteGroupData(groupView.groupData); break;
                     }
                 }
             }
@@ -234,7 +232,7 @@ namespace TaskStreamer.Tool
 #region Create Graph Elements
 
         /// <summary>로딩 시 그룹 데이터로부터 NodeGroupView를 재생성합니다.</summary>
-        private void RecreateNodeGroupViewOnLoad(NodeGroupData data)
+        private void RecreateNodeGroupViewOnLoad(NodeGroup data)
         {
             NodeGroupView nodeGroupView = new NodeGroupView(data, TaskStreamerEditor.settings.nodeGroupColor);
 
@@ -277,7 +275,7 @@ namespace TaskStreamer.Tool
         /// <summary>새로운 노드 그룹 뷰를 생성하고 반환합니다.</summary>
         public NodeGroupView CreateNewNodeGroupView(string title, Vector2 position)
         {
-            NodeGroupData nodeNodeGroupData = focusGraph.nodeGroup.CreateGroupData(title, position);
+            NodeGroup nodeNodeGroupData = focusGraph.CreateGroupData(title, position);
             NodeGroupView groupView = new NodeGroupView(nodeNodeGroupData, TaskStreamerEditor.settings.nodeGroupColor);
 
             groupView.SetPosition(new Rect(position, Vector2.zero));

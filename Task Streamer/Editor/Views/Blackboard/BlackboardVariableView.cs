@@ -122,7 +122,7 @@ namespace TaskStreamer.Tool
             {
                 Rect pos = EditorGUILayout.GetControlRect();
                 Rect textRect = new Rect(pos.x + _ICON_SIZE + 2f, pos.y, pos.width - _ICON_SIZE - 2f, pos.height);
-                EditorHelper.DrawError(textRect, "Invalid blackboard property type.", _ICON_SIZE);
+                TaskStreamerEditorUtility.DrawError(textRect, "Invalid blackboard property type.", _ICON_SIZE);
             }
             else
             {

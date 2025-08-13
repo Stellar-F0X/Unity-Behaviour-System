@@ -25,7 +25,7 @@ namespace TaskStreamer.Tool
 
         private static void ProvideSettingHandler(string searchContext, VisualElement rootElement)
         {
-            var settings = EditorHelper.FindAssetByName<EditorSettings>($"t:{nameof(EditorSettings)}");
+            var settings = TaskStreamerEditorUtility.FindAssetByName<EditorSettings>($"t:{nameof(EditorSettings)}");
 
             rootElement.Add(new InspectorElement(settings));
             rootElement.Bind(new SerializedObject(settings));

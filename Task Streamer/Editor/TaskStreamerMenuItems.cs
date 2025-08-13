@@ -8,7 +8,7 @@ namespace TaskStreamer.Tool
         [MenuItem("Assets/Create/Task Streamer/BT/Action Node", false, 1)]
         public static void CreateActionNodeMenuItem()
         {
-            string path = EditorHelper.FindAssetPath("NewActionNode.cs t:TextAsset");
+            string path = TaskStreamerEditorUtility.FindAssetPath("NewActionNode.cs t:TextAsset");
             ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "NewActionNode.cs");
         }
 
@@ -16,7 +16,7 @@ namespace TaskStreamer.Tool
         [MenuItem("Assets/Create/Task Streamer/BT/Composite Node", false, 1)]
         public static void CreateCompositeNodeMenuItem()
         {
-            string path = EditorHelper.FindAssetPath("NewCompositeNode.cs t:TextAsset");
+            string path = TaskStreamerEditorUtility.FindAssetPath("NewCompositeNode.cs t:TextAsset");
             ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "NewCompositeNode.cs");
         }
 
@@ -24,7 +24,7 @@ namespace TaskStreamer.Tool
         [MenuItem("Assets/Create/Task Streamer/BT/Decorator Node", false, 1)]
         public static void CreateDecoratorNodeMenuItem()
         {
-            string path = EditorHelper.FindAssetPath("NewDecoratorNode.cs t:TextAsset");
+            string path = TaskStreamerEditorUtility.FindAssetPath("NewDecoratorNode.cs t:TextAsset");
             ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "NewDecoratorNode.cs");
         }
 
@@ -32,7 +32,7 @@ namespace TaskStreamer.Tool
         [MenuItem("Assets/Create/Task Streamer/FSM/State Node", false, 2)]
         public static void CreateStateNodeMenuItem()
         {
-            string path = EditorHelper.FindAssetPath("NewStateNode.cs t:TextAsset");
+            string path = TaskStreamerEditorUtility.FindAssetPath("NewStateNode.cs t:TextAsset");
             ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "NewStateNode.cs");
         }
 
@@ -40,7 +40,7 @@ namespace TaskStreamer.Tool
         [MenuItem("Assets/Create/Task Streamer/FSM/Transition", false, 1)]
         public static void CreateTransitionMenuItem()
         {
-            string path = EditorHelper.FindAssetPath("NewTransition.cs t:TextAsset");
+            string path = TaskStreamerEditorUtility.FindAssetPath("NewTransition.cs t:TextAsset");
             ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "Compare__Type__Variables.cs");
         }
 
@@ -48,7 +48,7 @@ namespace TaskStreamer.Tool
         [MenuItem("Assets/Create/Task Streamer/Variable")]
         public static void CreateVariableMenuItem()
         {
-            string path = EditorHelper.FindAssetPath("NewVariable.cs t:TextAsset");
+            string path = TaskStreamerEditorUtility.FindAssetPath("NewVariable.cs t:TextAsset");
             ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "__Type__Variables.cs");
         }
 

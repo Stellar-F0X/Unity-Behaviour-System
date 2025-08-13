@@ -69,15 +69,15 @@ namespace TaskStreamer.Tool
             GraphAsset graphAsset = TaskStreamerEditor.Instance.graphAsset;
 
             Debug.Assert(graphAsset is not null, $"{nameof(TaskCreationWindowBase)}: GraphAsset is null");
-
-            string graphName = newSubGraphNodeView.title;
+            
             Graph baseGraph = TaskStreamerEditor.Instance.view.focusGraph;
             Graph newGraph = null;
 
             switch (graphNode.subGraphType)
             {
-                case GraphType.BT: newGraph = BehaviorTree.CreateGraph(graphName, graphAsset); break;
-                case GraphType.FSM: newGraph = StateMachine.CreateGraph(graphName, graphAsset); break;
+                case GraphType.BT: newGraph = BehaviorTree.CreateGraph(newSubGraphNodeView.title, graphAsset); break;
+                
+                case GraphType.FSM: newGraph = StateMachine.CreateGraph(newSubGraphNodeView.title, graphAsset); break;
             }
 
             Debug.Assert(newGraph is not null, $"{nameof(TaskCreationWindowBase)}: NewGraph is null");

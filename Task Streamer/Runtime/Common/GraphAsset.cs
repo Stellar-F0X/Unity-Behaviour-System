@@ -93,7 +93,7 @@ namespace TaskStreamer
 
             dataContainer = new GraphVisitor(instantiatedBlackboard, instantiatedGraphAsset, streamer);
 
-            dataContainer.AddAdapter(new RuntimeInitAdapter(dataContainer));
+            dataContainer.AddAdapter(new RuntimeInitAdaptor(dataContainer));
 
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             bag.Accept(dataContainer, ref instantiatedGraphAsset);
@@ -142,11 +142,6 @@ namespace TaskStreamer
                 return false;
             }
 
-            if (ReferenceEquals(this, other) && ReferenceEquals(this.main, other.main))
-            {
-                return true;
-            }
-
             if (_graphMap.Count != other._graphMap.Count)
             {
                 return false;
@@ -157,7 +152,7 @@ namespace TaskStreamer
                 return false;
             }
 
-            return true;
+            return ReferenceEquals(this, other) && ReferenceEquals(this.main, other.main);
         }
 
 
@@ -182,7 +177,7 @@ namespace TaskStreamer
 
             GraphVisitor dataContainer = new GraphVisitor(blackboard, this, null);
 
-            dataContainer.AddAdapter(new VariablesInitAdapter(dataContainer));
+            dataContainer.AddAdapter(new VariablesInitAdaptor(dataContainer));
 
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;

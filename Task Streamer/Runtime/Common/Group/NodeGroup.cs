@@ -1,144 +1,136 @@
 using System;
 using System.Collections.Generic;
+using TaskStreamer.Utility;
 using Unity.Properties;
-using UnityEngine;
-#if UNITY_EDITOR
 using UnityEditor;
-#endif
+using UnityEngine;
 
 namespace TaskStreamer
 {
 #if UNITY_EDITOR
     [Serializable]
-    public partial class NodeGroup
+    public class NodeGroup : ISerializationCallbackReceiver
     {
-        public NodeGroup(GraphAsset graphAsset)
+        public NodeGroup(string title, Vector2 position, Graph graph)
         {
-            this._graphAsset = graphAsset;
-            this._groupDataList = new List<NodeGroupData>();
+            this.title = title;
+            this.position = position;
+            this._graph = graph;
+            this._nodeGuidSet = new HashSet<UGUID>();
+            this._nodeGuidList = new List<UGUID>();
         }
 
+        [DontCreateProperty]
+        public string title;
+        
+        [DontCreateProperty]
+        public Vector2 position;
 
         [SerializeField, DontCreateProperty]
-        private GraphAsset _graphAsset;
+        private List<UGUID> _nodeGuidList;
+        private HashSet<UGUID> _nodeGuidSet;
 
-        [SerializeReference]
-        private List<NodeGroupData> _groupDataList;
+        [SerializeReference, DontCreateProperty, HideInInspector]
+        private Graph _graph;
 
 
-        public List<NodeGroupData> dataList
+        public bool Contains(UGUID nodeGuid)
         {
-            get { return _groupDataList; }
-        }
-
-        public GraphAsset graphAsset
-        {
-            get { return _graphAsset; }
+            return _nodeGuidSet.Contains(nodeGuid);
         }
 
 
-        public NodeGroupData CreateGroupData(string title, Vector2 position)
+        public void AddNodeToGroup(UGUID guid, bool recordUndo = true)
         {
-            NodeGroupData newNodeGroupData = new NodeGroupData(title, position, this);
-
-            if (Application.isPlaying == false && Undo.isProcessing == false)
+            if (guid.IsEmpty() || _nodeGuidSet.Contains(guid))
             {
-                Undo.RecordObject(_graphAsset, "Task Streamer (CreateGroup)");
+                return;
             }
 
-            _groupDataList.Add(newNodeGroupData);
-
-            if (Application.isPlaying == false && Undo.isProcessing == false)
+            if (recordUndo && Application.isPlaying == false && Undo.isProcessing == false)
             {
-                EditorUtility.SetDirty(_graphAsset);
+                Undo.RecordObject(_graph.graphAsset, "Task Streamer (AddNodeGuidToGroup)");
             }
 
-            return newNodeGroupData;
+            _nodeGuidSet.Add(guid);
+            
+            if (recordUndo && Application.isPlaying == false && Undo.isProcessing == false)
+            {
+                EditorUtility.SetDirty(_graph.graphAsset);
+            }
         }
 
 
-        public void DeleteGroupData(NodeGroupData data)
+        public void RemoveNodeFromGroup(UGUID guid,  bool recordUndo = true)
         {
-            if (data is null)
+            if (guid.IsEmpty() || _nodeGuidSet.Contains(guid) == false)
+            {
+                return;
+            }
+            
+            if (recordUndo && Application.isPlaying == false && Undo.isProcessing == false)
+            {
+                Undo.RecordObject(_graph.graphAsset, "Task Streamer (RemoveNodeGuidToGroup)");
+            }
+
+            _nodeGuidSet.Remove(guid);
+            
+            if (recordUndo && Application.isPlaying == false && Undo.isProcessing == false)
+            {
+                EditorUtility.SetDirty(_graph.graphAsset);
+            }
+        }
+
+
+        public void ChangeNodeGroupPosition(Vector2 newPosition)
+        {
+            if (Application.isPlaying == false && Undo.isProcessing == false)
+            {
+                Undo.RecordObject(_graph.graphAsset, "Task Streamer (NodeGroupViewPositionChanged)");
+            }
+
+            this.position = newPosition;
+            
+            if (Application.isPlaying == false && Undo.isProcessing == false)
+            {
+                EditorUtility.SetDirty(_graph.graphAsset);
+            }
+        }
+
+
+        public void ChangeNodeGroupTitle(string newTitle)
+        {
+            if (string.IsNullOrEmpty(newTitle) || string.CompareOrdinal(newTitle, this.title) == 0)
             {
                 return;
             }
 
             if (Application.isPlaying == false && Undo.isProcessing == false)
             {
-                Undo.RecordObject(_graphAsset, "Task Streamer (RemoveGroup)");
+                Undo.RecordObject(_graph.graphAsset, "Task Streamer (NodeGroupViewTitleChanged)");
             }
-
-            _groupDataList.Remove(data);
-
+            
+            this.title = newTitle;
+            
             if (Application.isPlaying == false && Undo.isProcessing == false)
             {
-                EditorUtility.SetDirty(_graphAsset);
+                EditorUtility.SetDirty(_graph.graphAsset);
             }
+        }
+        
+        
+        public void OnBeforeSerialize()
+        {
+            _nodeGuidList?.Clear();
+            _nodeGuidList?.AddRange(_nodeGuidSet);
         }
 
 
-        private void AddNodeToGroup(Action addAction)
+        public void OnAfterDeserialize()
         {
-            if (Application.isPlaying == false && Undo.isProcessing == false)
-            {
-                Undo.RecordObject(_graphAsset, "Task Streamer (AddNodeGuidToGroup)");
-            }
-
-            addAction.Invoke();
-
-            if (Application.isPlaying == false && Undo.isProcessing == false)
-            {
-                EditorUtility.SetDirty(_graphAsset);
-            }
-        }
-
-
-        private void RemoveNodeFromGroup(Action removeAction)
-        {
-            if (Application.isPlaying == false && Undo.isProcessing == false)
-            {
-                Undo.RecordObject(_graphAsset, "Task Streamer (RemoveNodeGuidToGroup)");
-            }
-
-            removeAction.Invoke();
-
-            if (Application.isPlaying == false && Undo.isProcessing == false)
-            {
-                EditorUtility.SetDirty(_graphAsset);
-            }
-        }
-
-
-        private void ChangeNodeGroupPosition(Action moveAction)
-        {
-            if (Application.isPlaying == false && Undo.isProcessing == false)
-            {
-                Undo.RecordObject(_graphAsset, "Task Streamer (NodeGroupViewPositionChanged)");
-            }
-
-            moveAction.Invoke();
-
-            if (Application.isPlaying == false && Undo.isProcessing == false)
-            {
-                EditorUtility.SetDirty(_graphAsset);
-            }
-        }
-
-
-        private void ChangeNodeGroupTitle(Action renameAction)
-        {
-            if (Application.isPlaying == false && Undo.isProcessing == false)
-            {
-                Undo.RecordObject(_graphAsset, "Task Streamer (NodeGroupViewTitleChanged)");
-            }
-
-            renameAction.Invoke();
-
-            if (Application.isPlaying == false && Undo.isProcessing == false)
-            {
-                EditorUtility.SetDirty(_graphAsset);
-            }
+            _nodeGuidSet?.Clear();
+            _nodeGuidSet ??= new HashSet<UGUID>(_nodeGuidList);
+            _nodeGuidList.ForEach(e => _nodeGuidSet.Add(e));
         }
     }
 #endif

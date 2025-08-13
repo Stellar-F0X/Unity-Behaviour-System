@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace TaskStreamer.Injection
 {
-    public class RuntimeInitAdapter : IVisitPropertyAdapter<GraphDictionary>,
+    public class RuntimeInitAdaptor : IVisitPropertyAdapter<GraphDictionary>,
                                       IVisitPropertyAdapter<Graph>,
                                       IVisitPropertyAdapter<NodeDictionary>,
                                       IVisitPropertyAdapter<NodeBase>,
@@ -17,7 +17,7 @@ namespace TaskStreamer.Injection
                                       IVisitPropertyAdapter<List<Transition>>, 
                                       IVisitPropertyAdapter<Transition>
     {
-        public RuntimeInitAdapter(GraphVisitor dataContainer)
+        public RuntimeInitAdaptor(GraphVisitor dataContainer)
         {
             _dataContainer = dataContainer;
 

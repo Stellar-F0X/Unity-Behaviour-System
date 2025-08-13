@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using TaskStreamer.Utility;
 using Unity.Properties;
@@ -6,7 +8,6 @@ using UnityEditor;
 using UnityEngine;
 
 [assembly: InternalsVisibleTo("TaskStreamer.Tool"), GeneratePropertyBagsForAssembly]
-
 namespace TaskStreamer
 {
     [Serializable, GeneratePropertyBag]
@@ -17,23 +18,23 @@ namespace TaskStreamer
             this.name = graphName;
             this.guid = UGUID.Create();
             this.graphAsset = graphAsset;
-            this._nodeGroup = new NodeGroup(graphAsset);
             this._nodeLookup = new NodeDictionary();
+            this._nodeGroup = new List<NodeGroup>();
         }
 
 #if UNITY_EDITOR
         [SerializeField]
-        private NodeGroup _nodeGroup;
+        private List<NodeGroup> _nodeGroup; 
 #endif 
         [SerializeField]
-        protected NodeDictionary _nodeLookup;
+        protected NodeDictionary _nodeLookup; 
         
         /// <summary> Entry Node Guid </summary>
         [SerializeField, DontCreateProperty]
-        private UGUID _entryGuid;
+        private UGUID _entryGuid; 
 
         [SerializeField, DontCreateProperty]
-        protected GraphAsset _graphAsset;
+        protected GraphAsset _graphAsset; 
 
         
         public GraphAsset graphAsset
@@ -44,15 +45,13 @@ namespace TaskStreamer
         }
 
 #if UNITY_EDITOR
-        public NodeGroup nodeGroup
+        public List<NodeGroup> nodeGroup
         {
             get { return _nodeGroup; }
-
-            internal set { _nodeGroup = value; }
         }
 #endif
 
-        public NodeBase entry
+        public NodeBase entry 
         {
             get
             {
@@ -95,7 +94,7 @@ namespace TaskStreamer
 
         public abstract GraphType graphType
         {
-            get;
+            get; 
         }
 
 
@@ -123,33 +122,7 @@ namespace TaskStreamer
             return null;
         }
 
-
-#if UNITY_EDITOR
-        internal void AddSubGraph(Graph subGraph)
-        {
-            Undo.RecordObject(this.graphAsset, "Task Streamer (AddSubGraph)");
-
-            this.graphAsset.AddSubGraph(this.guid, subGraph);
-        }
-
-
-        internal void RemoveSelfAndSubGraphs()
-        {
-            Undo.RecordObject(this.graphAsset, "Task Streamer (RemoveSubGraph)");
-            
-            this.graphAsset.RemoveSubGraph(this.baseGraphGuid, this);
-            
-            this.OnRemoveGraph();
-
-            EditorUtility.SetDirty(this.graphAsset);
-            AssetDatabase.SaveAssets();
-        }
-
-
-        internal abstract void OnRemoveGraph();
-#endif
-
-
+        
         public bool Equals(Graph other)
         {
             if (other is null)
@@ -185,15 +158,118 @@ namespace TaskStreamer
 
         public abstract void StopGraph();
 
-
+        
 #if UNITY_EDITOR
+
+#region Group Data
+        internal NodeGroup CreateGroupData(string title, Vector2 position)
+        {
+            NodeGroup newNodeGroupData = new NodeGroup(title, position, this);
+
+            if (Application.isPlaying == false && Undo.isProcessing == false)
+            {
+                Undo.RecordObject(_graphAsset, "Task Streamer (CreateGroup)");
+            }
+
+            _nodeGroup.Add(newNodeGroupData);
+
+            if (Application.isPlaying == false && Undo.isProcessing == false)
+            {
+                EditorUtility.SetDirty(_graphAsset);
+            }
+
+            return newNodeGroupData;
+        }
+
+
+        internal void DeleteGroupData(NodeGroup data)
+        {
+            if (data is null)
+            {
+                return;
+            }
+
+            if (Application.isPlaying == false && Undo.isProcessing == false)
+            {
+                Undo.RecordObject(_graphAsset, "Task Streamer (RemoveGroup)");
+            }
+
+            _nodeGroup.Remove(data);
+
+            if (Application.isPlaying == false && Undo.isProcessing == false)
+            {
+                EditorUtility.SetDirty(_graphAsset);
+            }
+        }
+        
+        
+        /// <summary> Regenerates unique GUIDs for all nodes within the graph. </summary>
+        /// <exception cref="Exception"> Thrown when GUID regeneration fails for any node. </exception>
+        internal void RegenerateAllNodeGuids()
+        {
+            List<UGUID> keyList = _nodeLookup.Keys.ToList();
+
+            foreach (UGUID keyGuid in keyList)
+            {
+                NodeBase node = _nodeLookup[keyGuid];
+
+                if (node is null)
+                {
+                    throw new Exception($"Node with GUID {keyGuid} is null");
+                }
+
+                UGUID newGuid = UGUID.Create();
+
+                NodeGroup group = _nodeGroup.Find(e => e.Contains(keyGuid));
+
+                if (group is not null)
+                {
+                    group.RemoveNodeFromGroup(keyGuid, false);
+                    group.AddNodeToGroup(newGuid, false);
+                }
+                
+                _nodeLookup.Remove(keyGuid);
+                node.guid = newGuid;
+                _nodeLookup.Add(newGuid, node);
+            }
+        }
+#endregion
+
+
+#region Sub Graph
+        internal void AddSubGraph(Graph subGraph) 
+        {
+            Undo.RecordObject(this.graphAsset, "Task Streamer (AddSubGraph)"); 
+
+            this.graphAsset.AddSubGraph(this.guid, subGraph); 
+        } 
+
+
+        internal void RemoveSelfAndSubGraphs()
+        {
+            Undo.RecordObject(this.graphAsset, "Task Streamer (RemoveSubGraph)");
+            
+            this.graphAsset.RemoveSubGraph(this.baseGraphGuid, this);
+            
+            this.OnRemoveGraph();
+
+            EditorUtility.SetDirty(this.graphAsset);
+            AssetDatabase.SaveAssets();
+        }
+#endregion
+
+
+#region Graph
+        internal abstract void OnRemoveGraph(); 
+        
+        
         /// <summary> Create And Insert To Node List </summary>
         /// <param name="nodeName">생성할 노드의 이름</param>
         /// <param name="nodeType">생성할 노드의 타입</param>
         /// <param name="position">노드의 위치 (기본값: default)</param>
         /// <returns>생성된 NodeBase 객체</returns>
         /// <exception cref="Exception">노드 생성 실패 시 발생</exception>
-        public NodeBase CreateNode(string nodeName, Type nodeType, Vector2Int position = default)
+        internal NodeBase CreateNode(string nodeName, Type nodeType, Vector2Int position = default)
         {
             // GraphGroup에 변경사항 기록
             if (Application.isPlaying == false && Undo.isProcessing == false)
@@ -229,7 +305,7 @@ namespace TaskStreamer
         }
 
 
-        public void DeleteNode(NodeBase node, bool record = true)
+        internal void DeleteNode(NodeBase node, bool record = true)
         {
             if (Application.isPlaying == false && Undo.isProcessing == false && record)
             {
@@ -251,6 +327,8 @@ namespace TaskStreamer
                 AssetDatabase.SaveAssets(); // 중요: 즉시 저장
             }
         }
+#endregion
+        
 #endif
     }
 }

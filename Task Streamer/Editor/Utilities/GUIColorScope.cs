@@ -5,14 +5,14 @@ namespace TaskStreamer.Tool
 {
     public struct GUIColorScope : IDisposable
     {
-        public enum EGUIColorScope
+        public enum GUIColorScopeType
         {
             Background,
             Content
         };
         
         
-        public GUIColorScope(Color color, EGUIColorScope scopeType) : this()
+        public GUIColorScope(Color color, GUIColorScopeType scopeType) : this()
         {
             this.colorScopeType = scopeType;
             this.originalColor = this.GetColor(scopeType);
@@ -22,17 +22,17 @@ namespace TaskStreamer.Tool
         
         public Color originalColor;
         
-        public EGUIColorScope colorScopeType;
+        public GUIColorScopeType colorScopeType;
 
 
 
-        private Color GetColor(EGUIColorScope scopeType)
+        private Color GetColor(GUIColorScopeType scopeType)
         {
             switch (scopeType)
             {
-                case EGUIColorScope.Background: return GUI.backgroundColor;
+                case GUIColorScopeType.Background: return GUI.backgroundColor;
                 
-                case EGUIColorScope.Content: return GUI.contentColor;
+                case GUIColorScopeType.Content: return GUI.contentColor;
             }
             
             Debug.LogError("Could not find scope type: " + scopeType);
@@ -40,13 +40,13 @@ namespace TaskStreamer.Tool
         }
 
         
-        private void SetColor(EGUIColorScope scopeType, Color color)
+        private void SetColor(GUIColorScopeType scopeType, Color color)
         {
             switch (scopeType)
             {
-                case EGUIColorScope.Background: GUI.backgroundColor = color; break;
+                case GUIColorScopeType.Background: GUI.backgroundColor = color; break;
 
-                case EGUIColorScope.Content: GUI.contentColor = color; break;
+                case GUIColorScopeType.Content: GUI.contentColor = color; break;
             }
         }
         

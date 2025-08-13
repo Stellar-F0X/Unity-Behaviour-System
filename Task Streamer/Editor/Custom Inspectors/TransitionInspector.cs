@@ -14,7 +14,7 @@ namespace TaskStreamer.Tool
         {
             if (_headerLabelStyle is null)
             {
-                _headerLabelStyle = EditorHelper.GetHeaderStyle();
+                _headerLabelStyle = TaskStreamerEditorUtility.GetHeaderStyle();
             }
 
             if (target is not Transition transition)
@@ -24,7 +24,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            EditorHelper.DrawHeader("Transition Inspector", _headerLabelStyle, endSpacing: 2);
+            TaskStreamerEditorUtility.DrawHeader("Transition Inspector", _headerLabelStyle, endSpacing: 2);
 
             
             using (new EditorGUI.DisabledScope(true))
@@ -57,7 +57,7 @@ namespace TaskStreamer.Tool
                 desProp.stringValue = EditorGUILayout.TextArea(desProp.stringValue, heightOption);
             }
 
-            EditorHelper.DrawHeader("Condition", _headerLabelStyle, startSpacing: 5, endSpacing: 2);
+            TaskStreamerEditorUtility.DrawHeader("Condition", _headerLabelStyle, startSpacing: 5, endSpacing: 2);
             isConditionalProp.boolValue = EditorGUILayout.Toggle("Conditional", isConditionalProp.boolValue);
 
             if (isConditionalProp.boolValue == false)

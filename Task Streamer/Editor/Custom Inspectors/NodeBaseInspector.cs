@@ -15,7 +15,7 @@ namespace TaskStreamer.Tool
         {
             if (_headerLabelStyle is null)
             {
-                _headerLabelStyle = EditorHelper.GetHeaderStyle();
+                _headerLabelStyle = TaskStreamerEditorUtility.GetHeaderStyle();
             }
             
             //=========================================================================================
@@ -24,9 +24,9 @@ namespace TaskStreamer.Tool
             //TODO: 추후 다른 그래프를 추가하게 된다면 그 그래프에서 다룰 노드에 대한 것을 추가해야 됨.
             switch (serializedObject.targetObject)
             {
-                case StateBase: EditorHelper.DrawHeader("State Inspector", _headerLabelStyle, endSpacing: 2); break;
+                case StateBase: TaskStreamerEditorUtility.DrawHeader("State Inspector", _headerLabelStyle, endSpacing: 2); break;
                 
-                case BehaviorNodeBase: EditorHelper.DrawHeader("Behavior Inspector", _headerLabelStyle, endSpacing: 2); break;
+                case BehaviorNodeBase: TaskStreamerEditorUtility.DrawHeader("Behavior Inspector", _headerLabelStyle, endSpacing: 2); break;
             }
 
             using (new EditorGUI.DisabledScope(true))
@@ -54,10 +54,10 @@ namespace TaskStreamer.Tool
 
             //=========================================================================================
             //=================================[Child Class Fields]====================================
-            if (EditorHelper.HasRemainingPropertiesAfter(startProp))
+            if (TaskStreamerEditorUtility.HasRemainingPropertiesAfter(startProp))
             {
-                EditorHelper.DrawHeader(this.target.name, _headerLabelStyle, 10f, 2f);
-                EditorHelper.DrawPropertiesRange(startProp, startInclusive: false);
+                TaskStreamerEditorUtility.DrawHeader(this.target.name, _headerLabelStyle, 10f, 2f);
+                TaskStreamerEditorUtility.DrawPropertiesRange(startProp, startInclusive: false);
             }
             //=========================================================================================
             //=========================================================================================

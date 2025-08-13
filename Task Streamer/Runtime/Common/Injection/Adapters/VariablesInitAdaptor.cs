@@ -8,7 +8,7 @@ using UnityEngine;
 namespace TaskStreamer.Injection
 {
     /// <summary> Blackboard 교체될 때, 이미 등록되어 있는 BlackboardVariable을 해제하는 용도로 사용되는 객체. </summary>
-    public class VariablesInitAdapter : IVisitPropertyAdapter<GraphDictionary>,
+    public class VariablesInitAdaptor : IVisitPropertyAdapter<GraphDictionary>,
                                         IVisitPropertyAdapter<Graph>,
                                         IVisitPropertyAdapter<NodeDictionary>,
                                         IVisitPropertyAdapter<NodeBase>,
@@ -17,7 +17,7 @@ namespace TaskStreamer.Injection
                                         IVisitPropertyAdapter<BlackboardBasedCondition>,
                                         IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
-        public VariablesInitAdapter(GraphVisitor dataContainer)
+        public VariablesInitAdaptor(GraphVisitor dataContainer)
         {
             _dataContainer = dataContainer;
 
@@ -76,7 +76,7 @@ namespace TaskStreamer.Injection
 
             switch (value)
             {
-                case BehaviorTree behaviorTree: _behaviorTreeBag.Accept(_dataContainer, ref behaviorTree); break;
+                case BehaviorTree behaviorTree:  _behaviorTreeBag.Accept(_dataContainer, ref behaviorTree); break;
 
                 case StateMachine stateMachine: _stateMachineBag.Accept(_dataContainer, ref stateMachine); break;
 

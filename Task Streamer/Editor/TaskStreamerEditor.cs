@@ -126,7 +126,7 @@ namespace TaskStreamer.Tool
 
         private static EditorSettings FindSettings()
         {
-            EditorSettings foundSettings = EditorHelper.FindAssetByName<EditorSettings>($"t:{nameof(EditorSettings)}");
+            EditorSettings foundSettings = TaskStreamerEditorUtility.FindAssetByName<EditorSettings>($"t:{nameof(EditorSettings)}");
 
             Debug.Assert(foundSettings is not null, "EditorSettings asset not found.");
 

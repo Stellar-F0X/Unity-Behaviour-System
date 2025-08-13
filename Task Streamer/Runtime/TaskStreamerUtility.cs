@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
+using TaskStreamer.BT;
 using TaskStreamer.FSM;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -19,29 +18,6 @@ namespace TaskStreamer.Utility
             }
 
             return Animator.StringToHash(key);
-        }
-
-
-        public static void ChangeNodesAndGroupGuidOfGraph(Graph graph)
-        {
-            foreach (NodeBase node in graph.GetIterator(GraphIteratorType.LS))
-            {
-                UGUID originalGuid = node.guid;
-                UGUID newGuid = UGUID.Create();
-                node.guid = newGuid;
-
-                IReadOnlyList<NodeGroupData> dataList = graph.nodeGroup.dataList;
-                
-                NodeGroupData foundData = dataList.FirstOrDefault(data => data.containedNodeCount > 0 && data.Contains(originalGuid));
-
-                if (foundData == null)
-                {
-                    continue;
-                }
-                
-                foundData.RemoveNodeFromGroup(originalGuid);
-                foundData.AddNodeToGroup(newGuid);
-            }
         }
 
 
@@ -110,6 +86,25 @@ namespace TaskStreamer.Utility
             newVariable.name = isLocal ? "#Constant Variable#" : $"New {type.Name}";
             newVariable.type = type;
             return newVariable;
+        }
+        
+        
+        public static void SetMainGraph(GraphAsset asset)
+        {
+            switch (asset.mainGraphType)
+            {
+                case GraphType.FSM: asset.main = StateMachine.CreateGraph("Main", asset);  break;
+                
+                case GraphType.BT:  asset.main = BehaviorTree.CreateGraph("Main", asset); break;
+            }
+
+#if UNITY_EDITOR
+            if (asset.main != null)
+            {
+                UnityEditor.EditorUtility.SetDirty(asset);
+                UnityEditor.AssetDatabase.SaveAssets();
+            }
+#endif
         }
     }
 }

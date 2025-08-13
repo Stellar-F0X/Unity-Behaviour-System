@@ -75,7 +75,7 @@ namespace TaskStreamer.Tool
             if (blackboard == null || blackboard.variables.Count == 0)
             {
                 EditorGUI.PrefixLabel(_labelRect, new GUIContent(property.displayName));
-                EditorHelper.DrawError(_fieldRect, "No blackboard variables found.");
+                TaskStreamerEditorUtility.DrawError(_fieldRect, "No blackboard variables found.");
                 return;
             }
 
@@ -85,7 +85,7 @@ namespace TaskStreamer.Tool
 
             if (variables.Length == 0)
             {
-                EditorHelper.DrawError(_fieldRect, "No assignable blackboard variables found.");
+                TaskStreamerEditorUtility.DrawError(_fieldRect, "No assignable blackboard variables found.");
                 return;
             }
 

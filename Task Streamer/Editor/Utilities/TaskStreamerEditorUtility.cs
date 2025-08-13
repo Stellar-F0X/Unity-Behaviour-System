@@ -1,13 +1,11 @@
 using System.IO;
 using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
 namespace TaskStreamer.Tool
 {
-    public static class EditorHelper
+    public static class TaskStreamerEditorUtility
     {
         public static T FindAssetByName<T>(string searchFilter) where T : Object
         {
@@ -18,7 +16,7 @@ namespace TaskStreamer.Tool
                 return null;
             }
 
-            foreach (var guid in guids)
+            foreach (string guid in guids)
             {
                 string parentPath = AssetDatabase.GUIDToAssetPath(guid);
 
@@ -49,8 +47,54 @@ namespace TaskStreamer.Tool
             throw new FileNotFoundException($"Asset not found at filter: {searchFilter}");
         }
         
+        
+        public static bool IsDuplicated(GraphAsset currentAsset)
+        {
+            string[] guids = AssetDatabase.FindAssets("t:GraphAsset");
+
+            int count = 0;
+
+            foreach (string guid in guids)
+            {
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                
+                GraphAsset asset = AssetDatabase.LoadAssetAtPath<GraphAsset>(assetPath);
+
+                if (asset == null || asset != currentAsset)
+                {
+                    continue;
+                }
+
+                count++;
+
+                if (count > 1) // 자기 자신 포함해서 2개 이상이면 중복 
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
 
+        public static void ChangeGraphNodeGuids(GraphAsset graphAsset)
+        {
+            if (graphAsset == null)
+            {
+                return;
+            }
+
+            foreach (Graph graph in graphAsset.graphs)
+            {
+                graph.RegenerateAllNodeGuids();
+            }
+            
+            EditorUtility.SetDirty(graphAsset);
+            AssetDatabase.SaveAssets();
+        }
+
+
+#region Custom Editor GUI Helpers
         public static void DrawError(in Rect rect, in string message, in float iconSize = 12f)
         {
             Rect iconRect = new Rect(rect.x, rect.y + (rect.height - iconSize) * 0.5f, iconSize, iconSize);
@@ -64,24 +108,6 @@ namespace TaskStreamer.Tool
         
         
         
-        public static void SetBorderColor(this IStyle elementStyle, Color color)
-        {
-            elementStyle.borderTopColor = color;
-            elementStyle.borderBottomColor = color;
-            elementStyle.borderLeftColor = color;
-            elementStyle.borderRightColor = color;
-        }
-        
-        
-        
-        public static void SetEdgeColor(this Edge edge, Color color)
-        {
-            edge.edgeControl.inputColor = color;
-            edge.edgeControl.outputColor = color;
-        }
-
-
-#region Custom Editor GUI Helpers
         public static GUIStyle GetHeaderStyle()
         {
             GUIStyle headerLabelStyle = new GUIStyle(EditorStyles.toolbar);
@@ -99,7 +125,7 @@ namespace TaskStreamer.Tool
                 EditorGUILayout.Space(startSpacing);
             }
 
-            using (new GUIColorScope(new Color32(255, 255, 255, 255), GUIColorScope.EGUIColorScope.Background))
+            using (new GUIColorScope(new Color32(255, 255, 255, 255), GUIColorScope.GUIColorScopeType.Background))
             {
                 EditorGUILayout.LabelField(header, headerLabelStyle);
             }

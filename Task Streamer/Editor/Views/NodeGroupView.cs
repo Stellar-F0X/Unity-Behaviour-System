@@ -7,17 +7,17 @@ namespace TaskStreamer.Tool
 {
     public class NodeGroupView : Group
     {
-        public NodeGroupView(NodeGroupData groupDataContainer, Color backgroundColor) : base()
+        public NodeGroupView(NodeGroup groupDataContainer, Color backgroundColor) : base()
         {
             this.title = groupDataContainer.title;
             this._groupData = groupDataContainer;
             this.style.backgroundColor = backgroundColor;
         }
         
-        private readonly NodeGroupData _groupData;
+        private readonly NodeGroup _groupData;
 
 
-        public NodeGroupData groupData
+        public NodeGroup groupData
         {
             get { return _groupData; }
         }
