@@ -27,15 +27,15 @@ namespace TaskStreamer
         [DontCreateProperty]
         public GraphType mainGraphType;
 
-        /// <summary>
-        /// 현재 사용 중인 블랙보드이다.
-        /// </summary>
+        /// <summary> 현재 사용 중인 블랙보드이다. </summary>
         [SerializeField, DontCreateProperty]
         public Blackboard blackboard;
 
-        /// <summary>
-        /// 진입 그래프이자, 가장 최상위 그래프이다. 
-        /// </summary>
+        /// <summary> 그래프 에셋의 GUID로, 그래프 에셋을 식별 </summary>
+        [SerializeField, DontCreateProperty]
+        private UGUID _graphGuid;
+        
+        /// <summary> 진입 그래프이자, 가장 최상위 그래프이다. </summary>
         [SerializeReference, DontCreateProperty, HideInInspector]
         private Graph _main;
 
@@ -54,6 +54,12 @@ namespace TaskStreamer
         private GraphDictionary _graphMap = new GraphDictionary();
 
 
+        public UGUID graphGuid
+        {
+            get { return _graphGuid; }
+            
+            internal set { _graphGuid = value; }
+        }
 
         public Graph main
         {

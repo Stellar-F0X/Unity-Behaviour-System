@@ -56,14 +56,14 @@ namespace TaskStreamer.FSM
 
                     foreach (Transition transition in state.transitions)
                     {
-                        if (visited.Contains(transition.toStateGuid))
+                        if (visited.Contains(transition.toNodeGuid))
                         {
                             continue;
                         }
                         
-                        if (_machine._nodeLookup.TryGetValue(transition.toStateGuid, out NodeBase stateBase))
+                        if (_machine._nodeLookup.TryGetValue(transition.toNodeGuid, out NodeBase stateBase))
                         {
-                            visited.Add(transition.toStateGuid);
+                            visited.Add(transition.toNodeGuid);
                             queue.Add(stateBase as StateBase);
                         }
                     }

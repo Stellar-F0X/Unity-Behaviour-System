@@ -32,13 +32,13 @@ namespace TaskStreamer.Tool
                 EditorGUILayout.PropertyField(serializedObject.FindProperty("m_Script"));
             }
 
-            SerializedProperty isConditionalProp = serializedObject.FindProperty("conditional");
-            SerializedProperty desProp = serializedObject.FindProperty("description");
-            SerializedProperty conditionsProp = serializedObject.FindProperty("conditions");
+            SerializedProperty descriptionProp = serializedObject.FindProperty("_description");
+            SerializedProperty isConditionalProp = serializedObject.FindProperty("_conditional");
+            SerializedProperty conditionsProp = serializedObject.FindProperty("_conditions");
 
             
             bool foundStartNode = TaskStreamerEditor.Instance.view.focusGraph.TryGetNodeByGuid(transition.fromNodeGuid, out NodeBase startNode);
-            bool foundDestinationNode = TaskStreamerEditor.Instance.view.focusGraph.TryGetNodeByGuid(transition.toStateGuid, out NodeBase endNode);
+            bool foundDestinationNode = TaskStreamerEditor.Instance.view.focusGraph.TryGetNodeByGuid(transition.toNodeGuid, out NodeBase endNode);
 
             
             if (foundStartNode == false || foundDestinationNode == false)
@@ -54,7 +54,7 @@ namespace TaskStreamer.Tool
 
             using (new EditorGUI.DisabledScope(!TaskStreamerEditor.canEditGraph))
             {
-                desProp.stringValue = EditorGUILayout.TextArea(desProp.stringValue, heightOption);
+                descriptionProp.stringValue = EditorGUILayout.TextArea(descriptionProp.stringValue, heightOption);
             }
 
             TaskStreamerEditorUtility.DrawHeader("Condition", _headerLabelStyle, startSpacing: 5, endSpacing: 2);

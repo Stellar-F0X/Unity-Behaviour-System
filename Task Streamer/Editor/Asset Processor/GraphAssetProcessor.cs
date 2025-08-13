@@ -27,6 +27,11 @@ namespace TaskStreamer.Tool
                 {
                     TaskStreamerUtility.SetMainGraph(asset);
                 }
+
+                if (asset.graphGuid.IsEmpty())
+                {
+                    asset.graphGuid = UGUID.Create();
+                }
                 
                 if (TaskStreamerEditorUtility.IsDuplicated(asset))
                 {

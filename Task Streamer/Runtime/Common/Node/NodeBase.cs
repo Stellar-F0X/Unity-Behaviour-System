@@ -286,11 +286,11 @@ namespace TaskStreamer
             streamer.onNodeGizmosUpdate -= callback;
         }
 
-        
-        public virtual void EnterNode() { }
-        
-        
-        public virtual void ExitNode() { }
+
+        internal virtual void EnterNode() { }
+
+
+        internal virtual void ExitNode() { }
 
 
         internal virtual void InitializeOnInstantiated() { }

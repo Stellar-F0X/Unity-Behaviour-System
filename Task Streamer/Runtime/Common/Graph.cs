@@ -150,13 +150,13 @@ namespace TaskStreamer
         public abstract IGraphIterator GetIterator(GraphIteratorType iteratorType);
 
 
-        public abstract Status UpdateGraph();
+        internal abstract Status UpdateGraph();
 
 
-        public abstract void ResetGraph();
+        internal abstract void ResetGraph();
 
 
-        public abstract void StopGraph();
+        internal abstract void StopGraph();
 
         
 #if UNITY_EDITOR

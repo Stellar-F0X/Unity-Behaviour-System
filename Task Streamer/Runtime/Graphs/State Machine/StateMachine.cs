@@ -44,7 +44,7 @@ namespace TaskStreamer.FSM
         public static StateMachine CreateGraph(string graphName, GraphAsset graphAsset)
         {
             StateMachine graph = new StateMachine(graphName, graphAsset);
-            
+
             graph.entry = graph.CreateNode("Enter", typeof(EnterState), new Vector2Int(0, 0)) as StateBase;
             graph._exit = graph.CreateNode("Exit", typeof(ExitState), new Vector2Int(0, 200)) as StateBase;
             graph._any = graph.CreateNode("Any", typeof(AnyState), new Vector2Int(-230, 0)) as StateBase;
@@ -54,6 +54,7 @@ namespace TaskStreamer.FSM
         }
 #endif
 
+
         public override IGraphIterator GetIterator(GraphIteratorType iteratorType)
         {
             switch (iteratorType)
@@ -62,7 +63,7 @@ namespace TaskStreamer.FSM
 
                 case GraphIteratorType.BFS: return new StateMachine.BFSIterator(this);
             }
-            
+
             throw new NotImplementedException("BreadthFirstSearch iterator is not implemented for StateMachine.");
         }
 
@@ -84,54 +85,26 @@ namespace TaskStreamer.FSM
             _any = _nodeLookup[_any.guid] as StateBase;
             Debug.Assert(_any != null, "any node is null.");
         }
+        
 
-
-        internal override void OnRemoveGraph()
+        internal void ChangeState(NodeBase nextNode)
         {
-            List<Transition> transitionList = ListPool<Transition>.Get();
-
-            //Foreach를 사용하는 도중에 컬렉션을 수정할 수 없으므로 ToList()를 사용하여 컬렉션을 복사한 후 원본 컬렉션을 수정.
-            foreach (StateBase node in this._nodeLookup.Values.ToList())
+            if (_current == nextNode)
             {
-                if (node.transitions is not null && node.transitions.Count > 0)
-                {
-                    transitionList.AddRange(node.transitions);
-                }
-
-                this.DeleteNode(node);
+                return;
             }
-
-            for (int i = 0; i < transitionList.Count; ++i)
-            {
-                if (AssetDatabase.Contains(transitionList[i]))
-                {
-                    AssetDatabase.RemoveObjectFromAsset(transitionList[i]);
-                }
-
-                Object.DestroyImmediate(transitionList[i]);
-            }
-
-            ListPool<Transition>.Release(transitionList);
-        }
-
-
-
-        public void ChangeState(UGUID nextStateGuid)
-        {
+            
             if (_current != null)
             {
                 _current.ExitNode();
             }
-
-            if (base.TryGetNodeByGuid(nextStateGuid, out NodeBase node))
-            {
-                _current = (StateBase)node;
-                _current.EnterNode();
-            }
+            
+            _current = (StateBase)nextNode;
+            _current.EnterNode();
         }
 
 
-        public override Status UpdateGraph()
+        internal override Status UpdateGraph()
         {
             if (_current == null)
             {
@@ -145,16 +118,16 @@ namespace TaskStreamer.FSM
                 return Status.Success;
             }
 
-            if (this.TryGetNextStateGuid(out UGUID nextStateGuid))
+            if (this.TryGetNextState(out NodeBase nextState))
             {
-                this.ChangeState(nextStateGuid);
+                this.ChangeState(nextState);
             }
 
             return Status.Running;
         }
 
 
-        public override void ResetGraph()
+        internal override void ResetGraph()
         {
             if (entry.guid.IsEmpty())
             {
@@ -174,7 +147,7 @@ namespace TaskStreamer.FSM
         }
 
 
-        public override void StopGraph()
+        internal override void StopGraph()
         {
             if (_current.callState == NodeCallState.Updating)
             {
@@ -188,31 +161,54 @@ namespace TaskStreamer.FSM
         }
 
 
-        private bool TryGetNextStateGuid(out UGUID nextStateGuid)
+        private bool TryGetNextState(out NodeBase nextState)
         {
-            if (this.blockAllTransition)
+            if (this.blockAllTransition == false)
             {
-                nextStateGuid = UGUID.Empty;
-                return false;
+                //현재 상태에서 전이가 발생하면 || 기준 왼쪽 함수에서 얻어온 guid를 토대로 전이할 것이고 anyState에서 발생하면 그 반대.
+                if (_current.CheckTransition(out nextState))
+                {
+                    return true;
+                }
+
+                if (_any.CheckTransition(out nextState))
+                {
+                    return true;
+                }
             }
 
-            //현재 상태에서 전이가 발생하면 || 기준 왼쪽 함수에서 얻어온 guid를 토대로 전이할 것이고 anyState에서 발생하면 그 반대.
-            if (_current.CheckTransition(out nextStateGuid))
-            {
-                return true;
-            }
-
-            if (_any.CheckTransition(out nextStateGuid))
-            {
-                return true;
-            }
-
-            nextStateGuid = UGUID.Empty;
+            nextState = null;
             return false;
         }
 
 
 #if UNITY_EDITOR
+        internal override void OnRemoveGraph()
+        {
+            List<NodeBase> nodes = this._nodeLookup.Values.ToList();
+
+            foreach (StateBase node in nodes)
+            {
+                if (node.transitions is null || node.transitions.Count > 0)
+                {
+                    continue;
+                }
+
+                foreach (Transition transition in node.transitions)
+                {
+                    if (AssetDatabase.Contains(transition))
+                    {
+                        AssetDatabase.RemoveObjectFromAsset(transition);
+                    }
+
+                    Object.DestroyImmediate(transition);
+                }
+
+                this.DeleteNode(node);
+            }
+        }
+
+
         public Transition ConnectStates(StateBase from, StateBase to)
         {
             if (from.TryGetTransition(to.guid, out _))

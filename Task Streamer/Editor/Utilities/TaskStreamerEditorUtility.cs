@@ -60,7 +60,7 @@ namespace TaskStreamer.Tool
                 
                 GraphAsset asset = AssetDatabase.LoadAssetAtPath<GraphAsset>(assetPath);
 
-                if (asset == null || asset != currentAsset)
+                if (asset == null || asset.graphGuid != currentAsset.graphGuid)
                 {
                     continue;
                 }

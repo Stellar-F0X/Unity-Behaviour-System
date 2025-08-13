@@ -49,7 +49,7 @@ namespace TaskStreamer.BT
         }
 
 
-        public override Status UpdateGraph()
+        internal override Status UpdateGraph()
         {
             if (entry is BehaviorNodeBase behaviourNode)
             {
@@ -62,7 +62,7 @@ namespace TaskStreamer.BT
         }
 
 
-        public override void ResetGraph()
+        internal override void ResetGraph()
         {
             if (interrupter is not null)
             {
@@ -75,7 +75,7 @@ namespace TaskStreamer.BT
         }
 
 
-        public override void StopGraph()
+        internal override void StopGraph()
         {
             if (interrupter is not null)
             {

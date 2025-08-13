@@ -66,7 +66,7 @@ namespace TaskStreamer.Tool
                 foreach (Transition child in parentNodeBase.transitions)
                 {
                     NodeViewBase sourceView = graphView.FindNodeView(parentNodeBase);
-                    NodeViewBase targetView = graphView.FindNodeView(child.toStateGuid.ToString());
+                    NodeViewBase targetView = graphView.FindNodeView(child.toNodeGuid.ToString());
 
                     this.TryConnectNodesByEdge(graphView, sourceView, targetView);
                 }

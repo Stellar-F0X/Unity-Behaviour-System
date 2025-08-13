@@ -51,7 +51,7 @@ namespace TaskStreamer.FSM
 
 
 
-        public virtual void UpdateNode()
+        internal void UpdateNode()
         {
             this.callCount++;
 
@@ -59,11 +59,11 @@ namespace TaskStreamer.FSM
         }
 
 
-        public bool TryGetTransition(UGUID nextStateNodeGuid, out Transition resultTransition)
+        internal bool TryGetTransition(UGUID nextStateNodeGuid, out Transition resultTransition)
         {
             foreach (Transition transition in this._transitions)
             {
-                if (transition.toStateGuid == nextStateNodeGuid)
+                if (transition.toNodeGuid == nextStateNodeGuid)
                 {
                     resultTransition = transition;
                     return true;
@@ -75,29 +75,26 @@ namespace TaskStreamer.FSM
         }
 
 
-        public bool CheckTransition(out UGUID nextStateNodeGuid)
+        internal bool CheckTransition(out NodeBase nextStateNode)
         {
-            if (_blockTransition || _transitions.Count == 0)
+            if (_blockTransition == false && _transitions.Count > 0)
             {
-                nextStateNodeGuid = UGUID.Empty;
-                return false;
-            }
-
-            foreach (Transition transition in _transitions)
-            {
-                if (transition.CheckConditions())
+                foreach (Transition transition in this._transitions)
                 {
-                    nextStateNodeGuid = transition.toStateGuid;
-                    return true;
+                    if (transition.CheckConditions())
+                    {
+                        nextStateNode = transition.destinationNode;
+                        return true;
+                    }
                 }
             }
 
-            nextStateNodeGuid = UGUID.Empty;
+            nextStateNode = null;
             return false;
         }
 
 
-        public override sealed void EnterNode()
+        internal override sealed void EnterNode()
         {
             this.enteredTime = Time.time;
             this.OnEnter();
@@ -106,7 +103,7 @@ namespace TaskStreamer.FSM
         }
 
 
-        public override sealed void ExitNode()
+        internal override sealed void ExitNode()
         {
             this.OnExit();
             this.onNodeExit?.Invoke();

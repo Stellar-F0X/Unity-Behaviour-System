@@ -53,7 +53,7 @@ namespace TaskStreamer.BT
         }
 
 
-        public Status UpdateNode()
+        internal Status UpdateNode()
         {
             this.callCount++;
 
@@ -88,7 +88,7 @@ namespace TaskStreamer.BT
         }
 
 
-        public override sealed void EnterNode()
+        internal override sealed void EnterNode()
         {
             this.tree.interrupter.PushInCallStack(callStackID, this);
             this.onNodeEnter?.Invoke();
@@ -97,7 +97,7 @@ namespace TaskStreamer.BT
         }
 
 
-        public override sealed void ExitNode()
+        internal override sealed void ExitNode()
         {
             this.tree.interrupter.PopInCallStack(callStackID);
             this.OnExit();

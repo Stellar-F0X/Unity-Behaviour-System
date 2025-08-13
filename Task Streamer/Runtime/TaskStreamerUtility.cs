@@ -72,7 +72,7 @@ namespace TaskStreamer.Utility
             Transition newTransition = ScriptableObject.CreateInstance<Transition>();
             newTransition.hideFlags = HideFlags.HideInHierarchy;
             newTransition.name = $"{from.guid}.{to.guid}";
-            newTransition.Setup(from.guid, to.guid);
+            newTransition.Setup(from, to);
             return newTransition;
         }
 

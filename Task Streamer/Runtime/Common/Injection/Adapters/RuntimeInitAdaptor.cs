@@ -189,7 +189,12 @@ namespace TaskStreamer.Injection
             {
                 Debug.Log($"{context.Property.Name}  Name: {value.name}  Des: {value.description}");
             }
-
+            
+            value.sourceNode = _newNodeDictionary[value.fromNodeGuid];
+            
+            value.destinationNode = _newNodeDictionary[value.toNodeGuid];
+            
+            //ConditionModule이 없다면 BBVariable을 할당하지 않아도 되므로 Early Return.
             if (value.conditions.modules.Count == 0)
             {
                 return;

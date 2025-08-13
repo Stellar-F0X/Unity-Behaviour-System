@@ -4,32 +4,74 @@ using UnityEngine;
 
 namespace TaskStreamer.FSM
 {
-    //조건적 Transition과 일반 트랜지션을 분리.
     public class Transition : ScriptableObject
     {
 #if UNITY_EDITOR
-        [DontCreateProperty]
-        public string description;
+        [SerializeField, DontCreateProperty]
+        private string _description;
 #endif
-        [DontCreateProperty]
-        public UGUID fromNodeGuid;
-        
-        [DontCreateProperty]
-        public UGUID toStateGuid;
-        
-        [DontCreateProperty]
-        public bool conditional;
+        [SerializeField, DontCreateProperty]
+        private bool _conditional;
 
-        [CreateProperty]
-        public BlackboardBasedCondition conditions;
+        [SerializeField, DontCreateProperty]
+        private NodeBase _sourceNode;
+
+        [SerializeField, DontCreateProperty]
+        private NodeBase _destinationNode;
+
+        [SerializeField, CreateProperty]
+        private BlackboardBasedCondition _conditions;
 
 
-        internal void Setup(UGUID sourceNodeGuid, UGUID destinationNodeGuid)
+        public string description
         {
-            this.conditional = false;
-            this.fromNodeGuid = sourceNodeGuid;
-            this.toStateGuid = destinationNodeGuid;
-            this.conditions = new BlackboardBasedCondition();
+            get { return this._description; }
+        }
+
+        public UGUID fromNodeGuid
+        {
+            get { return sourceNode.guid; }
+        }
+
+        public UGUID toNodeGuid
+        {
+            get { return destinationNode.guid; }
+        }
+
+        public bool conditional
+        {
+            get { return this._conditional; }
+
+            internal set { this._conditional = value; }
+        }
+
+        public BlackboardBasedCondition conditions
+        {
+            get { return this._conditions; }
+        }
+        
+        public NodeBase sourceNode
+        {
+            get { return this._sourceNode; }
+
+            internal set { this._sourceNode = value; }
+        }
+
+        public NodeBase destinationNode
+        {
+            get { return this._destinationNode; }
+
+            internal set { this._destinationNode = value; }
+        }
+
+
+
+        internal void Setup(NodeBase sourceNode, NodeBase destinationNode, bool coditional = false)
+        {
+            this._conditional = coditional;
+            this._sourceNode = sourceNode;
+            this._destinationNode = destinationNode;
+            this._conditions = new BlackboardBasedCondition();
         }
 
 

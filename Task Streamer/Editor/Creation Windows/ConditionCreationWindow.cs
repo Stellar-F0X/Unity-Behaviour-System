@@ -16,7 +16,6 @@ namespace TaskStreamer.Tool
         }
         
         
-        //TODO: 구현
         public override List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)
         {
             List<SearchTreeEntry> searchTree = new List<SearchTreeEntry>();
