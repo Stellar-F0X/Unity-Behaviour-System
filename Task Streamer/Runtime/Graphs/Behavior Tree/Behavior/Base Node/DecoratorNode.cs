@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace TaskStreamer.BT
 {
     [Serializable]
-    public abstract class DecoratorNode : BehaviorNodeBase, IChildNodeProvider
+    public abstract class DecoratorNode : BehaviorNodeBase, IChildProvider
     {
         public BehaviorNodeBase child
         {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace TaskStreamer.BT
 {
     [Serializable]
-    public abstract class CompositeNode : BehaviorNodeBase, IChildNodeProvider
+    public abstract class CompositeNode : BehaviorNodeBase, IChildProvider
     {
         protected int _currentChildrenIndex = 0;
 

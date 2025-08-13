@@ -8,9 +8,9 @@ using UnityEngine.Pool;
 
 namespace TaskStreamer.Tool
 {
-    public class BTViewControl : GraphViewControl
+    public class BTView : GraphViewBase
     {
-        protected internal BTViewControl() { }
+        protected internal BTView() { }
 
 
         public override bool TryConnectNodesByEdge(TaskGraphView view, NodeViewBase connectionSource, NodeViewBase connectionTarget)
@@ -49,7 +49,7 @@ namespace TaskStreamer.Tool
             // 부모-자식 관계에 따른 노드 연결
             foreach (NodeBase parentNodeBase in graph.GetIterator(GraphIteratorType.LS))
             {
-                if (parentNodeBase is not IChildNodeProvider provider || provider.childCount == 0)
+                if (parentNodeBase is not IChildProvider provider || provider.childCount == 0)
                 {
                     continue;
                 }

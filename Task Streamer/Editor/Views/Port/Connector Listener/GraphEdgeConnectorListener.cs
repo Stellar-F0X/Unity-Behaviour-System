@@ -46,7 +46,7 @@ namespace TaskStreamer.Tool
         // Referenced: https://github.com/thekiwicoder0/UnityBehaviourTreeEditor/blob/main/Editor/NodePort.cs
         // Copyright (c) 2021 Original Author
         // Licensed under the MIT License. See LICENSE file in the root for details.
-        public virtual void OnDrop(GraphView graphView, Edge edge)
+        public virtual void OnDrop(UnityEditor.Experimental.GraphView.GraphView graphView, Edge edge)
         {
             List<GraphElement> edgesToDelete = ListPool<GraphElement>.Get();
 

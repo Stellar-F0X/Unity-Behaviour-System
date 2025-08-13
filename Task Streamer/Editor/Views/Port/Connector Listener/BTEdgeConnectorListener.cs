@@ -7,11 +7,11 @@ namespace TaskStreamer.Tool
     {
         public BTEdgeConnectorListener()
         {
-            _control = TaskStreamerEditor.Instance.view.graphViewControl;
+            _control = TaskStreamerEditor.Instance.view.graphView;
             _graphView = TaskStreamerEditor.Instance.view;
         }
         
-        private readonly GraphViewControl _control;
+        private readonly GraphViewBase _control;
         private readonly TaskGraphView _graphView;
         
         

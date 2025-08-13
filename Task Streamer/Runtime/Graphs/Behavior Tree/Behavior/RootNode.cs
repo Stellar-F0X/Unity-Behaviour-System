@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace TaskStreamer.BT
 {
-    public sealed class RootNode : BehaviorNodeBase, IChildNodeProvider
+    public sealed class RootNode : BehaviorNodeBase, IChildProvider
     {
         public BehaviorNodeBase child
         {

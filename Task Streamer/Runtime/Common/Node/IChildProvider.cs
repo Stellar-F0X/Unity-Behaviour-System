@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace TaskStreamer.BT
 {
-    public interface IChildNodeProvider
+    public interface IChildProvider
     {
         public BehaviorNodeBase this[int index] { get; }
         

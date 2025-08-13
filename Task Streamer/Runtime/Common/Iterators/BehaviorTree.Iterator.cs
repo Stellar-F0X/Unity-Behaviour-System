@@ -62,7 +62,7 @@ namespace TaskStreamer.BT
 
                     yield return info.node;
 
-                    if (info.node is not IChildNodeProvider provider)
+                    if (info.node is not IChildProvider provider)
                     {
                         continue;
                     }

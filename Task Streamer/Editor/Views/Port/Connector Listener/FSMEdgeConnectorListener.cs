@@ -6,7 +6,7 @@ namespace TaskStreamer.Tool
     {
         protected override void CreateAndLinkFromOriginalToNewNode(NodeViewBase sourceNodeView, NodeViewBase targetNodeView, Vector2 position)
         {
-            GraphViewControl control = TaskStreamerEditor.Instance.view.graphViewControl;
+            GraphViewBase control = TaskStreamerEditor.Instance.view.graphView;
             
             control.TryDisconnectParentToChild(sourceNodeView);
         }
@@ -14,7 +14,7 @@ namespace TaskStreamer.Tool
         
         protected override void CreateAndLinkFromNewToOriginalNode(NodeViewBase sourceNodeView, NodeViewBase targetNodeView, Vector2 position)
         {
-            GraphViewControl control = TaskStreamerEditor.Instance.view.graphViewControl;
+            GraphViewBase control = TaskStreamerEditor.Instance.view.graphView;
             
             control.TryDisconnectChildToParent(targetNodeView);
         }

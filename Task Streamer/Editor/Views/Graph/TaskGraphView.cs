@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 namespace TaskStreamer.Tool
 {
     [UxmlElement]
-    public partial class TaskGraphView : GraphView
+    public partial class TaskGraphView : UnityEditor.Experimental.GraphView.GraphView
     {
         public TaskGraphView()
         {
@@ -30,15 +30,15 @@ namespace TaskStreamer.Tool
         
         public Action<GraphElement> onElementUnselected;
         
-        private GraphViewControl _graphViewControl;
+        private GraphViewBase _graphView;
 
         private float _nextUpdateTime;
         
 
 
-        public GraphViewControl graphViewControl
+        public GraphViewBase graphView
         {
-            get { return _graphViewControl; }
+            get { return _graphView; }
         }
 
         public Graph focusGraph
@@ -62,14 +62,14 @@ namespace TaskStreamer.Tool
         {
             Debug.Assert(changeGraph is not null, "changeGraph is not null");
 
-            this._graphViewControl = GraphViewControl.CreateGraphViewProcessor(changeGraph);
+            this._graphView = GraphViewBase.CreateGraphViewProcessor(changeGraph);
 
             this.ClearEditorView();
 
             base.graphViewChanged += this.OnGraphViewChanged;
             this.deleteSelection += this.OnDeleteSelectionElements;
 
-            this._graphViewControl.CreateAndConnectNodes(this, this.focusGraph);
+            this._graphView.CreateAndConnectNodes(this, this.focusGraph);
             this.focusGraph.nodeGroup?.dataList.ForEach(this.RecreateNodeGroupViewOnLoad);
         }
 
@@ -143,7 +143,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            TaskCreationWindowBase creationWindow = _graphViewControl.GetGraphNodeCreationWindow();
+            TaskCreationWindowBase creationWindow = _graphView.GetGraphNodeCreationWindow();
 
             creationWindow.RegisterNodeCreationCallbackOnce(onNewNodeCreatedOnce);
 
@@ -188,9 +188,9 @@ namespace TaskStreamer.Tool
                 {
                     switch (element)
                     {
-                        case Edge edge: this.graphViewControl.DisconnectNodesByEdge(focusGraph, edge); break;
+                        case Edge edge: this.graphView.DisconnectNodesByEdge(focusGraph, edge); break;
 
-                        case NodeViewBase nodeView: this.graphViewControl.DeleteNodeFromGraph(focusGraph, nodeView.targetNode); break;
+                        case NodeViewBase nodeView: this.graphView.DeleteNodeFromGraph(focusGraph, nodeView.targetNode); break;
 
                         case NodeGroupView groupView: this.focusGraph.nodeGroup.DeleteGroupData(groupView.groupData); break;
                     }
@@ -200,13 +200,13 @@ namespace TaskStreamer.Tool
             //노드가 생성되거나 이동된 경우, 노드의 위치를 업데이트하고 새롭게 생성된 간선을 연결한다.
             if (graphViewChange.edgesToCreate is not null)
             {
-                _graphViewControl.ConnectNodesByEdges(this, focusGraph, graphViewChange.edgesToCreate);
+                _graphView.ConnectNodesByEdges(this, focusGraph, graphViewChange.edgesToCreate);
             }
 
             //노드의 위치를 업데이트된 경우, BT는 앞의 자식을 먼저 순회하기 때문에 X좌표에 따른 순서를 정렬하여 갱신해준다. 
             if (graphViewChange.movedElements is not null)
             {
-                _graphViewControl.NotifyNodePositionChanged(this, graphViewChange.movedElements);
+                _graphView.NotifyNodePositionChanged(this, graphViewChange.movedElements);
             }
 
             return graphViewChange;
@@ -221,7 +221,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            _graphViewControl.FilterSelectionElements(this.selection);
+            _graphView.FilterSelectionElements(this.selection);
 
             //DeleteSelection는 내부적으로 Selection 배열을 이용해서 VisualElement들을 제거함.
             //따라서 삭제되면 안되는 요소들만 Selection 배열에서 제거한 뒤, 현재 선택된 요소들(Selection 배열)을 제거하면 됨.
@@ -251,7 +251,7 @@ namespace TaskStreamer.Tool
             NodeBase node = focusGraph.CreateNode(type.Name, type);
             node.position = Vector2Int.CeilToInt(mousePosition);
 
-            NodeViewBase nodeView = this._graphViewControl.RecreateNodeViewOnLoad(node);
+            NodeViewBase nodeView = this._graphView.RecreateNodeViewOnLoad(node);
             this.AddNewNodeView(nodeView);
             return nodeView;
         }

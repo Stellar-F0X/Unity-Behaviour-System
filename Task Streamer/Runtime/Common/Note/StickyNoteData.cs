@@ -1,6 +1,6 @@
 namespace TaskStreamer
 {
-    public class TaskStreamerManager
+    public class StickyNoteData
     {
         
     }

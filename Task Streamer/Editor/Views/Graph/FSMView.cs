@@ -6,9 +6,9 @@ using Edge = UnityEditor.Experimental.GraphView.Edge;
 
 namespace TaskStreamer.Tool
 {
-    public class FSMViewControl : GraphViewControl
+    public class FSMView : GraphViewBase
     {
-        protected internal FSMViewControl() { }
+        protected internal FSMView() { }
 
 
         public override bool TryConnectNodesByEdge(TaskGraphView view, NodeViewBase nodeA, NodeViewBase nodeB)
