@@ -10,7 +10,7 @@ namespace TaskStreamer.Tool
             this._lastCallCount = nodeView.targetNode.callCount;
         }
 
-        private const float _END_THRESHOLD = 0.02f;
+        private const float _END_THRESHOLD = 0.01f;
 
         private bool _isHighlighting;
         private float _remainingTime;
@@ -67,7 +67,7 @@ namespace TaskStreamer.Tool
                 _lastCallCount = _nodeView.targetNode.callCount; 
             }
 
-            this.OnHighlightUpdate(_remainingTime);
+            this.OnHighlightUpdate(_remainingTime * _settings.durationReciprocal);
 
             _remainingTime -= deltaTime;
 
@@ -91,14 +91,14 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            _nodeView.nodeBorder.style.SetBorderColor(_settings.nodeStatusLinearColor.Evaluate(0));
+            _nodeView.nodeBorder.style.SetBorderColor(_settings.nodeStatusGradient.Evaluate(0));
         }
 
 
         protected abstract void OnHighlightStart();
 
 
-        protected abstract void OnHighlightUpdate(float remainingHighlightTime);
+        protected abstract void OnHighlightUpdate(float progress);
 
 
         protected abstract void OnHighlightEnd();

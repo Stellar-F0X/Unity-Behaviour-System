@@ -62,7 +62,7 @@ namespace TaskStreamer.Tool
         {
             Debug.Assert(changeGraph is not null, "changeGraph is not null");
 
-            this._graphView = GraphViewBase.CreateGraphViewProcessor(changeGraph);
+            this._graphView = GraphViewBase.CreateGraphView(changeGraph);
 
             this.ClearEditorView();
 

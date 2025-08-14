@@ -8,11 +8,9 @@ namespace TaskStreamer.Tool
         protected override void OnHighlightStart() { }
 
 
-        protected override void OnHighlightUpdate(float remainingHighlightTime)
+        protected override void OnHighlightUpdate(float progress)
         {
-            float progress = remainingHighlightTime / _settings.highlightDuration;
-
-            _nodeView.nodeBorder.style.SetBorderColor(_settings.nodeStatusLinearColor.Evaluate(progress));
+            _nodeView.nodeBorder.style.SetBorderColor(_settings.nodeStatusGradient.Evaluate(progress));
         }
 
 

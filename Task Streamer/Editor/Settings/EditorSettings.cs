@@ -1,26 +1,28 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
+    //TODO: 주석 달아야 됨.
     public class EditorSettings : ScriptableObject
     {
-        public Color miniMapBackgroundColor = new Color32(30, 30, 30, 255);
+        public Color minimapColor = new Color32(30, 30, 30, 255);
         public Color nodeGroupColor = new Color32(65, 65, 65, 255);
+        public Color successNodeColor = new Color32(0, 100, 0, 255);
+        public Color failureNodeColor = new Color32(100, 0, 0, 255);
         
-        [Header("View Color Options")]
-        public Color nodeSuccessColor = new Color32(0, 100, 0, 255);
-        public Color nodeFailureColor = new Color32(100, 0, 0, 255);
+        public Gradient nodeStatusGradient;
+        public Gradient edgeStatusGradient;
         
-        [Space]
-        public Gradient nodeStatusLinearColor;
-        public Gradient edgeStatusLinearColor;
-        
-        [Header("Runtime Options")]
         public float highlightDuration = 0.5f;
-        public float updateInterval = 0.0625f; // 625ms
+        public uint updatesPerSecond = 10;
         
-        [Header("Layout References")]
+        public float updateInterval = 0.1f;
+        public float durationReciprocal = 2f;
+        
+        
+        // UI Toolkit assets for the editor
         public VisualTreeAsset editorXml;
         public StyleSheet editorStyle;
         public VisualTreeAsset behaviorNodeViewXml;

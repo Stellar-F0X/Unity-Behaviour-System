@@ -13,7 +13,7 @@ namespace TaskStreamer.Tool
         public void Setup(ToolbarToggle minimapActivateButton, TaskGraphView btView)
         {
             this.anchored = true;
-            this.style.backgroundColor = TaskStreamerEditor.settings.miniMapBackgroundColor;
+            this.style.backgroundColor = TaskStreamerEditor.settings.minimapColor;
 
             minimapActivateButton.UnregisterValueChangedCallback(this.ActiveMinimap);
             minimapActivateButton.RegisterValueChangedCallback(this.ActiveMinimap);

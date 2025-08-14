@@ -18,7 +18,7 @@ namespace TaskStreamer.Tool
         /// </summary>
         private static GraphViewBase[] _ProcessorInstances = new GraphViewBase[2];
 
-        
+
         /// <summary>
         /// 노드 생성 창 인스턴스 (지연 초기화)
         /// </summary>
@@ -30,12 +30,12 @@ namespace TaskStreamer.Tool
         /// Unity 에디터에서 스크립트가 다시 컴파일될 때 자동으로 호출됩니다.
         /// </summary>
         [InitializeOnLoadMethod]
-        private static void ResetProcessorInstancesOnScriptReload()
+        private static void ResetViewInstancesOnScriptReload()
         {
             _ProcessorInstances[0] = null; // BT 프로세서 초기화
             _ProcessorInstances[1] = null; // FSM 프로세서 초기화
         }
-        
+
 
         /// <summary>
         /// 그래프 타입에 따라 적절한 GraphViewControl 인스턴스를 생성하거나 반환합니다.
@@ -43,10 +43,10 @@ namespace TaskStreamer.Tool
         /// </summary>
         /// <param name="graph">처리할 그래프 객체</param>
         /// <returns>그래프 타입에 맞는 GraphViewControl 인스턴스</returns>
-        public static GraphViewBase CreateGraphViewProcessor(Graph graph)
+        public static GraphViewBase CreateGraphView(Graph graph)
         {
             // 이미 생성된 인스턴스가 있으면 재사용
-            if (_ProcessorInstances[(int)graph.graphType] != null)
+            if (_ProcessorInstances is not null && _ProcessorInstances[(int)graph.graphType] != null)
             {
                 return _ProcessorInstances[(int)graph.graphType];
             }
@@ -65,7 +65,7 @@ namespace TaskStreamer.Tool
             _ProcessorInstances[(int)graph.graphType] = result;
             return result;
         }
-        
+
 
         /// <summary>
         /// 그래프 노드 생성 창을 반환합니다.
@@ -106,7 +106,7 @@ namespace TaskStreamer.Tool
             graph.DeleteNode(targetNode);
         }
 
-        
+
         /// <summary>
         /// 노드 위치 변경 알림을 처리합니다.
         /// 기본 구현은 비어있으며, 필요에 따라 하위 클래스에서 오버라이드합니다.
@@ -125,7 +125,7 @@ namespace TaskStreamer.Tool
         /// <returns>연결 성공 여부</returns>
         public abstract bool TryConnectNodesByEdge(TaskGraphView view, NodeViewBase connectionTarget, NodeViewBase nodeB);
 
-        
+
         /// <summary>
         /// 그래프의 모든 노드를 생성하고 연결합니다.
         /// 주로 그래프 로딩 시 사용됩니다.
@@ -134,7 +134,7 @@ namespace TaskStreamer.Tool
         /// <param name="graph">로딩할 그래프 데이터</param>
         public abstract void CreateAndConnectNodes(TaskGraphView graphView, Graph graph);
 
-        
+
         /// <summary>
         /// 선택된 요소들을 필터링합니다.
         /// 특정 노드들(예: Root 노드)을 선택에서 제외할 때 사용됩니다.
@@ -142,7 +142,7 @@ namespace TaskStreamer.Tool
         /// <param name="selection">선택된 요소들의 리스트</param>
         public abstract void FilterSelectionElements(List<ISelectable> selection);
 
-        
+
         /// <summary>
         /// 노드 데이터로부터 노드 뷰를 재생성합니다.
         /// 그래프 로딩 시 각 노드에 대해 호출됩니다.
@@ -151,21 +151,21 @@ namespace TaskStreamer.Tool
         /// <returns>생성된 노드 뷰</returns>
         public abstract NodeViewBase RecreateNodeViewOnLoad(NodeBase node);
 
-        
+
         /// <summary>
         /// 부모 노드에서 자식 노드로의 연결을 해제합니다.
         /// </summary>
         /// <param name="parentNodeView">부모 노드 뷰</param>
         public abstract void TryDisconnectParentToChild(NodeViewBase parentNodeView);
 
-        
+
         /// <summary>
         /// 자식 노드에서 부모 노드로의 연결을 해제합니다.
         /// </summary>
         /// <param name="childNodeView">자식 노드 뷰</param>
         public abstract void TryDisconnectChildToParent(NodeViewBase childNodeView);
 
-        
+
         /// <summary>
         /// 엣지를 통해 노드들의 연결을 해제합니다.
         /// </summary>
@@ -173,7 +173,7 @@ namespace TaskStreamer.Tool
         /// <param name="edge">해제할 엣지</param>
         public abstract void DisconnectNodesByEdge(Graph graph, Edge edge);
 
-        
+
         /// <summary>
         /// 여러 엣지를 통해 노드들을 연결합니다.
         /// 주로 복사/붙여넣기나 실행 취소 작업에서 사용됩니다.
@@ -183,7 +183,7 @@ namespace TaskStreamer.Tool
         /// <param name="edges">연결할 엣지들의 리스트</param>
         public abstract void ConnectNodesByEdges(TaskGraphView view, Graph graphCollection, List<Edge> edges);
 
-        
+
         /// <summary>
         /// 그래프 타입에 맞는 노드 생성 창을 생성합니다.
         /// 하위 클래스에서 적절한 창 타입을 반환해야 합니다.
