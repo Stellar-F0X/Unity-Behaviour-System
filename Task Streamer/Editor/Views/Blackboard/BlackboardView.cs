@@ -51,8 +51,20 @@ namespace TaskStreamer.Tool
             
             if (newBlackboard == null && this._blackboard != null)
             {
+                if (Application.isPlaying == false && Undo.isProcessing == false)
+                {
+                    Undo.RecordObject(_blackboard, "Task Streamer (Change Blackboard)");
+                    Undo.RecordObject(TaskStreamerEditor.Instance.graphAsset, "Task Streamer (Change Blackboard)");
+                }
+                
                 //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
-                TaskStreamerEditor.Instance.graphAsset.ResetBoundVariables(); 
+                TaskStreamerEditor.Instance.graphAsset.ResetBoundVariables();
+                
+                if (Application.isPlaying == false && Undo.isProcessing == false)
+                {
+                    EditorUtility.SetDirty(_blackboard);
+                    EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
+                }
             }
             
             //2. 교체.

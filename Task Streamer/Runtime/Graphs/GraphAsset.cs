@@ -79,9 +79,14 @@ namespace TaskStreamer
         /// <returns> 복제된 그래프를 반환한다. </returns>
         public GraphAsset Clone(TaskStreamer streamer)
         {
+            if (PropertyBag.Exists<GraphAsset>() == false)
+            {
+                Debug.LogError("GraphAsset does not have a property bag.");
+                return null;
+            }
+            
             GraphAsset instantiatedGraphAsset = null;
             Blackboard instantiatedBlackboard = null;
-            GraphVisitor dataContainer = null;
 
             instantiatedGraphAsset = Object.Instantiate(this);
 
@@ -91,18 +96,11 @@ namespace TaskStreamer
                 instantiatedGraphAsset.blackboard = instantiatedBlackboard;
             }
 
-            if (PropertyBag.Exists<GraphAsset>() == false)
-            {
-                Debug.LogError("GraphAsset does not have a property bag.");
-                return null;
-            }
-
-            dataContainer = new GraphVisitor(instantiatedBlackboard, instantiatedGraphAsset, streamer);
-
-            dataContainer.AddAdapter(new RuntimeInitAdaptor(dataContainer));
+            GraphWorker graphWorker = new GraphWorker(instantiatedBlackboard, instantiatedGraphAsset, streamer);
+            graphWorker.AddAdapter(new RuntimeInstantiationPipe(graphWorker));
 
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
-            bag.Accept(dataContainer, ref instantiatedGraphAsset);
+            bag.Accept(graphWorker, ref instantiatedGraphAsset);
 
             return instantiatedGraphAsset;
         }
@@ -171,14 +169,13 @@ namespace TaskStreamer
                 return;
             }
 
-            GraphVisitor dataContainer = new GraphVisitor(null, this, null);
-
-            dataContainer.AddAdapter(new GUIDInitAdaptor(dataContainer));
-
+            GraphWorker graphWorker = new GraphWorker(null, this, null);
+            graphWorker.AddAdapter(new GuidReassignPipe(graphWorker));
+            
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;
             
-            bag.Accept(dataContainer, ref reference);
+            bag.Accept(graphWorker, ref reference);
 
             this.graphGuid = UGUID.Create();
         }
@@ -196,25 +193,14 @@ namespace TaskStreamer
                 Debug.LogError("GraphAsset does not have a property bag.");
                 return;
             }
-            
-            if (Application.isPlaying == false && Undo.isProcessing == false)
-            {
-                Undo.RecordObject(this, "Task Streamer (ResetVariables)");
-            }
 
-            GraphVisitor dataContainer = new GraphVisitor(blackboard, this, null);
-
-            dataContainer.AddAdapter(new VariablesInitAdaptor(dataContainer));
+            GraphWorker graphWorker = new GraphWorker(blackboard, this, null);
+            graphWorker.AddAdapter(new VariablesResetPipe(graphWorker));
 
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;
 
-            bag.Accept(dataContainer, ref reference);
-            
-            if (Application.isPlaying == false && Undo.isProcessing == false)
-            {
-                EditorUtility.SetDirty(this);
-            }
+            bag.Accept(graphWorker, ref reference);
         }
         
         
