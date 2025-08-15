@@ -16,7 +16,7 @@ namespace TaskStreamer
     /// Represents a container for managing and interacting with a collection of Graph objects.
     /// This class supports operations like adding, removing, and linking subgraphs.
     /// </summary>
-    [GeneratePropertyBag]
+    [Readable, GeneratePropertyBag]
     public partial class GraphAsset : ScriptableObject, IEquatable<GraphAsset>
     {
         /// <summary>
@@ -108,7 +108,7 @@ namespace TaskStreamer
         
         public List<Graph> GetSubGraphs(UGUID baseGraphGuid)
         {
-            if (baseGraphGuid.IsEmpty() || _graphTreeMap.TryGetValue(baseGraphGuid, out UGUIDList subGraphGuids) == false)
+            if (baseGraphGuid.IsEmpty() || _graphTreeMap.TryGetValue(baseGraphGuid, out List<UGUID> subGraphGuids) == false)
             {
                 return null;
             }
@@ -294,7 +294,7 @@ namespace TaskStreamer
 
             if (_graphTreeMap.ContainsKey(from) == false)
             {
-                _graphTreeMap.Add(from, new UGUIDList());
+                _graphTreeMap.Add(from, new List<UGUID>());
             }
 
             if (_graphTreeMap[from].Contains(to) == false)
@@ -312,7 +312,7 @@ namespace TaskStreamer
                 return;
             }
 
-            bool found = _graphTreeMap.TryGetValue(from, out UGUIDList dependencies);
+            bool found = _graphTreeMap.TryGetValue(from, out List<UGUID> dependencies);
 
             if (found == false)
             {

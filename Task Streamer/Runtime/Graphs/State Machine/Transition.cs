@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace TaskStreamer.FSM
 {
-    public class Transition : ScriptableObject
+    [Readable]
+    public sealed class Transition : ScriptableObject
     {
 #if UNITY_EDITOR
         [SerializeField, DontCreateProperty]

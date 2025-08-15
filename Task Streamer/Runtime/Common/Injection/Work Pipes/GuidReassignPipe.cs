@@ -1,15 +1,10 @@
-using System;
 using System.Collections.Generic;
-using TaskStreamer.BT;
-using TaskStreamer.FSM;
 using TaskStreamer.Utility;
 using Unity.Properties;
-using UnityEngine;
 
 namespace TaskStreamer.Injection
 {
-    public class GuidReassignPipe : GraphWorkPipeBase,
-                                    IVisitPropertyAdapter<NodeDictionary>
+    internal class GuidReassignPipe : GraphWorkPipeBase, IVisitPropertyAdapter<NodeDictionary>
     {
         public GuidReassignPipe(GraphWorker graphWorker) : base(graphWorker) { }
 
@@ -48,7 +43,7 @@ namespace TaskStreamer.Injection
                 node.guid = UGUID.Create();
                 newNodeDictionary.Add(node.guid, node);
 
-                if (node is ISubGraph subGraphNode)
+                if (node is ISubGraphProvider subGraphNode)
                 {
                     UGUID guid = subGraphNode.subGraphGuid;
                     Graph graph = _worker.graphAsset.GetGraph(guid);

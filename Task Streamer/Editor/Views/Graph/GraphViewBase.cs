@@ -92,7 +92,7 @@ namespace TaskStreamer.Tool
         public void DeleteNodeFromGraph(Graph graph, NodeBase targetNode)
         {
             // 서브그래프 노드인 경우 특별 처리
-            if (targetNode is ISubGraph subGraphNode)
+            if (targetNode is ISubGraphProvider subGraphNode)
             {
                 UGUID targetGuid = subGraphNode.subGraphGuid;
                 Graph foundSubGraph = TaskStreamerEditor.Instance.graphAsset.GetGraph(targetGuid);

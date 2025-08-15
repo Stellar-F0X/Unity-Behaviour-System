@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
-[assembly: InternalsVisibleTo("TaskStreamer.Tool"), GeneratePropertyBagsForAssembly]
 namespace TaskStreamer
 {
-    [Serializable, GeneratePropertyBag]
+    [Serializable, GeneratePropertyBag, Readable]
     public abstract partial class Graph : IEquatable<Graph>, IGraphIterable
     {
         protected Graph(string graphName, GraphAsset graphAsset)
@@ -18,21 +17,32 @@ namespace TaskStreamer
             this.name = graphName;
             this.guid = UGUID.Create();
             this.graphAsset = graphAsset;
-            this._nodeLookup = new NodeDictionary();
             this._nodeGroup = new List<NodeGroup>();
+            this._nodeLookup = new NodeDictionary();
         }
+
+        [SerializeField, DontCreateProperty]
+        private string _name;
+
+        [SerializeField, DontCreateProperty]
+        private UGUID _guid;
+
+        [SerializeField, DontCreateProperty]
+        private UGUID _baseGraphGuid;
 
 #if UNITY_EDITOR
         [SerializeField]
-        private List<NodeGroup> _nodeGroup; 
-#endif 
+        private List<NodeGroup> _nodeGroup;
+#endif
         [SerializeField]
-        protected NodeDictionary _nodeLookup; 
+        private protected NodeDictionary _nodeLookup;
 
         [SerializeField, DontCreateProperty]
-        protected GraphAsset _graphAsset; 
+        protected GraphAsset _graphAsset;
 
-        
+
+
+
         public GraphAsset graphAsset
         {
             get { return _graphAsset; }
@@ -47,7 +57,7 @@ namespace TaskStreamer
         }
 #endif
 
-        public NodeBase entry 
+        public NodeBase entry
         {
             //항상 Root 또는 Entry 노드가 첫 번째로 생성되기 때문에 오류는 발생하지 않는다.
             get { return _nodeLookup.Values.First(); }
@@ -60,30 +70,27 @@ namespace TaskStreamer
             get { return _nodeLookup.Count; }
         }
 
-        [field: SerializeField]
         public UGUID guid
         {
-            get;
-            internal set;
+            get { return _guid; }
+            internal set { _guid = value; }
         }
 
-        [field: SerializeField]
         public UGUID baseGraphGuid
         {
-            get;
-            set;
+            get { return _baseGraphGuid; }
+            set { _baseGraphGuid = value; }
         }
 
-        [field: SerializeField]
         public string name
         {
-            get;
-            set;
+            get { return _name; }
+            set { _name = value; }
         }
 
         public abstract GraphType graphType
         {
-            get; 
+            get;
         }
 
 
@@ -111,14 +118,14 @@ namespace TaskStreamer
             return null;
         }
 
-        
+
         public bool Equals(Graph other)
         {
             if (other is null)
             {
                 return false;
             }
-            
+
             if (this.entry != other.entry)
             {
                 return false;
@@ -139,18 +146,19 @@ namespace TaskStreamer
         public abstract IGraphIterator GetIterator(GraphIteratorType iteratorType);
 
 
-        internal abstract Status UpdateGraph(); 
+        internal abstract Status UpdateGraph();
 
 
-        internal abstract void ResetGraph(); 
+        internal abstract void ResetGraph();
 
 
-        internal abstract void StopGraph(); 
+        internal abstract void StopGraph();
 
-        
+
 #if UNITY_EDITOR
 
 #region Group Data
+
         internal NodeGroup CreateGroupData(string title, Vector2 position)
         {
             NodeGroup newNodeGroupData = new NodeGroup(title, position, this);
@@ -190,36 +198,40 @@ namespace TaskStreamer
                 EditorUtility.SetDirty(_graphAsset);
             }
         }
+
 #endregion
 
 
 #region Sub Graph
-        internal void AddSubGraph(Graph subGraph) 
-        {
-            Undo.RecordObject(this.graphAsset, "Task Streamer (AddSubGraph)"); 
 
-            this.graphAsset.AddSubGraph(this.guid, subGraph); 
-        } 
+        internal void AddSubGraph(Graph subGraph)
+        {
+            Undo.RecordObject(this.graphAsset, "Task Streamer (AddSubGraph)");
+
+            this.graphAsset.AddSubGraph(this.guid, subGraph);
+        }
 
 
         internal void RemoveSelfAndSubGraphs()
         {
             Undo.RecordObject(this.graphAsset, "Task Streamer (RemoveSubGraph)");
-            
+
             this.graphAsset.RemoveSubGraph(this.baseGraphGuid, this);
-            
+
             this.OnRemoveGraph();
 
             EditorUtility.SetDirty(this.graphAsset);
             AssetDatabase.SaveAssets();
         }
+
 #endregion
 
 
 #region Graph
-        internal abstract void OnRemoveGraph(); 
-        
-        
+
+        internal abstract void OnRemoveGraph();
+
+
         /// <summary> Create And Insert To Node List </summary>
         /// <param name="nodeName">생성할 노드의 이름</param>
         /// <param name="nodeType">생성할 노드의 타입</param>
@@ -234,14 +246,14 @@ namespace TaskStreamer
                 Undo.RecordObject(this.graphAsset, "Task Streamer (CreateNode)");
             }
 
-            NodeBase node = TaskStreamerUtility.CreateNode(nodeType, position);
+            NodeBase node = Utilities.CreateNode(nodeType, position);
 
             if (node is null)
             {
                 throw new Exception("Node is null");
             }
 
-            node.name = TaskStreamerUtility.ApplySpacing(nodeName);
+            node.name = Utilities.ApplySpacing(nodeName);
             _nodeLookup.Add(node.guid, node);
             _nodeLookup.OnBeforeSerialize();
 
@@ -276,16 +288,17 @@ namespace TaskStreamer
             {
                 AssetDatabase.RemoveObjectFromAsset(node);
             }
-
-            if (Application.isPlaying == false && Undo.isProcessing == false && record)
+            
+            if (Application.isPlaying == false && Undo.isProcessing == false)
             {
                 Undo.DestroyObjectImmediate(node);
                 EditorUtility.SetDirty(this.graphAsset);
                 AssetDatabase.SaveAssets(); // 중요: 즉시 저장
             }
         }
+
 #endregion
-        
+
 #endif
     }
 }

@@ -7,7 +7,7 @@ using Object = UnityEngine.Object;
 
 namespace TaskStreamer.Utility
 {
-    public static class TaskStreamerUtility
+    public static class Utilities
     {
         public static int StringToHash(in string key)
         {
@@ -25,14 +25,14 @@ namespace TaskStreamer.Utility
         {
             if (string.IsNullOrEmpty(nodeName))
             {
-                throw new ArgumentException($"{typeof(TaskStreamerUtility)}: NodeName is null or empty");
+                throw new ArgumentException($"{typeof(Utilities)}: NodeName is null or empty");
             }
 
             if (nodeName.EndsWith("Node"))
             {
                 nodeName = nodeName.Replace("Node", string.Empty);
             }
-            
+
             if (nodeName.EndsWith("State"))
             {
                 nodeName = nodeName.Replace("State", string.Empty);
@@ -46,12 +46,12 @@ namespace TaskStreamer.Utility
         {
             if (typeof(NodeBase).IsAssignableFrom(nodeType) == false)
             {
-                throw new ArgumentException($"{typeof(TaskStreamerUtility)}: NodeType is not NodeBase");
+                throw new ArgumentException($"{typeof(Utilities)}: NodeType is not NodeBase");
             }
 
             if ((ScriptableObject.CreateInstance(nodeType) as Object) is not NodeBase newNode)
             {
-                throw new Exception($"{typeof(TaskStreamerUtility)}: Failed to create node of type {nodeType}");
+                throw new Exception($"{typeof(Utilities)}: Failed to create node of type {nodeType}");
             }
 
             newNode.guid = UGUID.Create();
@@ -60,13 +60,13 @@ namespace TaskStreamer.Utility
             newNode.position = position;
             return newNode;
         }
-        
-        
+
+
         public static Transition CreateTransition(StateBase from, StateBase to)
         {
             if (from.TryGetTransition(to.guid, out _))
             {
-                throw new ArgumentException($"{typeof(TaskStreamerUtility)}: Transition already exists.");
+                throw new ArgumentException($"{typeof(Utilities)}: Transition already exists.");
             }
 
             Transition newTransition = ScriptableObject.CreateInstance<Transition>();
@@ -89,31 +89,30 @@ namespace TaskStreamer.Utility
         }
 
 
-
         public static ConditionModule CreateConditionModule(Type type)
         {
             ConditionModule module = Activator.CreateInstance(type) as ConditionModule;
             Debug.Assert(module is not null, "Failed to create a condition module.");
             return module;
         }
-        
-        
-        public static void SetMainGraph(GraphAsset asset)
-        {
-            switch (asset.mainGraphType)
-            {
-                case GraphType.FSM: asset.main = StateMachine.CreateGraph("Main", asset);  break;
-                
-                case GraphType.BT:  asset.main = BehaviorTree.CreateGraph("Main", asset); break;
-            }
 
-#if UNITY_EDITOR
-            if (asset.main != null)
+
+        public static void CreateGraph(GraphAsset asset, GraphType graphType, ref Graph graph, string graphName)
+        {
+            if (asset == null)
             {
-                UnityEditor.EditorUtility.SetDirty(asset);
-                UnityEditor.AssetDatabase.SaveAssets();
+                Debug.LogError($"{typeof(Utilities)}: GraphAsset is null.");
+                return;
             }
-#endif
+            
+            switch (graphType)
+            {
+                case GraphType.FSM: graph = StateMachine.CreateGraph(graphName, asset); break;
+
+                case GraphType.BT: graph = BehaviorTree.CreateGraph(graphName, asset); break;
+            }
+            
+            Debug.Assert(graph != null, "Failed to create a graph.");
         }
     }
 }

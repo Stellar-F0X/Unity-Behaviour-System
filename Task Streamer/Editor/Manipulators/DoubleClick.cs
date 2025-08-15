@@ -62,7 +62,7 @@ namespace TaskStreamer.Tool
 
         private void OnDoubleClick(MouseDownEvent evt, NodeViewBase clickedElement)
         {
-            if (clickedElement.targetNode is ISubGraph subGraph)
+            if (clickedElement.targetNode is ISubGraphProvider subGraph)
             {
                 Graph graph = TaskStreamerEditor.Instance.graphAsset.GetGraph(subGraph.subGraphGuid);
 

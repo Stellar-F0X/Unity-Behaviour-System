@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace TaskStreamer.Attributes
+namespace TaskStreamer
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property)]
     public class ReadOnlyAttribute : PropertyAttribute

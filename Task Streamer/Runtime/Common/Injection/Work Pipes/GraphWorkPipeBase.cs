@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace TaskStreamer.Injection
 {
-    public abstract class GraphWorkPipeBase : IVisitPropertyAdapter<KeyValuePair<UGUID, Graph>>, IVisitPropertyAdapter<GraphDictionary>
+    internal abstract class GraphWorkPipeBase : IVisitPropertyAdapter<KeyValuePair<UGUID, Graph>>, IVisitPropertyAdapter<GraphDictionary>
     {
         protected GraphWorkPipeBase(GraphWorker graphWorker)
         {

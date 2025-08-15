@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace TaskStreamer.Utility
 {
-    [Serializable]
-    public abstract class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver
+    [Serializable, Readable]
+    internal abstract class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver
     {
         public abstract List<TKey> cachedKeys { get; }
 
@@ -34,8 +34,10 @@ namespace TaskStreamer.Utility
         public void OnAfterDeserialize()
         {
             this.Clear();
+            
+            int count = Mathf.Min(cachedKeys.Count, cachedValues.Count);
 
-            for (int i = 0; i < cachedKeys.Count; i++)
+            for (int i = 0; i < count; i++)
             {
                 if (cachedValues[i].Equals(null))
                 {
@@ -56,7 +58,7 @@ namespace TaskStreamer.Utility
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
     [Serializable]
-    public class URDictionary<TKey, TValue> : SerializableDictionary<TKey, TValue> where TKey : struct where TValue : class
+    internal class URDictionary<TKey, TValue> : SerializableDictionary<TKey, TValue> where TKey : struct where TValue : class
     {
         [SerializeField, DontCreateProperty]
         private List<TKey> _keys = new List<TKey>();
@@ -69,12 +71,12 @@ namespace TaskStreamer.Utility
         public override List<TValue> cachedValues => _values;
     }
 
-    
+
     /// <summary> Unity Dictionary </summary>
     /// <typeparam name="TKey"></typeparam>
     /// <typeparam name="TValue"></typeparam>
     [Serializable]
-    public class UDictionary<TKey, TValue> : SerializableDictionary<TKey, TValue>
+    internal class UDictionary<TKey, TValue> : SerializableDictionary<TKey, TValue>
     {
         [SerializeField, DontCreateProperty]
         private List<TKey> _keys = new List<TKey>();

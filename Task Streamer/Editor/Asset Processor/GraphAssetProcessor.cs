@@ -23,7 +23,11 @@ namespace TaskStreamer.Tool
                 
                 if (asset.main is null)
                 {
-                    TaskStreamerUtility.SetMainGraph(asset);
+                    Graph graphRef = asset.main;
+                    
+                    Utilities.CreateGraph(asset, asset.mainGraphType, ref graphRef, "Main");
+                    
+                    asset.main = graphRef;
                 }
                 
                 if (TaskStreamerEditorUtility.IsDuplicated(asset))

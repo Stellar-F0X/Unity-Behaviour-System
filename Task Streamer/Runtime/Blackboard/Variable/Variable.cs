@@ -48,7 +48,7 @@ namespace TaskStreamer
             }
 
             this._name = newKey;
-            this._nameHash = TaskStreamerUtility.StringToHash(this._name);
+            this._nameHash = Utilities.StringToHash(this._name);
         }
 
 

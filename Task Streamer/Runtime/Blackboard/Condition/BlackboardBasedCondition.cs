@@ -5,8 +5,8 @@ using UnityEngine;
 
 namespace TaskStreamer
 {
-    [Serializable, GeneratePropertyBag]
-    public partial class BlackboardBasedCondition
+    [Serializable, GeneratePropertyBag, Readable]
+    public sealed partial class BlackboardBasedCondition
     {
         [DontCreateProperty]
         public EvaluationPolicy evaluationPolicy;

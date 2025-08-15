@@ -5,7 +5,6 @@ using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Pool;
 using Object = UnityEngine.Object;
 
 namespace TaskStreamer.FSM
@@ -204,7 +203,7 @@ namespace TaskStreamer.FSM
                     Object.DestroyImmediate(transition);
                 }
 
-                this.DeleteNode(node);
+                this.DeleteNode(node, false);
             }
         }
 
@@ -220,7 +219,7 @@ namespace TaskStreamer.FSM
             Undo.RecordObject(_graphAsset, "State Machine (Connect)");
             Undo.RecordObject(from, "State Machine (Connect)");
 
-            Transition newTransition = TaskStreamerUtility.CreateTransition(from, to);
+            Transition newTransition = Utilities.CreateTransition(from, to);
             from.AddTransition(newTransition);
 
             // Transition을 GraphAsset의 sub-asset으로 추가

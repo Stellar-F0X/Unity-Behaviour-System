@@ -11,16 +11,33 @@ namespace TaskStreamer.FSM
 
         protected override void OnEnter()
         {
+            if (string.IsNullOrEmpty(enterLogMessage))
+            {
+                return;
+            }
+
             Debug.Log(enterLogMessage);
         }
+        
 
         protected override void OnUpdate()
         {
+            if (string.IsNullOrEmpty(updateLogMessage))
+            {
+                return;
+            }
+            
             Debug.Log(updateLogMessage);
         }
         
+
         protected override void OnExit()
         {
+            if (string.IsNullOrEmpty(exitLogMessage))
+            {
+                return;
+            }
+            
             Debug.Log(exitLogMessage);
         }
     }

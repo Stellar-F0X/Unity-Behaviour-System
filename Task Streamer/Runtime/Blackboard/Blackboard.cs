@@ -25,7 +25,7 @@ namespace TaskStreamer
 
         public Variable FindVariable(in string key)
         {
-            int hashCode = TaskStreamerUtility.StringToHash(key);
+            int hashCode = Utilities.StringToHash(key);
 
             if (hashCode == -1)
             {

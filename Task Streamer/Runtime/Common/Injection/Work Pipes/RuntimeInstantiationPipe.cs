@@ -9,12 +9,12 @@ using Object = UnityEngine.Object;
 
 namespace TaskStreamer.Injection
 {
-    public class RuntimeInstantiationPipe : GraphWorkPipeBase,
-                                            IVisitPropertyAdapter<NodeDictionary>,
-                                            IVisitPropertyAdapter<KeyValuePair<UGUID, NodeBase>>,
-                                            IVisitPropertyAdapter<List<Transition>>,
-                                            IVisitPropertyAdapter<Transition>,
-                                            IVisitContravariantPropertyAdapter<BlackboardVariable>
+    internal class RuntimeInstantiationPipe : GraphWorkPipeBase,
+                                              IVisitPropertyAdapter<NodeDictionary>,
+                                              IVisitPropertyAdapter<KeyValuePair<UGUID, NodeBase>>,
+                                              IVisitPropertyAdapter<List<Transition>>,
+                                              IVisitPropertyAdapter<Transition>,
+                                              IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
         public RuntimeInstantiationPipe(GraphWorker worker) : base(worker) { }
 
@@ -39,7 +39,6 @@ namespace TaskStreamer.Injection
             IPropertyBag<Dictionary<UGUID, NodeBase>> propertyBag = PropertyBag.GetPropertyBag<Dictionary<UGUID, NodeBase>>();
             Dictionary<UGUID, NodeBase> dictionaryValue = (Dictionary<UGUID, NodeBase>)_newNodeDictionary;
             propertyBag.Accept(_worker, ref dictionaryValue);
-
             value = _newNodeDictionary;
         }
 

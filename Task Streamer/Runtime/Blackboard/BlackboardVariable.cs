@@ -1,7 +1,5 @@
 using System;
-using TaskStreamer.Utility;
 using Unity.Properties;
-using UnityEditor;
 using UnityEngine;
 
 namespace TaskStreamer
@@ -73,11 +71,9 @@ namespace TaskStreamer
     }
 
 
-    [Serializable, GeneratePropertyBag]
+    [Serializable, GeneratePropertyBag, Readable]
     public partial class BlackboardVariable<T> : BlackboardVariable
     {
-
-
         public T value
         {
             get { return ((Variable<T>)_variable).value; }

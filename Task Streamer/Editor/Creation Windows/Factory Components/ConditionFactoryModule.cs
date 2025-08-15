@@ -10,7 +10,7 @@ namespace TaskStreamer.Tool
 
         protected override ConditionModule Create(Type type, Vector2 position)
         {
-            ConditionModule module = TaskStreamerUtility.CreateConditionModule(type);
+            ConditionModule module = Utilities.CreateConditionModule(type);
             Debug.Assert(module is not null, "ConditionModule is null");
             return module;
         }

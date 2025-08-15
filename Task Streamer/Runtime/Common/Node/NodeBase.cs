@@ -5,9 +5,9 @@ using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
 
-[assembly: InternalsVisibleTo("TaskStreamer.Tool")]
 namespace TaskStreamer
 {
+    [Readable]
     public abstract class NodeBase : ScriptableObject
     {
         protected Action onNodeEnter;

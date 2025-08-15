@@ -1,6 +1,5 @@
 using System;
-using TaskStreamer.BT;
-using TaskStreamer.FSM;
+using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEngine;
 
@@ -24,23 +23,15 @@ namespace TaskStreamer.Tool
 
         protected override void AfterCreate(NodeViewBase creation)
         {
-            if (creation.targetNode is ISubGraph graphNode)
+            if (creation.targetNode is ISubGraphProvider graphNode)
             {
                 GraphAsset graphAsset = TaskStreamerEditor.Instance.graphAsset;
-
                 Debug.Assert(graphAsset is not null, $"{nameof(NodeFactoryModule)}: GraphAsset is null");
 
                 Graph baseGraph = TaskStreamerEditor.Instance.view.focusGraph;
                 Graph newGraph = null;
-
-                switch (graphNode.subGraphType)
-                {
-                    case GraphType.BT: newGraph = BehaviorTree.CreateGraph(creation.title, graphAsset); break;
-
-                    case GraphType.FSM: newGraph = StateMachine.CreateGraph(creation.title, graphAsset); break;
-                }
-
-                Debug.Assert(newGraph is not null, $"{nameof(NodeFactoryModule)}: NewGraph is null");
+                
+                Utilities.CreateGraph(graphAsset, graphNode.subGraphType, ref newGraph, creation.title);
 
                 baseGraph.AddSubGraph(newGraph);
                 graphNode.subGraphGuid = newGraph.guid;

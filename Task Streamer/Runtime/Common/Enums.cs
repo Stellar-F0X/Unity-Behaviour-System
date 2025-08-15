@@ -1,8 +1,6 @@
 using System;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 
-[assembly: InternalsVisibleTo("TaskStreamer.Tool")]
 namespace TaskStreamer
 {
     /// <summary> 상태 머신(FSM)에서 사용되는 노드의 유형을 정의합니다. </summary>

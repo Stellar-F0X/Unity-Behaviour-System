@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace TaskStreamer.BT
 {
-    public abstract class SubGraphNode : BehaviorNodeBase, ISubGraph
+    public abstract class SubGraphNode : BehaviorNodeBase, ISubGraphProvider
     {
         [DontCreateProperty]
         private Graph _subGraph;
         
-        [SerializeField, HideInInspector]
+        [SerializeField, DontCreateProperty, HideInInspector]
         private UGUID _subGraphGuid;
 
         

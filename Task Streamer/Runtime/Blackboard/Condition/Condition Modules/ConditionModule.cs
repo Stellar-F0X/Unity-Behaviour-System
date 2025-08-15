@@ -3,7 +3,7 @@ using Unity.Properties;
 
 namespace TaskStreamer
 {
-    [Serializable, GeneratePropertyBag]
+    [Serializable, GeneratePropertyBag, Readable]
     public abstract class ConditionModule
     {
         [DontCreateProperty]

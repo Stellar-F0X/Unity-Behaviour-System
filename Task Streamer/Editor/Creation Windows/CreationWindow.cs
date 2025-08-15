@@ -168,7 +168,7 @@ namespace TaskStreamer.Tool
 
             for (int i = 1; i < entries.Length; ++i)
             {
-                string typeName = TaskStreamerUtility.ApplySpacing(typeList[i - 1].Name);
+                string typeName = Utilities.ApplySpacing(typeList[i - 1].Name);
                 entries[i] = new SearchTreeEntry(new GUIContent(typeName))
                 {
                     userData = (typeList[i - 1], module),

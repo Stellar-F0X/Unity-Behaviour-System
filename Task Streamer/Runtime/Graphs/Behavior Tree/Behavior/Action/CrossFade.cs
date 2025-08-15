@@ -1,4 +1,3 @@
-using TaskStreamer.Attributes;
 using Unity.Properties;
 using UnityEngine;
 
@@ -7,7 +6,6 @@ namespace TaskStreamer.BT
     [GeneratePropertyBag]
     public partial class CrossFade : ActionNode
     {
-        [CreateProperty]
         public BlackboardVariable<Animator> animator;
 
         public string animationName;

@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace TaskStreamer.FSM
 {
-    public abstract class SubGraphState : StateBase, ISubGraph
+    public abstract class SubGraphState : StateBase, ISubGraphProvider
     {
         [DontCreateProperty]
         private Graph _subGraph;
 
-        [SerializeField, HideInInspector]
+        [SerializeField, DontCreateProperty, HideInInspector]
         private UGUID _subGraphGuid;
 
 

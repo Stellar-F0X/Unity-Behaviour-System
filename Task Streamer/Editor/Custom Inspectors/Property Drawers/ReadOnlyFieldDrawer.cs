@@ -1,5 +1,4 @@
-﻿using TaskStreamer.Attributes;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 namespace TaskStreamer.Tool

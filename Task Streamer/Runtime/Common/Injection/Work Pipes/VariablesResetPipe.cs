@@ -1,18 +1,16 @@
 using System.Collections.Generic;
-using TaskStreamer.BT;
 using TaskStreamer.FSM;
 using TaskStreamer.Utility;
 using Unity.Properties;
-using UnityEngine;
 
 namespace TaskStreamer.Injection
 {
     /// <summary> Blackboard 교체될 때, 이미 등록되어 있는 BlackboardVariable을 해제하는 용도로 사용되는 객체. </summary>
-    public class VariablesResetPipe : GraphWorkPipeBase,
-                                      IVisitPropertyAdapter<NodeDictionary>,
-                                      IVisitPropertyAdapter<Transition>,
-                                      IVisitPropertyAdapter<BlackboardBasedCondition>,
-                                      IVisitContravariantPropertyAdapter<BlackboardVariable>
+    internal class VariablesResetPipe : GraphWorkPipeBase,
+                                        IVisitPropertyAdapter<NodeDictionary>,
+                                        IVisitPropertyAdapter<Transition>,
+                                        IVisitPropertyAdapter<BlackboardBasedCondition>,
+                                        IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
         public VariablesResetPipe(GraphWorker worker) : base(worker) { }
 

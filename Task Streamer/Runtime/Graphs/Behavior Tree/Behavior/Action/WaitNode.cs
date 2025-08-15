@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace TaskStreamer.BT
 {
+    [Readable]
     public class WaitNode : ActionNode
     {
         public float duration = 1f;

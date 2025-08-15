@@ -104,7 +104,7 @@ namespace TaskStreamer.Tool
                 if (newSelectedIndex == 0)
                 {
                     TypeCache.TypeCollection typeCollection = TypeCache.GetTypesDerivedFrom(variableType);
-                    variableProp.managedReferenceValue = TaskStreamerUtility.CreateVariable(typeCollection[0], true);
+                    variableProp.managedReferenceValue = Utility.Utilities.CreateVariable(typeCollection[0], true);
                 }
                 else
                 {
@@ -126,8 +126,8 @@ namespace TaskStreamer.Tool
 
             if (isChanged) //이 경우 한 프레임 정보 Draw가 밀리게 된다.
             {
-                Type variableType = Utility.Helper.GetImplementedType(typeof(Variable<>), fieldInfo.FieldType.GenericTypeArguments[0]);
-                variableProp.managedReferenceValue = TaskStreamerUtility.CreateVariable(variableType, true);
+                Type variableType = typeof(Variable<>).GetImplementedType(fieldInfo.FieldType.GenericTypeArguments[0]);
+                variableProp.managedReferenceValue = Utility.Utilities.CreateVariable(variableType, true);
                 return;
             }
 
@@ -135,8 +135,8 @@ namespace TaskStreamer.Tool
 
             if (SerializedProperty.DataEquals(valueProperty, null)) //이 경우 한 프레임 정보 Draw가 밀리게 된다.
             {
-                Type variableType = Utility.Helper.GetImplementedType(typeof(Variable<>), fieldInfo.FieldType.GenericTypeArguments[0]);
-                variableProp.managedReferenceValue = TaskStreamerUtility.CreateVariable(variableType, true);
+                Type variableType = typeof(Variable<>).GetImplementedType(fieldInfo.FieldType.GenericTypeArguments[0]);
+                variableProp.managedReferenceValue = Utility.Utilities.CreateVariable(variableType, true);
                 return;
             }
             

@@ -1,45 +1,63 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using UnityEditor;
+using System.Reflection;
+using Unity.Properties;
 using UnityEngine;
-using UTypeUtility = Unity.Properties.TypeUtility;
-
 
 namespace TaskStreamer.Utility
 {
-    public static class Helper
+    public static class Extension
     {
-        public static void ForEach<T>([NotNull] this IEnumerable<T> array, [NotNull] Action<T> action)
+        public static bool HasAttribute<T>(this ICustomAttributeProvider provider, bool inherit = false) where T : Attribute
         {
-            if (array is null)
+            if (provider.GetAttribute<T>(inherit) is null)
             {
-                return;
+                return false;
             }
-
-            foreach (T element in array)
+            else
             {
-                action.Invoke(element);
+                return true;
+            }
+        }
+        
+        
+        public static bool HasAttribute<T>(this ICustomAttributeProvider provider, out T attribute, bool inherit = false) where T : Attribute
+        {
+            attribute = provider.GetAttribute<T>(inherit);
+            
+            if (attribute is null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
 
 
-        public static void RenameKey<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey fromKey, TKey toKey)
+        public static T GetAttribute<T>(this ICustomAttributeProvider provider, bool inherit = false) where T : Attribute
         {
-            if (dic.TryGetValue(fromKey, out TValue value) && dic.Remove(fromKey))
+            return provider.GetAttributes<T>(inherit).FirstOrDefault();
+        }
+
+
+        public static IEnumerable<T> GetAttributes<T>(this ICustomAttributeProvider provider, bool inherit) where T : Attribute
+        {
+            try
             {
-                dic[toKey] = value;
+                return provider.GetCustomAttributes(typeof(T), inherit)?.Cast<T>();
             }
-            else 
+            catch
             {
-                Debug.LogError($"Failed to rename key from {fromKey} to {toKey} in dictionary.");
+                return Array.Empty<T>();
             }
         }
 
 
 #if UNITY_EDITOR
-        public static Type[] OrderByNameAndFilterAbstracts(this TypeCache.TypeCollection collection)
+        public static Type[] OrderByNameAndFilterAbstracts(this UnityEditor.TypeCache.TypeCollection collection)
         {
             Type[] array = collection.Where(t => t.IsAbstract == false && t.IsGenericType == false).ToArray();
 
@@ -51,12 +69,12 @@ namespace TaskStreamer.Utility
             Array.Sort(array, (a, b) => a.Name[0].CompareTo(b.Name[0]));
             return array;
         }
-
-
-
-        public static Type GetImplementedType(in Type baseType, params Type[] argumentType)
+        
+        
+        
+        public static Type GetImplementedType(this Type baseType, params Type[] argumentType)
         {
-            if (UTypeUtility.CanBeInstantiated(baseType))
+            if (TypeUtility.CanBeInstantiated(baseType))
             {
                 Debug.LogError($"The type {baseType} should not be instantiable.");
                 return null;
@@ -85,7 +103,8 @@ namespace TaskStreamer.Utility
                 return null;
             }
 
-            TypeCache.TypeCollection typeCollection = TypeCache.GetTypesDerivedFrom(variableType);
+            
+            UnityEditor.TypeCache.TypeCollection typeCollection = UnityEditor.TypeCache.GetTypesDerivedFrom(variableType);
 
             if (typeCollection.Count == 0 || typeCollection.Count > 1)
             {
@@ -96,7 +115,7 @@ namespace TaskStreamer.Utility
             Type resultType = typeCollection[0];
 
             //filter abstract class
-            if (UTypeUtility.CanBeInstantiated(resultType) == false)
+            if (TypeUtility.CanBeInstantiated(resultType) == false)
             {
                 Debug.LogError($"The type {resultType} cannot be instantiated.");
                 return null;
