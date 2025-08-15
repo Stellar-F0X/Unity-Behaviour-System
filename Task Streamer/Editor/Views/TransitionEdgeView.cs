@@ -7,6 +7,8 @@ using Edge = UnityEditor.Experimental.GraphView.Edge;
 
 namespace TaskStreamer.Tool
 {
+    //TODO: 그냥 UXML로 만들어보자.
+    
     // Referenced: https://github.com/FBast/unity-graphtools-fsm/blob/main/Editor/Edges/TransitionEdge.cs
     // Copyright (c) 2021 Original Author
     // Licensed under the MIT License. See LICENSE file in the root for details.
@@ -14,7 +16,7 @@ namespace TaskStreamer.Tool
     {
         public TransitionEdgeView()
         {
-            StyleSheet styleSheet = TaskStreamerEditor.settings.transitionEdgeViewStyle;
+            StyleSheet styleSheet = TaskStreamerEditor.settings.transitionEdgeViewStyle; 
 
             Debug.Assert(styleSheet != null, "TransitionEdgeViewStyle is null");
 

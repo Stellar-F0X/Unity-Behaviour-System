@@ -1,5 +1,3 @@
-using TaskStreamer.BT;
-using TaskStreamer.FSM;
 using TaskStreamer.Utility;
 using UnityEditor;
 
@@ -27,15 +25,10 @@ namespace TaskStreamer.Tool
                 {
                     TaskStreamerUtility.SetMainGraph(asset);
                 }
-
-                if (asset.graphGuid.IsEmpty())
-                {
-                    asset.graphGuid = UGUID.Create();
-                }
                 
                 if (TaskStreamerEditorUtility.IsDuplicated(asset))
                 {
-                    TaskStreamerEditorUtility.ChangeGraphNodeGuids(asset);
+                    asset.ReassignAllGraphElementGuids();
                 }
             }
         }

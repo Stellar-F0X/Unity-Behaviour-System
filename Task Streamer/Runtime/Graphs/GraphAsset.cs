@@ -163,6 +163,27 @@ namespace TaskStreamer
 
 
 #if UNITY_EDITOR
+        public void ReassignAllGraphElementGuids()
+        {
+            if (PropertyBag.Exists<GraphAsset>() == false)
+            {
+                Debug.LogError("GraphAsset does not have a property bag.");
+                return;
+            }
+
+            GraphVisitor dataContainer = new GraphVisitor(null, this, null);
+
+            dataContainer.AddAdapter(new GUIDInitAdaptor(dataContainer));
+
+            IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
+            GraphAsset reference = this;
+            
+            bag.Accept(dataContainer, ref reference);
+
+            this.graphGuid = UGUID.Create();
+        }
+        
+        
         internal void ResetBoundVariables()
         {
             if (this.blackboard == null || blackboard.variables.Count == 0)

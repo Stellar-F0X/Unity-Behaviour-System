@@ -1,4 +1,5 @@
 using System.IO;
+using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -74,23 +75,6 @@ namespace TaskStreamer.Tool
             }
 
             return false;
-        }
-
-
-        public static void ChangeGraphNodeGuids(GraphAsset graphAsset)
-        {
-            if (graphAsset == null)
-            {
-                return;
-            }
-
-            foreach (Graph graph in graphAsset.graphs)
-            {
-                graph.RegenerateAllNodeGuids();
-            }
-            
-            EditorUtility.SetDirty(graphAsset);
-            AssetDatabase.SaveAssets();
         }
 
 

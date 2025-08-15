@@ -17,14 +17,27 @@ namespace TaskStreamer.Utility
             {
                 return;
             }
-            
+
             foreach (T element in array)
             {
                 action.Invoke(element);
             }
         }
-        
-        
+
+
+        public static void RenameKey<TKey, TValue>(this IDictionary<TKey, TValue> dic, TKey fromKey, TKey toKey)
+        {
+            if (dic.TryGetValue(fromKey, out TValue value) && dic.Remove(fromKey))
+            {
+                dic[toKey] = value;
+            }
+            else 
+            {
+                Debug.LogError($"Failed to rename key from {fromKey} to {toKey} in dictionary.");
+            }
+        }
+
+
 #if UNITY_EDITOR
         public static Type[] OrderByNameAndFilterAbstracts(this TypeCache.TypeCollection collection)
         {
@@ -38,9 +51,9 @@ namespace TaskStreamer.Utility
             Array.Sort(array, (a, b) => a.Name[0].CompareTo(b.Name[0]));
             return array;
         }
-        
-        
-        
+
+
+
         public static Type GetImplementedType(in Type baseType, params Type[] argumentType)
         {
             if (UTypeUtility.CanBeInstantiated(baseType))
@@ -48,7 +61,7 @@ namespace TaskStreamer.Utility
                 Debug.LogError($"The type {baseType} should not be instantiable.");
                 return null;
             }
-            
+
             Type variableType = null;
 
             if (argumentType is null || argumentType.Length == 0)

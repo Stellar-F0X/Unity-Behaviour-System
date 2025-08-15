@@ -28,10 +28,6 @@ namespace TaskStreamer
 #endif 
         [SerializeField]
         protected NodeDictionary _nodeLookup; 
-        
-        /// <summary> Entry Node Guid </summary>
-        [SerializeField, DontCreateProperty]
-        private UGUID _entryGuid; 
 
         [SerializeField, DontCreateProperty]
         protected GraphAsset _graphAsset; 
@@ -53,17 +49,10 @@ namespace TaskStreamer
 
         public NodeBase entry 
         {
-            get
-            {
-                Debug.Assert(! _entryGuid.IsEmpty(), "Entry guid is empty");
-                return _nodeLookup[_entryGuid];
-            }
+            //항상 Root 또는 Entry 노드가 첫 번째로 생성되기 때문에 오류는 발생하지 않는다.
+            get { return _nodeLookup.Values.First(); }
 
-            internal set
-            {
-                _entryGuid = value.guid;
-                _nodeLookup[_entryGuid] = value;
-            }
+            internal set { _nodeLookup[entry.guid] = value; }
         }
 
         public int count
@@ -75,7 +64,7 @@ namespace TaskStreamer
         public UGUID guid
         {
             get;
-            private set;
+            internal set;
         }
 
         [field: SerializeField]
@@ -130,7 +119,7 @@ namespace TaskStreamer
                 return false;
             }
             
-            if (_entryGuid != other._entryGuid)
+            if (this.entry != other.entry)
             {
                 return false;
             }
@@ -140,7 +129,7 @@ namespace TaskStreamer
                 return false;
             }
 
-            return ReferenceEquals(this, other);
+            return ReferenceEquals(this, other) && ReferenceEquals(this.entry, other.entry);
         }
 
 
@@ -199,38 +188,6 @@ namespace TaskStreamer
             if (Application.isPlaying == false && Undo.isProcessing == false)
             {
                 EditorUtility.SetDirty(_graphAsset);
-            }
-        }
-        
-        
-        /// <summary> Regenerates unique GUIDs for all nodes within the graph. </summary>
-        /// <exception cref="Exception"> Thrown when GUID regeneration fails for any node. </exception>
-        internal void RegenerateAllNodeGuids()
-        {
-            List<UGUID> keyList = _nodeLookup.Keys.ToList();
-
-            foreach (UGUID keyGuid in keyList)
-            {
-                NodeBase node = _nodeLookup[keyGuid];
-
-                if (node is null)
-                {
-                    throw new Exception($"Node with GUID {keyGuid} is null");
-                }
-
-                UGUID newGuid = UGUID.Create();
-
-                NodeGroup group = _nodeGroup.Find(e => e.Contains(keyGuid));
-
-                if (group is not null)
-                {
-                    group.RemoveNodeFromGroup(keyGuid, false);
-                    group.AddNodeToGroup(newGuid, false);
-                }
-                
-                _nodeLookup.Remove(keyGuid);
-                node.guid = newGuid;
-                _nodeLookup.Add(newGuid, node);
             }
         }
 #endregion
