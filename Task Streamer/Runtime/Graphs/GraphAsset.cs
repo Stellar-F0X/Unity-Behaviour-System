@@ -3,6 +3,7 @@ using UnityEditor;
 #endif
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TaskStreamer.Injection;
 using TaskStreamer.Utility;
 using Unity.Properties;
@@ -29,7 +30,7 @@ namespace TaskStreamer
 
         /// <summary> 현재 사용 중인 블랙보드이다. </summary>
         [SerializeField, DontCreateProperty]
-        public Blackboard blackboard;
+        public BlackboardAsset blackboard;
 
         /// <summary> 그래프 에셋의 GUID로, 그래프 에셋을 식별 </summary>
         [SerializeField, DontCreateProperty]
@@ -86,7 +87,7 @@ namespace TaskStreamer
             }
             
             GraphAsset instantiatedGraphAsset = null;
-            Blackboard instantiatedBlackboard = null;
+            BlackboardAsset instantiatedBlackboard = null;
 
             instantiatedGraphAsset = Object.Instantiate(this);
 
@@ -94,6 +95,7 @@ namespace TaskStreamer
             {
                 instantiatedBlackboard = Object.Instantiate(this.blackboard);
                 instantiatedGraphAsset.blackboard = instantiatedBlackboard;
+                instantiatedBlackboard.variables = streamer.runtimeBlackboard.variables.ToList();
             }
 
             GraphWorker graphWorker = new GraphWorker(instantiatedBlackboard, instantiatedGraphAsset, streamer);
@@ -108,7 +110,7 @@ namespace TaskStreamer
         
         public List<Graph> GetSubGraphs(UGUID baseGraphGuid)
         {
-            if (baseGraphGuid.IsEmpty() || _graphTreeMap.TryGetValue(baseGraphGuid, out List<UGUID> subGraphGuids) == false)
+            if (baseGraphGuid.IsEmpty() || _graphTreeMap.TryGetValue(baseGraphGuid, out UGUIDList subGraphGuids) == false)
             {
                 return null;
             }
@@ -183,7 +185,7 @@ namespace TaskStreamer
         
         internal void ResetBoundVariables()
         {
-            if (this.blackboard == null || blackboard.variables.Count == 0)
+            if (this.blackboard == null || blackboard.count == 0)
             {
                 return;
             }
@@ -294,7 +296,7 @@ namespace TaskStreamer
 
             if (_graphTreeMap.ContainsKey(from) == false)
             {
-                _graphTreeMap.Add(from, new List<UGUID>());
+                _graphTreeMap.Add(from, new UGUIDList());
             }
 
             if (_graphTreeMap[from].Contains(to) == false)
@@ -312,7 +314,7 @@ namespace TaskStreamer
                 return;
             }
 
-            bool found = _graphTreeMap.TryGetValue(from, out List<UGUID> dependencies);
+            bool found = _graphTreeMap.TryGetValue(from, out UGUIDList dependencies);
 
             if (found == false)
             {

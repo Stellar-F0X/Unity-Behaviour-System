@@ -4,27 +4,30 @@ namespace TaskStreamer.BT
 {
     public class LogNode : ActionNode
     {
-        public string onEnterMessages;
-        public string onUpdateMessages;
-        public string onExitMessages;
+        public BlackboardVariable<string> onEnterMessages = "";
+        
+        public BlackboardVariable<string> onUpdateMessages = "";
+        
+        public BlackboardVariable<string> onExitMessages = "";
 
 
+        
         protected override void OnEnter()
         {
-            if (string.IsNullOrEmpty(onEnterMessages))
+            if (string.IsNullOrEmpty(onEnterMessages.value))
             {
                 return;
             }
 
-            Debug.Log(onEnterMessages);
+            Debug.Log(onEnterMessages.value);
         }
 
 
         protected override Status OnUpdate()
         {
-            if (string.IsNullOrEmpty(onUpdateMessages) == false)
+            if (string.IsNullOrEmpty(onUpdateMessages.value) == false)
             {
-                Debug.Log(onUpdateMessages);
+                Debug.Log(onUpdateMessages.value);
             }
 
             return Status.Success;
@@ -33,12 +36,12 @@ namespace TaskStreamer.BT
 
         protected override void OnExit()
         {
-            if (string.IsNullOrEmpty(onExitMessages))
+            if (string.IsNullOrEmpty(onExitMessages.value))
             {
                 return;
             }
             
-            Debug.Log(onExitMessages);
+            Debug.Log(onExitMessages.value);
         }
     }
 }

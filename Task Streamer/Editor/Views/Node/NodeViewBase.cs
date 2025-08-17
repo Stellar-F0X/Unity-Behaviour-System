@@ -22,7 +22,7 @@ namespace TaskStreamer.Tool
             this._elementGroup = this.Q<VisualElement>("group");
             this._nodeBorder = this.Q<VisualElement>("node-border");
             this._nodeTypeLabel = this.Q<TextElement>("node-type-label");
-            
+
             this._connectionEdge = new EdgeDictionary();
 
             this.Initialize();
@@ -33,19 +33,18 @@ namespace TaskStreamer.Tool
         public event Action<GraphElement> onNodeUnselected;
 
         private readonly NodeBase _targetNode;
-        
         private readonly VisualElement _nodeBorder;
-        private readonly TextElement _nodeTypeLabel;
-        
+
+        protected readonly TextElement _nodeTypeLabel;
         protected readonly VisualElement _elementGroup;
-        
+
         protected NodeHighlighterBase _highlighter;
         private EdgeDictionary _connectionEdge;
 
         public Port inputPort;
         public Port outputPort;
-        
-        
+
+
         public VisualElement nodeBorder
         {
             get { return _nodeBorder; }
@@ -60,27 +59,27 @@ namespace TaskStreamer.Tool
         {
             get { return _targetNode; }
         }
-        
+
         public NodeHighlighterBase highlighter
         {
             get { return _highlighter; }
         }
-        
-        
-        
+
+
+
         private void Initialize()
         {
-            _nodeTypeLabel.text = Utility.Utilities.ApplySpacing(_targetNode.GetType().Name);
-
-            if (Application.isPlaying == false)
+            if (Application.isPlaying)
             {
-                SerializedObject serializedNode = new SerializedObject(_targetNode);
-                SerializedProperty nameProp = serializedNode.FindProperty("m_Name");
-                this.TrackPropertyValue(nameProp, this.ChangeNodeViewName);
+                return;
             }
+
+            SerializedObject serializedNode = new SerializedObject(_targetNode);
+            SerializedProperty nameProp = serializedNode.FindProperty("m_Name");
+            this.TrackPropertyValue(nameProp, this.ChangeNodeViewName);
         }
-        
-        
+
+
         public override void OnSelected()
         {
             onNodeSelected?.Invoke(this);
@@ -91,8 +90,8 @@ namespace TaskStreamer.Tool
         {
             onNodeUnselected?.Invoke(this);
         }
-        
-        
+
+
         //NodeBase CustomEditor에서 그려지는 NodeBase의 Name Field를 수정시, 에디터에서 값 변경을 확인 후, 알림이 전달.
         //등록된 TrackPropertyValue에 등록된 람다가 호출되고 변경된 이름이 property.stringValue로 전돨되며 NodeView의 Title도 변경됨.
         private void ChangeNodeViewName(SerializedProperty nameProperty)
@@ -106,7 +105,7 @@ namespace TaskStreamer.Tool
 
             this.title = nameProperty.stringValue;
         }
-        
+
 
         public override void SetPosition(Rect newPos)
         {
@@ -133,8 +132,8 @@ namespace TaskStreamer.Tool
             port.portName = portName;
             container.Add(port);
         }
-        
-        
+
+
         //NodeView에 포트를 생성합니다.
         protected abstract void CreatePorts();
 

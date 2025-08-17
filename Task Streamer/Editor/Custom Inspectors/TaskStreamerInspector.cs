@@ -28,7 +28,8 @@ namespace TaskStreamer.Tool
                     SettingsService.OpenProjectSettings(SettingRegister.SettingsResistryPath);
                 }
             }
-
+            
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("_runtimeBlackboard"));
             serializedObject.ApplyModifiedProperties();
         }
     }

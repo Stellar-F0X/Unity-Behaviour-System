@@ -18,9 +18,9 @@ namespace TaskStreamer.BT
         
         protected override Status OnUpdate()
         {
-            if (conditions is not null && this.CheckCondition())
+            if (base.conditions is not null && this.CheckCondition())
             {
-                return child.UpdateNode();
+                return base.child.UpdateNode();
             }
             else
             {

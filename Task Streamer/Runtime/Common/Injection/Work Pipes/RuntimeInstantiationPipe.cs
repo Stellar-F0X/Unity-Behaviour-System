@@ -103,7 +103,7 @@ namespace TaskStreamer.Injection
 
         public void Visit<TContainer>(in VisitContext<TContainer> context, ref TContainer container, BlackboardVariable value)
         {
-            if (value?.variable is null || _worker.blackboard == null || _worker.blackboard.variables.Count == 0)
+            if (value?.variable is null || _worker.blackboard == null || _worker.blackboard.count == 0)
             {
                 return;
             }
@@ -114,7 +114,7 @@ namespace TaskStreamer.Injection
                 return;
             }
 
-            Variable foundVariable = _worker.blackboard.FindVariable(value.name);
+            Variable foundVariable = _worker.blackboard.FindVariable(value.guid);
             Debug.Assert(foundVariable != null, "Variable not found in blackboard.");
 
             BlackboardVariable blackboardVariable = value.Clone(); 

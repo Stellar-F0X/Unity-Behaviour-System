@@ -1,28 +1,31 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
+using TaskStreamer.Utility;
 using UnityEngine;
 
 namespace TaskStreamer
 {
     [DefaultExecutionOrder(-1)]
-    public sealed class TaskStreamer : MonoBehaviour
+    public sealed class TaskStreamer : MonoBehaviour, ISerializationCallbackReceiver
     {
         internal event Action onNodeFixedUpdate;
 
         internal event Action onNodeLateUpdate;
 
         internal event Action onNodeGizmosUpdate;
-        
+
         [SerializeField]
         private TickMode _tickMode = TickMode.ManualUpdate;
+
+        [SerializeField]
+        private bool _pauseUpdate;
 
         [SerializeField]
         private GraphAsset _graphAsset;
 
         [SerializeField]
-        private bool _pauseUpdate;
+        private RuntimeBlackboard _runtimeBlackboard = new RuntimeBlackboard();
 
 
         internal GraphAsset graphAsset
@@ -30,9 +33,9 @@ namespace TaskStreamer
             get { return _graphAsset; }
         }
 
-        internal Blackboard blackboard
+        internal RuntimeBlackboard runtimeBlackboard
         {
-            get { return _graphAsset?.blackboard; }
+            get { return _runtimeBlackboard; }
         }
 
         public bool pause
@@ -57,6 +60,8 @@ namespace TaskStreamer
                 return;
             }
 
+            _runtimeBlackboard?.InitializeOnEnterRuntime();
+            
             _graphAsset = _graphAsset.Clone(this);
 
             if (this.graphAsset == null)
@@ -145,12 +150,12 @@ namespace TaskStreamer
 
         public void SetVariable<TValue>(in string key, TValue value)
         {
-            if (this.blackboard is null || enabled == false)
+            if (this._runtimeBlackboard is null || enabled == false)
             {
                 throw new InvalidOperationException("BehaviourTree 또는 Blackboard가 활성화되어 있지 않습니다.");
             }
 
-            Variable foundVariable = blackboard.FindVariable(key);
+            Variable foundVariable = _runtimeBlackboard.FindVariable(key);
 
             if (foundVariable is Variable<TValue> valueVariable)
             {
@@ -164,12 +169,12 @@ namespace TaskStreamer
 
         public TValue GetVariable<TValue>(in string key)
         {
-            if (this.blackboard is null || enabled == false)
+            if (this._runtimeBlackboard is null || enabled == false)
             {
                 throw new InvalidOperationException("BehaviourTree 또는 Blackboard가 활성화되어 있지 않습니다.");
             }
 
-            Variable foundVariable = blackboard.FindVariable(key);
+            Variable foundVariable = _runtimeBlackboard.FindVariable(key);
 
             if (foundVariable is Variable<TValue> valueVariable)
             {
@@ -178,5 +183,65 @@ namespace TaskStreamer
 
             throw new KeyNotFoundException($"키 '{key}'에 해당하는 프로퍼티를 찾을 수 없습니다.");
         }
+
+
+
+        private void UpdateRuntimeBlackboardVariables()
+        {
+            //Runtime Blackboard에 SO Blackboard에선 진작 수정돼서 없는 Variable이 있는지 확인과 동시에 제거한다.
+            for (int index = _runtimeBlackboard.count - 1; index >= 0; --index)
+            { 
+                Variable original = _runtimeBlackboard.variables[index];
+                
+                Variable replica = _graphAsset.blackboard.FindVariable(original.guid);
+
+                if (replica is null)
+                {
+                    _runtimeBlackboard.RemoveVariable(original);
+                }
+                else
+                {
+                    original.key = replica.key;
+                }
+            }
+
+            //SO Blackboard엔 있지만 Runtime Blackboard에는 없는 Variable들을 Runtime Blackboard에 추가한다.
+            foreach (Variable variable in _graphAsset.blackboard.variables)
+            {
+                Variable replica = _runtimeBlackboard.FindVariable(variable.guid);
+
+                if (replica is null)
+                {
+                    _runtimeBlackboard.AddVariable(variable.Clone());
+                }
+                else
+                {
+                    replica.key = variable.key;
+                }
+            }
+        }
+        
+
+
+        public void OnBeforeSerialize()
+        {
+            //GraphAsset이 없어졌거나 Blackboard가 제거될 경우 Variable 리스트를 삭제하고 함수를 종료한다.
+            if (_graphAsset == null || _graphAsset.blackboard == null)
+            {
+                this._runtimeBlackboard.ClearVariables();
+                return;
+            }
+            
+            //마지막 반영 버전과 같으면 굳이 다시 업데이트하지 않고 함수를 종료한다.
+            if (_runtimeBlackboard.CanUpdateable(_graphAsset.blackboard.appliedVersion))
+            {
+                return;
+            }
+
+            this.UpdateRuntimeBlackboardVariables();
+        }
+
+
+        public void OnAfterDeserialize() { }
     }
 }

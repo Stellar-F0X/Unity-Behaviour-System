@@ -35,9 +35,7 @@ namespace TaskStreamer.Utility
         {
             this.Clear();
             
-            int count = Mathf.Min(cachedKeys.Count, cachedValues.Count);
-
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < cachedKeys.Count; i++)
             {
                 if (cachedValues[i].Equals(null))
                 {

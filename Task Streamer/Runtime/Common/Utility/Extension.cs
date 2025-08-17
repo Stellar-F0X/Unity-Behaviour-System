@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using Unity.Properties;
@@ -9,6 +11,27 @@ namespace TaskStreamer.Utility
 {
     public static class Extension
     {
+        public static bool IsNotNullOrEmpty(this string s)
+        {
+            return string.IsNullOrEmpty(s) == false;
+        }
+
+
+
+        public static void ForEach<T>(this IEnumerable<T> collection, [NotNull] Action<T> action)
+        {
+            if (collection is null)
+            {
+                return;
+            }
+
+            foreach (T element in collection)
+            {
+                action.Invoke(element);
+            }
+        }
+
+
         public static bool HasAttribute<T>(this ICustomAttributeProvider provider, bool inherit = false) where T : Attribute
         {
             if (provider.GetAttribute<T>(inherit) is null)
@@ -20,12 +43,12 @@ namespace TaskStreamer.Utility
                 return true;
             }
         }
-        
-        
+
+
         public static bool HasAttribute<T>(this ICustomAttributeProvider provider, out T attribute, bool inherit = false) where T : Attribute
         {
             attribute = provider.GetAttribute<T>(inherit);
-            
+
             if (attribute is null)
             {
                 return false;
@@ -54,77 +77,5 @@ namespace TaskStreamer.Utility
                 return Array.Empty<T>();
             }
         }
-
-
-#if UNITY_EDITOR
-        public static Type[] OrderByNameAndFilterAbstracts(this UnityEditor.TypeCache.TypeCollection collection)
-        {
-            Type[] array = collection.Where(t => t.IsAbstract == false && t.IsGenericType == false).ToArray();
-
-            if (array.Length <= 1)
-            {
-                return array;
-            }
-
-            Array.Sort(array, (a, b) => a.Name[0].CompareTo(b.Name[0]));
-            return array;
-        }
-        
-        
-        
-        public static Type GetImplementedType(this Type baseType, params Type[] argumentType)
-        {
-            if (TypeUtility.CanBeInstantiated(baseType))
-            {
-                Debug.LogError($"The type {baseType} should not be instantiable.");
-                return null;
-            }
-
-            Type variableType = null;
-
-            if (argumentType is null || argumentType.Length == 0)
-            {
-                Debug.LogError("No generic argument types were provided.");
-                return null;
-            }
-
-            try
-            {
-                variableType = baseType.MakeGenericType(argumentType);
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-            }
-
-            if (variableType == null)
-            {
-                Debug.LogError("Failed to create a generic type from the specified base type and arguments.");
-                return null;
-            }
-
-            
-            UnityEditor.TypeCache.TypeCollection typeCollection = UnityEditor.TypeCache.GetTypesDerivedFrom(variableType);
-
-            if (typeCollection.Count == 0 || typeCollection.Count > 1)
-            {
-                Debug.LogError($"There are no or too many subclasses derived from {baseType}.");
-                return null;
-            }
-
-            Type resultType = typeCollection[0];
-
-            //filter abstract class
-            if (TypeUtility.CanBeInstantiated(resultType) == false)
-            {
-                Debug.LogError($"The type {resultType} cannot be instantiated.");
-                return null;
-            }
-            else
-            {
-                return typeCollection[0];
-            }
-        }
-#endif
     }
 }

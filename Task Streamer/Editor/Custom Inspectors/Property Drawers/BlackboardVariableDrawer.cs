@@ -17,38 +17,7 @@ namespace TaskStreamer.Tool
         private Rect _buttonRect = Rect.zero;
 
 
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            if (TaskStreamerEditor.Instance is null || TaskStreamerEditor.Instance.graphAsset == null)
-            {
-                return;
-            }
-
-            this.CreateRects(position, label);
-
-            using (new EditorGUI.DisabledScope(!TaskStreamerEditor.canEditGraph))
-            {
-                SerializedProperty isGlobalProp = property.FindPropertyRelative("_isGlobal");
-                bool previous = isGlobalProp.boolValue; 
-                isGlobalProp.boolValue = EditorGUI.Toggle(_buttonRect, isGlobalProp.boolValue, "radio");
-                bool isChanged = previous != isGlobalProp.boolValue;
-
-                EditorGUI.PrefixLabel(_labelRect, label);
-
-                if (isGlobalProp.boolValue)
-                {
-                    this.DrawBlackboardVariablePopup(property, TaskStreamerEditor.Instance.graphAsset.blackboard);
-                }
-                else
-                {
-                    this.DrawLocalVariableField(property, _fieldRect, isChanged);
-                }
-            }
-
-            property.serializedObject.ApplyModifiedProperties();
-        }
-
-
+        
         private void CreateRects(Rect position, GUIContent label)
         {
             float width = EditorGUIUtility.labelWidth;
@@ -67,15 +36,49 @@ namespace TaskStreamer.Tool
 
             _buttonRect = new Rect(position.x + position.width - 16, position.y, 16, height);
         }
+        
+        
+        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        {
+            if (TaskStreamerEditor.Instance is null || TaskStreamerEditor.Instance.graphAsset == null)
+            {
+                return;
+            }
 
+            property.serializedObject.Update();
+            
+            this.CreateRects(position, label);
 
-        private void DrawBlackboardVariablePopup(SerializedProperty property, Blackboard blackboard)
+            using (new EditorGUI.DisabledScope(!TaskStreamerEditor.canEditGraph))
+            {
+                SerializedProperty isGlobalProp = property.FindPropertyRelative("_isGlobal");
+                bool previous = isGlobalProp.boolValue;
+                isGlobalProp.boolValue = EditorGUI.Toggle(_buttonRect, isGlobalProp.boolValue, "radio");
+                bool isChanged = previous != isGlobalProp.boolValue;
+
+                EditorGUI.PrefixLabel(_labelRect, label);
+
+                if (isGlobalProp.boolValue)
+                {
+                    this.DrawBlackboardVariablePopup(property, TaskStreamerEditor.Instance.graphAsset.blackboard);
+                }
+                else
+                {
+                    this.DrawLocalVariableField(property, _fieldRect, isChanged);
+                }
+            }
+
+            property.serializedObject.ApplyModifiedProperties();
+        }
+        
+
+        private void DrawBlackboardVariablePopup(SerializedProperty property, BlackboardAsset blackboard)
         {
             //만약 Blackboard가 null이거나, 블랙보드에 Variable이 없다면 에러 메시지를 표시한다.
-            if (blackboard == null || blackboard.variables.Count == 0)
+            if (blackboard == null || blackboard.count == 0)
             {
                 EditorGUI.PrefixLabel(_labelRect, new GUIContent(property.displayName));
-                TaskStreamerEditorUtility.DrawError(_fieldRect, "No blackboard variables found.");
+                EditorUtilities.DrawError(_fieldRect, "No blackboard variables found.");
                 return;
             }
 
@@ -85,31 +88,32 @@ namespace TaskStreamer.Tool
 
             if (variables.Length == 0)
             {
-                TaskStreamerEditorUtility.DrawError(_fieldRect, "No assignable blackboard variables found.");
+                EditorUtilities.DrawError(_fieldRect, "No assignable blackboard variables found.");
                 return;
             }
 
             property.serializedObject.ApplyModifiedProperties();
-            
+
             string[] options = this.GetPopupOptions(variables);
 
             SerializedProperty variableProp = property.FindPropertyRelative("_variable");
-            
+
             // 현재 선택된 인덱스 계산
             int selectedIndex = this.CalculateSelectIndex(variableProp, options);
             int newSelectedIndex = EditorGUI.Popup(_fieldRect, selectedIndex, options);
 
-            if (newSelectedIndex != selectedIndex)
+            if (newSelectedIndex == selectedIndex)
             {
-                if (newSelectedIndex == 0)
-                {
-                    TypeCache.TypeCollection typeCollection = TypeCache.GetTypesDerivedFrom(variableType);
-                    variableProp.managedReferenceValue = Utility.Utilities.CreateVariable(typeCollection[0], true);
-                }
-                else
-                {
-                    variableProp.managedReferenceValue = variables[newSelectedIndex - 1];
-                }
+                return;
+            }
+
+            if (newSelectedIndex == 0)
+            {
+                this.AllocateVariable(variableProp);
+            }
+            else
+            {
+                variableProp.managedReferenceValue = variables[newSelectedIndex - 1];
             }
         }
 
@@ -123,25 +127,24 @@ namespace TaskStreamer.Tool
                 Debug.LogError("Variable serialized property is null.");
                 return;
             }
-
-            if (isChanged) //이 경우 한 프레임 정보 Draw가 밀리게 된다.
-            {
-                Type variableType = typeof(Variable<>).GetImplementedType(fieldInfo.FieldType.GenericTypeArguments[0]);
-                variableProp.managedReferenceValue = Utility.Utilities.CreateVariable(variableType, true);
-                return;
-            }
-
+            
             SerializedProperty valueProperty = variableProp.FindPropertyRelative("_value");
 
-            if (SerializedProperty.DataEquals(valueProperty, null)) //이 경우 한 프레임 정보 Draw가 밀리게 된다.
+            if (isChanged || SerializedProperty.DataEquals(valueProperty, null))
             {
-                Type variableType = typeof(Variable<>).GetImplementedType(fieldInfo.FieldType.GenericTypeArguments[0]);
-                variableProp.managedReferenceValue = Utility.Utilities.CreateVariable(variableType, true);
-                return;
+                this.AllocateVariable(variableProp);
             }
-            
+
             // 로컬 변수 값 필드 그리기
             EditorGUI.PropertyField(fieldRect, valueProperty, GUIContent.none, true);
+        }
+
+        
+        private void AllocateVariable(SerializedProperty variableProp)
+        {
+            Type variableType = typeof(Variable<>).GetImplementedType(fieldInfo.FieldType.GenericTypeArguments[0]);
+            
+            variableProp.managedReferenceValue = Utility.Utilities.CreateVariable(variableType, true);
         }
 
 
@@ -154,7 +157,7 @@ namespace TaskStreamer.Tool
 
             foreach (Variable variable in variables)
             {
-                optionsList.Add(variable.name);
+                optionsList.Add(variable.key);
             }
 
             string[] options = optionsList.ToArray();
@@ -166,7 +169,7 @@ namespace TaskStreamer.Tool
         private int CalculateSelectIndex(SerializedProperty property, string[] options)
         {
             int selectedIndex = 0;
-            SerializedProperty nameProperty = property.FindPropertyRelative("_name");
+            SerializedProperty nameProperty = property.FindPropertyRelative("_key");
 
             if (SerializedProperty.DataEquals(nameProperty, null))
             {

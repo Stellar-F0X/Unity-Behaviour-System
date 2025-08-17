@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace TaskStreamer.Tool
     {
         private SerializedProperty _serializedList;
         private SerializedObject _serializedObject;
-        private Blackboard _blackboard;
+        private BlackboardAsset _blackboard;
         
         private ObjectField _blackboardBindingField;
         private Button _variableAddButton;
@@ -46,7 +47,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            Blackboard newBlackboard = changeEvent.newValue as Blackboard; 
+            BlackboardAsset newBlackboard = changeEvent.newValue as BlackboardAsset; 
             
             if (newBlackboard == null && this._blackboard != null)
             {
@@ -104,13 +105,15 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>Graph가 변경될 때 블랙보드 뷰를 업데이트합니다.</summary>
-        public void TrySetupBlackboard(Blackboard newBlackboard)
+        public void TrySetupBlackboard(BlackboardAsset newBlackboard)
         {
             //새롭게 들어온 블랙보드가 null이거나, 현재 블랙보드와 동일한 경우에는 아무 작업도 하지 않는다.
             if (newBlackboard != null && this._blackboard == newBlackboard)
             {
                 return;
             }
+            
+            newBlackboard?.UpdateAppliedVersion();
 
             this._blackboard = newBlackboard;
             this._blackboardBindingField.value = newBlackboard;
@@ -211,14 +214,12 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            if (a == b || a >= _blackboard.variables.Count || b >= _blackboard.variables.Count)
+            if (a == b || a >= _blackboard.count || b >= _blackboard.count)
             {
                 return;
             }
 
             Undo.RecordObject(_blackboard, "Task Streamer (ReorderBlackboardVariable)");
-
-            this._blackboard.OnAfterDeserialize();
 
             this.ApplyBlackboardChanges();
             this.RefreshItems();
@@ -242,10 +243,10 @@ namespace TaskStreamer.Tool
             Variable blackboardVariable = itemsSource[index] as Variable;
 
             variableView.OnDeleteRequested -= this.OnVariableDeleteRequested;
-            variableView.OnNameChanged -= this.OnVariableNameChanged;
+            variableView.OnKeyChanged -= this.OnVariableKeyChanged;
 
             variableView.OnDeleteRequested += this.OnVariableDeleteRequested;
-            variableView.OnNameChanged += this.OnVariableNameChanged;
+            variableView.OnKeyChanged += this.OnVariableKeyChanged;
 
             variableView.Setup(blackboardVariable, serializedProperty);
         }
@@ -271,14 +272,14 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>변수 이름 변경 요청을 처리합니다.</summary>
-        private void OnVariableNameChanged(BlackboardVariableView variableView, string newName)
+        private void OnVariableKeyChanged(BlackboardVariableView variableView, string newName)
         {
             if (string.IsNullOrEmpty(newName) || variableView.variable is null)
             {
                 return;
             }
 
-            _blackboard.TryChangeVariableName(variableView.variable, newName);
+            _blackboard.TryRenameKey(variableView.variable, newName);
 
             this.ApplyBlackboardChanges();
         }

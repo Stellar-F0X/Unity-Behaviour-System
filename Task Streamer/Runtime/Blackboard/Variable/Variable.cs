@@ -7,62 +7,72 @@ namespace TaskStreamer
     [Serializable]
     public abstract class Variable : ISerializationCallbackReceiver
     {
+        protected Variable()
+        {
+            _guid = UGUID.Create();
+            _keyHash = -1;
+        }
+        
         [SerializeField]
-        protected string _name;
+        private string _key;
 
         [SerializeField]
-        protected int _nameHash;
+        private int _keyHash;
+        
+        [SerializeField]
+        private UGUID _guid;
 
         [SerializeField]
-        protected string _typeName;
-
-        protected Type _type;
+        private string _typeName;
 
 
         public Type type
         {
-            get { return this._type; }
-
-            set { this._type = value; }
+            get;
+            set;
         }
 
-        public string name
+        public UGUID guid
         {
-            get { return this._name; }
-
-            set { this.TryChangeName(value); }
+            get { return _guid; }
         }
 
-        public int nameHash
+        public string key
         {
-            get { return this._nameHash; }
+            get { return this._key; }
+            
+            set { _keyHash = Utilities.StringToHash(_key = value); }
+        }
+
+        public int keyHash
+        {
+            get { return this._keyHash; }
         }
 
 
-        private void TryChangeName(string newKey)
+        public Variable Clone()
         {
-            if (string.IsNullOrEmpty(newKey))
-            {
-                Debug.LogError($"{_name} key value is empty. Please enter a valid key.");
-                return;
-            }
-
-            this._name = newKey;
-            this._nameHash = Utilities.StringToHash(this._name);
+            Variable clone = Activator.CreateInstance(type) as Variable;
+            clone._typeName = this._typeName;
+            clone.type = this.type;
+            clone._keyHash = this._keyHash;
+            clone._key = this._key;
+            clone._guid = this._guid;
+            return clone;
         }
 
 
         public void OnBeforeSerialize()
         {
-            Debug.Assert(_type is not null, "Failed to serialize a property.");
-            this._typeName = _type.AssemblyQualifiedName;
+            Debug.Assert(type is not null, "Failed to serialize a property.");
+            this._typeName = type.AssemblyQualifiedName;
         }
 
 
         public void OnAfterDeserialize()
         {
-            Debug.Assert(string.IsNullOrEmpty(_typeName) == false, "Failed to deserialize a property.");
-            this._type = Type.GetType(_typeName);
+            Debug.Assert(_typeName.IsNotNullOrEmpty(), "Failed to deserialize a property.");
+            this.type = Type.GetType(_typeName);
         }
     }
 
@@ -70,9 +80,6 @@ namespace TaskStreamer
     [Serializable]
     public abstract class Variable<T> : Variable
     {
-        public Variable() { }
-        
-        
         [SerializeField]
         protected T _value;
 
@@ -80,7 +87,6 @@ namespace TaskStreamer
         public virtual T value
         {
             get { return _value; }
-
             set { _value = value; }
         }
     }

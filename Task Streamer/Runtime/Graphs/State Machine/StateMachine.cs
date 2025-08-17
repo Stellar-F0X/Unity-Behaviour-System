@@ -164,7 +164,6 @@ namespace TaskStreamer.FSM
         {
             if (this.blockAllTransition == false)
             {
-                //현재 상태에서 전이가 발생하면 || 기준 왼쪽 함수에서 얻어온 guid를 토대로 전이할 것이고 anyState에서 발생하면 그 반대.
                 if (_current.CheckTransition(out nextState))
                 {
                     return true;

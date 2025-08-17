@@ -79,7 +79,7 @@ namespace TaskStreamer.Tool
                 _conditionList.drawElementBackgroundCallback = this.DrawElementBackground;
                 _conditionList.elementHeightCallback = this.GetElementHeight;
                 _conditionList.drawElementCallback = this.DrawElement;
-                _conditionList.drawHeaderCallback = this.DrawTransitionHeader;
+                _conditionList.drawHeaderCallback = this.DrawHeader;
                 _conditionList.multiSelect = true;
                 _conditionList.footerHeight = 10;
             }
@@ -146,7 +146,7 @@ namespace TaskStreamer.Tool
         }
 
 
-        private void DrawTransitionHeader(Rect rect)
+        private void DrawHeader(Rect rect)
         {
             EditorGUI.LabelField(rect, "Conditions");
         }

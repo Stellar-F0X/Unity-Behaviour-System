@@ -30,7 +30,7 @@ namespace TaskStreamer.Tool
                     asset.main = graphRef;
                 }
                 
-                if (TaskStreamerEditorUtility.IsDuplicated(asset))
+                if (EditorUtilities.IsDuplicated(asset))
                 {
                     asset.ReassignAllGraphElementGuids();
                 }

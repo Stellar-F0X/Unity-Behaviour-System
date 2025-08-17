@@ -24,18 +24,12 @@ namespace TaskStreamer
 
     //TODO: Abstract로 변경해보기.
     [Serializable]
-    public class ConditionModule<T> : ConditionModule
+    public abstract class ConditionModule<T> : ConditionModule
     {
         [CreateProperty]
         public BlackboardVariable<T> variableA;
         
         [CreateProperty]
         public BlackboardVariable<T> variableB;
-        
-        
-        public override bool Execute()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

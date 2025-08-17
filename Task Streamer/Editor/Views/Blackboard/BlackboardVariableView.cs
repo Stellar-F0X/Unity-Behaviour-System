@@ -25,7 +25,7 @@ namespace TaskStreamer.Tool
         
         public event Action<BlackboardVariableView> OnDeleteRequested;
 
-        public event Action<BlackboardVariableView, string> OnNameChanged;
+        public event Action<BlackboardVariableView, string> OnKeyChanged;
         
         private Label _typeNameLabel;
         private Button _deleteButton;
@@ -76,7 +76,7 @@ namespace TaskStreamer.Tool
 
             if (_nameField is not null)
             {
-                _nameField.SetValueWithoutNotify(_variable.name);
+                _nameField.SetValueWithoutNotify(_variable.key);
                 _nameField.enabledSelf = TaskStreamerEditor.canEditGraph;
             }
 
@@ -122,13 +122,15 @@ namespace TaskStreamer.Tool
             {
                 Rect pos = EditorGUILayout.GetControlRect();
                 Rect textRect = new Rect(pos.x + _ICON_SIZE + 2f, pos.y, pos.width - _ICON_SIZE - 2f, pos.height);
-                TaskStreamerEditorUtility.DrawError(textRect, "Invalid blackboard property type.", _ICON_SIZE);
+                EditorUtilities.DrawError(textRect, "Invalid blackboard property type.", _ICON_SIZE);
             }
             else
             {
+                GUI.enabled = !Application.isPlaying;
                 valueProp.serializedObject.Update();
                 EditorGUILayout.PropertyField(valueProp, GUIContent.none, true);
                 valueProp.serializedObject.ApplyModifiedProperties();
+                GUI.enabled = true;
             }
         }
 
@@ -156,8 +158,8 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            this.OnNameChanged?.Invoke(this, _nameField.value);
-            this._nameField.SetValueWithoutNotify(_variable.name);
+            this.OnKeyChanged?.Invoke(this, _nameField.value);
+            this._nameField.SetValueWithoutNotify(_variable.key);
         }
 
 

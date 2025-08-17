@@ -9,8 +9,12 @@ namespace TaskStreamer.Tool
     {
         public BehaviorNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
         {
+            base._nodeTypeLabel.text = Utility.Utilities.ApplySpacing(targetNode.GetType().Name, "Node");
+
+            base.targetNode.name = base._nodeTypeLabel.text;
+
             this._elementGroup.AddToClassList($"behaviour-node-{((BehaviorNodeBase)targetNode).nodeType}");
-            
+
             this._highlighter = new BehaviorNodeHighlight(this, TaskStreamerEditor.settings);
 
             this._highlighter.ApplyBorderColorByState();
@@ -35,7 +39,7 @@ namespace TaskStreamer.Tool
         {
             return new PortView(GraphType.BT, direction, capacity);
         }
-        
+
 
         protected override void CreatePorts()
         {

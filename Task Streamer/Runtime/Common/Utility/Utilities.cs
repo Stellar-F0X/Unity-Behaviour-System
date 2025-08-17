@@ -1,5 +1,4 @@
 using System;
-using System.Text.RegularExpressions;
 using TaskStreamer.BT;
 using TaskStreamer.FSM;
 using UnityEngine;
@@ -21,25 +20,22 @@ namespace TaskStreamer.Utility
         }
 
 
-        public static string ApplySpacing(string nodeName)
+#if UNITY_EDITOR
+        public static string ApplySpacing(string nodeName, string removeName = "")
         {
             if (string.IsNullOrEmpty(nodeName))
             {
                 throw new ArgumentException($"{typeof(Utilities)}: NodeName is null or empty");
             }
 
-            if (nodeName.EndsWith("Node"))
+            if (string.IsNullOrEmpty(removeName) == false && nodeName.EndsWith(removeName))
             {
-                nodeName = nodeName.Replace("Node", string.Empty);
+                nodeName = nodeName.Replace(removeName, string.Empty);
             }
 
-            if (nodeName.EndsWith("State"))
-            {
-                nodeName = nodeName.Replace("State", string.Empty);
-            }
-
-            return Regex.Replace(nodeName, "(?<=[a-z0-9])(?=[A-Z])", " ");
+            return UnityEditor.ObjectNames.NicifyVariableName(nodeName);
         }
+#endif
 
 
         public static NodeBase CreateNode(Type nodeType, Vector2Int position = default)
@@ -77,14 +73,14 @@ namespace TaskStreamer.Utility
         }
 
 
-        public static Variable CreateVariable(Type type, bool isLocal = false)
+        public static Variable CreateVariable(Type variableType, bool isLocal = false)
         {
-            Debug.Assert(type is not null, "Failed to create a variable.");
-            Variable newVariable = Activator.CreateInstance(type) as Variable;
+            Debug.Assert(variableType is not null, "Failed to create a variable.");
+            Variable newVariable = Activator.CreateInstance(variableType) as Variable;
             Debug.Assert(newVariable is not null, "Failed to create a variable.");
 
-            newVariable.name = isLocal ? "#Constant Variable#" : $"New {type.Name}";
-            newVariable.type = type;
+            newVariable.key = isLocal ? "#Constant Variable#" : $"New {variableType.Name}";
+            newVariable.type = variableType;
             return newVariable;
         }
 
@@ -104,14 +100,14 @@ namespace TaskStreamer.Utility
                 Debug.LogError($"{typeof(Utilities)}: GraphAsset is null.");
                 return;
             }
-            
+
             switch (graphType)
             {
                 case GraphType.FSM: graph = StateMachine.CreateGraph(graphName, asset); break;
 
                 case GraphType.BT: graph = BehaviorTree.CreateGraph(graphName, asset); break;
             }
-            
+
             Debug.Assert(graph != null, "Failed to create a graph.");
         }
     }

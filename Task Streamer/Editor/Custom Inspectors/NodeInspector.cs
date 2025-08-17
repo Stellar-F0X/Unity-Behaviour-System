@@ -6,7 +6,7 @@ using UnityEngine;
 namespace TaskStreamer.Tool
 {
     [CustomEditor(typeof(NodeBase), true)]
-    public class NodeBaseInspector : Editor
+    public class NodeInspector : Editor
     {
         private GUIStyle _headerLabelStyle;
 
@@ -15,7 +15,7 @@ namespace TaskStreamer.Tool
         {
             if (_headerLabelStyle is null)
             {
-                _headerLabelStyle = TaskStreamerEditorUtility.GetHeaderStyle();
+                _headerLabelStyle = EditorUtilities.GetHeaderStyle();
             }
             
             //=========================================================================================
@@ -24,9 +24,9 @@ namespace TaskStreamer.Tool
             //TODO: 추후 다른 그래프를 추가하게 된다면 그 그래프에서 다룰 노드에 대한 것을 추가해야 됨.
             switch (serializedObject.targetObject)
             {
-                case StateBase: TaskStreamerEditorUtility.DrawHeader("State Inspector", _headerLabelStyle, endSpacing: 2); break;
+                case StateBase: EditorUtilities.DrawHeader("State Inspector", _headerLabelStyle, endSpacing: 2); break;
                 
-                case BehaviorNodeBase: TaskStreamerEditorUtility.DrawHeader("Behavior Inspector", _headerLabelStyle, endSpacing: 2); break;
+                case BehaviorNodeBase: EditorUtilities.DrawHeader("Behavior Inspector", _headerLabelStyle, endSpacing: 2); break;
             }
 
             using (new EditorGUI.DisabledScope(true))
@@ -54,10 +54,10 @@ namespace TaskStreamer.Tool
 
             //=========================================================================================
             //=================================[Child Class Fields]====================================
-            if (TaskStreamerEditorUtility.HasRemainingPropertiesAfter(startProp))
+            if (EditorUtilities.HasRemainingPropertiesAfter(startProp))
             {
-                TaskStreamerEditorUtility.DrawHeader(this.target.name, _headerLabelStyle, 10f, 2f);
-                TaskStreamerEditorUtility.DrawPropertiesRange(startProp, startInclusive: false);
+                EditorUtilities.DrawHeader(this.target.name, _headerLabelStyle, 10f, 2f);
+                EditorUtilities.DrawPropertiesRange(startProp, startInclusive: false);
             }
             //=========================================================================================
             //=========================================================================================

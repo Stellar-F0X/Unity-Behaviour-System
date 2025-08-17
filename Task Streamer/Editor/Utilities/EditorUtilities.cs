@@ -5,7 +5,7 @@ using Object = UnityEngine.Object;
 
 namespace TaskStreamer.Tool
 {
-    public static class TaskStreamerEditorUtility
+    public static class EditorUtilities
     {
         public static T FindAssetByName<T>(string searchFilter) where T : Object
         {
