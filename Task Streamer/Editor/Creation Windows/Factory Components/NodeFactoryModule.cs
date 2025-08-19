@@ -31,11 +31,11 @@ namespace TaskStreamer.Tool
                 Graph baseGraph = TaskStreamerEditor.Instance.view.focusGraph;
                 Graph newGraph = null;
                 
-                Utilities.CreateGraph(graphAsset, graphNode.subGraphType, ref newGraph, creation.title);
+                TSObjectFactory.CreateGraph(graphAsset, graphNode.subGraphType, ref newGraph, creation.title);
 
                 baseGraph.AddSubGraph(newGraph);
                 graphNode.subGraphGuid = newGraph.guid;
-                EditorUtility.SetDirty(graphNode as NodeBase);
+                UnityEditor.EditorUtility.SetDirty(graphAsset);
             }
 
             _view.SelectNode(creation);

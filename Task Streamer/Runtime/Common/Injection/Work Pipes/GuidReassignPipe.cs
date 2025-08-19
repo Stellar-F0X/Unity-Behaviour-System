@@ -4,9 +4,9 @@ using Unity.Properties;
 
 namespace TaskStreamer.Injection
 {
-    internal class GuidReassignPipe : GraphWorkPipeBase, IVisitPropertyAdapter<NodeDictionary>
+    internal class GuidReassignPipe : GraphPipe, IVisitPropertyAdapter<NodeDictionary>
     {
-        public GuidReassignPipe(GraphWorker graphWorker) : base(graphWorker) { }
+        public GuidReassignPipe(GraphTraveler graphTraveler) : base(graphTraveler) { }
 
 
         public override void Visit<TContainer>(in VisitContext<TContainer, GraphDictionary> context, ref TContainer container, ref GraphDictionary value)
@@ -46,11 +46,11 @@ namespace TaskStreamer.Injection
                 if (node is ISubGraphProvider subGraphNode)
                 {
                     UGUID guid = subGraphNode.subGraphGuid;
-                    Graph graph = _worker.graphAsset.GetGraph(guid);
+                    Graph graph = Traveler.graphAsset.GetGraph(guid);
                     subGraphNode.subGraphGuid = graph.guid;
                 }
 
-                List<NodeGroup> groups = _worker.currentGraph.nodeGroup;
+                List<NodeGroup> groups = Traveler.currentGraph.nodeGroup;
                 NodeGroup group = groups.Find(e => e.Contains(pair.Key));
 
                 if (group is not null)

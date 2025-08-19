@@ -1,9 +1,11 @@
-﻿using TaskStreamer.Utility;
+﻿using System;
+using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
 
 namespace TaskStreamer.BT
 {
+    [Serializable, Readable]
     public abstract class SubGraphNode : BehaviorNodeBase, ISubGraphProvider
     {
         [DontCreateProperty]

@@ -1,11 +1,13 @@
+using System;
 using UnityEngine;
 
 namespace TaskStreamer.BT
 {
-    [Readable]
+    [Readable, Serializable]
     public class WaitNode : ActionNode
     {
-        public BlackboardVariable<float> waitTime = 1f;
+        [SetValue(1f)]
+        public BlackboardVariable<float> waitTime;
         
         private float _startTime;
         
@@ -20,7 +22,6 @@ namespace TaskStreamer.BT
             {
                 return Status.Running;
             }
-            
             
             return Status.Success;
         }

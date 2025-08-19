@@ -212,7 +212,7 @@ namespace TaskStreamer
 
                 if (replica is null)
                 {
-                    _runtimeBlackboard.AddVariable(variable.Clone());
+                    _runtimeBlackboard.AddVariable(variable.Duplicate());
                 }
                 else
                 {

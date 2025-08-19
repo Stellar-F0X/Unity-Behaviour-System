@@ -1,3 +1,5 @@
+using System;
+
 namespace TaskStreamer.FSM
 {
     public class EnterState : StateBase
@@ -7,9 +9,6 @@ namespace TaskStreamer.FSM
             get { return StateNodeType.Enter; }
         }
 
-        protected override void OnUpdate()
-        {
-            
-        }
+        protected override void OnUpdate() { }
     }
 }

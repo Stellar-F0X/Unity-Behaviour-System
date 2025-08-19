@@ -1,15 +1,18 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace TaskStreamer.BT
 {
+    [Serializable, Readable]
     public class ParallelNode : CompositeNode
     {
         [Tooltip("Determines how success or failure is evaluated among child nodes.")]
-        public ParallelPolicy parallelPolicy;
+        public BlackboardVariable<ParallelPolicy> parallelPolicy;
 
+        [SetValue(true)]
         [Tooltip("Stop updating children as soon as the policy resolves to Success or Failure. If disabled, all children are evaluated every tick.")]
-        public bool shortCircuit = true;
+        public BlackboardVariable<bool> shortCircuit;
 
         private int _successfulCount = 0;
         private int _failedCount = 0;
@@ -97,7 +100,7 @@ namespace TaskStreamer.BT
                 }
             }
 
-            if (this.shortCircuit)
+            if (this.shortCircuit.value)
             {
                 result = this.EvaluatePolicy();
 
@@ -144,7 +147,7 @@ namespace TaskStreamer.BT
 
         protected virtual Status EvaluatePolicy()
         {
-            switch (parallelPolicy)
+            switch (parallelPolicy.value)
             {
                 case ParallelPolicy.RequireAllSuccess:
                 {

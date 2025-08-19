@@ -192,16 +192,6 @@ namespace TaskStreamer.FSM
                     continue;
                 }
 
-                foreach (Transition transition in node.transitions)
-                {
-                    if (AssetDatabase.Contains(transition))
-                    {
-                        AssetDatabase.RemoveObjectFromAsset(transition);
-                    }
-
-                    Object.DestroyImmediate(transition);
-                }
-
                 this.DeleteNode(node, false);
             }
         }
@@ -216,52 +206,26 @@ namespace TaskStreamer.FSM
 
             // GraphAsset과 from 노드 모두 기록
             Undo.RecordObject(_graphAsset, "State Machine (Connect)");
-            Undo.RecordObject(from, "State Machine (Connect)");
 
-            Transition newTransition = Utilities.CreateTransition(from, to);
+            Transition newTransition = TSObjectFactory.CreateTransition(from, to);
             from.AddTransition(newTransition);
-
-            // Transition을 GraphAsset의 sub-asset으로 추가
-            if (AssetDatabase.Contains(_graphAsset))
-            {
-                AssetDatabase.AddObjectToAsset(newTransition, _graphAsset);
-            }
-
-            // Undo 등록 및 저장
-            Undo.RegisterCreatedObjectUndo(newTransition, "State Machine (Connect)");
-            EditorUtility.SetDirty(from);
-            EditorUtility.SetDirty(to);
             EditorUtility.SetDirty(_graphAsset);
-            AssetDatabase.SaveAssets();
             return newTransition;
         }
 
 
-        public void DisconnectStates(StateBase from, StateBase to)
+        public Transition DisconnectStates(StateBase from, StateBase to)
         {
             if (from.TryGetTransition(to.guid, out Transition transition) == false)
             {
-                return;
+                return null;
             }
 
             // GraphAsset과 from 노드 모두 기록
             Undo.RecordObject(_graphAsset, "State Machine (Disconnect)");
-            Undo.RecordObject(from, "State Machine (Disconnect)");
-
             from.RemoveTransition(transition);
-
-            // Sub-asset에서도 제거
-            if (AssetDatabase.Contains(transition))
-            {
-                AssetDatabase.RemoveObjectFromAsset(transition);
-            }
-
-            // Transition 삭제
-            Undo.DestroyObjectImmediate(transition);
-            EditorUtility.SetDirty(from);
-            EditorUtility.SetDirty(to);
             EditorUtility.SetDirty(_graphAsset);
-            AssetDatabase.SaveAssets();
+            return transition;
         }
     }
 #endif

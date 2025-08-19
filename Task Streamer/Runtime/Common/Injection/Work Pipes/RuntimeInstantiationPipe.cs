@@ -9,14 +9,14 @@ using Object = UnityEngine.Object;
 
 namespace TaskStreamer.Injection
 {
-    internal class RuntimeInstantiationPipe : GraphWorkPipeBase,
+    internal class RuntimeInstantiationPipe : GraphPipe,
                                               IVisitPropertyAdapter<NodeDictionary>,
                                               IVisitPropertyAdapter<KeyValuePair<UGUID, NodeBase>>,
                                               IVisitPropertyAdapter<List<Transition>>,
                                               IVisitPropertyAdapter<Transition>,
                                               IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
-        public RuntimeInstantiationPipe(GraphWorker worker) : base(worker) { }
+        public RuntimeInstantiationPipe(GraphTraveler traveler) : base(traveler) { }
 
 
         private NodeDictionary _newNodeDictionary;
@@ -29,16 +29,14 @@ namespace TaskStreamer.Injection
 
             foreach (KeyValuePair<UGUID, NodeBase> nodePairs in value)
             {
-                NodeBase instantiation = Object.Instantiate(value[nodePairs.Key]);
-                instantiation.name = instantiation.name.Replace("(Clone)", "");
-
-                _newNodeDictionary.Add(nodePairs.Key, instantiation);
-                instantiation.InitializeOnInstantiated();
+                //TODO: 문제 생기는지 보고 안 괜찮으면 Node POCO Class Duplicate 기능 구현. 
+                _newNodeDictionary.Add(nodePairs.Key, nodePairs.Value);
+                nodePairs.Value.OnInstantiate();
             }
 
             IPropertyBag<Dictionary<UGUID, NodeBase>> propertyBag = PropertyBag.GetPropertyBag<Dictionary<UGUID, NodeBase>>();
             Dictionary<UGUID, NodeBase> dictionaryValue = (Dictionary<UGUID, NodeBase>)_newNodeDictionary;
-            propertyBag.Accept(_worker, ref dictionaryValue);
+            propertyBag.Accept(Traveler, ref dictionaryValue);
             value = _newNodeDictionary;
         }
 
@@ -46,7 +44,7 @@ namespace TaskStreamer.Injection
 
         public void Visit<TContainer>(in VisitContext<TContainer, KeyValuePair<UGUID, NodeBase>> context, ref TContainer container, ref KeyValuePair<UGUID, NodeBase> pair)
         {
-            switch (_worker.currentGraph.graphType)
+            switch (Traveler.currentGraph.graphType)
             {
                 case GraphType.BT: this.ProcessBehaviorTreeNode((BehaviorNodeBase)pair.Value); break;
 
@@ -62,7 +60,7 @@ namespace TaskStreamer.Injection
             Debug.Assert(bag != null, $"Property bag not found for {pair.Value.name}");
 
             object reference = pair.Value; //어차피 노드는 항상 Class 타입이므로, object로 형변환해도 Boxing/Unboxing은 문제 없음.
-            bag.Accept(_worker, ref reference);
+            bag.Accept(Traveler, ref reference);
         }
 
 
@@ -79,7 +77,7 @@ namespace TaskStreamer.Injection
             BehaviorNodeBase parentNode = _newNodeDictionary[instantiatedNode.parent.guid] as BehaviorNodeBase;
             Debug.Assert(parentNode != null, "Parent node is null.");
 
-            BehaviorNodeBase originalNode = _worker.currentGraph.GetNodeByGuid(instantiatedNode.guid) as BehaviorNodeBase;
+            BehaviorNodeBase originalNode = Traveler.currentGraph.GetNodeByGuid(instantiatedNode.guid) as BehaviorNodeBase;
             Debug.Assert(originalNode != null, "Original node is null.");
 
             //미리 만들어진 런타임용 부모 노드를 대상으로, 기존의 원본 자식 노드 대신, 새롭게 만들어진 런타임용 자식 노드를 대입.
@@ -95,7 +93,7 @@ namespace TaskStreamer.Injection
             foreach (Graph graph in value.Values)
             {
                 Debug.Assert(graph.entry != null, "entry node is null.");
-                graph.InitializeOnEnterRuntime(_worker.taskStreamer);
+                graph.InitializeOnEnterRuntime(Traveler.taskStreamer);
             }
         }
 
@@ -103,21 +101,21 @@ namespace TaskStreamer.Injection
 
         public void Visit<TContainer>(in VisitContext<TContainer> context, ref TContainer container, BlackboardVariable value)
         {
-            if (value?.variable is null || _worker.blackboard == null || _worker.blackboard.count == 0)
+            if (value?.variable is null || Traveler.blackboard == null || Traveler.blackboard.count == 0)
             {
                 return;
             }
 
             if (value.isGlobal == false)
             {
-                context.Property.SetValue(ref container, value.Clone());
+                context.Property.SetValue(ref container, value.Duplicate());
                 return;
             }
 
-            Variable foundVariable = _worker.blackboard.FindVariable(value.guid);
+            Variable foundVariable = Traveler.blackboard.FindVariable(value.guid);
             Debug.Assert(foundVariable != null, "Variable not found in blackboard.");
 
-            BlackboardVariable blackboardVariable = value.Clone(); 
+            BlackboardVariable blackboardVariable = value.Duplicate(); 
             blackboardVariable.variable = foundVariable;
             context.Property.SetValue(ref container, blackboardVariable);
         }
@@ -132,8 +130,10 @@ namespace TaskStreamer.Injection
 
             for (int i = 0; i < transitionCount; i++)
             {
-                Transition instantiation = Object.Instantiate(value[i]);
-                runtimeTransitions.Add(instantiation);
+                //TODO: 문제 생기는지 보고 안 괜찮으면 Node POCO Class Duplicate 기능 구현.
+                
+                //Transition instantiation = Object.Instantiate(value[i]);
+                runtimeTransitions.Add(value[i]);
             }
 
             value = runtimeTransitions;
@@ -152,9 +152,9 @@ namespace TaskStreamer.Injection
                 return;
             }
 
-            IPropertyBag<List<ConditionModule>> bag = PropertyBag.GetPropertyBag<List<ConditionModule>>();
-            List<ConditionModule> conditions = value.conditions.modules;
-            bag.Accept(_worker, ref conditions);
+            IPropertyBag<List<Condition>> bag = PropertyBag.GetPropertyBag<List<Condition>>();
+            List<Condition> conditions = value.conditions.modules;
+            bag.Accept(Traveler, ref conditions);
         }
     }
 }

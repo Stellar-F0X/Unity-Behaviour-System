@@ -12,13 +12,13 @@ namespace TaskStreamer
             _guid = UGUID.Create();
             _keyHash = -1;
         }
-        
+
         [SerializeField]
         private string _key;
 
         [SerializeField]
         private int _keyHash;
-        
+
         [SerializeField]
         private UGUID _guid;
 
@@ -40,8 +40,8 @@ namespace TaskStreamer
         public string key
         {
             get { return this._key; }
-            
-            set { _keyHash = Utilities.StringToHash(_key = value); }
+
+            set { _keyHash = StringUtility.StringToHash(_key = value); }
         }
 
         public int keyHash
@@ -49,8 +49,14 @@ namespace TaskStreamer
             get { return this._keyHash; }
         }
 
+        public abstract object boxedValue
+        {
+            get;
+            set;
+        }
 
-        public Variable Clone()
+
+        public Variable Duplicate()
         {
             Variable clone = Activator.CreateInstance(type) as Variable;
             clone._typeName = this._typeName;
@@ -88,6 +94,26 @@ namespace TaskStreamer
         {
             get { return _value; }
             set { _value = value; }
+        }
+
+        public override sealed object boxedValue
+        {
+            get { return _value; }
+            
+            set { this.TrySet(value); }
+        }
+
+
+        private void TrySet(object newValue)
+        {
+            if (newValue is T convertedValue)
+            {
+                this._value = convertedValue;
+            }
+            else
+            {
+                Debug.LogError($"Failed to set value. Type: {newValue.GetType().Name} mismatch.");
+            }
         }
     }
 }

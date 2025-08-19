@@ -8,18 +8,69 @@ using Object = UnityEngine.Object;
 
 namespace TaskStreamer.Tool
 {
+    /// <summary>
+    /// Represents a custom visual element that serves as a ListView for managing Blackboard properties in a UI.
+    /// This class provides functionality to initialize and configure UI elements for the Blackboard,
+    /// handle contextual menu events, and update the Blackboard view based on user interactions or asset changes.
+    /// </summary>
     [UxmlElement]
     public partial class BlackboardView : ListView
     {
+        /// <summary>
+        /// Represents the serialized property that holds a list of variables from a BlackboardAsset instance,
+        /// allowing for interaction and management within the UnityEditor UI.
+        /// </summary>
         private SerializedProperty _serializedList;
+
+        /// <summary>
+        /// Represents a SerializedObject instance used for binding the BlackboardAsset
+        /// and managing its properties within the blackboard view in the Unity Editor.
+        /// </summary>
+        /// <remarks>
+        /// The SerializedObject encapsulates the serialized representation of the
+        /// <see cref="BlackboardAsset"/> instance, enabling property binding, updates,
+        /// and manipulation of the asset's data in the Unity UI. This is particularly
+        /// useful for managing the variables within the blackboard and reflects changes
+        /// in the Unity Editor.
+        /// </remarks>
         private SerializedObject _serializedObject;
+
+        /// <summary>
+        /// Represents the associated <see cref="BlackboardAsset"/> used within the <see cref="BlackboardView"/> class.
+        /// This variable serves as the underlying data model holding the list of variables managed and displayed
+        /// by the current instance of the blackboard.
+        /// </summary>
+        /// <remarks>
+        /// The _blackboard variable stores a reference to the active <see cref="BlackboardAsset"/> object.
+        /// When a new <see cref="BlackboardAsset"/> is assigned, associated UI components and bindings are updated accordingly.
+        /// It acts as a data source for managing and manipulating tasks or variables within the editor environment.
+        /// </remarks>
         private BlackboardAsset _blackboard;
-        
+
+        /// <summary>
+        /// Represents an ObjectField used for binding a Blackboard asset in the user interface.
+        /// </summary>
+        /// <remarks>
+        /// This field allows the user to select and bind a <see cref="BlackboardAsset"/> to the view.
+        /// It is set up during the initialization process and is linked to various events, such as
+        /// value changes, to handle binding operations and updates to the associated Blackboard.
+        /// </remarks>
         private ObjectField _blackboardBindingField;
+
+        /// <summary>
+        /// Represents a button used to add variables to the blackboard in the blackboard view.
+        /// </summary>
+        /// <remarks>
+        /// This button enables functionality to open a contextual menu window for adding new variables.
+        /// It is registered and unregistered with an event handler for click events and its state is adjusted
+        /// based on the application's runtime context or when the blackboard is cleared or reassigned.
+        /// </remarks>
         private Button _variableAddButton;
 
 
         /// <summary>블랙보드 프로퍼티 리스트 뷰를 초기화하고 UI 요소들을 설정합니다.</summary>
+        /// <param name="variableAddButton">블랙보드에 변수를 추가하기 위한 버튼입니다.</param>
+        /// <param name="blackboardBindingField">블랙보드와의 바인딩을 설정하기 위한 오브젝트 필드입니다.</param>
         public void Setup(Button variableAddButton, ObjectField blackboardBindingField)
         {
             this._variableAddButton = variableAddButton;
@@ -37,9 +88,10 @@ namespace TaskStreamer.Tool
             this._blackboardBindingField.UnregisterValueChangedCallback(this.OnBindBlackboardAsset);
             this._blackboardBindingField.RegisterValueChangedCallback(this.OnBindBlackboardAsset);
         }
-        
-        
-        /// <summary>블랙보드 에셋이 바인딩될 때 호출되는 콜백 메서드입니다.</summary>
+
+
+        /// <summary>Handles the event when the blackboard asset is bound to the corresponding field.</summary>
+        /// <param name="changeEvent">The event containing information about the change in the bound blackboard asset.</param>
         private void OnBindBlackboardAsset(ChangeEvent<Object> changeEvent)
         {
             if (TaskStreamerEditor.canEditGraph == false)
@@ -51,30 +103,21 @@ namespace TaskStreamer.Tool
             
             if (newBlackboard == null && this._blackboard != null)
             {
-                if (Application.isPlaying == false && Undo.isProcessing == false)
-                {
-                    Undo.RecordObject(_blackboard, "Task Streamer (Change Blackboard)");
-                    Undo.RecordObject(TaskStreamerEditor.Instance.graphAsset, "Task Streamer (Change Blackboard)");
-                }
-                
                 //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
                 TaskStreamerEditor.Instance.graphAsset.ResetBoundVariables();
-                
-                if (Application.isPlaying == false && Undo.isProcessing == false)
-                {
-                    EditorUtility.SetDirty(_blackboard);
-                    EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
-                }
             }
             
             //2. 교체.
             this.TrySetupBlackboard(newBlackboard);
             
             TaskStreamerEditor.Instance.graphAsset.blackboard = _blackboard;
+            TaskStreamerEditor.Instance.inspector.ClearInspectorView();
         }
 
 
-        /// <summary>언두 작업이 수행될 때 아이템을 새로고침합니다.</summary>
+        /// <summary>
+        /// 언두 작업이 수행될 때 블랙보드 뷰와 관련된 아이템을 새로고침합니다.
+        /// </summary>
         public void RefreshItemsWhenUndoPerformed()
         {
             if (_serializedObject?.targetObject is null)
@@ -89,7 +132,7 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>블랙보드 뷰를 초기화하고 모든 데이터를 제거합니다.</summary>
+        /// <summary>초기화를 수행하여 블랙보드 뷰의 모든 정보를 제거하고 초기 상태로 되돌립니다.</summary>
         public void ClearBlackboardView()
         {
             this.itemsSource = null;
@@ -104,7 +147,10 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>Graph가 변경될 때 블랙보드 뷰를 업데이트합니다.</summary>
+        /// <summary>
+        /// Updates the Blackboard view with a new Blackboard asset.
+        /// </summary>
+        /// <param name="newBlackboard">The new Blackboard asset to associate with the view. If null, the view will be reset.</param>
         public void TrySetupBlackboard(BlackboardAsset newBlackboard)
         {
             //새롭게 들어온 블랙보드가 null이거나, 현재 블랙보드와 동일한 경우에는 아무 작업도 하지 않는다.
@@ -144,6 +190,9 @@ namespace TaskStreamer.Tool
         }
 
 
+        /// <summary>
+        /// Resets the blackboard view by clearing the current items source and refreshing the view.
+        /// </summary>
         private void ResetItemsOnBlackboardRemoved()
         {
             if (base.itemsSource is null)
@@ -156,7 +205,10 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>블랙보드 프로퍼티를 추가하는 버튼 클릭 이벤트를 처리합니다.</summary>
+        /// <summary>
+        /// Handles the click event for adding a new variable to the blackboard by opening a contextual menu window.
+        /// </summary>
+        /// <param name="clickEvent">The click event triggered by the user.</param>
         public void OpenContextualMenuWindow(ClickEvent clickEvent)
         {
             //블랙보드가 null이거나, 현재 그래프를 편집할 수 없는 상태인 경우에는 아무 작업도 하지 않는다.
@@ -177,7 +229,8 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>새로운 블랙보드 프로퍼티를 생성합니다.</summary>
+        /// <summary>새로운 변수를 블랙보드 리스트에 추가합니다.</summary>
+        /// <param name="newBlackboardVariable">추가될 새 블랙보드 변수.</param>
         private void AddVariableToList(Variable newBlackboardVariable)
         {
             Undo.RecordObject(_blackboard, "Task Streamer (AddBlackboardVariable)");
@@ -189,19 +242,24 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>지정된 인덱스의 블랙보드 프로퍼티를 삭제합니다.</summary>
+        /// <summary>Deletes the blackboard property at the specified index.</summary>
+        /// <param name="index">The index of the blackboard property to delete.</param>
         private void DeleteVariableFromList(int index)
         {
             Undo.RecordObject(_blackboard, "Task Streamer (RemoveBlackboardVariable)");
 
-            _blackboard.RemoveVariable(itemsSource[index] as Variable);
+            _blackboard.RemoveVariable(itemsSource[index] as Variable); 
 
             this.ApplyBlackboardChanges();
             this.RefreshItems();
         }
 
 
-        /// <summary>프로퍼티의 순서가 변경될 때 호출되는 콜백 메서드입니다.</summary>
+        /// <summary>
+        /// Callback method invoked when the order of properties in the blackboard is changed.
+        /// </summary>
+        /// <param name="a">The original index of the property.</param>
+        /// <param name="b">The new index of the property after reordering.</param>
         private void OnPropertyIndicesSwapped(int a, int b)
         {
             if (TaskStreamerEditor.canEditGraph == false)
@@ -227,14 +285,11 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>리스트 아이템을 UI 요소에 바인딩합니다.</summary>
-        private void BindItemToList(VisualElement element, int index)
+        /// <param name="element">바인딩할 UI 요소를 나타내는 VisualElement입니다.</param>
+        /// <param name="index">바인딩할 아이템의 인덱스입니다.</param>
+        private void BindItemToList(VisualElement element, int index) 
         {
-            if (_serializedList.arraySize <= index)
-            {
-                return;
-            }
-
-            if (element is not BlackboardVariableView variableView)
+            if (_serializedList.arraySize <= index || element is not BlackboardVariableView variableView) 
             {
                 return;
             }
@@ -252,7 +307,10 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>변수 삭제 요청을 처리합니다.</summary>
+        /// <summary>
+        /// Handles the variable delete request by identifying the associated variable and removing it from the list.
+        /// </summary>
+        /// <param name="variableView">The UI element representing the variable for which the delete request is triggered.</param>
         private void OnVariableDeleteRequested(BlackboardVariableView variableView)
         {
             if (base.itemsSource is null || itemsSource.Count == 0)
@@ -271,7 +329,11 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>변수 이름 변경 요청을 처리합니다.</summary>
+        /// <summary>
+        /// Handles the request to change the key of a variable in the blackboard.
+        /// </summary>
+        /// <param name="variableView">The view associated with the variable whose key is being changed.</param>
+        /// <param name="newName">The new key name for the variable.</param>
         private void OnVariableKeyChanged(BlackboardVariableView variableView, string newName)
         {
             if (string.IsNullOrEmpty(newName) || variableView.variable is null)
@@ -285,7 +347,10 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>블랙보드의 변경 사항을 적용합니다.</summary>
+        /// <summary>
+        /// Applies the changes made to the blackboard by updating the serialized object,
+        /// applying the modified properties, and marking the blackboard as dirty.
+        /// </summary>
         private void ApplyBlackboardChanges()
         {
             if (_serializedObject is null || _serializedObject.targetObject is null)
@@ -296,7 +361,7 @@ namespace TaskStreamer.Tool
             _serializedObject.Update();
             _serializedObject.ApplyModifiedProperties();
             
-            EditorUtility.SetDirty(_blackboard);
+            UnityEditor.EditorUtility.SetDirty(_blackboard);
         }
     }
 }

@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 namespace TaskStreamer.Tool
 {
     [UxmlElement]
-    public partial class TaskGraphView : UnityEditor.Experimental.GraphView.GraphView
+    public partial class TaskGraphView : GraphView
     {
         public TaskGraphView()
         {
@@ -32,7 +32,6 @@ namespace TaskStreamer.Tool
 
         private float _nextUpdateTime;
         
-
 
         public GraphViewBase graphView
         {
@@ -123,9 +122,9 @@ namespace TaskStreamer.Tool
 
             foreach (NodeViewBase view in base.nodes)
             {
-                if (view.highlighter.CanHighlight())
+                if (view.indicator.CanHighlight())
                 {
-                    view.highlighter.Highlight(interval); 
+                    view.indicator.Highlight(interval); 
                 }
             }
         }
@@ -133,7 +132,7 @@ namespace TaskStreamer.Tool
 
 #region Mouse Related Events
         /// <summary> 마우스 위치에서 컨텍스트 메뉴(노드 생성) 창을 엽니다. </summary>
-        public void OpenContextualMenuWindow(Vector2 mousePosition, Action<NodeViewBase> onNewNodeCreatedOnce = null)
+        public void OpenContextualMenuWindow(Vector2 mousePosition, Action<NodeViewBase> onNodeCreated = null)
         {
             if (TaskStreamerEditor.canEditGraph == false)
             {
@@ -141,7 +140,7 @@ namespace TaskStreamer.Tool
             }
 
             CreationWindow creationWindow = _graphView.GetGraphNodeCreationWindow(this);
-            creationWindow.RegisterCreationCallbackOnce(onNewNodeCreatedOnce);
+            creationWindow.RegisterCreationCallbackOnce(onNodeCreated);
             creationWindow.OpenWindow(mousePosition);
         }
 

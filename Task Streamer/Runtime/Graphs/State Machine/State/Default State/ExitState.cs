@@ -1,3 +1,5 @@
+using System;
+
 namespace TaskStreamer.FSM
 {
     public class ExitState : StateBase
@@ -7,9 +9,6 @@ namespace TaskStreamer.FSM
             get { return StateNodeType.Exit; }
         }
 
-        protected override void OnUpdate()
-        {
-            
-        }
+        protected override void OnUpdate() { }
     }
 }

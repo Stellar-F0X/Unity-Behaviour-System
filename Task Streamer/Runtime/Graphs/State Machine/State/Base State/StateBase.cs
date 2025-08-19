@@ -1,13 +1,15 @@
+using System;
 using System.Collections.Generic;
 using TaskStreamer.Utility;
 using UnityEngine;
 
 namespace TaskStreamer.FSM
 {
+    [Serializable, Readable]
     public abstract class StateBase : NodeBase
     {
         private bool _blockTransition;
-
+        
         private StateMachine _machine;
 
         [SerializeField, HideInInspector]

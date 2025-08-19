@@ -1,0 +1,7 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement name="container" style="margin-bottom: 0; margin-top: 2px; margin-left: 3px; margin-right: 3px; flex-direction: row;">
+        <ui:Label text="Label" name="name-field" style="margin-right: 2px; width: 150px; flex-direction: column; flex-shrink: 0; overflow: hidden;" />
+        <ui:VisualElement name="value-field" tabindex="0" style="padding-left: 2px; padding-right: 2px; flex-grow: 1; flex-shrink: 0; overflow: hidden; margin-left: 0; min-width: auto; width: 100px;" />
+        <ui:Toggle name="context-btn-field" tabindex="0" style="margin-bottom: 0; flex-shrink: 1; margin-left: 3px; align-self: center; min-width: 14px; margin-top: 0;" />
+    </ui:VisualElement>
+</ui:UXML>

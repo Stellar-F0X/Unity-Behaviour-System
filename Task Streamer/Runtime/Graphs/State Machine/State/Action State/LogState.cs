@@ -1,44 +1,48 @@
+using System;
 using UnityEngine;
 
 namespace TaskStreamer.FSM
 {
+    [Serializable, Readable]
     public class LogState : ActionState
     {
-        public string enterLogMessage;
-        public string updateLogMessage;
-        public string exitLogMessage;
+        public BlackboardVariable<string> onEnterMessages;
+        
+        public BlackboardVariable<string> onUpdateMessages;
+        
+        public BlackboardVariable<string> onExitMessages;
 
 
         protected override void OnEnter()
         {
-            if (string.IsNullOrEmpty(enterLogMessage))
+            if (string.IsNullOrEmpty(onEnterMessages.value))
             {
                 return;
             }
 
-            Debug.Log(enterLogMessage);
+            Debug.Log(onEnterMessages.value);
         }
         
 
         protected override void OnUpdate()
         {
-            if (string.IsNullOrEmpty(updateLogMessage))
+            if (string.IsNullOrEmpty(onUpdateMessages.value))
             {
                 return;
             }
             
-            Debug.Log(updateLogMessage);
+            Debug.Log(onUpdateMessages.value);
         }
         
 
         protected override void OnExit()
         {
-            if (string.IsNullOrEmpty(exitLogMessage))
+            if (string.IsNullOrEmpty(onExitMessages.value))
             {
                 return;
             }
             
-            Debug.Log(exitLogMessage);
+            Debug.Log(onExitMessages.value);
         }
     }
 }

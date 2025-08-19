@@ -1,10 +1,11 @@
 using System;
+using System.Collections.Generic;
 using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using TypeUtility = TaskStreamer.Utility.TypeUtility;
 
 namespace TaskStreamer.Tool
 {
@@ -12,19 +13,17 @@ namespace TaskStreamer.Tool
     {
         public NodeViewBase(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(AssetDatabase.GetAssetPath(nodeUxml))
         {
-            this._targetNode = targetNode;
-            this.title = targetNode.name;
-            this.tooltip = targetNode.tooltip;
-            this.viewDataKey = targetNode.guid.ToString();
-            this.style.left = targetNode.position.x;
-            this.style.top = targetNode.position.y;
-
             this._elementGroup = this.Q<VisualElement>("group");
             this._nodeBorder = this.Q<VisualElement>("node-border");
             this._nodeTypeLabel = this.Q<TextElement>("node-type-label");
-
-            this._connectionEdge = new EdgeDictionary();
-
+            
+            this.title = StringUtility.ApplySpacing(targetNode.name);
+            this.viewDataKey = targetNode.guid.ToString();
+            this._targetNode = targetNode;
+            this.tooltip = targetNode.tooltip;
+            this.style.left = targetNode.position.x;
+            this.style.top = targetNode.position.y;
+            
             this.Initialize();
             this.CreatePorts();
         }
@@ -32,14 +31,14 @@ namespace TaskStreamer.Tool
         public event Action<GraphElement> onNodeSelected;
         public event Action<GraphElement> onNodeUnselected;
 
-        private readonly NodeBase _targetNode;
-        private readonly VisualElement _nodeBorder;
-
         protected readonly TextElement _nodeTypeLabel;
         protected readonly VisualElement _elementGroup;
+        private readonly VisualElement _nodeBorder;
 
-        protected NodeHighlighterBase _highlighter;
-        private EdgeDictionary _connectionEdge;
+        protected NodeIndicatorBase Indicator;
+        
+        private readonly EdgeDictionary _connectionEdges = new EdgeDictionary();
+        private NodeBase _targetNode;
 
         public Port inputPort;
         public Port outputPort;
@@ -50,9 +49,21 @@ namespace TaskStreamer.Tool
             get { return _nodeBorder; }
         }
 
-        internal EdgeDictionary connectionEdge
+        internal EdgeDictionary connectionEdges
         {
-            get { return _connectionEdge; }
+            get { return _connectionEdges; }
+        }
+
+        internal List<object> fieldProperties
+        {
+            get;
+            private set;
+        }
+
+        internal Action<string> onRenamingNode
+        {
+            get;
+            private set;
         }
 
         public NodeBase targetNode
@@ -60,23 +71,20 @@ namespace TaskStreamer.Tool
             get { return _targetNode; }
         }
 
-        public NodeHighlighterBase highlighter
+        public NodeIndicatorBase indicator
         {
-            get { return _highlighter; }
+            get { return Indicator; }
         }
 
 
 
         private void Initialize()
         {
-            if (Application.isPlaying)
-            {
-                return;
-            }
-
-            SerializedObject serializedNode = new SerializedObject(_targetNode);
-            SerializedProperty nameProp = serializedNode.FindProperty("m_Name");
-            this.TrackPropertyValue(nameProp, this.ChangeNodeViewName);
+            this.onRenamingNode = this.ChangeNodeViewName;
+            
+            this.fieldProperties = TypeUtility.TryGetFieldProperties(targetNode.GetType(), this.targetNode);
+            
+            Debug.Assert(this.fieldProperties != null, $"Properties is null. Type: {targetNode.GetType().FullName}");
         }
 
 
@@ -94,16 +102,16 @@ namespace TaskStreamer.Tool
 
         //NodeBase CustomEditor에서 그려지는 NodeBase의 Name Field를 수정시, 에디터에서 값 변경을 확인 후, 알림이 전달.
         //등록된 TrackPropertyValue에 등록된 람다가 호출되고 변경된 이름이 property.stringValue로 전돨되며 NodeView의 Title도 변경됨.
-        private void ChangeNodeViewName(SerializedProperty nameProperty)
+        private void ChangeNodeViewName(string newName)
         {
             if (_targetNode is ISubGraphProvider subGraphNode)
             {
                 Graph subGraph = TaskStreamerEditor.Instance.graphAsset.GetGraph(subGraphNode.subGraphGuid);
                 Debug.Assert(subGraph != null, $"SubGraph {subGraphNode.subGraphGuid} is null");
-                subGraph.name = nameProperty.stringValue;
+                subGraph.name = newName;
             }
 
-            this.title = nameProperty.stringValue;
+            this.title = newName;
         }
 
 
@@ -111,12 +119,12 @@ namespace TaskStreamer.Tool
         {
             base.SetPosition(newPos);
 
-            Undo.RecordObject(_targetNode, "Behaviour System (Set Position)");
+            Undo.RecordObject(TaskStreamerEditor.Instance.graphAsset, "Behaviour System (Set Position)");
 
             _targetNode.position.x = Mathf.RoundToInt(newPos.xMin);
             _targetNode.position.y = Mathf.RoundToInt(newPos.yMin);
 
-            EditorUtility.SetDirty(_targetNode);
+            UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
         }
 
 

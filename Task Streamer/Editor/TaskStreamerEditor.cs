@@ -66,7 +66,6 @@ namespace TaskStreamer.Tool
             get { return _graphView; }
         }
 
-
         /// <summary>현재 편집 중인 Behaviour Tree를 가져옵니다.</summary>
         public GraphAsset graphAsset
         {
@@ -77,6 +76,11 @@ namespace TaskStreamer.Tool
         {
             get { return _focusedGraph; }
             set { _focusedGraph = value; }
+        }
+
+        public InspectorView inspector
+        {
+            get { return _inspectorView; }
         }
 
 
@@ -125,7 +129,7 @@ namespace TaskStreamer.Tool
 
         private static EditorSettings FindSettings()
         {
-            EditorSettings foundSettings = EditorUtilities.FindAssetByName<EditorSettings>($"t:{nameof(EditorSettings)}");
+            EditorSettings foundSettings = EditorUtility.FindAssetByName<EditorSettings>($"t:{nameof(EditorSettings)}");
 
             Debug.Assert(foundSettings is not null, "EditorSettings asset not found.");
 

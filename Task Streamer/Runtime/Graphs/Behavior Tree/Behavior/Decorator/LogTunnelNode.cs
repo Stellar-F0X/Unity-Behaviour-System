@@ -1,39 +1,39 @@
+using System;
 using UnityEngine;
 
 namespace TaskStreamer.BT
 {
+    [Serializable, Readable]
     public class LogTunnelNode : DecoratorNode
     {
-        public string[] onEnterMessages;
-        public string[] onUpdateMessages;
-        public string[] onExitMessages;
-        
-        
+        public BlackboardVariable<string> onEnterMessages;
+
+        public BlackboardVariable<string> onUpdateMessages;
+
+        public BlackboardVariable<string> onExitMessages;
+
+
         protected override void OnEnter()
         {
-            if (onEnterMessages is null || onEnterMessages.Length == 0)
+            if (string.IsNullOrEmpty(onEnterMessages.value))
             {
                 return;
             }
-
-            for (int i = 0; i < onEnterMessages.Length; ++i)
-            {
-                Debug.Log(onEnterMessages[i]);
-            }
+            
+            Debug.Log(onEnterMessages.value);
         }
 
-        
+
         protected override Status OnUpdate()
         {
-            if (onUpdateMessages is not null && onUpdateMessages.Length > 0)
+            if (string.IsNullOrEmpty(onUpdateMessages.value))
             {
-                for (int i = 0; i < onUpdateMessages.Length; ++i)
-                {
-                    Debug.Log(onUpdateMessages[i]);
-                }
+                return Status.Failure;
             }
+            
+            Debug.Log(onUpdateMessages.value);
 
-            if (child is null)
+            if (this.child is null)
             {
                 return Status.Failure;
             }
@@ -43,18 +43,15 @@ namespace TaskStreamer.BT
             }
         }
 
-        
+
         protected override void OnExit()
         {
-            if (onExitMessages is null || onExitMessages.Length == 0)
+            if (string.IsNullOrEmpty(onExitMessages.value))
             {
                 return;
             }
             
-            for (int i = 0; i < onExitMessages.Length; ++i)
-            {
-                Debug.Log(onExitMessages[i]);
-            }
+            Debug.Log(onExitMessages.value);
         }
     }
 }

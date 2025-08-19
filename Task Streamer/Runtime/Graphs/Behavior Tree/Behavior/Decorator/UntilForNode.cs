@@ -1,14 +1,12 @@
+using System;
+
 namespace TaskStreamer.BT
 {
+    [Serializable, Readable]
     public class UntilForNode : DecoratorNode
     {
-        public enum EUntilCondition
-        {
-            Failure = 1,
-            Success = 2
-        };
-
-        public EUntilCondition targetResult = EUntilCondition.Success;
+        [SetValue(UntilCondition.Success)]
+        public BlackboardVariable<UntilCondition> targetResult;
 
 
         public override string tooltip
@@ -21,30 +19,12 @@ namespace TaskStreamer.BT
         {
             switch (child.UpdateNode())
             {
-                case Status.Failure:
-                {
-                    if (targetResult == EUntilCondition.Failure)
-                    {
-                        return Status.Failure;
-                    }
+                case Status.Failure: return targetResult.value == UntilCondition.Failure ? Status.Success : Status.Running;
 
-                    break;
-                }
-
-                case Status.Success:
-                {
-                    if (targetResult == EUntilCondition.Success)
-                    {
-                        return Status.Success;
-                    }
-
-                    break;
-                }
+                case Status.Success: return targetResult.value == UntilCondition.Success ? Status.Success : Status.Running;
                 
-                default: return Status.Running;
+                default: return Status.Failure;
             }
-            
-            return Status.Running;
         }
     }
 }

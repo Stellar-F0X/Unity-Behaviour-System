@@ -119,12 +119,13 @@ namespace TaskStreamer.BT
         }
 
 
-        public static void ConnectNodes(BehaviorNodeBase parent, BehaviorNodeBase child)
+        //TODO: 이 함수보다 그냥 일반 To / From 등으로 부모, 자식을 리스트를 나누는게 좋아보임. 
+        public void ConnectNodes(BehaviorNodeBase parent, BehaviorNodeBase child)
         {
 #if UNITY_EDITOR
             if (Application.isPlaying == false)
             {
-                Undo.RecordObject(parent, "Behavior Tree (Connect Parent And Child)");
+                Undo.RecordObject(this.graphAsset, "Behavior Tree (Connect Parent And Child)");
             }
 #endif
             switch (parent.nodeType)
@@ -154,19 +155,18 @@ namespace TaskStreamer.BT
 #if UNITY_EDITOR
             if (Application.isPlaying == false)
             {
-                EditorUtility.SetDirty(parent);
-                EditorUtility.SetDirty(child);
+                EditorUtility.SetDirty(this.graphAsset);
             }
 #endif
         }
 
 
-        public static void DisconnectNodes(BehaviorNodeBase parent, BehaviorNodeBase child)
+        public void DisconnectNodes(BehaviorNodeBase parent, BehaviorNodeBase child)
         {
 #if UNITY_EDITOR
             if (Application.isPlaying == false)
             {
-                Undo.RecordObject(parent, "Behavior Tree (Disconnect Parent And Child)");
+                Undo.RecordObject(this.graphAsset, "Behavior Tree (Disconnect Parent And Child)");
             }
 #endif
 
@@ -197,8 +197,7 @@ namespace TaskStreamer.BT
 #if UNITY_EDITOR
             if (Application.isPlaying == false)
             {
-                EditorUtility.SetDirty(parent);
-                EditorUtility.SetDirty(child);
+                EditorUtility.SetDirty(this.graphAsset);
             }
 #endif
         }

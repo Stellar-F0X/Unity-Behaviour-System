@@ -98,11 +98,11 @@ namespace TaskStreamer
                 instantiatedBlackboard.variables = streamer.runtimeBlackboard.variables.ToList();
             }
 
-            GraphWorker graphWorker = new GraphWorker(instantiatedBlackboard, instantiatedGraphAsset, streamer);
-            graphWorker.AddAdapter(new RuntimeInstantiationPipe(graphWorker));
+            GraphTraveler graphTraveler = new GraphTraveler(instantiatedBlackboard, instantiatedGraphAsset, streamer);
+            graphTraveler.AddAdapter(new RuntimeInstantiationPipe(graphTraveler));
 
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
-            bag.Accept(graphWorker, ref instantiatedGraphAsset);
+            bag.Accept(graphTraveler, ref instantiatedGraphAsset);
 
             return instantiatedGraphAsset;
         }
@@ -171,13 +171,13 @@ namespace TaskStreamer
                 return;
             }
 
-            GraphWorker graphWorker = new GraphWorker(null, this, null);
-            graphWorker.AddAdapter(new GuidReassignPipe(graphWorker));
+            GraphTraveler graphTraveler = new GraphTraveler(null, this, null);
+            graphTraveler.AddAdapter(new GuidReassignPipe(graphTraveler));
             
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;
             
-            bag.Accept(graphWorker, ref reference);
+            bag.Accept(graphTraveler, ref reference);
 
             this.graphGuid = UGUID.Create();
         }
@@ -196,13 +196,13 @@ namespace TaskStreamer
                 return;
             }
 
-            GraphWorker graphWorker = new GraphWorker(blackboard, this, null);
-            graphWorker.AddAdapter(new VariablesResetPipe(graphWorker));
+            GraphTraveler graphTraveler = new GraphTraveler(blackboard, this, null);
+            graphTraveler.AddAdapter(new VariablesResetOrFilterPipe(graphTraveler));
 
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;
 
-            bag.Accept(graphWorker, ref reference);
+            bag.Accept(graphTraveler, ref reference);
         }
         
         

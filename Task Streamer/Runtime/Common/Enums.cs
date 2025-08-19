@@ -55,47 +55,35 @@ namespace TaskStreamer
     
     /// <summary> 값 비교 연산에 사용되는 비교 타입을 정의합니다. </summary>
     [Flags]
-    public enum ComparisonType : byte
+    public enum Comparison : byte
     {
         /// <summary>비교 없음</summary>
         [Tooltip("No comparison operation.")]
         None = 0,
 
-        /// <summary>같음 (==)</summary>
+        /// <summary>Equals (==)</summary>
         [Tooltip("Equal (==)")]
-        Equal = 1 << 0,
+        EQ = 1 << 0,
 
-        /// <summary>같지 않음 (!=)</summary>
+        /// <summary>Not Equals (!=)</summary>
         [Tooltip("Not Equal (!=)")]
-        NotEqual = 1 << 1,
+        NE = 1 << 1,
 
-        /// <summary>보다 큼 (&gt;)</summary>
+        /// <summary>Greater Than (&gt;)</summary>
         [Tooltip("Greater Than (>)")]
-        GreaterThan = 1 << 2,
+        GT = 1 << 2,
 
-        /// <summary>보다 크거나 같음 (&gt;=)</summary>
+        /// <summary>Greater Than or Equal (&gt;=)</summary>
         [Tooltip("Greater Than or Equal (>=)")]
-        GreaterThanOrEqual = 1 << 3,
+        GE = 1 << 3,
 
-        /// <summary>보다 작음 (&lt;)</summary>
+        /// <summary>Less Than (&lt;)</summary>
         [Tooltip("Less Than (<)")]
-        LessThan = 1 << 4,
+        LT = 1 << 4,
 
-        /// <summary>보다 작거나 같음 (&lt;=)</summary>
+        /// <summary>Less Than or Equal (&lt;=)</summary>
         [Tooltip("Less Than or Equal (<=)")]
-        LessThanOrEqual = 1 << 5,
-
-        /// <summary>숫자형 프리셋: 모든 숫자 비교 연산</summary>
-        [Tooltip("Preset for numeric values supporting all comparison operations.")]
-        NumericPreset = Equal | NotEqual | GreaterThan | GreaterThanOrEqual | LessThan | LessThanOrEqual,
-
-        /// <summary>불린형 프리셋: 같음, 같지 않음만 지원</summary>
-        [Tooltip("Preset for boolean values supporting only equality checks.")]
-        BooleanPreset = Equal | NotEqual,
-
-        /// <summary>객체형 프리셋: 같음, 같지 않음만 지원</summary>
-        [Tooltip("Preset for object references supporting only equality checks.")]
-        ObjectPreset = Equal | NotEqual
+        LE = 1 << 5
     };
     
     
@@ -220,5 +208,19 @@ namespace TaskStreamer
         /// <summary> Breath-First Search 현재 깊이의 모든 형제 노드를 먼저 탐색한 후 다음 깊이의 노드로 진행하는 그래프 순회 방식입니다. </summary>
         [Tooltip("Represents a graph traversal method that explores all sibling nodes at the current depth level before proceeding to nodes at the next depth level.")] 
         BFS
+    };
+    
+    
+    /// <summary> Until 노드가 지정된 조건이 만족될 때까지 자식 노드를 반복 실행하는 방식을 정의합니다. </summary>
+    [Tooltip("Defines how the Until node repeatedly executes its child node until a specified condition is met.")]
+    public enum UntilCondition
+    {
+        /// <summary>자식 노드가 실패할 때까지 반복 실행</summary>
+        [Tooltip("Repeatedly executes the child node until it fails.")]
+        Failure = 1,
+
+        /// <summary>자식 노드가 성공할 때까지 반복 실행</summary>
+        [Tooltip("Repeatedly executes the child node until it succeeds.")]
+        Success = 2
     };
 }

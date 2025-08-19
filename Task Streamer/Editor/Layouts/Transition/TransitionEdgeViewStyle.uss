@@ -1,8 +1,0 @@
-/* Unity의 기본 .edge 클래스 오버라이드 */
-.edge:hover {
-    --selected-edge-color: rgb(255, 128, 0);
-}
-
-.edge:checked {
-    --selected-edge-color: rgb(255, 128, 0);
-}

@@ -7,5 +7,5 @@ namespace TaskStreamer.Utility
     public class UGUIDList : List<UGUID> { }
 
     [Serializable]
-    internal class UGUIDDictionary : UDictionary<UGUID, UGUIDList> { }
+    internal class UGUIDDictionary : UGUIDBasedDictionary<UGUIDList> { }
 }

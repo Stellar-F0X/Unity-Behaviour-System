@@ -1,14 +1,16 @@
+using System;
 using UnityEngine;
 
 namespace TaskStreamer.BT
 {
+    [Serializable, Readable]
     public class LogNode : ActionNode
     {
-        public BlackboardVariable<string> onEnterMessages = "";
+        public BlackboardVariable<string> onEnterMessages;
         
-        public BlackboardVariable<string> onUpdateMessages = "";
+        public BlackboardVariable<string> onUpdateMessages;
         
-        public BlackboardVariable<string> onExitMessages = "";
+        public BlackboardVariable<string> onExitMessages;
 
 
         

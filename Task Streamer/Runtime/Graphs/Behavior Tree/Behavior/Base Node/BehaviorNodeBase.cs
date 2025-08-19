@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using Unity.Properties;
 using UnityEngine;
 
 namespace TaskStreamer.BT
 {
+    [Serializable, Readable]
     public abstract class BehaviorNodeBase : NodeBase
     {
         private BehaviorTree _tree;
@@ -120,7 +122,7 @@ namespace TaskStreamer.BT
 #if UNITY_EDITOR
             if (Application.isPlaying == false)
             {
-                UnityEditor.Undo.RecordObject(this, "Behavior Tree (AddChild)");
+                UnityEditor.Undo.RecordObject(tree.graphAsset, "Behavior Tree (AddChild)");
             }
 #endif
             switch (this.nodeType)
@@ -135,8 +137,7 @@ namespace TaskStreamer.BT
 #if UNITY_EDITOR
             if (Application.isPlaying == false)
             {
-                UnityEditor.EditorUtility.SetDirty(this);
-                UnityEditor.EditorUtility.SetDirty(child);
+                UnityEditor.EditorUtility.SetDirty(tree.graphAsset);
             }
 #endif
         }
@@ -147,7 +148,7 @@ namespace TaskStreamer.BT
 #if UNITY_EDITOR
             if (Application.isPlaying == false)
             {
-                UnityEditor.Undo.RecordObject(this, "Behavior Tree (ChangeChild)");
+                UnityEditor.Undo.RecordObject(tree.graphAsset, "Behavior Tree (ChangeChild)");
             }
 #endif
             
@@ -184,8 +185,7 @@ namespace TaskStreamer.BT
 #if UNITY_EDITOR
             if (Application.isPlaying == false)
             {
-                UnityEditor.EditorUtility.SetDirty(this);
-                UnityEditor.EditorUtility.SetDirty(newChild);
+                UnityEditor.EditorUtility.SetDirty(tree.graphAsset);
             }
 #endif
         }
@@ -196,7 +196,7 @@ namespace TaskStreamer.BT
 #if UNITY_EDITOR
             if (Application.isPlaying == false)
             {
-                UnityEditor.Undo.RecordObject(this, "Behavior Tree (RemoveChild)");
+                UnityEditor.Undo.RecordObject(tree.graphAsset, "Behavior Tree (RemoveChild)");
             }
 #endif
 
@@ -212,8 +212,7 @@ namespace TaskStreamer.BT
 #if UNITY_EDITOR
             if (Application.isPlaying == false)
             {
-                UnityEditor.EditorUtility.SetDirty(this);
-                UnityEditor.EditorUtility.SetDirty(child);
+                UnityEditor.EditorUtility.SetDirty(tree.graphAsset);
             }
 #endif
         }

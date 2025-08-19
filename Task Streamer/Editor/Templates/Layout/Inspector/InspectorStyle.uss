@@ -1,0 +1,39 @@
+.label-header {
+    font-size: 13px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    overflow: hidden;
+    visibility: visible;
+    display: flex;
+    flex-grow: 1;
+}
+
+.line {
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-left-color: rgb(40, 40, 40);
+    border-right-color: rgb(40, 40, 40);
+    border-top-color: rgb(40, 40, 40);
+    border-bottom-color: rgb(40, 40, 40);
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
+#description-content > #unity-text-input {
+    height: 50px;
+    min-height: initial;
+    max-height: initial;
+}
+
+.inspector-partition {
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+Label {
+    width: 150px;
+}

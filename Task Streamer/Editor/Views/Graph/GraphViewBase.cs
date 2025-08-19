@@ -153,20 +153,6 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>
-        /// 부모 노드에서 자식 노드로의 연결을 해제합니다.
-        /// </summary>
-        /// <param name="parentNodeView">부모 노드 뷰</param>
-        public abstract void TryDisconnectParentToChild(NodeViewBase parentNodeView);
-
-
-        /// <summary>
-        /// 자식 노드에서 부모 노드로의 연결을 해제합니다.
-        /// </summary>
-        /// <param name="childNodeView">자식 노드 뷰</param>
-        public abstract void TryDisconnectChildToParent(NodeViewBase childNodeView);
-
-
-        /// <summary>
         /// 엣지를 통해 노드들의 연결을 해제합니다.
         /// </summary>
         /// <param name="graph">대상 그래프</param>
@@ -179,9 +165,9 @@ namespace TaskStreamer.Tool
         /// 주로 복사/붙여넣기나 실행 취소 작업에서 사용됩니다.
         /// </summary>
         /// <param name="view">그래프 뷰</param>
-        /// <param name="graphCollection">대상 그래프</param>
+        /// <param name="graph">대상 그래프</param>
         /// <param name="edges">연결할 엣지들의 리스트</param>
-        public abstract void ConnectNodesByEdges(TaskGraphView view, Graph graphCollection, List<Edge> edges);
+        public abstract void ConnectNodesByEdges(TaskGraphView view, Graph graph, List<Edge> edges);
 
 
         /// <summary>

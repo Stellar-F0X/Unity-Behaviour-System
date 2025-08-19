@@ -1,5 +1,6 @@
 using System;
 using TaskStreamer.BT;
+using TaskStreamer.Utility;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine.UIElements;
 
@@ -9,15 +10,12 @@ namespace TaskStreamer.Tool
     {
         public BehaviorNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
         {
-            base._nodeTypeLabel.text = Utility.Utilities.ApplySpacing(targetNode.GetType().Name, "Node");
-
+            base._nodeTypeLabel.text = StringUtility.ApplySpacing(targetNode.GetType().Name, "Node");
             base.targetNode.name = base._nodeTypeLabel.text;
-
+            
             this._elementGroup.AddToClassList($"behaviour-node-{((BehaviorNodeBase)targetNode).nodeType}");
-
-            this._highlighter = new BehaviorNodeHighlight(this, TaskStreamerEditor.settings);
-
-            this._highlighter.ApplyBorderColorByState();
+            this.Indicator = new BehaviorIndicator(this, TaskStreamerEditor.settings);
+            this.Indicator.ApplyBorderColorByState();
         }
 
 

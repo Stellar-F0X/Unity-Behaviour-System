@@ -34,11 +34,12 @@ namespace TaskStreamer
         [SerializeField]
         private List<NodeGroup> _nodeGroup;
 #endif
-        [SerializeField]
-        private protected NodeDictionary _nodeLookup;
 
         [SerializeField, DontCreateProperty]
         protected GraphAsset _graphAsset;
+        
+        [SerializeField]
+        private protected NodeDictionary _nodeLookup;
 
 
 
@@ -221,7 +222,6 @@ namespace TaskStreamer
             this.OnRemoveGraph();
 
             EditorUtility.SetDirty(this.graphAsset);
-            AssetDatabase.SaveAssets();
         }
 
 #endregion
@@ -246,28 +246,20 @@ namespace TaskStreamer
                 Undo.RecordObject(this.graphAsset, "Task Streamer (CreateNode)");
             }
 
-            NodeBase node = Utilities.CreateNode(nodeType, position);
+            NodeBase node = TSObjectFactory.CreateNode(nodeType, position);
 
             if (node is null)
             {
                 throw new Exception("Node is null");
             }
 
-            node.name = Utilities.ApplySpacing(nodeName);
+            node.name = StringUtility.ApplySpacing(nodeName);
             _nodeLookup.Add(node.guid, node);
             _nodeLookup.OnBeforeSerialize();
 
-            // Node를 GraphAsset의 sub-asset으로 추가
-            if (Application.isPlaying == false && AssetDatabase.Contains(this.graphAsset))
-            {
-                AssetDatabase.AddObjectToAsset(node, this.graphAsset);
-            }
-
             if (Application.isPlaying == false && Undo.isProcessing == false)
             {
-                Undo.RegisterCreatedObjectUndo(node, "Task Streamer (CreateNode)");
                 EditorUtility.SetDirty(this.graphAsset);
-                AssetDatabase.SaveAssets(); // 중요: 즉시 저장
             }
 
             return node;
@@ -282,18 +274,10 @@ namespace TaskStreamer
             }
 
             _nodeLookup.Remove(node.guid);
-
-            // Sub-asset에서도 제거
-            if (Application.isPlaying == false && AssetDatabase.Contains(node))
-            {
-                AssetDatabase.RemoveObjectFromAsset(node);
-            }
             
             if (Application.isPlaying == false && Undo.isProcessing == false)
             {
-                Undo.DestroyObjectImmediate(node);
                 EditorUtility.SetDirty(this.graphAsset);
-                AssetDatabase.SaveAssets(); // 중요: 즉시 저장
             }
         }
 

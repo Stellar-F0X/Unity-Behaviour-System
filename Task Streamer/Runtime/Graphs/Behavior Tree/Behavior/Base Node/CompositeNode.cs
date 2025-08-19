@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace TaskStreamer.BT
 {
-    [Serializable]
     public abstract class CompositeNode : BehaviorNodeBase, IChildProvider
     {
         protected int _currentChildrenIndex = 0;
@@ -35,7 +34,7 @@ namespace TaskStreamer.BT
         }
 
 
-        internal override void InitializeOnInstantiated()
+        internal override void OnInstantiate()
         {
             base.onNodeExit -= this.ResetChildrenIndex;
             base.onNodeExit += this.ResetChildrenIndex;

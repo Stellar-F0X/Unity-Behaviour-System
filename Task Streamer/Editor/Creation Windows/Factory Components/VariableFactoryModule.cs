@@ -9,7 +9,7 @@ namespace TaskStreamer.Tool
 
         protected override Variable Create(Type type, Vector2 position)
         {
-            Variable variable = Utility.Utilities.CreateVariable(type);
+            Variable variable = Utility.TSObjectFactory.CreateVariable(type);
             Debug.Assert(variable is not null, "Variable is null");
             return variable;
         }

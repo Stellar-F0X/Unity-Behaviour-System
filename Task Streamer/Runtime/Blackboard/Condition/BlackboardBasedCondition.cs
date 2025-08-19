@@ -12,7 +12,7 @@ namespace TaskStreamer
         public EvaluationPolicy evaluationPolicy;
         
         [SerializeReference]
-        public List<ConditionModule> modules = new List<ConditionModule>();
+        public List<Condition> modules = new List<Condition>();
         
 
         public bool Execute()
@@ -43,7 +43,9 @@ namespace TaskStreamer
         {
             for (int index = 0; index < count; ++index)
             {
-                if (this.modules[index].Execute())
+                Condition condition = this.modules[index];
+                
+                if (condition.Execute(condition.comparisonValue))
                 {
                     return true;
                 }
@@ -57,7 +59,9 @@ namespace TaskStreamer
         {
             for (int index = 0; index < count; ++index)
             {
-                if (this.modules[index].Execute() == false)
+                Condition condition = this.modules[index];
+                
+                if (condition.Execute(condition.comparisonValue) == false)
                 {
                     return false;
                 }

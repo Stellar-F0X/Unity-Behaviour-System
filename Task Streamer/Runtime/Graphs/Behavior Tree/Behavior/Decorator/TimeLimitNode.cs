@@ -1,10 +1,13 @@
+using System;
 using UnityEngine;
 
 namespace TaskStreamer.BT
 {
+    [Serializable, Readable]
     public class TimeLimitNode : DecoratorNode
     {
-        public float limitTime;
+        [SetValue(1f)]
+        public BlackboardVariable<float> limitTime;
         
         private float _startTime;
 
@@ -23,7 +26,7 @@ namespace TaskStreamer.BT
 
         protected override Status OnUpdate()
         {
-            if (_startTime + limitTime > Time.time)
+            if (_startTime + limitTime.value > Time.time)
             {
                 return child.UpdateNode();
             }

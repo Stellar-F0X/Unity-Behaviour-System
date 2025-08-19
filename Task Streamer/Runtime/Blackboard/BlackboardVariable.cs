@@ -1,5 +1,6 @@
 using System;
 using TaskStreamer.Utility;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Properties;
 using UnityEngine;
 
@@ -25,20 +26,19 @@ namespace TaskStreamer
 
         public Type type
         {
-            get { return _variable.type; }
+            get { return _variable?.type; }
 
             set { _variable.type = value; }
         }
 
-
-        public string name
+        public string key
         {
             get { return _variable.key; }
 
             set { this._variable.key = value; }
         }
 
-        public int nameHash
+        public int keyHash
         {
             get { return _variable.keyHash; }
         }
@@ -55,23 +55,22 @@ namespace TaskStreamer
 
             set { _isGlobal = value; }
         }
+        
+        internal object boxedValue
+        {
+            get { return _variable.boxedValue; }
 
+            set { _variable.boxedValue = value; }
+        }
+        
 
-        public abstract BlackboardVariable Clone();
-
-#if UNITY_EDITOR
-        internal abstract void OnChangeAccessModifier();
-#endif
+        public abstract BlackboardVariable Duplicate();
     }
 
 
     [Serializable]
     public partial class BlackboardVariable<T> : BlackboardVariable
     {
-        [SerializeField]
-        private T _initializedValue;
-        
-        
         public T value
         {
             get { return ((Variable<T>)_variable).value; }
@@ -80,42 +79,17 @@ namespace TaskStreamer
         }
 
 
-        
-        public override BlackboardVariable Clone()
+        public override BlackboardVariable Duplicate()
         {
             BlackboardVariable<T> clone = new BlackboardVariable<T>();
-            
+
             clone._variable = this._variable;
             clone._isGlobal = this._isGlobal;
             clone.value = this.value;
-            clone.name = this.name;
+            clone.key = this.key;
             clone.type = this.type;
-            
+
             return clone;
-        }
-
-        //TODO: 추후 BlackboardVariableDrawer를 Custom Property에서 UI Toolkit으로 대체하면 사용해서 기본 값을 반영하자.
-        internal override sealed void OnChangeAccessModifier()
-        {
-            if (_variable is Variable<T> convertedVariable)
-            {
-                convertedVariable.value = this._initializedValue;
-            }
-            else
-            {
-                Debug.LogError("Failed to change access modifier of the variable.");
-            }
-        }
-
-
-        public static implicit operator BlackboardVariable<T>(T value)
-        {
-            BlackboardVariable<T> variable = new BlackboardVariable<T>();
-            Type type = TypeCollection.GetVariableType<T>();
-            variable._variable = Utilities.CreateVariable(type);
-            variable._initializedValue = value;
-            variable.value = value;
-            return variable;
         }
     }
 }

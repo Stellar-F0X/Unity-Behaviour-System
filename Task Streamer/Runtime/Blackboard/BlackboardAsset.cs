@@ -59,7 +59,7 @@ namespace TaskStreamer
 
         public Variable FindVariable(string variableName)
         {
-            int hashCode = Utilities.StringToHash(variableName);
+            int hashCode = StringUtility.StringToHash(variableName);
 
             if (hashCode == -1)
             {
@@ -72,7 +72,7 @@ namespace TaskStreamer
         }
 
 
-        private string[] VariableNames(UGUID excluded = default)
+        public string[] VariableNames(UGUID excluded = default)
         {
             if (excluded.IsEmpty())
             {

@@ -1,0 +1,11 @@
+.edge:hover {
+    --selected-edge-color: rgb(255, 128, 0);
+}
+
+.edge:checked {
+    --selected-edge-color: rgb(255, 128, 0);
+}
+
+.edge {
+    --edge-color: rgb(255, 255, 255);
+}

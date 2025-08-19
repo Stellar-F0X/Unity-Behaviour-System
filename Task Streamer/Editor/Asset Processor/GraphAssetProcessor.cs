@@ -25,12 +25,12 @@ namespace TaskStreamer.Tool
                 {
                     Graph graphRef = asset.main;
                     
-                    Utilities.CreateGraph(asset, asset.mainGraphType, ref graphRef, "Main");
+                    TSObjectFactory.CreateGraph(asset, asset.mainGraphType, ref graphRef, "Main");
                     
                     asset.main = graphRef;
                 }
                 
-                if (EditorUtilities.IsDuplicated(asset))
+                if (EditorUtility.IsDuplicated(asset))
                 {
                     asset.ReassignAllGraphElementGuids();
                 }

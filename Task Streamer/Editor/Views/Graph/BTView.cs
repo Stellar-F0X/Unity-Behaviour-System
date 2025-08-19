@@ -8,11 +8,27 @@ using UnityEngine.Pool;
 
 namespace TaskStreamer.Tool
 {
+    /// <summary>
+    /// Represents a custom behavior tree view derived from the base class <see cref="GraphViewBase"/>.
+    /// Provides functionality for node management, connection, and other specialized tasks related to behavior trees.
+    /// </summary>
     public class BTView : GraphViewBase
     {
+        /// <summary>
+        /// Represents a specialized graph view for managing Behavior Tree (BT) structures, providing node-based manipulation functionalities.
+        /// </summary>
         protected internal BTView() { }
 
 
+        /// <summary>
+        /// Attempts to connect two nodes in the task graph by creating an edge between them.
+        /// </summary>
+        /// <param name="view">The task graph view where the connection is being made.</param>
+        /// <param name="connectionSource">The source node from which the connection originates.</param>
+        /// <param name="connectionTarget">The target node to which the connection is directed.</param>
+        /// <returns>
+        /// True if the connection was successfully established; otherwise, false.
+        /// </returns>
         public override bool TryConnectNodesByEdge(TaskGraphView view, NodeViewBase connectionSource, NodeViewBase connectionTarget)
         {
             if (connectionSource is null || connectionTarget is null || connectionSource.outputPort is null || connectionTarget.inputPort is null)
@@ -20,11 +36,11 @@ namespace TaskStreamer.Tool
                 return false;
             }
 
-            Edge linkedEdge = connectionSource.outputPort.ConnectTo(connectionTarget.inputPort);
+            LinearEdge linkedEdge = connectionSource.outputPort.ConnectTo<LinearEdge>(connectionTarget.inputPort);
 
             if (connectionTarget is BehaviorNodeView behaviorNodeView)
             {
-                behaviorNodeView.connectionEdge[UGUID.Empty] = linkedEdge;
+                behaviorNodeView.connectionEdges[UGUID.Empty] = linkedEdge;
             }
             else
             {
@@ -37,6 +53,12 @@ namespace TaskStreamer.Tool
         }
 
 
+        /// <summary>
+        /// Creates node views for all nodes in the given graph and establishes connections between them
+        /// based on the parent-child relationships defined in the graph.
+        /// </summary>
+        /// <param name="graphView">The TaskGraphView instance where the nodes and connections will be added.</param>
+        /// <param name="graph">The graph containing the nodes and parent-child relationships to be processed.</param>
         public override void CreateAndConnectNodes(TaskGraphView graphView, Graph graph)
         {
             // 모든 노드뷰 생성
@@ -65,7 +87,10 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>중요한 노드들을 선택에서 제외합니다 (Root 노드 등)</summary>
+        /// <summary>
+        /// Excludes important nodes from the selection (e.g., Root nodes).
+        /// </summary>
+        /// <param name="selection">A list of selectable elements to be filtered. Elements representing certain nodes, such as Root nodes, are deselected and removed from this list.</param>
         public override void FilterSelectionElements(List<ISelectable> selection)
         {
             if (selection is null || selection.Count == 0)
@@ -94,6 +119,11 @@ namespace TaskStreamer.Tool
         }
 
 
+        /// <summary>
+        /// Notifies that the position of certain nodes has changed and updates their order accordingly.
+        /// </summary>
+        /// <param name="graphView">The graph view containing the nodes whose positions have changed.</param>
+        /// <param name="elements">The list of graph elements whose positions have changed. If null or empty, the operation will be skipped.</param>
         public override void NotifyNodePositionChanged(TaskGraphView graphView, List<GraphElement> elements)
         {
             if (elements is null || elements.Count == 0)
@@ -108,7 +138,9 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>로딩 시 노드 데이터로부터 NodeView를 재생성합니다</summary>
+        /// <summary>Recreates a NodeView from the given NodeBase data when loading.</summary>
+        /// <param name="node">The NodeBase instance containing the data required to create the NodeView.</param>
+        /// <returns>A new NodeViewBase instance representing the recreated NodeView, or null if the input node is null.</returns>
         public override NodeViewBase RecreateNodeViewOnLoad(NodeBase node)
         {
             if (node == null)
@@ -116,31 +148,15 @@ namespace TaskStreamer.Tool
                 return null;
             }
 
-            NodeViewBase nodeView = new BehaviorNodeView(node, TaskStreamerEditor.settings.behaviorNodeViewXml);
-
+            NodeViewBase nodeView = new BehaviorNodeView(node, TaskStreamerEditor.settings.behaviorNodeXml);
             Debug.Assert(nodeView is not null, $"{nameof(TaskGraphView)}: NodeViewBase is null");
-
             return nodeView;
         }
 
 
-        /// <summary>자식 노드에서 부모 노드와의 연결을 해제합니다</summary>
-        public override void TryDisconnectChildToParent(NodeViewBase childNodeView)
-        {
-            if (this.IsValidConnectionForDisconnect(childNodeView, true) == false)
-            {
-                return;
-            }
-
-            Edge parentConnectionEdge = childNodeView.connectionEdge[UGUID.Empty];
-
-            if (parentConnectionEdge.output.node is NodeViewBase view)
-            {
-                this.DisconnectAndDeleteEdge(view, childNodeView, parentConnectionEdge, view.outputPort);
-            }
-        }
-
-
+        /// <summary>Disconnects two nodes in the behavior tree graph using the provided edge and removes the edge from the hierarchy.</summary>
+        /// <param name="graph">The graph where the disconnection will occur. Must be of type <see cref="BehaviorTree"/>.</param>
+        /// <param name="edge">The edge connecting the nodes to be disconnected.</param>
         public override void DisconnectNodesByEdge(Graph graph, Edge edge)
         {
             BehaviorTree tree = graph as BehaviorTree;
@@ -150,42 +166,48 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            NodeViewBase parentView = edge.output.node as NodeViewBase;
-            NodeViewBase childView = edge.input.node as NodeViewBase;
+            BehaviorNodeBase parentNode = edge.output.node.GetNodeByView<BehaviorNodeBase>();
+            BehaviorNodeBase childNode = edge.input.node.GetNodeByView<BehaviorNodeBase>();
 
-            if (parentView is null || childView is null)
-            {
-                return;
-            }
-
-            BehaviorTree.DisconnectNodes((BehaviorNodeBase)parentView.targetNode, (BehaviorNodeBase)childView.targetNode);
+            ((BehaviorTree)graph).DisconnectNodes(parentNode, childNode);
             edge.RemoveFromHierarchy();
         }
 
 
-        public override void ConnectNodesByEdges(TaskGraphView graphView, Graph graphCollection, List<Edge> edges)
+        /// <summary>
+        /// Connects nodes within a graph using specified edges.
+        /// </summary>
+        /// <param name="graphView">The graph view that contains the nodes.</param>
+        /// <param name="graph">The graph instance where the connections are applied.</param>
+        /// <param name="edges">A list of edges that define the connections between nodes.</param>
+        public override void ConnectNodesByEdges(TaskGraphView graphView, Graph graph, List<Edge> edges)
         {
-            BehaviorTree tree = graphCollection as BehaviorTree;
-
-            if (tree is null || edges.Count == 0)
+            if (graph is not BehaviorTree tree || edges.Count == 0)
             {
                 return;
             }
 
             foreach (Edge edge in edges)
             {
-                if (edge.output.node is not BehaviorNodeView parentView || edge.input.node is not BehaviorNodeView childView)
+                BehaviorNodeBase parentNode = edge.output.node.GetNodeByView<BehaviorNodeBase>();
+                BehaviorNodeBase childNode = edge.input.node.GetNodeByView<BehaviorNodeBase>();
+
+                if (parentNode is null || childNode is null)
                 {
                     continue;
                 }
 
-                childView.connectionEdge[UGUID.Empty] = edge;
-
-                BehaviorTree.ConnectNodes((BehaviorNodeBase)parentView.targetNode, (BehaviorNodeBase)childView.targetNode);
+                ((NodeViewBase)edge.output.node).connectionEdges[UGUID.Empty] = edge;
+                tree.ConnectNodes(parentNode, childNode);
             }
         }
 
 
+        /// <summary>
+        /// Creates a graph node creation window for adding various types of nodes into the given task graph view.
+        /// </summary>
+        /// <param name="graphView">The task graph view for which the node creation window will be created.</param>
+        /// <returns>A creation window instance populated with factory modules for creating different node types.</returns>
         protected override CreationWindow CreateGraphNodeCreationWindow(TaskGraphView graphView)
         {
             ICreationWindow window = CreationWindow.GetCreationWindow("Behavior Tree");
@@ -200,18 +222,37 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>부모 노드에서 자식 노드와의 연결을 해제합니다</summary>
-        public override void TryDisconnectParentToChild(NodeViewBase parentNodeView)
+        /// <summary>Disconnects a child node from its parent node.</summary>
+        /// <param name="childNodeView">The child node to disconnect from its parent node.</param>
+        public void TryDisconnectChildToParent(NodeViewBase childNodeView)
+        {
+            if (this.IsValidConnectionForDisconnect(childNodeView, true) == false)
+            {
+                return;
+            }
+
+            Edge parentConnectionEdge = childNodeView.connectionEdges[UGUID.Empty];
+
+            if (parentConnectionEdge.output.node is NodeViewBase view)
+            {
+                this.DisconnectAndDeleteEdge(view, childNodeView, parentConnectionEdge, view.outputPort);
+            }
+        }
+
+
+        /// <summary>
+        /// Disconnects the connection between a parent node and its child node.
+        /// </summary>
+        /// <param name="parentNodeView">The parent node from which the connection to its child will be removed.</param>
+        public void TryDisconnectParentToChild(NodeViewBase parentNodeView)
         {
             if (this.IsValidConnectionForDisconnect(parentNodeView, false) == false)
             {
                 return;
             }
 
-            BehaviorNodeBase node = (BehaviorNodeBase)parentNodeView.targetNode;
-
             // 단일 자식만 가질 수 있는 노드 타입 확인
-            if (this.IsSingleChildNode(node) == false)
+            if (this.IsSingleChildNode((BehaviorNodeBase)parentNodeView.targetNode) == false)
             {
                 return;
             }
@@ -221,12 +262,15 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            Edge parentConnectionEdge = parentNodeView.connectionEdge[UGUID.Empty];
+            Edge parentConnectionEdge = parentNodeView.connectionEdges[UGUID.Empty];
             this.DisconnectAndDeleteEdge(parentNodeView, existingChildView, parentConnectionEdge, parentNodeView.outputPort);
         }
 
 
-        /// <summary>연결 해제가 가능한 상태인지 확인합니다</summary>
+        /// <summary>Determines whether the connection can be safely disconnected based on the specified conditions.</summary>
+        /// <param name="nodeView">The node view that represents the connection point to evaluate.</param>
+        /// <param name="checkInputPort">Indicates whether the check should be performed on the input port (true) or the output port (false) of the node.</param>
+        /// <returns>True if the connection is valid for disconnection; otherwise, false.</returns>
         private bool IsValidConnectionForDisconnect(NodeViewBase nodeView, bool checkInputPort)
         {
             if (nodeView is null)
@@ -245,17 +289,30 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>단일 자식만 가질 수 있는 노드 타입인지 확인합니다</summary>
+        /// <summary>
+        /// Checks if a node is of a type that can only have a single child (e.g., Decorator or Root).
+        /// </summary>
+        /// <param name="node">The node to be checked.</param>
+        /// <returns>Returns true if the node can only have a single child; otherwise, false.</returns>
         private bool IsSingleChildNode(BehaviorNodeBase node)
         {
             return node.nodeType is BehaviorNodeType.Decorator or BehaviorNodeType.Root;
         }
 
 
-        /// <summary>노드 연결을 해제하고 에지를 삭제합니다</summary>
+        /// <summary>
+        /// Disconnects a parent node from a child node and deletes the specified edge.
+        /// </summary>
+        /// <param name="parentView">The parent node view from which the connection will be removed.</param>
+        /// <param name="childView">The child node view to be disconnected.</param>
+        /// <param name="edge">The edge representing the connection to be deleted.</param>
+        /// <param name="port">The port on the parent node associated with the connection.</param>
         private void DisconnectAndDeleteEdge(NodeViewBase parentView, NodeViewBase childView, Edge edge, Port port)
         {
-            BehaviorTree.DisconnectNodes((BehaviorNodeBase)parentView.targetNode, (BehaviorNodeBase)childView.targetNode);
+            BehaviorTree behaviorTree = TaskStreamerEditor.Instance.currentGraph as BehaviorTree;
+            Debug.Assert(behaviorTree is not null, $"{nameof(TaskGraphView)}: BehaviorTree is null");
+            
+            behaviorTree.DisconnectNodes((BehaviorNodeBase)parentView.targetNode, (BehaviorNodeBase)childView.targetNode);
             port.Disconnect(edge);
 
             List<GraphElement> edges = ListPool<GraphElement>.Get();

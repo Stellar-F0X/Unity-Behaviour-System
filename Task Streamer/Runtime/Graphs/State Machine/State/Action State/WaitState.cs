@@ -1,8 +1,14 @@
+using System;
+
 namespace TaskStreamer.FSM
 {
+    [Serializable, Readable]
     public class WaitState : ActionState
     {
-        public float waitTime = 1f;
+        [SetValue(1f)]
+        public BlackboardVariable<float> waitTime;
+        
+        private float _startTime;
         
         protected override void OnEnter()
         {
@@ -11,7 +17,7 @@ namespace TaskStreamer.FSM
 
         protected override void OnUpdate()
         {
-            if (base.elapsedTime < waitTime)
+            if (base.elapsedTime < waitTime.value)
             {
                 return;
             }

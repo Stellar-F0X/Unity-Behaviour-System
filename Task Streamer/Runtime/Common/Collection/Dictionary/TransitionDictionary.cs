@@ -4,5 +4,5 @@ using TaskStreamer.FSM;
 namespace TaskStreamer.Utility
 {
     [Serializable]
-    internal class TransitionDictionary : UDictionary<UGUID, Transition> { }
+    internal class TransitionDictionary : UGUIDBasedDictionary<Transition> { }
 }

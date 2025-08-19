@@ -1,9 +1,11 @@
+using System;
 using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
 
 namespace TaskStreamer.FSM
 {
+    [Serializable, Readable]
     public abstract class SubGraphState : StateBase, ISubGraphProvider
     {
         [DontCreateProperty]

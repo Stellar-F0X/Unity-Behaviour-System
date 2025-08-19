@@ -1,10 +1,11 @@
+using System;
 using Unity.Properties;
 using UnityEngine;
 
 namespace TaskStreamer.BT
 {
-    [GeneratePropertyBag]
-    public partial class CrossFade : ActionNode
+    [Serializable, Readable]
+    public class CrossFade : ActionNode
     {
         public BlackboardVariable<Animator> animator;
 

@@ -1,13 +1,15 @@
+using System;
 using UnityEngine;
 
 namespace TaskStreamer.BT
 {
+    [Serializable, Readable]
     public class RepeaterNode : DecoratorNode
     {
-        public uint repeatCount;
+        [SetValue(5)]
+        public BlackboardVariable<uint> repeatCount;
         
-        [SerializeField, ReadOnly]
-        private int _currentCount;
+        private int _currentCount = 0;
 
 
         public override string tooltip
@@ -24,7 +26,7 @@ namespace TaskStreamer.BT
 
         protected override Status OnUpdate()
         {
-            if (_currentCount < repeatCount)
+            if (_currentCount < repeatCount.value)
             {
                 if (child.UpdateNode() != Status.Running)
                 {
