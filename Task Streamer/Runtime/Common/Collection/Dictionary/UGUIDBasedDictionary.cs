@@ -5,21 +5,11 @@ using UnityEngine;
 
 namespace TaskStreamer.Utility
 {
-    [Serializable, Readable]
-    internal class UGUIDBasedDictionary<TValue> : Dictionary<UGUID, TValue>, ISerializationCallbackReceiver
+    [Serializable]
+    internal class UGUIDBasedDictionary<TPair, TValue> : Dictionary<UGUID, TValue>, ISerializationCallbackReceiver where TPair : IKeyValuePair<UGUID, TValue>, new()
     {
-        [Serializable]
-        public struct KeyValuePair
-        {
-            [SerializeField]
-            public UGUID key;
-
-            [SerializeReference]
-            public TValue value;
-        }
-
-        [DontCreateProperty]
-        public List<KeyValuePair> cachedPair = new List<KeyValuePair>();
+        [SerializeField, DontCreateProperty]
+        public List<TPair> cachedPair = new List<TPair>();
 
 
         public void OnBeforeSerialize()
@@ -28,7 +18,7 @@ namespace TaskStreamer.Utility
 
             foreach (KeyValuePair<UGUID, TValue> pair in this)
             {
-                this.cachedPair.Add(new KeyValuePair { key = pair.Key, value = pair.Value });
+                this.cachedPair.Add(new TPair { key = pair.Key, value = pair.Value });
             }
         }
 

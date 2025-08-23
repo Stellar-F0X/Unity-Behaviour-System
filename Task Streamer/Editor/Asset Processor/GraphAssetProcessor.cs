@@ -28,6 +28,8 @@ namespace TaskStreamer.Tool
                     TSObjectFactory.CreateGraph(asset, asset.mainGraphType, ref graphRef, "Main");
                     
                     asset.main = graphRef;
+                    
+                    asset.graphGuid = UGUID.Create();
                 }
                 
                 if (EditorUtility.IsDuplicated(asset))

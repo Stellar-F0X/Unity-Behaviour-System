@@ -37,7 +37,7 @@ namespace TaskStreamer.Tool
 
         protected NodeIndicatorBase Indicator;
         
-        private readonly EdgeDictionary _connectionEdges = new EdgeDictionary();
+        private Dictionary<UGUID, Edge> _connectionEdges = new Dictionary<UGUID, Edge>();
         private NodeBase _targetNode;
 
         public Port inputPort;
@@ -49,7 +49,7 @@ namespace TaskStreamer.Tool
             get { return _nodeBorder; }
         }
 
-        internal EdgeDictionary connectionEdges
+        internal Dictionary<UGUID, Edge> connectionEdges
         {
             get { return _connectionEdges; }
         }

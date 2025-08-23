@@ -3,6 +3,6 @@ using TaskStreamer.FSM;
 
 namespace TaskStreamer.Utility
 {
-    [Serializable]
-    internal class TransitionDictionary : UGUIDBasedDictionary<Transition> { }
+    [Serializable, Readable]
+    internal class TransitionDictionary : UGUIDBasedDictionary<URKeyValuePair<Transition>, Transition> { }
 }

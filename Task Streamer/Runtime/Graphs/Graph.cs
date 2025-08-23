@@ -5,7 +5,6 @@ using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace TaskStreamer
 {
@@ -22,13 +21,13 @@ namespace TaskStreamer
         }
 
         [SerializeField, DontCreateProperty]
-        private string _name;
+        private string _name; 
 
         [SerializeField, DontCreateProperty]
-        private UGUID _guid;
+        private UGUID _guid; 
 
         [SerializeField, DontCreateProperty]
-        private UGUID _baseGraphGuid;
+        private UGUID _baseGraphGuid; 
 
 #if UNITY_EDITOR
         [SerializeField]

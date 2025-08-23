@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: EditorSettings
   m_EditorClassIdentifier: 
   highlightDuration: 0.4
-  updatesPerSecond: 10
-  updateInterval: 0.1
+  updatesPerSecond: 15
+  updateInterval: 0.06666667
   durationReciprocal: 2.5
   tagList:
   - None

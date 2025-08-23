@@ -11,7 +11,7 @@ namespace TaskStreamer.Injection
     {
         protected GraphPipe(GraphTraveler graphTraveler)
         {
-            Traveler = graphTraveler;
+            traveler = graphTraveler;
 
             _behaviorTreeBag = PropertyBag.GetPropertyBag<BehaviorTree>();
             _stateMachineBag = PropertyBag.GetPropertyBag<StateMachine>();
@@ -20,7 +20,7 @@ namespace TaskStreamer.Injection
         private readonly IPropertyBag<BehaviorTree> _behaviorTreeBag;
         private readonly IPropertyBag<StateMachine> _stateMachineBag;
         
-        protected readonly GraphTraveler Traveler;
+        protected readonly GraphTraveler traveler;
 
         
         public virtual void Visit<TContainer>(in VisitContext<TContainer, GraphDictionary> context, ref TContainer container, ref GraphDictionary value)
@@ -31,26 +31,26 @@ namespace TaskStreamer.Injection
             Dictionary<UGUID, Graph> dictionaryValue = value as Dictionary<UGUID, Graph>;
             Debug.Assert(dictionaryValue != null, "Dictionary value not found for GraphDictionary");
             
-            propertyBag.Accept(Traveler, ref dictionaryValue);
+            propertyBag.Accept(traveler, ref dictionaryValue);
         }
         
         
         public void Visit<TContainer>(in VisitContext<TContainer, KeyValuePair<UGUID, Graph>> context, ref TContainer container, ref KeyValuePair<UGUID, Graph> graphKeyValuePair)
         {
-            Traveler.currentGraph = graphKeyValuePair.Value;
+            traveler.currentGraph = graphKeyValuePair.Value;
             
             switch (graphKeyValuePair.Value)
             {
-                case BehaviorTree behaviorTree: _behaviorTreeBag.Accept(Traveler, ref behaviorTree); break;
+                case BehaviorTree behaviorTree: _behaviorTreeBag.Accept(traveler, ref behaviorTree); break;
 
-                case StateMachine stateMachine: _stateMachineBag.Accept(Traveler, ref stateMachine); break;
+                case StateMachine stateMachine: _stateMachineBag.Accept(traveler, ref stateMachine); break;
 
                 //TODO: GOAP
 
                 default: Debug.LogError("Invalid graph type"); break;
             }
 
-            Traveler.currentGraph = null;
+            traveler.currentGraph = null;
         }
     }
 }

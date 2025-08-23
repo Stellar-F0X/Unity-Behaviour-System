@@ -2,6 +2,6 @@ using System;
 
 namespace TaskStreamer.Utility
 {
-    [Serializable]
-    internal class NodeDictionary : UGUIDBasedDictionary<NodeBase> { }
+    [Serializable, Readable]
+    internal class NodeDictionary : UGUIDBasedDictionary<URKeyValuePair<NodeBase>, NodeBase> { }
 }

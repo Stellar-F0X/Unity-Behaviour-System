@@ -2,6 +2,6 @@ using System;
 
 namespace TaskStreamer.Utility
 {
-    [Serializable]
-    internal class GraphDictionary : UGUIDBasedDictionary<Graph> { }
+    [Serializable, Readable]
+    internal class GraphDictionary : UGUIDBasedDictionary<URKeyValuePair<Graph>, Graph> { }
 }

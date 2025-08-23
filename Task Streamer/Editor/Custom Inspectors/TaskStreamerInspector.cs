@@ -8,10 +8,13 @@ namespace TaskStreamer.Tool
     {
         public override void OnInspectorGUI()
         {
+            serializedObject.Update();
+            
             SerializedProperty graphAsset = serializedObject.FindProperty("_graphAsset");
             SerializedProperty pauseUpdate = serializedObject.FindProperty("_pauseUpdate");
             SerializedProperty updateMode = serializedObject.FindProperty("_tickMode");
-            
+            SerializedProperty runtimBB = serializedObject.FindProperty("_runtimeBlackboard");
+
             graphAsset.objectReferenceValue = EditorGUILayout.ObjectField("Graph Asset", graphAsset.objectReferenceValue, typeof(GraphAsset), false);
             updateMode.enumValueIndex = EditorGUILayout.Popup("Tick Mode", updateMode.enumValueIndex, updateMode.enumDisplayNames);
             pauseUpdate.boolValue = EditorGUILayout.Toggle("Pause Update", pauseUpdate.boolValue);
@@ -28,8 +31,12 @@ namespace TaskStreamer.Tool
                     SettingsService.OpenProjectSettings(SettingRegister.SettingsResistryPath);
                 }
             }
+
+            if (SerializedProperty.DataEquals(runtimBB, null) == false)
+            {
+                EditorGUILayout.PropertyField(runtimBB);
+            }
             
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("_runtimeBlackboard"));
             serializedObject.ApplyModifiedProperties();
         }
     }

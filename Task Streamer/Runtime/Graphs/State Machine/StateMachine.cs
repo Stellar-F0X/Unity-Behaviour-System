@@ -14,13 +14,13 @@ namespace TaskStreamer.FSM
     {
         private StateMachine(string graphName, GraphAsset graphAsset) : base(graphName, graphAsset) { }
 
-        [SerializeField, DontCreateProperty]
+        [SerializeReference, DontCreateProperty]
         private StateBase _current;
 
-        [SerializeField, DontCreateProperty]
+        [SerializeReference, DontCreateProperty]
         private StateBase _any;
 
-        [SerializeField, DontCreateProperty]
+        [SerializeReference, DontCreateProperty]
         private StateBase _exit;
 
         private bool _blockAllTransition;

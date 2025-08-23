@@ -7,7 +7,7 @@ using UnityEngine;
 namespace TaskStreamer
 {
     /// <summary> Variable wrapper class </summary>
-    [Serializable, GeneratePropertyBag, Readable]
+    [Serializable, Readable]
     public abstract class BlackboardVariable
     {
         [SerializeReference]
@@ -24,6 +24,7 @@ namespace TaskStreamer
             internal set { _variable = value; }
         }
 
+        //TODO: 콘크리트 Variable 클래스가 아니라 BlackboardVariable<T> 타입이나, T를 갖고 있어야되는지 생각.
         public Type type
         {
             get { return _variable?.type; }
@@ -69,13 +70,34 @@ namespace TaskStreamer
 
 
     [Serializable]
-    public partial class BlackboardVariable<T> : BlackboardVariable
+    public class BlackboardVariable<T> : BlackboardVariable
     {
         public T value
         {
-            get { return ((Variable<T>)_variable).value; }
+            get
+            {
+                if (_variable is Variable<T> convertedVariable)
+                {
+                    return convertedVariable.value;
+                }
+                else
+                {
+                    Debug.LogError($"_variable type mismatch: {typeof(T).Name}.");
+                    return default;
+                }
+            }
 
-            set { ((Variable<T>)_variable).value = value; }
+            set
+            {
+                if (_variable is Variable<T> convertedVariable)
+                {
+                    convertedVariable.value = value;
+                }
+                else
+                {
+                    Debug.LogError($"_variable type mismatch: {typeof(T).Name}.");
+                }
+            }
         }
 
 

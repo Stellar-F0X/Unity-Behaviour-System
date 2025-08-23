@@ -69,6 +69,13 @@ namespace TaskStreamer
             set { _graphMap[value.guid] = (_main = value); }
         }
 
+        internal UGUIDDictionary graphMap
+        {
+            get { return _graphTreeMap; }
+            
+            set { _graphTreeMap = value; }
+        }
+
         public GraphDictionary.ValueCollection graphs
         {
             get { return _graphMap.Values; }
@@ -86,10 +93,8 @@ namespace TaskStreamer
                 return null;
             }
             
-            GraphAsset instantiatedGraphAsset = null;
             BlackboardAsset instantiatedBlackboard = null;
-
-            instantiatedGraphAsset = Object.Instantiate(this);
+            GraphAsset instantiatedGraphAsset = Object.Instantiate(this);
 
             if (this.blackboard != null)
             {
@@ -98,19 +103,18 @@ namespace TaskStreamer
                 instantiatedBlackboard.variables = streamer.runtimeBlackboard.variables.ToList();
             }
 
+            IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
+            
             GraphTraveler graphTraveler = new GraphTraveler(instantiatedBlackboard, instantiatedGraphAsset, streamer);
             graphTraveler.AddAdapter(new RuntimeInstantiationPipe(graphTraveler));
-
-            IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             bag.Accept(graphTraveler, ref instantiatedGraphAsset);
-
             return instantiatedGraphAsset;
         }
 
         
         public List<Graph> GetSubGraphs(UGUID baseGraphGuid)
         {
-            if (baseGraphGuid.IsEmpty() || _graphTreeMap.TryGetValue(baseGraphGuid, out UGUIDList subGraphGuids) == false)
+            if (baseGraphGuid.IsEmpty() || _graphTreeMap.TryGetValue(baseGraphGuid, out List<UGUID> subGraphGuids) == false)
             {
                 return null;
             }
@@ -172,7 +176,7 @@ namespace TaskStreamer
             }
 
             GraphTraveler graphTraveler = new GraphTraveler(null, this, null);
-            graphTraveler.AddAdapter(new GuidReassignPipe(graphTraveler));
+            graphTraveler.AddAdapter(new GuidRebindingPipe(graphTraveler));
             
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;
@@ -197,7 +201,7 @@ namespace TaskStreamer
             }
 
             GraphTraveler graphTraveler = new GraphTraveler(blackboard, this, null);
-            graphTraveler.AddAdapter(new VariablesResetOrFilterPipe(graphTraveler));
+            graphTraveler.AddAdapter(new BlackboardCleanupPipe(graphTraveler));
 
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;
@@ -296,7 +300,7 @@ namespace TaskStreamer
 
             if (_graphTreeMap.ContainsKey(from) == false)
             {
-                _graphTreeMap.Add(from, new UGUIDList());
+                _graphTreeMap.Add(from, new List<UGUID>());
             }
 
             if (_graphTreeMap[from].Contains(to) == false)
@@ -314,7 +318,7 @@ namespace TaskStreamer
                 return;
             }
 
-            bool found = _graphTreeMap.TryGetValue(from, out UGUIDList dependencies);
+            bool found = _graphTreeMap.TryGetValue(from, out List<UGUID> dependencies);
 
             if (found == false)
             {
