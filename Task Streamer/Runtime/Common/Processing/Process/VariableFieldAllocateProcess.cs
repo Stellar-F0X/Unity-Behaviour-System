@@ -5,7 +5,7 @@ using Unity.Properties;
 namespace TaskStreamer.Injection
 {
     //[EditorOnly]
-    public class VariableFieldAllocator : IVisitContravariantPropertyAdapter<BlackboardVariable>
+    public class VariableFieldAllocateProcess : IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
         public void Visit<TContainer>(in VisitContext<TContainer> context, ref TContainer container, BlackboardVariable value)
         {

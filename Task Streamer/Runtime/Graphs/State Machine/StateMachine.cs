@@ -5,7 +5,6 @@ using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace TaskStreamer.FSM
 {

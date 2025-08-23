@@ -10,8 +10,10 @@ namespace TaskStreamer.Tool
     {
         public BehaviorNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
         {
-            base._nodeTypeLabel.text = StringUtility.ApplySpacing(targetNode.GetType().Name, "Node");
-            base.targetNode.name = base._nodeTypeLabel.text;
+            string nodeName = StringUtility.ApplySpacing(targetNode.name, "Node");
+            base._nodeTypeLabel.text = nodeName;
+            base.targetNode.name = nodeName;
+            base.title = nodeName;
             
             this._elementGroup.AddToClassList($"behaviour-node-{((BehaviorNodeBase)targetNode).nodeType}");
             this.Indicator = new BehaviorIndicator(this, TaskStreamerEditor.settings);

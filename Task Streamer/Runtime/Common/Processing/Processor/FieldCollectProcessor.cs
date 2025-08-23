@@ -1,14 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using Unity.Properties;
 
 namespace TaskStreamer.Injection
 {
-    public class FieldCollector : DefaultVisitWorker
+    public class FieldCollectProcessor : DefaultVisitProcessor
     {
-        public FieldCollector(List<object> propertiesContainer)
+        public FieldCollectProcessor(List<object> propertiesContainer)
         {
             this._propertiesContainer = propertiesContainer;
         }

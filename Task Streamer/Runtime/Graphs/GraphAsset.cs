@@ -105,9 +105,9 @@ namespace TaskStreamer
 
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             
-            GraphTraveler graphTraveler = new GraphTraveler(instantiatedBlackboard, instantiatedGraphAsset, streamer);
-            graphTraveler.AddAdapter(new RuntimeInstantiationPipe(graphTraveler));
-            bag.Accept(graphTraveler, ref instantiatedGraphAsset);
+            GraphVisitProcessor processor = new GraphVisitProcessor(instantiatedBlackboard, instantiatedGraphAsset, streamer);
+            processor.AddAdapter(new RuntimeInstantiationProcess(processor));
+            bag.Accept(processor, ref instantiatedGraphAsset);
             return instantiatedGraphAsset;
         }
 
@@ -175,13 +175,13 @@ namespace TaskStreamer
                 return;
             }
 
-            GraphTraveler graphTraveler = new GraphTraveler(null, this, null);
-            graphTraveler.AddAdapter(new GuidRebindingPipe(graphTraveler));
+            GraphVisitProcessor processor = new GraphVisitProcessor(null, this, null);
+            processor.AddAdapter(new GuidRebindingProcess(processor));
             
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;
             
-            bag.Accept(graphTraveler, ref reference);
+            bag.Accept(processor, ref reference);
 
             this.graphGuid = UGUID.Create();
         }
@@ -200,13 +200,13 @@ namespace TaskStreamer
                 return;
             }
 
-            GraphTraveler graphTraveler = new GraphTraveler(blackboard, this, null);
-            graphTraveler.AddAdapter(new BlackboardCleanupPipe(graphTraveler));
+            GraphVisitProcessor processor = new GraphVisitProcessor(blackboard, this, null);
+            processor.AddAdapter(new BlackboardCleanupProcess(processor));
 
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;
 
-            bag.Accept(graphTraveler, ref reference);
+            bag.Accept(processor, ref reference);
         }
         
         

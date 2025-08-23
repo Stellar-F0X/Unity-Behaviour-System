@@ -1,5 +1,3 @@
-using System;
-
 namespace TaskStreamer.BT
 {
     public abstract class ActionNode : BehaviorNodeBase

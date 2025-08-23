@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using TaskStreamer.FSM;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -26,17 +25,17 @@ namespace TaskStreamer.Tool
 
         /// <summary> Tries to connect two nodes within a graph view by creating an edge between them. </summary>
         /// <param name="view"> The graph view that contains the nodes to be connected. </param>
-        /// <param name="nodeA"> The first node to connect via an edge. </param>
-        /// <param name="nodeB"> The second node to connect via an edge. </param>
+        /// <param name="sourceView"> The first node to connect via an edge. </param>
+        /// <param name="targetView"> The second node to connect via an edge. </param>
         /// <returns> True if the nodes were successfully connected; false otherwise. </returns>
-        public override bool TryConnectNodesByEdge(TaskGraphView view, NodeViewBase nodeA, NodeViewBase nodeB)
+        public override bool TryConnectNodesByEdge(TaskGraphView view, NodeViewBase sourceView, NodeViewBase targetView)
         {
-            if (nodeA is null || nodeB is null)
+            if (sourceView is null || targetView is null)
             {
                 return false;
             }
 
-            StateNodeView startView = this.TracePortConnection(nodeA, nodeB, out var outputPort, out var inputPort, out var start, out var end);
+            StateNodeView startView = this.TracePortConnection(sourceView, targetView, out var outputPort, out var inputPort, out var start, out var end);
 
             if (startView is null)
             {

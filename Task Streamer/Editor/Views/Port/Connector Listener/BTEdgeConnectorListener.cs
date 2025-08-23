@@ -18,7 +18,7 @@ namespace TaskStreamer.Tool
         /// <param name="sourceView">The original node view from which a connection is initiated.</param>
         /// <param name="newView">The newly created node view to which the connection is made.</param>
         /// <param name="position">The position where the new node will be created and linked to the original node.</param>
-        protected override void CreationAndLinkOriginalToNew(NodeViewBase sourceView, NodeViewBase newView, Vector2 position)
+        protected override void CreationAndLinkAToB(NodeViewBase sourceView, NodeViewBase newView, Vector2 position)
         {
             ((BTView)_taskView.graphView).TryDisconnectParentToChild(sourceView);
 
@@ -38,7 +38,7 @@ namespace TaskStreamer.Tool
         /// <param name="newView">The node view representing the new node being connected.</param>
         /// <param name="sourceView">The node view representing the original source node.</param>
         /// <param name="position">The position in the graph where the new node is to be created and linked.</param>
-        protected override void CreationAndLinkNewToOriginal(NodeViewBase newView, NodeViewBase sourceView, Vector2 position)
+        protected override void CreationAndLinkBToA(NodeViewBase newView, NodeViewBase sourceView, Vector2 position)
         {
             ((BTView)_taskView.graphView).TryDisconnectChildToParent(sourceView);
 

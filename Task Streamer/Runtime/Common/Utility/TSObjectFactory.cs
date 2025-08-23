@@ -30,8 +30,8 @@ namespace TaskStreamer.Utility
             newNode.position = position;
 
             IPropertyBag bag = PropertyBag.GetPropertyBag(nodeType);
-            DefaultVisitWorker visitWorker = new DefaultVisitWorker();
-            visitWorker.AddAdapter(new VariableFieldAllocator());
+            DefaultVisitProcessor visitWorker = new DefaultVisitProcessor();
+            visitWorker.AddAdapter(new VariableFieldAllocateProcess());
             bag.Accept(visitWorker, ref createdObject);
             newNode.OnCreateInEditor();
             return newNode;

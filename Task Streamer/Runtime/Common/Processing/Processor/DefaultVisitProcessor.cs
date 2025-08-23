@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using TaskStreamer;
 using TaskStreamer.FSM;
 using TaskStreamer.Utility;
 using Unity.Properties;
 
 namespace TaskStreamer.Injection
 {
-    public class DefaultVisitWorker : PropertyVisitor
+    public class DefaultVisitProcessor : PropertyVisitor
     {
-        public DefaultVisitWorker()
+        public DefaultVisitProcessor()
         {
             _VisitAvailable.Add(typeof(List<NodeGroup>));
             _VisitAvailable.Add(typeof(List<Transition>));

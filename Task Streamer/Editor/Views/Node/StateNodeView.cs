@@ -10,14 +10,15 @@ namespace TaskStreamer.Tool
     {
         public StateNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
         {
-            base._nodeTypeLabel.text = StringUtility.ApplySpacing(targetNode.GetType().Name, "State");
-            base.targetNode.name = base._nodeTypeLabel.text;
+            string nodeName = StringUtility.ApplySpacing(targetNode.name, "State");
+            base._nodeTypeLabel.text = nodeName;
+            base.targetNode.name = nodeName;
+            base.title = nodeName;
 
             this._elementGroup.AddToClassList($"state-node-{((StateBase)targetNode).nodeType}");
             this.Indicator = new StateNodeIndicator(this, TaskStreamerEditor.settings);
             this.Indicator.ApplyBorderColorByState();
         }
-
 
 
         public override Port InstantiatePort(Orientation orientation, Direction direction, Port.Capacity capacity, Type type)

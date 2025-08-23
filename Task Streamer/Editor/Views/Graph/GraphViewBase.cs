@@ -120,10 +120,10 @@ namespace TaskStreamer.Tool
         /// 두 노드를 엣지로 연결을 시도합니다.
         /// </summary>
         /// <param name="view">그래프 뷰</param>
-        /// <param name="connectionTarget">연결 대상 노드</param>
-        /// <param name="nodeB">연결할 노드</param>
+        /// <param name="sourceView">연결 대상 노드</param>
+        /// <param name="targetView">연결할 노드</param>
         /// <returns>연결 성공 여부</returns>
-        public abstract bool TryConnectNodesByEdge(TaskGraphView view, NodeViewBase connectionTarget, NodeViewBase nodeB);
+        public abstract bool TryConnectNodesByEdge(TaskGraphView view, NodeViewBase sourceView, NodeViewBase targetView);
 
 
         /// <summary>

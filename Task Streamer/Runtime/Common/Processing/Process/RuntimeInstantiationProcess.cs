@@ -1,21 +1,18 @@
-using System;
 using System.Collections.Generic;
-using TaskStreamer.BT;
 using TaskStreamer.FSM;
 using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace TaskStreamer.Injection
 {
-    internal class RuntimeInstantiationPipe : GraphPipe,
+    internal class RuntimeInstantiationProcess : GraphVisitProcess,
                                               IVisitPropertyAdapter<NodeDictionary>,
                                               IVisitPropertyAdapter<KeyValuePair<UGUID, NodeBase>>,
                                               IVisitPropertyAdapter<Transition>,
                                               IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
-        public RuntimeInstantiationPipe(GraphTraveler traveler) : base(traveler) { }
+        public RuntimeInstantiationProcess(GraphVisitProcessor processor) : base(processor) { }
 
 
 
@@ -29,7 +26,7 @@ namespace TaskStreamer.Injection
 
             IPropertyBag<Dictionary<UGUID, NodeBase>> propertyBag = PropertyBag.GetPropertyBag<Dictionary<UGUID, NodeBase>>();
             Dictionary<UGUID, NodeBase> dictionaryValue = (Dictionary<UGUID, NodeBase>)value;
-            propertyBag.Accept(traveler, ref dictionaryValue);
+            propertyBag.Accept(processor, ref dictionaryValue);
         }
 
 
@@ -41,7 +38,7 @@ namespace TaskStreamer.Injection
             Debug.Assert(bag != null, $"Property bag not found for {pair.Value.name}");
 
             object reference = pair.Value; //어차피 노드는 항상 Class 타입이므로, object로 형변환해도 Boxing/Unboxing은 문제 없음.
-            bag.Accept(traveler, ref reference);
+            bag.Accept(processor, ref reference);
         }
 
 
@@ -53,7 +50,7 @@ namespace TaskStreamer.Injection
             foreach (Graph graph in value.Values)
             {
                 Debug.Assert(graph.entry != null, "entry node is null.");
-                graph.InitializeOnEnterRuntime(traveler.taskStreamer);
+                graph.InitializeOnEnterRuntime(processor.taskStreamer);
             }
         }
 
@@ -61,7 +58,7 @@ namespace TaskStreamer.Injection
 
         public void Visit<TContainer>(in VisitContext<TContainer> context, ref TContainer container, BlackboardVariable value)
         {
-            if (value?.variable is null || traveler.blackboard == null || traveler.blackboard.count == 0)
+            if (value?.variable is null || processor.blackboard == null || processor.blackboard.count == 0)
             {
                 return;
             }
@@ -72,7 +69,7 @@ namespace TaskStreamer.Injection
                 return;
             }
 
-            Variable foundVariable = traveler.blackboard.FindVariable(value.guid);
+            Variable foundVariable = processor.blackboard.FindVariable(value.guid);
             Debug.Assert(foundVariable != null, "Variable not found in blackboard.");
 
             BlackboardVariable blackboardVariable = value.Duplicate(); 
@@ -90,7 +87,7 @@ namespace TaskStreamer.Injection
 
             IPropertyBag<List<Condition>> bag = PropertyBag.GetPropertyBag<List<Condition>>();
             List<Condition> conditions = value.conditions.modules;
-            bag.Accept(traveler, ref conditions);
+            bag.Accept(processor, ref conditions);
         }
     }
 }

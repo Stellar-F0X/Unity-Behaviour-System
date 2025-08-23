@@ -23,7 +23,7 @@ namespace TaskStreamer.Tool
         /// <param name="sourceView">The source node to be disconnected and linked to the new node.</param>
         /// <param name="newView">The newly created node to be linked with the source node.</param>
         /// <param name="position">The position where the new node is created in the graph view.</param>
-        protected override void CreationAndLinkOriginalToNew(NodeViewBase sourceView, NodeViewBase newView, Vector2 position)
+        protected override void CreationAndLinkAToB(NodeViewBase sourceView, NodeViewBase newView, Vector2 position)
         {
             ((FSMView)_taskView.graphView).TryDisconnectSourceToOriginal(sourceView);
 
@@ -42,7 +42,7 @@ namespace TaskStreamer.Tool
         /// <param name="newView">The view representation of the newly created node.</param>
         /// <param name="sourceView">The view representation of the source node to be linked.</param>
         /// <param name="position">The position in the graph where the connection is established.</param>
-        protected override void CreationAndLinkNewToOriginal(NodeViewBase newView, NodeViewBase sourceView, Vector2 position)
+        protected override void CreationAndLinkBToA(NodeViewBase newView, NodeViewBase sourceView, Vector2 position)
         {
             ((FSMView)_taskView.graphView).TryDisconnectSourceToOriginal(sourceView);
             

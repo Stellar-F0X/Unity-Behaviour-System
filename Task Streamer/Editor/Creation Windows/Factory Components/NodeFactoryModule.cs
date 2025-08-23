@@ -1,6 +1,5 @@
 using System;
 using TaskStreamer.Utility;
-using UnityEditor;
 using UnityEngine;
 
 namespace TaskStreamer.Tool

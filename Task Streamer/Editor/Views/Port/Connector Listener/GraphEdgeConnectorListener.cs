@@ -77,11 +77,11 @@ namespace TaskStreamer.Tool
 
             if (edge.input is not null && edge.input.node is NodeViewBase childView) //Create and link new parent node
             {
-                _taskView.OpenContextualMenuWindow(pos, newParentView => this.CreationAndLinkNewToOriginal(newParentView, childView, pos));
+                _taskView.OpenContextualMenuWindow(pos, newParentView => this.CreationAndLinkBToA(newParentView, childView, pos));
             }
             else if (edge.output is not null && edge.output.node is NodeViewBase parentView) //Create and link new child node
             {
-                _taskView.OpenContextualMenuWindow(pos, newChildView => this.CreationAndLinkOriginalToNew(parentView, newChildView, pos));
+                _taskView.OpenContextualMenuWindow(pos, newChildView => this.CreationAndLinkAToB(parentView, newChildView, pos));
             }
         }
 
@@ -149,7 +149,7 @@ namespace TaskStreamer.Tool
         /// <param name="sourceView">The original node that serves as the source of the link.</param>
         /// <param name="newView">The newly created node to be linked to the original node.</param>
         /// <param name="position">The position in the graph view where the new node is placed.</param>
-        protected abstract void CreationAndLinkOriginalToNew(NodeViewBase sourceView, NodeViewBase newView, Vector2 position);
+        protected abstract void CreationAndLinkAToB(NodeViewBase sourceView, NodeViewBase newView, Vector2 position);
 
 
         /// <summary>
@@ -158,6 +158,6 @@ namespace TaskStreamer.Tool
         /// <param name="newView">The view representing the new node that is being added to the graph.</param>
         /// <param name="sourceView">The view representing the original/source node that is already present in the graph.</param>
         /// <param name="position">The position at which the new node is being created and linked.</param>
-        protected abstract void CreationAndLinkNewToOriginal(NodeViewBase newView, NodeViewBase sourceView, Vector2 position);
+        protected abstract void CreationAndLinkBToA(NodeViewBase newView, NodeViewBase sourceView, Vector2 position);
     }
 }

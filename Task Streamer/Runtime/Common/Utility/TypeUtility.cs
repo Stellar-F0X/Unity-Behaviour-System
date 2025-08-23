@@ -70,7 +70,7 @@ namespace TaskStreamer.Utility
             }
             
             List<object> properties = new List<object>();
-            propertyBag.Accept(new FieldCollector(properties), ref targetReference);
+            propertyBag.Accept(new FieldCollectProcessor(properties), ref targetReference);
             return properties;
         }
         

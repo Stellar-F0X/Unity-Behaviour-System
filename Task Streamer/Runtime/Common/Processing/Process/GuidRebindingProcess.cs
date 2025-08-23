@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace TaskStreamer.Injection
 {
-    internal class GuidRebindingPipe : GraphPipe, IVisitPropertyAdapter<NodeDictionary>
+    internal class GuidRebindingProcess : GraphVisitProcess, IVisitPropertyAdapter<NodeDictionary>
     {
-        public GuidRebindingPipe(GraphTraveler graphTraveler) : base(graphTraveler) { }
+        public GuidRebindingProcess(GraphVisitProcessor processor) : base(processor) { }
 
 
 
@@ -61,7 +61,7 @@ namespace TaskStreamer.Injection
                 newDictionary.Add(graphPair.Value.guid, graphPair.Value);
             }
 
-            traveler.graphAsset.graphMap = guidMapping;
+            processor.graphAsset.graphMap = guidMapping;
             return newDictionary;
         }
 
@@ -81,11 +81,11 @@ namespace TaskStreamer.Injection
 
                 if (node is ISubGraphProvider subGraphNode)
                 {
-                    Graph graph = traveler.graphAsset.GetGraph(subGraphNode.subGraphGuid);
+                    Graph graph = processor.graphAsset.GetGraph(subGraphNode.subGraphGuid);
                     subGraphNode.subGraphGuid = graph.guid;
                 }
 
-                List<NodeGroup> groups = traveler.currentGraph.nodeGroup;
+                List<NodeGroup> groups = processor.currentGraph.nodeGroup;
                 NodeGroup group = groups.Find(e => e.Contains(oldGuid));
 
                 if (group is null)

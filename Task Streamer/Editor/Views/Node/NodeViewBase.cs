@@ -17,7 +17,7 @@ namespace TaskStreamer.Tool
             this._nodeBorder = this.Q<VisualElement>("node-border");
             this._nodeTypeLabel = this.Q<TextElement>("node-type-label");
             
-            this.title = StringUtility.ApplySpacing(targetNode.name);
+            //title은 sub class에서 처리.
             this.viewDataKey = targetNode.guid.ToString();
             this._targetNode = targetNode;
             this.tooltip = targetNode.tooltip;
@@ -44,11 +44,6 @@ namespace TaskStreamer.Tool
         public Port outputPort;
 
 
-        public VisualElement nodeBorder
-        {
-            get { return _nodeBorder; }
-        }
-
         internal Dictionary<UGUID, Edge> connectionEdges
         {
             get { return _connectionEdges; }
@@ -59,11 +54,16 @@ namespace TaskStreamer.Tool
             get;
             private set;
         }
-
+        
         internal Action<string> onRenamingNode
         {
             get;
             private set;
+        }
+        
+        public VisualElement nodeBorder
+        {
+            get { return _nodeBorder; }
         }
 
         public NodeBase targetNode

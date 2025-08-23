@@ -24,23 +24,23 @@ namespace TaskStreamer.Tool
         /// Attempts to connect two nodes in the task graph by creating an edge between them.
         /// </summary>
         /// <param name="view">The task graph view where the connection is being made.</param>
-        /// <param name="connectionSource">The source node from which the connection originates.</param>
-        /// <param name="connectionTarget">The target node to which the connection is directed.</param>
+        /// <param name="sourceView">The sourceView node from which the connection originates.</param>
+        /// <param name="targetView">The target node to which the connection is directed.</param>
         /// <returns>
         /// True if the connection was successfully established; otherwise, false.
         /// </returns>
-        public override bool TryConnectNodesByEdge(TaskGraphView view, NodeViewBase connectionSource, NodeViewBase connectionTarget)
+        public override bool TryConnectNodesByEdge(TaskGraphView view, NodeViewBase sourceView, NodeViewBase targetView)
         {
-            if (connectionSource is null || connectionTarget is null || connectionSource.outputPort is null || connectionTarget.inputPort is null)
+            if (sourceView is null || targetView is null || sourceView.outputPort is null || targetView.inputPort is null)
             {
                 return false;
             }
 
-            LinearEdge linkedEdge = connectionSource.outputPort.ConnectTo<LinearEdge>(connectionTarget.inputPort);
+            LinearEdge linkedEdge = sourceView.outputPort.ConnectTo<LinearEdge>(targetView.inputPort);
 
-            if (connectionTarget is BehaviorNodeView behaviorNodeView)
+            if (targetView is BehaviorNodeView connectionTargetView)
             {
-                behaviorNodeView.connectionEdges[UGUID.Empty] = linkedEdge;
+                connectionTargetView.connectionEdges[UGUID.Empty] = linkedEdge;
             }
             else
             {
@@ -262,7 +262,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            Edge parentConnectionEdge = parentNodeView.connectionEdges[UGUID.Empty];
+            Edge parentConnectionEdge = existingChildView.connectionEdges[UGUID.Empty];
             this.DisconnectAndDeleteEdge(parentNodeView, existingChildView, parentConnectionEdge, parentNodeView.outputPort);
         }
 
