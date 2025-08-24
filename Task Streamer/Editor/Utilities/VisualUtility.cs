@@ -1,4 +1,5 @@
 using System;
+using TaskStreamer.Injection;
 using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -54,80 +55,80 @@ namespace TaskStreamer.Tool
         }
 
 
-        public static VisualElement GetFieldByValueType(string context, BlackboardVariable variable, SetValueAttribute attribute = null)
+        public static VisualElement GetFieldByValueType(VariableHandle context)
         {
-            Type type = variable.GetType().GenericTypeArguments[0];
+            Type type = context.fieldType.GenericTypeArguments[0];
 
             if (type == typeof(float))
             {
-                return new BBVariableField<float, FloatField>(context, variable, attribute);
+                return new BBVariableField<float, FloatField>(context);
             }
 
             if (type == typeof(double))
             {
-                return new BBVariableField<double, DoubleField>(context, variable, attribute);
+                return new BBVariableField<double, DoubleField>(context);
             }
 
             if (type == typeof(int))
             {
-                return new BBVariableField<int, IntegerField>(context, variable, attribute);
+                return new BBVariableField<int, IntegerField>(context);
             }
 
             if (type == typeof(bool))
             {
-                return new BBVariableField<bool, Toggle>(context, variable, attribute);
+                return new BBVariableField<bool, Toggle>(context);
             }
 
             if (type == typeof(string))
             {
-                return new BBVariableField<string, TextField>(context, variable, attribute);
+                return new BBVariableField<string, TextField>(context);
             }
 
             if (type.IsEnum)
             {
-                var enumField = new BBVariableField<Enum, EnumField>(context, variable, attribute);
+                var enumField = new BBVariableField<Enum, EnumField>(context);
                 enumField.variableField.Init(Activator.CreateInstance(type) as Enum);
                 return enumField;
             }
 
             if (type == typeof(Vector2))
             {
-                return new BBVariableField<Vector2, Vector2Field>(context, variable, attribute);
+                return new BBVariableField<Vector2, Vector2Field>(context);
             }
 
             if (type == typeof(Vector3))
             {
-                return new BBVariableField<Vector3, Vector3Field>(context, variable, attribute);
+                return new BBVariableField<Vector3, Vector3Field>(context);
             }
 
             if (type == typeof(Quaternion))
             {
-                return new BBVariableField<Quaternion, QuaternionField>(context, variable, attribute);
+                return new BBVariableField<Quaternion, QuaternionField>(context);
             }
             
             if (type == typeof(Vector4))
             {
-                return new BBVariableField<Vector4, Vector4Field>(context, variable, attribute);
+                return new BBVariableField<Vector4, Vector4Field>(context);
             }
 
             if (type == typeof(Vector2Int))
             {
-                return new BBVariableField<Vector2Int, Vector2IntField>(context, variable, attribute);
+                return new BBVariableField<Vector2Int, Vector2IntField>(context);
             }
 
             if (type == typeof(Vector3Int))
             {
-                return new BBVariableField<Vector3Int, Vector3IntField>(context, variable, attribute);
+                return new BBVariableField<Vector3Int, Vector3IntField>(context);
             }
 
             if (type == typeof(Color))
             {
-                return new BBVariableField<Color, ColorField>(context, variable, attribute);
+                return new BBVariableField<Color, ColorField>(context);
             }
 
             if (typeof(GameObject).IsAssignableFrom(type))
             {
-                var objectField = new BBVariableField<Object, ObjectField>(context, variable, attribute);
+                var objectField = new BBVariableField<Object, ObjectField>(context);
                 objectField.variableField.allowSceneObjects = true;
                 objectField.variableField.objectType = type;
                 objectField.variableField.label = "";
@@ -136,7 +137,7 @@ namespace TaskStreamer.Tool
 
             if (typeof(ScriptableObject).IsAssignableFrom(type))
             {
-                var objectField = new BBVariableField<Object, ObjectField>(context, variable, attribute);
+                var objectField = new BBVariableField<Object, ObjectField>(context);
                 objectField.variableField.allowSceneObjects = false;
                 objectField.variableField.objectType = type;
                 objectField.variableField.label = "";
@@ -145,14 +146,14 @@ namespace TaskStreamer.Tool
 
             if (typeof(Object).IsAssignableFrom(type))
             {
-                var objectField = new BBVariableField<Object, ObjectField>(context, variable, attribute);
+                var objectField = new BBVariableField<Object, ObjectField>(context);
                 objectField.variableField.allowSceneObjects = false;
                 objectField.variableField.objectType = type;
                 objectField.variableField.label = "";
                 return objectField;
             }
 
-            return new UnsupportedTypeField(context);
+            return new UnsupportedTypeField(context.context);
         }
     }
 }

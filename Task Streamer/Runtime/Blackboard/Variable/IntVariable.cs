@@ -3,5 +3,5 @@ using System;
 namespace TaskStreamer
 {
     [Serializable, Readable]
-    internal class IntVariable : Variable<int> { }
+    internal class IntVariable : BlackboardVariable<int> { }
 }

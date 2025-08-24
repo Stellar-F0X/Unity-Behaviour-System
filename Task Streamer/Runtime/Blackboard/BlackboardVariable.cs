@@ -6,54 +6,80 @@ using UnityEngine;
 namespace TaskStreamer
 {
     /// <summary> Variable wrapper class </summary>
-    [Serializable]
-    public abstract class BlackboardVariable
+    [Serializable, Readable]
+    public abstract class BlackboardVariable : ISerializationCallbackReceiver
     {
-        /// <summary> Encapsulates a flexible variable that supports serialization and type management. </summary>
-        [SerializeReference]
-        protected Variable _variable;
-
+        public BlackboardVariable()
+        {
+            _guid = UGUID.Create();
+            _key = DEFAULT_VARIABLE_NAME;
+            _keyHash = StringUtility.StringToHash(_key);
+        }
+        
+        internal const string DEFAULT_VARIABLE_NAME = "#Local__Variable#";
+        
         /// <summary> Indicates whether the variable is shared across nodes (global) or local to a specific node. </summary>
         [SerializeField, DontCreateProperty]
         protected bool _isGlobal;
 
+        /// Variable의 내부적으로 사용되는 문자열 키를 저장하는 필드.
+        /// key 프로퍼티를 통해 접근 가능하며, key 변경 시 해시 값(_keyHash)이 자동으로 갱신됨.
+        [SerializeField]
+        protected string _key;
 
-        /// <summary> Gets or sets the encapsulated variable for the blackboard. </summary>
-        internal Variable variable
-        {
-            get { return _variable; }
+        /// _keyHash는 현재 Variable 객체의 키 문자열에 대해 생성된 해시 값을 저장하는 필드입니다.
+        /// 문자열 키는 StringUtility.StringToHash 메서드를 사용해 해시로 변환됩니다.
+        [SerializeField]
+        protected int _keyHash;
 
-            set { _variable = value; }
-        }
-        
-        /// <summary> The type of the underlying variable encapsulated by this BlackboardVariable. </summary>
+        /// <summary>
+        /// 변수를 고유하게 식별하기 위한 UGUID 형태의 유니크한 식별자.
+        /// </summary>
+        [SerializeField]
+        protected UGUID _guid;
+
+        /// 직렬화된 타입 이름을 저장하는 문자열 변수로, 타입 정보를 유지 및 복원하는 데 사용된다.
+        [SerializeField]
+        protected string _typeName;
+
+
+        /// 변수의 데이터 타입을 나타내는 속성입니다.
+        /// 해당 변수의 형식을 정의하며, 런타임 타입 정보를 제공합니다.
         internal Type type
         {
-            get { return _variable?.type; }
-
-            set { _variable.type = value; }
+            get;
+            set;
         }
 
-        /// <summary> Gets or sets the unique identifier for the variable associated with this blackboard entry. </summary>
-        internal string key
-        {
-            get { return _variable.key; }
-
-            set { this._variable.key = value; }
-        }
-
-        /// <summary> Gets the hash value of the key associated with the variable. </summary>
-        internal int keyHash
-        {
-            get { return _variable.keyHash; }
-        }
-
-        /// <summary> Unique identifier associated with the variable. </summary>
+        /// UGUID 타입의 GUID를 나타내는 읽기 전용 속성.
+        /// 각 Variable 객체를 고유하게 식별하기 위해 사용된다.
         internal UGUID guid
         {
-            get { return _variable.guid; }
+            get { return _guid; }
         }
 
+        /// 변수의 고유 식별 키를 가져오거나 설정합니다. 키가 설정될 때, 해당 키의 해시 값이 자동으로 갱신됩니다.
+        internal string key
+        {
+            get { return this._key; }
+
+            set { _keyHash = StringUtility.StringToHash(_key = value); }
+        }
+
+        /// key 값에 대해 고유한 해시를 반환합니다.
+        /// 문자열 키를 해시로 변환하여 빠르게 비교하거나 조회하는 용도로 사용됩니다.
+        internal int keyHash
+        {
+            get { return this._keyHash; }
+        }
+
+        /// 모든 타입의 값을 포함할 수 있는 '박싱된 값'을 가져오거나 설정합니다.
+        internal abstract object boxedValue
+        {
+            get;
+            set;
+        }
+        
         /// <summary> Indicates whether the variable is shared globally (true) or local to a specific node (false). </summary>
         internal bool isGlobal
         {
@@ -62,12 +88,22 @@ namespace TaskStreamer
             set { _isGlobal = value; }
         }
 
-        /// <summary> Gets or sets the value of the variable in a generic object format. </summary>
-        internal object boxedValue
-        {
-            get { return _variable.boxedValue; }
 
-            set { _variable.boxedValue = value; }
+        /// 직렬화 이전에 호출되며, 변수의 타입 정보를 저장합니다.
+        /// 타입이 null이면 디버그 검사를 통해 경고를 발생시킵니다.
+        public void OnBeforeSerialize()
+        {
+            Debug.Assert(type is not null, "Failed to serialize a property.");
+            this._typeName = type.AssemblyQualifiedName;
+        }
+
+
+        /// 직렬화 이후에 호출되며, 직렬화된 데이터로부터 타입 정보를 복원합니다.
+        /// _typeName이 비어 있지 않은지 확인하고, 이를 통해 타입을 로드합니다.
+        public void OnAfterDeserialize()
+        {
+            Debug.Assert(_typeName.IsNotNullOrEmpty(), "Failed to deserialize a property.");
+            this.type = Type.GetType(_typeName);
         }
 
 
@@ -83,44 +119,25 @@ namespace TaskStreamer
     [Serializable, Readable]
     public class BlackboardVariable<T> : BlackboardVariable
     {
+        [SerializeField]
+        protected T _value;
+        
         /// <summary> Gets or sets the value associated with the blackboard variable, with type checking and validation. </summary>
         public T value
         {
-            get
-            {
-                if (_variable is null)
-                {
-                    Debug.LogError($"variable is null.");
-                    return default;
-                }
+            get { return _value; }
 
-                if (_variable is not Variable<T> convertedVariable)
-                {
-                    Debug.LogError($"variable type mismatch: {typeof(T).Name}.");
-                    return default;
-                }
-
-                return convertedVariable.value;
-            }
-
-            set
-            {
-                if (_variable is null)
-                {
-                    Debug.LogError($"variable is null.");
-                    return;
-                }
-
-                if (_variable is not Variable<T> convertedVariable)
-                {
-                    Debug.LogError($"variable type mismatch: {typeof(T).Name}.");
-                    return;
-                }
-
-                convertedVariable.value = value;
-            }
+            set { _value = value; }
         }
 
+        
+        internal override object boxedValue
+        {
+            get { return _value; }
+            
+            set { _value = (value is T converted) ? converted : _value; }
+        }
+        
 
         /// <summary>
         /// 현재 객체를 복제한 새로운 BlackboardVariable 인스턴스를 반환합니다.
@@ -128,14 +145,12 @@ namespace TaskStreamer
         /// <returns>복제된 BlackboardVariable 객체</returns>
         internal override BlackboardVariable Duplicate()
         {
-            BlackboardVariable<T> clone = new BlackboardVariable<T>();
-
-            clone._variable = this._variable;
+            var clone = new BlackboardVariable<T>();
             clone._isGlobal = this._isGlobal;
+            clone._typeName = this._typeName;
             clone.value = this.value;
-            clone.key = this.key;
             clone.type = this.type;
-
+            clone.key = this.key;
             return clone;
         }
     }

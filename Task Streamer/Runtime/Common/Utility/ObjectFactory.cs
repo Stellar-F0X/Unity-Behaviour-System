@@ -8,26 +8,26 @@ using UnityEngine;
 namespace TaskStreamer.Utility
 {
     /// <summary> 'T'ask 'S'treamer Object Factory </summary>
-    public static class TSObjectFactory
+    public static class ObjectFactory
     {
 #if UNITY_EDITOR
         public static NodeBase CreateNode(Type nodeType, Vector2Int position = default)
         {
             if (typeof(NodeBase).IsAssignableFrom(nodeType) == false)
             {
-                throw new ArgumentException($"{typeof(TSObjectFactory)}: NodeType is not NodeBase");
+                throw new ArgumentException($"{typeof(ObjectFactory)}: NodeType is not NodeBase");
             }
 
             if (PropertyBag.Exists(nodeType) == false)
             {
-                throw new ArgumentException($"{typeof(TSObjectFactory)}: The nodeType({nodeType}) hasn't {nameof(GeneratePropertyBagAttribute)}");
+                throw new ArgumentException($"{typeof(ObjectFactory)}: The nodeType({nodeType}) hasn't {nameof(GeneratePropertyBagAttribute)}");
             }
 
             object createdObject = Activator.CreateInstance(nodeType);
 
             if (createdObject is not NodeBase newNode)
             {
-                throw new ArgumentException($"{typeof(TSObjectFactory)}: Failed to create node of type {nodeType}");
+                throw new ArgumentException($"{typeof(ObjectFactory)}: Failed to create node of type {nodeType}");
             }
 
             newNode.position = position;
@@ -47,7 +47,7 @@ namespace TaskStreamer.Utility
         {
             if (from.TryGetTransition(to.guid, out Transition foundTransition))
             {
-                Debug.LogError($"{typeof(TSObjectFactory)}: Transition already exists.");
+                Debug.LogError($"{typeof(ObjectFactory)}: Transition already exists.");
                 return foundTransition;
             }
 
@@ -55,55 +55,29 @@ namespace TaskStreamer.Utility
         }
 
 
-        public static Variable CreateVariable(Type variableType, string variableName, object defaultValue = null, bool isLocal = false)
-        {
-            if (variableType is null)
-            {
-                throw new ArgumentException($"{typeof(TSObjectFactory)}: Wrong variable type");
-            }
-
-            Variable newVariable = Activator.CreateInstance(variableType) as Variable;
-
-            if (newVariable is null)
-            {
-                throw new ArgumentException($"{typeof(TSObjectFactory)}: Failed to create a variable.");
-            }
-
-            newVariable.key = variableName;
-            newVariable.type = variableType;
-
-            if (defaultValue != null)
-            {
-                newVariable.boxedValue = defaultValue;
-            }
-
-            return newVariable;
-        }
-
-
-        public static BlackboardVariable CreateBlackboardVariable(Type blackboardVariableType, string variableName, object defaultValue = null, bool isLocal = false)
+        public static BlackboardVariable CreateBBVariable(Type blackboardVariableType, string variableName, object defaultValue = null, bool isLocal = false)
         {
             if (blackboardVariableType is null)
             {
-                throw new ArgumentException($"{typeof(TSObjectFactory)}: Wrong blackboard variable type");
+                throw new ArgumentException($"{typeof(ObjectFactory)}: Wrong blackboard variable type");
             }
 
             BlackboardVariable createValue = (BlackboardVariable)Activator.CreateInstance(blackboardVariableType);
 
             if (createValue is null)
             {
-                throw new ArgumentException($"{typeof(TSObjectFactory)}: Failed to create a blackboard variable.");
+                throw new ArgumentException($"{typeof(ObjectFactory)}: Failed to create a blackboard variable.");
             }
-
-            Type variableType = typeof(Variable<>).GetImplementedType(blackboardVariableType.GenericTypeArguments[0]);
-
-            if (variableType is null)
-            {
-                return null;
-            }
-
-            createValue.variable = TSObjectFactory.CreateVariable(variableType, variableName, defaultValue, isLocal);
+            
             createValue.isGlobal = !isLocal;
+            createValue.key = variableName;
+            createValue.type = blackboardVariableType;
+
+            if (defaultValue != null)
+            {
+                createValue.boxedValue = defaultValue;
+            }
+            
             return createValue;
         }
 
@@ -112,19 +86,19 @@ namespace TaskStreamer.Utility
         {
             if (conditionType is null)
             {
-                throw new ArgumentException($"{typeof(TSObjectFactory)}: Wrong condition type");
+                throw new ArgumentException($"{typeof(ObjectFactory)}: Wrong condition type");
             }
 
             Condition module = Activator.CreateInstance(conditionType) as Condition;
 
             if (module is null)
             {
-                throw new ArgumentException($"{typeof(TSObjectFactory)}: Failed to create a condition module.");
+                throw new ArgumentException($"{typeof(ObjectFactory)}: Failed to create a condition module.");
             }
 
             Type bbType = typeof(BlackboardVariable<>).MakeGenericType(conditionType!.BaseType!.GenericTypeArguments[0]);
-            module.encapsulatedLeftVariable = CreateBlackboardVariable(bbType, Variable.DEFAULT_LOCAL_VARIABLE_NAME, true);
-            module.encapsulatedRightVariable = CreateBlackboardVariable(bbType, Variable.DEFAULT_LOCAL_VARIABLE_NAME, true);
+            module.encapsulatedLeftVariable = CreateBBVariable(bbType, "", true);
+            module.encapsulatedRightVariable = CreateBBVariable(bbType, "", true);
 
             ComparableAttribute comparable = conditionType.GetAttribute<ComparableAttribute>();
             module.configuredComparisonType = comparable is null ? Condition.DEFAULT_COMPARISON : comparable.comparison;

@@ -46,6 +46,12 @@ namespace TaskStreamer.Utility
         }
 
 
+        public static T GetAttribute<T>(this IEnumerable<Attribute> attributes, bool inherit = false)
+        {
+            return attributes.OfType<T>().FirstOrDefault();
+        }
+
+
         public static IEnumerable<T> GetAttributes<T>(this ICustomAttributeProvider provider, bool inherit) where T : Attribute
         {
             try

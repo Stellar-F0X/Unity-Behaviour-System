@@ -3,5 +3,5 @@ using System;
 namespace TaskStreamer
 {
     [Serializable, Readable]
-    public class BoolVariable : Variable<bool> { }
+    public class BoolVariable : BlackboardVariable<bool> { }
 }

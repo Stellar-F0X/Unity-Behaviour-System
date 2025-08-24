@@ -220,17 +220,17 @@ namespace TaskStreamer.Tool
 
             if (window.modulesIsEmpty)
             {
-                window.AddFactoryModule(new VariableFactoryModule(typeof(Variable), "Variables", 0));
+                window.AddFactoryModule(new BBVariableFactoryModule(typeof(BlackboardVariable), "Variables", 0));
             }
             
-            window.RegisterCreationCallbackOnce((Action<Variable>)this.AddVariableToList);
+            window.RegisterCreationCallbackOnce((Action<BlackboardVariable>)this.AddVariableToList);
             window.OpenWindow(clickEvent.position);
         }
 
 
         /// <summary>새로운 변수를 블랙보드 리스트에 추가합니다.</summary>
         /// <param name="newBlackboardVariable">추가될 새 블랙보드 변수.</param>
-        private void AddVariableToList(Variable newBlackboardVariable)
+        private void AddVariableToList(BlackboardVariable newBlackboardVariable)
         {
             Undo.RecordObject(_blackboard, "Task Streamer (AddBlackboardVariable)");
 
@@ -247,7 +247,7 @@ namespace TaskStreamer.Tool
         {
             Undo.RecordObject(_blackboard, "Task Streamer (RemoveBlackboardVariable)");
 
-            _blackboard.RemoveVariable(itemsSource[index] as Variable); 
+            _blackboard.RemoveVariable(itemsSource[index] as BlackboardVariable); 
             
             //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
             TaskStreamerEditor.Instance.graphAsset.TryCleanUpBoundVariables();
@@ -297,7 +297,7 @@ namespace TaskStreamer.Tool
             }
 
             SerializedProperty serializedProperty = _serializedList.GetArrayElementAtIndex(index);
-            Variable blackboardVariable = itemsSource[index] as Variable;
+            BlackboardVariable blackboardVariable = itemsSource[index] as BlackboardVariable;
 
             variableView.OnDeleteRequested -= this.OnVariableDeleteRequested;
             variableView.OnKeyChanged -= this.OnVariableKeyChanged;

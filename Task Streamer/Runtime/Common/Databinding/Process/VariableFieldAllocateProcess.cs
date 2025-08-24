@@ -19,7 +19,8 @@ namespace TaskStreamer.Injection
             string name = context.Property.Name; //일단은 모두 Local Variable 필드로 생성한다.
             
             SetValueAttribute setValue = context.Property.GetAttribute<SetValueAttribute>();
-            BlackboardVariable bbVariable = TSObjectFactory.CreateBlackboardVariable(valueType, name, setValue?.defaultValue, true);
+            
+            BlackboardVariable bbVariable = ObjectFactory.CreateBBVariable(valueType, name, setValue?.defaultValue, true);
 
             if (bbVariable == null)
             {

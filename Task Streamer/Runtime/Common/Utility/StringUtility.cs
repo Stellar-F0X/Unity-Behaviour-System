@@ -28,7 +28,7 @@ namespace TaskStreamer.Utility
         {
             if (string.IsNullOrEmpty(nodeName))
             {
-                throw new ArgumentException($"{typeof(TSObjectFactory)}: NodeName is null or empty");
+                throw new ArgumentException($"{typeof(ObjectFactory)}: NodeName is null or empty");
             }
 
             if (string.IsNullOrEmpty(removeName) == false && nodeName.EndsWith(removeName))

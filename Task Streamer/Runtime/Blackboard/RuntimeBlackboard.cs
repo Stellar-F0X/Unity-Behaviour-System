@@ -14,13 +14,13 @@ namespace TaskStreamer
         private UGUID _appliedVersion;
 
         [SerializeReference]
-        private List<Variable> _clonedVariables = new List<Variable>();
+        private List<BlackboardVariable> _clonedVariables = new List<BlackboardVariable>();
 
-        private readonly Dictionary<string, Variable> _runtimeVariables = new Dictionary<string, Variable>();
+        private readonly Dictionary<string, BlackboardVariable> _runtimeVariables = new Dictionary<string, BlackboardVariable>();
 
 
 
-        public IReadOnlyList<Variable> variables
+        public IReadOnlyList<BlackboardVariable> variables
         {
             get { return _clonedVariables; }
         }
@@ -39,7 +39,7 @@ namespace TaskStreamer
 
         public void InitializeOnEnterRuntime()
         {
-            foreach (Variable variable in _clonedVariables)
+            foreach (BlackboardVariable variable in _clonedVariables)
             {
                 Debug.Assert(variable.guid.IsEmpty() == false, "Variable GUID cannot be empty");
                 
@@ -66,7 +66,7 @@ namespace TaskStreamer
         }
 
 
-        public Variable FindVariable(string variableKey)
+        public BlackboardVariable FindVariable(string variableKey)
         {
             if (string.IsNullOrEmpty(variableKey))
             {
@@ -78,7 +78,7 @@ namespace TaskStreamer
                 return _clonedVariables.Find(v => v.key == variableKey);
             }
             
-            if (_runtimeVariables.TryGetValue(variableKey, out Variable variable))
+            if (_runtimeVariables.TryGetValue(variableKey, out BlackboardVariable variable))
             {
                 return variable;
             }
@@ -87,7 +87,7 @@ namespace TaskStreamer
         }
         
 
-        public Variable FindVariable(in UGUID key)
+        public BlackboardVariable FindVariable(in UGUID key)
         {
             if (key.IsEmpty())
             {
@@ -100,13 +100,13 @@ namespace TaskStreamer
         }
 
 
-        public void AddVariable(Variable variable)
+        public void AddVariable(BlackboardVariable variable)
         {
             _clonedVariables.Add(variable);
         }
 
 
-        public void RemoveVariable(Variable variable)
+        public void RemoveVariable(BlackboardVariable variable)
         {
             _clonedVariables.Remove(variable);
         }

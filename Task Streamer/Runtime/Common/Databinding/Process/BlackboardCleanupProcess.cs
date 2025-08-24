@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using TaskStreamer.Utility;
 using Unity.Properties;
+using UnityEngine;
 using BBCondition = TaskStreamer.BlackboardBasedCondition;
 
 namespace TaskStreamer.Injection
@@ -28,9 +30,10 @@ namespace TaskStreamer.Injection
             {
                 return;
             }
-
+            
             //제대로 Variable이 유효하지 않은 경우 (BB가 변경됐거나, 참조 중인 BB의 Variable이 삭제됨)
-            bbVariable.variable = null;
+            var newVariable = ObjectFactory.CreateBBVariable(bbVariable.type, BlackboardVariable.DEFAULT_VARIABLE_NAME, isLocal: true);
+            context.Property.SetValue(ref container, newVariable);
         }
 
 
@@ -46,12 +49,16 @@ namespace TaskStreamer.Injection
                 //Blackboard는 BBVariable이 아니라 Variable을 사용하기 때문에 BB에서 등록된 BBVariable의 Variable만 없애주면 됨. 
                 if (this.IsVariableValidInBlackboard(condition.encapsulatedLeftVariable))
                 {
-                    condition.encapsulatedLeftVariable.variable = null;
+                    Type type = condition.encapsulatedLeftVariable.type;
+                    string name = BlackboardVariable.DEFAULT_VARIABLE_NAME;
+                    condition.encapsulatedLeftVariable = ObjectFactory.CreateBBVariable(type, name, isLocal: true);
                 }
 
                 if (this.IsVariableValidInBlackboard(condition.encapsulatedRightVariable))
                 {
-                    condition.encapsulatedRightVariable.variable = null;
+                    Type type = condition.encapsulatedLeftVariable.type;
+                    string name = BlackboardVariable.DEFAULT_VARIABLE_NAME;
+                    condition.encapsulatedRightVariable = ObjectFactory.CreateBBVariable(type, name, isLocal: true);
                 }
             }
         }
@@ -59,13 +66,15 @@ namespace TaskStreamer.Injection
 
         private bool IsVariableValidInBlackboard(BlackboardVariable variable)
         {
-            if (processor.blackboard == null || variable is null || variable.variable is null)
+            Debug.Assert(variable is not null, "variable is not null");
+            
+            if (processor.blackboard == null)
             {
                 return false;
             }
 
             // 블랙보드에서 해당 Variable의 GUID로 검색
-            return processor.blackboard.variables.Exists(v => v != null && v.guid == variable.variable.guid);
+            return processor.blackboard.variables.Exists(v => v != null && v.guid == variable.guid);
         }
     }
 }

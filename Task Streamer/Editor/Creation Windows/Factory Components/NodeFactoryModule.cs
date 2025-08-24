@@ -30,7 +30,7 @@ namespace TaskStreamer.Tool
                 Graph baseGraph = TaskStreamerEditor.Instance.taskGraphView.focusGraph;
                 Graph newGraph = null;
                 
-                TSObjectFactory.CreateGraph(graphAsset, graphNode.subGraphType, ref newGraph, creation.title);
+                ObjectFactory.CreateGraph(graphAsset, graphNode.subGraphType, ref newGraph, creation.title);
 
                 baseGraph.AddSubGraph(newGraph);
                 graphNode.subGraphGuid = newGraph.guid;

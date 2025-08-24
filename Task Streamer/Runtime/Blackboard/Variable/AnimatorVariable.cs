@@ -4,5 +4,5 @@ using UnityEngine;
 namespace TaskStreamer
 {
     [Serializable, Readable]
-    public class AnimatorVariable : Variable<Animator> { }
+    public class AnimatorVariable : BlackboardVariable<Animator> { }
 }

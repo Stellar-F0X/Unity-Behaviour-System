@@ -57,7 +57,7 @@ namespace TaskStreamer.Injection
 
         public void Visit<TContainer>(in VisitContext<TContainer> context, ref TContainer container, BlackboardVariable value)
         {
-            if (value?.variable is null || processor.blackboard == null || processor.blackboard.count == 0)
+            if (value is null || processor.blackboard == null || processor.blackboard.count == 0)
             {
                 return;
             }
@@ -68,13 +68,9 @@ namespace TaskStreamer.Injection
                 return;
             }
 
-            Variable foundVariable = processor.blackboard.FindVariable(value.guid);
+            BlackboardVariable foundVariable = processor.blackboard.FindVariable(value.guid);
             Debug.Assert(foundVariable != null, "Variable not found in blackboard.");
-
-
-            BlackboardVariable blackboardVariable = value.Duplicate(); 
-            blackboardVariable.variable = foundVariable;
-            context.Property.SetValue(ref container, blackboardVariable);
+            context.Property.SetValue(ref container, value.Duplicate());
         }
 
 

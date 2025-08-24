@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TaskStreamer.Injection;
 using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -73,30 +74,16 @@ namespace TaskStreamer.Tool
             {
                 return;
             }
-            
-            foreach (Tuple<string, object, IEnumerable<Attribute>> property in fieldProperties)
-            {
-                switch (property.Item2)
-                {
-                    case BlackboardVariable bbVariable: this.AddFieldWithSetValueAttribute(property, bbVariable); break;
 
-                    case BlackboardBasedCondition bbCondition: this.AddBbBasedConditionListField(property, bbCondition); break;
+            foreach (VariableHandle property in fieldProperties)
+            {
+                switch (property.value)
+                {
+                    case BlackboardVariable: _fieldContainer.Add(VisualUtility.GetFieldByValueType(property)); break;
+
+                    case BlackboardBasedCondition: _fieldContainer.Add(new BBBasedConditionListField(property)); break;
                 }
             }
-        }
-
-        
-        private void AddBbBasedConditionListField(Tuple<string, object, IEnumerable<Attribute>> property, BlackboardBasedCondition bbCondition)
-        {
-            _fieldContainer.Add(new BBBasedConditionListField(property.Item1, bbCondition));
-        }
-        
-
-        private void AddFieldWithSetValueAttribute(Tuple<string, object, IEnumerable<Attribute>> property, BlackboardVariable bbVariable)
-        {
-            SetValueAttribute attribute = property.Item3.OfType<SetValueAttribute>().FirstOrDefault(); 
-
-            _fieldContainer.Add(VisualUtility.GetFieldByValueType(property.Item1, bbVariable, attribute)); 
         }
     }
 }

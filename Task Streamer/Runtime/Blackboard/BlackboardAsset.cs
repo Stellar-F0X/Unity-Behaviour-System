@@ -16,7 +16,7 @@ namespace TaskStreamer
         private UGUID _appliedVersion;
 
         [SerializeReference, HideInInspector]
-        private List<Variable> _variables = new List<Variable>();
+        private List<BlackboardVariable> _variables = new List<BlackboardVariable>();
 
         
         internal UGUID appliedVersion
@@ -24,7 +24,7 @@ namespace TaskStreamer
             get { return _appliedVersion; }
         }
 
-        internal List<Variable> variables
+        internal List<BlackboardVariable> variables
         {
             get { return _variables; }
             
@@ -44,7 +44,7 @@ namespace TaskStreamer
         }
         
 
-        public Variable FindVariable(in UGUID key)
+        public BlackboardVariable FindVariable(in UGUID key)
         {
             if (key.IsEmpty())
             {
@@ -57,7 +57,7 @@ namespace TaskStreamer
         }
 
 
-        public Variable FindVariable(string variableName)
+        public BlackboardVariable FindVariable(string variableName)
         {
             int hashCode = StringUtility.StringToHash(variableName);
 
@@ -86,11 +86,11 @@ namespace TaskStreamer
 
 
 #if UNITY_EDITOR
-        public void AddVariable(Variable variable)
+        public void AddVariable(BlackboardVariable variable)
         {
             this._appliedVersion = UGUID.Create();
 
-            Variable foundVariable = this.FindVariable(variable.key);
+            BlackboardVariable foundVariable = this.FindVariable(variable.key);
 
             if (foundVariable != null)
             {
@@ -101,11 +101,11 @@ namespace TaskStreamer
         }
 
 
-        public void RemoveVariable(Variable variable)
+        public void RemoveVariable(BlackboardVariable variable)
         {
             this._appliedVersion = UGUID.Create();
 
-            Variable foundVariable = this.FindVariable(variable.guid);
+            BlackboardVariable foundVariable = this.FindVariable(variable.guid);
 
             if (foundVariable == null)
             {
@@ -131,11 +131,11 @@ namespace TaskStreamer
         }
 
 
-        internal Variable[] GetVariablesByType(Type variableType)
+        internal BlackboardVariable[] GetVariablesByType(Type variableType)
         {
-            List<Variable> variableList = ListPool<Variable>.Get();
+            List<BlackboardVariable> variableList = ListPool<BlackboardVariable>.Get();
 
-            foreach (Variable variable in this.variables)
+            foreach (BlackboardVariable variable in this.variables)
             {
                 if (string.IsNullOrEmpty(variable.key))
                 {
@@ -149,13 +149,13 @@ namespace TaskStreamer
                 }
             }
 
-            Variable[] resultVariables = variableList.ToArray();
-            ListPool<Variable>.Release(variableList);
+            BlackboardVariable[] resultVariables = variableList.ToArray();
+            ListPool<BlackboardVariable>.Release(variableList);
             return resultVariables;
         }
 
 
-        internal bool TryRenameKey(Variable variable, in string newKey)
+        internal bool TryRenameKey(BlackboardVariable variable, in string newKey)
         {
             //이미 변경하려는 이름과 같은 이름이라면 Early Return 한다.
             if (string.Compare(variable.key, newKey) == 0)
@@ -163,7 +163,7 @@ namespace TaskStreamer
                 return true;
             }
 
-            Variable foundVariable = this.FindVariable(newKey);
+            BlackboardVariable foundVariable = this.FindVariable(newKey);
             this._appliedVersion = UGUID.Create();
 
             //동일한 이름의 BBVariable이 있다면, 현재 이름 뒤에 인덱스를 붙인다.

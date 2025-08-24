@@ -115,7 +115,7 @@ namespace TaskStreamer.Tool
         /// unique identifiers (GUID), and the ability to return or accept boxed values. It supports deserialization
         /// and cloning operations for flexible data management.
         /// </remarks>
-        private Variable _variable;
+        private BlackboardVariable _variable;
 
         /// <summary>
         /// Represents a serialized property that holds the value associated with the current Variable instance.
@@ -131,7 +131,7 @@ namespace TaskStreamer.Tool
         /// This property provides access to the underlying `Variable` that is represented
         /// and managed by this specific `BlackboardVariableView` instance. The `Variable` holds
         /// relevant data and logic pertinent to the application.
-        public Variable variable
+        public BlackboardVariable variable
         {
             get { return _variable; }
         }
@@ -143,7 +143,7 @@ namespace TaskStreamer.Tool
         /// </summary>
         /// <param name="bbVariable">The Variable instance containing the data to display in the BlackboardVariableView.</param>
         /// <param name="serializedProperty">The SerializedProperty used for binding and persisting data changes.</param>
-        public void Setup(Variable bbVariable, SerializedProperty serializedProperty)
+        public void Setup(BlackboardVariable bbVariable, SerializedProperty serializedProperty)
         {
             _variable = bbVariable;
 

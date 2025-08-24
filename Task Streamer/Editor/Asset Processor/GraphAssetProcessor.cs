@@ -1,5 +1,6 @@
 using TaskStreamer.Utility;
 using UnityEditor;
+using ObjectFactory = TaskStreamer.Utility.ObjectFactory;
 
 namespace TaskStreamer.Tool
 {
@@ -25,7 +26,7 @@ namespace TaskStreamer.Tool
                 {
                     Graph graphRef = asset.main;
                     
-                    TSObjectFactory.CreateGraph(asset, asset.mainGraphType, ref graphRef, "Main");
+                    ObjectFactory.CreateGraph(asset, asset.mainGraphType, ref graphRef, "Main");
                     
                     asset.main = graphRef;
                     

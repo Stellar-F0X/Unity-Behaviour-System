@@ -4,5 +4,5 @@ using UnityEngine;
 namespace TaskStreamer
 {
     [Serializable, Readable]
-    public class GameObjectVariable : Variable<GameObject> { }
+    public class GameObjectVariable : BlackboardVariable<GameObject> { }
 }

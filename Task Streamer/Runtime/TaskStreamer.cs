@@ -154,9 +154,9 @@ namespace TaskStreamer
                 throw new InvalidOperationException("BehaviourTree 또는 Blackboard가 활성화되어 있지 않습니다.");
             }
 
-            Variable foundVariable = _runtimeBlackboard.FindVariable(key);
+            BlackboardVariable foundVariable = _runtimeBlackboard.FindVariable(key);
 
-            if (foundVariable is Variable<TValue> valueVariable)
+            if (foundVariable is BlackboardVariable<TValue> valueVariable)
             {
                 valueVariable.value = value;
                 return;
@@ -173,9 +173,9 @@ namespace TaskStreamer
                 throw new InvalidOperationException("BehaviourTree 또는 Blackboard가 활성화되어 있지 않습니다.");
             }
 
-            Variable foundVariable = _runtimeBlackboard.FindVariable(key);
+            BlackboardVariable foundVariable = _runtimeBlackboard.FindVariable(key);
 
-            if (foundVariable is Variable<TValue> valueVariable)
+            if (foundVariable is BlackboardVariable<TValue> valueVariable)
             {
                 return valueVariable.value;
             }
@@ -190,9 +190,9 @@ namespace TaskStreamer
             //Runtime Blackboard에 SO Blackboard에선 진작 수정돼서 없는 Variable이 있는지 확인과 동시에 제거한다.
             for (int index = _runtimeBlackboard.count - 1; index >= 0; --index)
             { 
-                Variable original = _runtimeBlackboard.variables[index];
+                BlackboardVariable original = _runtimeBlackboard.variables[index];
                 
-                Variable replica = _graphAsset.blackboard.FindVariable(original.guid);
+                BlackboardVariable replica = _graphAsset.blackboard.FindVariable(original.guid);
 
                 if (replica is null)
                 {
@@ -205,9 +205,9 @@ namespace TaskStreamer
             }
 
             //SO Blackboard엔 있지만 Runtime Blackboard에는 없는 Variable들을 Runtime Blackboard에 추가한다.
-            foreach (Variable variable in _graphAsset.blackboard.variables)
+            foreach (BlackboardVariable variable in _graphAsset.blackboard.variables)
             {
-                Variable replica = _runtimeBlackboard.FindVariable(variable.guid);
+                BlackboardVariable replica = _runtimeBlackboard.FindVariable(variable.guid);
 
                 if (replica is null)
                 {
