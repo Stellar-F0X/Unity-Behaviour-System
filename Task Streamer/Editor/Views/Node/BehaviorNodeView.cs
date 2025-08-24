@@ -10,7 +10,7 @@ namespace TaskStreamer.Tool
     {
         public BehaviorNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
         {
-            string nodeName = StringUtility.ApplySpacing(targetNode.name, "Node");
+            string nodeName = StringUtility.ToNicifyName(targetNode.name, "Node");
             base._nodeTypeLabel.text = nodeName;
             base.targetNode.name = nodeName;
             base.title = nodeName;

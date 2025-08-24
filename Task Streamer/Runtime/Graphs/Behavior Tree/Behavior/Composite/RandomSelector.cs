@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using Unity.Properties;
 using Random = UnityEngine.Random;
 
 namespace TaskStreamer.BT
 {
+    [GeneratePropertyBag]
     public class RandomSelector : CompositeNode
     {
         private bool _isChildrenInvalid;

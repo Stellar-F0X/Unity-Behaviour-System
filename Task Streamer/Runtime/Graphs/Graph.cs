@@ -252,7 +252,7 @@ namespace TaskStreamer
                 throw new Exception("Node is null");
             }
 
-            node.name = StringUtility.ApplySpacing(nodeName);
+            node.name = StringUtility.ToNicifyName(nodeName);
             _nodeLookup.Add(node.guid, node);
             _nodeLookup.OnBeforeSerialize();
 

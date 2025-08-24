@@ -5,33 +5,33 @@ using UnityEngine;
 
 namespace TaskStreamer.FSM
 {
-    [Serializable, Readable]
+    [Serializable, GeneratePropertyBag, Readable]
     public sealed class Transition : Task
     {
         internal Transition(NodeBase sourceNode, NodeBase destinationNode, bool coditional = false)
         {
+            this._guid = UGUID.Create();
             this._conditional = coditional;
             this._sourceNode = sourceNode;
             this._destinationNode = destinationNode;
             this._conditions = new BlackboardBasedCondition();
-
             base.name = $"{sourceNode.name} To {destinationNode.name}";
             base.canEditName = false;
         }
 
         [SerializeField, DontCreateProperty]
         private bool _conditional;
-        
+
         [SerializeField, CreateProperty]
         private BlackboardBasedCondition _conditions;
-        
+
         [SerializeReference, DontCreateProperty]
         private NodeBase _sourceNode;
 
         [SerializeReference, DontCreateProperty]
         private NodeBase _destinationNode;
 
-        
+
         public UGUID fromNodeGuid
         {
             get { return sourceNode.guid; }
@@ -53,7 +53,7 @@ namespace TaskStreamer.FSM
         {
             get { return this._conditions; }
         }
-        
+
         public NodeBase sourceNode
         {
             get { return this._sourceNode; }

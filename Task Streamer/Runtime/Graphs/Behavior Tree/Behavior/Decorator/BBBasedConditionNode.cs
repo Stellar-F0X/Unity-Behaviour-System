@@ -1,8 +1,9 @@
 using System;
+using Unity.Properties;
 
 namespace TaskStreamer.BT
 {
-    [Serializable, Readable]
+    [Serializable, GeneratePropertyBag, Readable]
     public sealed class BBBasedConditionNode : DecoratorNode
     {
         public BlackboardBasedCondition conditions = new BlackboardBasedCondition();

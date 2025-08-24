@@ -7,9 +7,9 @@ namespace TaskStreamer.Injection
 {
     /// <summary> Blackboard 교체될 때, 이미 등록되어 있는 BlackboardVariable을 해제하는 용도로 사용되는 객체. </summary>
     internal class BlackboardCleanupProcess : GraphVisitProcess,
-                                           IVisitPropertyAdapter<NodeDictionary>,
-                                           IVisitPropertyAdapter<BBCondition>,
-                                           IVisitContravariantPropertyAdapter<BlackboardVariable>
+                                              IVisitPropertyAdapter<NodeDictionary>,
+                                              IVisitPropertyAdapter<BBCondition>,
+                                              IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
         public BlackboardCleanupProcess(GraphVisitProcessor processor) : base(processor) { }
 
@@ -20,7 +20,7 @@ namespace TaskStreamer.Injection
             Dictionary<UGUID, NodeBase> dictionaryValue = (Dictionary<UGUID, NodeBase>)value;
             propertyBag.Accept(processor, ref dictionaryValue);
         }
-        
+
 
         public void Visit<TContainer>(in VisitContext<TContainer> context, ref TContainer container, BlackboardVariable bbVariable)
         {
@@ -28,19 +28,19 @@ namespace TaskStreamer.Injection
             {
                 return;
             }
-            
+
             //제대로 Variable이 유효하지 않은 경우 (BB가 변경됐거나, 참조 중인 BB의 Variable이 삭제됨)
             bbVariable.variable = null;
         }
-        
-        
+
+
         public void Visit<TContainer>(in VisitContext<TContainer, BBCondition> context, ref TContainer container, ref BBCondition value)
         {
             if (value.modules is null || value.modules.Count == 0)
             {
                 return;
             }
-            
+
             foreach (Condition condition in value.modules)
             {
                 //Blackboard는 BBVariable이 아니라 Variable을 사용하기 때문에 BB에서 등록된 BBVariable의 Variable만 없애주면 됨. 
@@ -55,8 +55,8 @@ namespace TaskStreamer.Injection
                 }
             }
         }
-        
-        
+
+
         private bool IsVariableValidInBlackboard(BlackboardVariable variable)
         {
             if (processor.blackboard == null || variable is null || variable.variable is null)

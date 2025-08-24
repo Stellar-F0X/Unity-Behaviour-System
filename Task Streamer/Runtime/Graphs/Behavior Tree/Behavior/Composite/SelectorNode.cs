@@ -1,5 +1,8 @@
+using Unity.Properties;
+
 namespace TaskStreamer.BT
 {
+    [GeneratePropertyBag]
     public sealed class SelectorNode : CompositeNode
     {
         private bool _isChildrenInvalid;

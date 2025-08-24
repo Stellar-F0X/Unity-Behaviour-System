@@ -3,6 +3,6 @@ using UnityEngine;
 
 namespace TaskStreamer
 {
-    [Serializable]
+    [Serializable, Readable]
     public class Vector3Variable : Variable<Vector3> { }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TaskStreamer.BT
 {
-    [Serializable, Readable]
+    [Serializable]
     public abstract class SubGraphNode : BehaviorNodeBase, ISubGraphProvider
     {
         [DontCreateProperty]

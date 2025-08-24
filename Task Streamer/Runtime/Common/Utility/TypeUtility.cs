@@ -5,6 +5,7 @@ using System.Reflection;
 using TaskStreamer.Injection;
 using Unity.Properties;
 using UnityEngine;
+using Object = UnityEngine.Object;
 using UTypeUtility = Unity.Properties.TypeUtility;
 
 namespace TaskStreamer.Utility
@@ -56,8 +57,8 @@ namespace TaskStreamer.Utility
                 return Array.Empty<T>();
             }
         }
-        
-        
+
+
 #if UNITY_EDITOR
         public static List<object> TryGetFieldProperties(Type type, object targetReference)
         {
@@ -68,14 +69,14 @@ namespace TaskStreamer.Utility
                 Debug.LogError($"{type.Name} PropertyBag is not exist");
                 return null;
             }
-            
+
             List<object> properties = new List<object>();
             propertyBag.Accept(new FieldCollectProcessor(properties), ref targetReference);
             return properties;
         }
-        
-        
-        
+
+
+
         public static Type[] OrderByNameAndFilterAbstracts(this UnityEditor.TypeCache.TypeCollection collection)
         {
             Type[] array = collection.Where(t => t.IsAbstract == false && t.IsGenericType == false).ToArray();
@@ -122,27 +123,63 @@ namespace TaskStreamer.Utility
                 return null;
             }
 
-
             UnityEditor.TypeCache.TypeCollection typeCollection = UnityEditor.TypeCache.GetTypesDerivedFrom(variableType);
 
-            if (typeCollection.Count == 0 || typeCollection.Count > 1)
+            if (typeCollection.Count > 1)
             {
                 Debug.LogError($"There are no or too many subclasses derived from {baseType}.");
                 return null;
             }
 
-            Type resultType = typeCollection[0];
+            Type implementedType = null;
 
-            //filter abstract class
-            if (UTypeUtility.CanBeInstantiated(resultType) == false)
+            if (typeCollection.Count == 1)
             {
-                Debug.LogError($"The type {resultType} cannot be instantiated.");
+                implementedType = TypeUtility.CanImplementType(typeCollection[0]);
+            }
+
+            //얻어온 타입이 구현 가능한 타입인지 확인한다.
+            if (implementedType != null)
+            {
+                return TypeUtility.CanImplementType(typeCollection[0]);
+            }
+
+            //구현이 가능한 타입이 아니라면 대체가능한 타입인지 확인하고 반환한다. (ex: custom monoBehavior => Object)
+            if (TypeUtility.TryGetAlternativeType(out Type result, argumentType[0]))
+            {
+                return TypeUtility.CanImplementType(result);
+            }
+
+            //Debug.LogError($"No subclass found derived from {variableType}.");
+            return null;
+        }
+
+
+        private static Type CanImplementType(Type type)
+        {
+            //filter abstract class
+            if (UTypeUtility.CanBeInstantiated(type) == false)
+            {
+                Debug.LogError($"The type {type} cannot be instantiated.");
                 return null;
             }
             else
             {
-                return typeCollection[0];
+                return type;
             }
+        }
+
+
+        private static bool TryGetAlternativeType(out Type result, Type argumentType)
+        {
+            if (argumentType.IsEnum)
+            {
+                result = typeof(EnumVariable);
+                return true;
+            }
+
+            result = null;
+            return false;
         }
 #endif
     }

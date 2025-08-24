@@ -6,101 +6,127 @@ using UnityEngine;
 namespace TaskStreamer
 {
     /// <summary> Variable wrapper class </summary>
-    [Serializable, Readable]
+    [Serializable]
     public abstract class BlackboardVariable
     {
+        /// <summary> Encapsulates a flexible variable that supports serialization and type management. </summary>
         [SerializeReference]
         protected Variable _variable;
 
+        /// <summary> Indicates whether the variable is shared across nodes (global) or local to a specific node. </summary>
         [SerializeField, DontCreateProperty]
         protected bool _isGlobal;
 
 
-        public Variable variable
+        /// <summary> Gets or sets the encapsulated variable for the blackboard. </summary>
+        internal Variable variable
         {
             get { return _variable; }
 
-            internal set { _variable = value; }
+            set { _variable = value; }
         }
-
-        //TODO: 콘크리트 Variable 클래스가 아니라 BlackboardVariable<T> 타입이나, T를 갖고 있어야되는지 생각.
-        public Type type
+        
+        /// <summary> The type of the underlying variable encapsulated by this BlackboardVariable. </summary>
+        internal Type type
         {
             get { return _variable?.type; }
 
             set { _variable.type = value; }
         }
 
-        public string key
+        /// <summary> Gets or sets the unique identifier for the variable associated with this blackboard entry. </summary>
+        internal string key
         {
             get { return _variable.key; }
 
             set { this._variable.key = value; }
         }
 
-        public int keyHash
+        /// <summary> Gets the hash value of the key associated with the variable. </summary>
+        internal int keyHash
         {
             get { return _variable.keyHash; }
         }
 
-        public UGUID guid
+        /// <summary> Unique identifier associated with the variable. </summary>
+        internal UGUID guid
         {
             get { return _variable.guid; }
         }
 
-        /// <summary> True if the variable is local to this node; false if retrieved from the shared blackboard. </summary>
+        /// <summary> Indicates whether the variable is shared globally (true) or local to a specific node (false). </summary>
         internal bool isGlobal
         {
             get { return _isGlobal; }
 
             set { _isGlobal = value; }
         }
-        
+
+        /// <summary> Gets or sets the value of the variable in a generic object format. </summary>
         internal object boxedValue
         {
             get { return _variable.boxedValue; }
 
             set { _variable.boxedValue = value; }
         }
-        
 
-        public abstract BlackboardVariable Duplicate();
+
+        /// <summary>
+        /// Creates a duplicate of the current BlackboardVariable instance.
+        /// </summary>
+        /// <returns>A new instance of BlackboardVariable that is a copy of the current instance.</returns>
+        internal abstract BlackboardVariable Duplicate();
     }
 
 
-    [Serializable]
+    /// <summary> Abstract base class representing a variable within the Blackboard system </summary>
+    [Serializable, Readable]
     public class BlackboardVariable<T> : BlackboardVariable
     {
+        /// <summary> Gets or sets the value associated with the blackboard variable, with type checking and validation. </summary>
         public T value
         {
             get
             {
-                if (_variable is Variable<T> convertedVariable)
+                if (_variable is null)
                 {
-                    return convertedVariable.value;
-                }
-                else
-                {
-                    Debug.LogError($"_variable type mismatch: {typeof(T).Name}.");
+                    Debug.LogError($"variable is null.");
                     return default;
                 }
+
+                if (_variable is not Variable<T> convertedVariable)
+                {
+                    Debug.LogError($"variable type mismatch: {typeof(T).Name}.");
+                    return default;
+                }
+
+                return convertedVariable.value;
             }
 
             set
             {
-                if (_variable is Variable<T> convertedVariable)
+                if (_variable is null)
                 {
-                    convertedVariable.value = value;
+                    Debug.LogError($"variable is null.");
+                    return;
                 }
-                else
+
+                if (_variable is not Variable<T> convertedVariable)
                 {
-                    Debug.LogError($"_variable type mismatch: {typeof(T).Name}.");
+                    Debug.LogError($"variable type mismatch: {typeof(T).Name}.");
+                    return;
                 }
+
+                convertedVariable.value = value;
             }
         }
 
 
-        public override BlackboardVariable Duplicate()
+        /// <summary>
+        /// 현재 객체를 복제한 새로운 BlackboardVariable 인스턴스를 반환합니다.
+        /// </summary>
+        /// <returns>복제된 BlackboardVariable 객체</returns>
+        internal override BlackboardVariable Duplicate()
         {
             BlackboardVariable<T> clone = new BlackboardVariable<T>();
 

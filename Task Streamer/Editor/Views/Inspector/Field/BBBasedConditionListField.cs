@@ -1,12 +1,16 @@
 using System;
+using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
+    /// BlackboardBasedCondition의 조건 목록을 UI로 표시하는 VisualElement 클래스.
     public class BBBasedConditionListField : VisualElement
     {
+        /// BBBasedConditionListField는 Blackboard 기반 조건 목록 UI를 표시하는 VisualElement를 생성합니다.
+        /// 주어진 컨텍스트와 BlackboardBasedCondition 객체를 기반으로 UI 항목을 초기화합니다.
         public BBBasedConditionListField(string context, BlackboardBasedCondition bbCondition)
         {
             TaskStreamerEditor.settings.bbBasedConditionListFieldXml.CloneTree(this);
@@ -16,7 +20,7 @@ namespace TaskStreamer.Tool
             _conditionListView = this.Q<ListView>("condition-list-view");
             _conditionDeleteBtn = this.Q<Button>("condition-delete-btn");
 
-            _conditionListView.headerTitle = context;
+            _conditionListView.headerTitle = StringUtility.ToNicifyName(context);
             _conditionListView.itemsSource = bbCondition.modules;
             _conditionListView.bindItem = this.BindConditionItem;
             _conditionListView.makeItem = () => new BBBasedConditionField();
@@ -26,12 +30,19 @@ namespace TaskStreamer.Tool
         }
 
 
+        /// BlackboardBasedCondition 타입의 데이터를 저장하는 읽기 전용 변수입니다.
         private readonly BlackboardBasedCondition _bbCondition;
 
+        /// 조건 리스트를 표시하는 ListView UI 요소입니다.
+        /// BBBasedConditionListField 클래스에서 BlackboardBasedCondition의 모듈을 시각화하여 관리하기 위해 사용됩니다.
         private readonly ListView _conditionListView;
+
+        /// 조건 삭제 버튼을 나타내는 변수로, 조건 삭제와 관련된 이벤트 핸들링 연결에 사용됩니다.
         private readonly Button _conditionDeleteBtn;
 
 
+        /// 조건(CreationWindow)의 추가 버튼 클릭 시 수행되는 메서드입니다.
+        /// <param name="evt">사용자가 추가 버튼 클릭 시 전달된 EventBase 객체입니다.</param>
         private void OnAddButtonClicked(EventBase evt)
         {
             ICreationWindow window = CreationWindow.GetCreationWindow("Conditions", false);
@@ -46,6 +57,11 @@ namespace TaskStreamer.Tool
         }
 
 
+        /// <summary>
+        /// 주어진 VisualElement에 조건 데이터를 바인딩합니다.
+        /// </summary>
+        /// <param name="element">조건 데이터를 표시할 VisualElement.</param>
+        /// <param name="index">바인딩할 데이터의 인덱스.</param>
         private void BindConditionItem(VisualElement element, int index)
         {
             BBBasedConditionField conditionField = element as BBBasedConditionField;
@@ -57,8 +73,10 @@ namespace TaskStreamer.Tool
 
             conditionField.Setup(this._bbCondition.modules[index]);
         }
-        
-        
+
+
+        /// 리스트에 조건 아이템을 추가하는 메서드입니다. 추가 후 리스트를 새로고침하고 그래프 자산의 상태를 저장합니다.
+        /// <param name="condition">추가할 조건 아이템입니다.</param>
         private void AddItemToList(Condition condition)
         {
             Undo.RecordObject(TaskStreamerEditor.Instance.graphAsset, "TaskStreamer (AddBBBasedCondition)");
@@ -70,6 +88,8 @@ namespace TaskStreamer.Tool
         }
 
 
+        /// 특정 변수가 삭제 요청되었을 때 처리하는 메서드입니다.
+        /// <param name="variableView">삭제 요청된 BBBasedConditionField의 참조입니다.</param>
         private void OnVariableDeleteRequested(BBBasedConditionField variableView)
         {
             int index = _conditionListView.itemsSource.IndexOf(variableView.conditionValueValue);

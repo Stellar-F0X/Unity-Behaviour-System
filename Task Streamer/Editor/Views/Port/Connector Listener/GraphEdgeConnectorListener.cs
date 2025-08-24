@@ -31,7 +31,7 @@ namespace TaskStreamer.Tool
         protected GraphEdgeConnectorListener()
         {
             _pendingEdgesToCreate = new List<Edge>();
-            _taskView = TaskStreamerEditor.Instance.view;
+            _taskView = TaskStreamerEditor.Instance.taskGraphView;
             _graphViewChange.edgesToCreate = this._pendingEdgesToCreate;
         }
 

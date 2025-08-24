@@ -1,5 +1,8 @@
+using Unity.Properties;
+
 namespace TaskStreamer.FSM
 {
+    [GeneratePropertyBag]
     public class EnterState : StateBase
     {
         public override StateNodeType nodeType

@@ -1,5 +1,8 @@
+using Unity.Properties;
+
 namespace TaskStreamer.BT
 {
+    [GeneratePropertyBag]
     public sealed class SequencerNode : CompositeNode
     {
         private int _childrenCount;

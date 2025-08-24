@@ -47,7 +47,8 @@ namespace TaskStreamer.Tool
 
     public abstract class FactoryModule<T> : FactoryModule
     {
-        protected FactoryModule(Type targetType, string title, bool tagetIsSubClass, bool useCreationCallback, int layer = 1) : base(targetType, title, tagetIsSubClass, layer)
+        protected FactoryModule(Type targetType, string title, bool tagetIsSubClass, bool useCreationCallback, int layer = 1) : 
+            base(targetType, title, tagetIsSubClass, layer)
         {
             base.sendCreationSignal = this.ExecuteCreateActions;
             this._useCreationCallback = useCreationCallback;
@@ -56,10 +57,22 @@ namespace TaskStreamer.Tool
         private readonly bool _useCreationCallback;
 
 
+        //TODO: Exception 처리
         private void ExecuteCreateActions(Type childType, Vector2 position, Delegate createAction)
         {
             this.BeforeCreate(childType, position);
-            T creation = this.Create(childType, position);
+            
+            T creation = default;
+
+            try
+            {
+                creation = this.Create(childType, position);
+            }
+            catch (Exception e)
+            {
+                Debug.LogAssertion(e);
+                return;
+            }
 
             if (this._useCreationCallback)
             {

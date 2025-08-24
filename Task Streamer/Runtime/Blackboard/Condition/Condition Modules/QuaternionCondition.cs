@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TaskStreamer
 {
-    [Serializable, Comparable(Comparison.EQ | Comparison.NE)]
+    [Serializable, Readable, Comparable(Comparison.EQ | Comparison.NE)]
     public class QuaternionCondition : Condition<Quaternion>
     {
         public override bool Execute(Comparison comparison)

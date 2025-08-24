@@ -1,4 +1,5 @@
 using System;
+using TaskStreamer.Utility;
 using UnityEngine;
 
 namespace TaskStreamer.Tool
@@ -9,7 +10,7 @@ namespace TaskStreamer.Tool
 
         protected override Variable Create(Type type, Vector2 position)
         {
-            Variable variable = Utility.TSObjectFactory.CreateVariable(type);
+            Variable variable = Utility.TSObjectFactory.CreateVariable(type, StringUtility.ToNicifyName(type.Name));
             Debug.Assert(variable is not null, "Variable is null");
             return variable;
         }

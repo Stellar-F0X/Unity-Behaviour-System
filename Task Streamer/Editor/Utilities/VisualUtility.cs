@@ -1,4 +1,5 @@
 using System;
+using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
@@ -37,7 +38,6 @@ namespace TaskStreamer.Tool
 
             EditorGUI.LabelField(textRect, message);
         }
-        
 
 
         public static TNode GetNodeByView<TNode>(this Node node) where TNode : NodeBase
@@ -100,7 +100,12 @@ namespace TaskStreamer.Tool
                 return new BBVariableField<Vector3, Vector3Field>(context, variable, attribute);
             }
 
-            if (type == typeof(Vector4) || type == typeof(Quaternion))
+            if (type == typeof(Quaternion))
+            {
+                return new BBVariableField<Quaternion, QuaternionField>(context, variable, attribute);
+            }
+            
+            if (type == typeof(Vector4))
             {
                 return new BBVariableField<Vector4, Vector4Field>(context, variable, attribute);
             }
@@ -147,7 +152,7 @@ namespace TaskStreamer.Tool
                 return objectField;
             }
 
-            return null;
+            return new UnsupportedTypeField(context);
         }
     }
 }

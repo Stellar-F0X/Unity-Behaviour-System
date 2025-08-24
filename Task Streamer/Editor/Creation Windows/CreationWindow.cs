@@ -168,7 +168,7 @@ namespace TaskStreamer.Tool
 
             for (int i = 1; i < entries.Length; ++i)
             {
-                string typeName = StringUtility.ApplySpacing(typeList[i - 1].Name);
+                string typeName = StringUtility.ToNicifyName(typeList[i - 1].Name);
                 entries[i] = new SearchTreeEntry(new GUIContent(typeName))
                 {
                     userData = (typeList[i - 1], module),
@@ -192,7 +192,7 @@ namespace TaskStreamer.Tool
 
             Vector2 targetVector = context.screenMousePosition - editor.position.position;
             Vector2 mousePosition = editor.rootVisualElement.ChangeCoordinatesTo(editor.rootVisualElement.parent, targetVector);
-            return editor.view.contentViewContainer.WorldToLocal(mousePosition);
+            return editor.taskGraphView.contentViewContainer.WorldToLocal(mousePosition);
         }
     }
 }

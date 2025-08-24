@@ -27,7 +27,7 @@ namespace TaskStreamer.Tool
                 GraphAsset graphAsset = TaskStreamerEditor.Instance.graphAsset;
                 Debug.Assert(graphAsset is not null, $"{nameof(NodeFactoryModule)}: GraphAsset is null");
 
-                Graph baseGraph = TaskStreamerEditor.Instance.view.focusGraph;
+                Graph baseGraph = TaskStreamerEditor.Instance.taskGraphView.focusGraph;
                 Graph newGraph = null;
                 
                 TSObjectFactory.CreateGraph(graphAsset, graphNode.subGraphType, ref newGraph, creation.title);

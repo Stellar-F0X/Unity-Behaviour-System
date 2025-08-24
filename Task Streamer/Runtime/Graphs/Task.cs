@@ -1,4 +1,5 @@
 using System;
+using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
 
@@ -16,9 +17,19 @@ namespace TaskStreamer
         [DontCreateProperty]
         public string description;
 
+        [SerializeField, DontCreateProperty]
+        protected UGUID _guid;
+
 #if UNITY_EDITOR
         [SerializeField, DontCreateProperty]
         public bool canEditName = true;
 #endif
+        
+        public UGUID guid
+        {
+            get { return _guid; }
+
+            internal set { _guid = value; }
+        }
     }
 }

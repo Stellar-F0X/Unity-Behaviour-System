@@ -24,7 +24,7 @@ namespace TaskStreamer.Utility
 
 
 #if UNITY_EDITOR
-        public static string ApplySpacing(string nodeName, string removeName = "")
+        public static string ToNicifyName(string nodeName, string removeName = "")
         {
             if (string.IsNullOrEmpty(nodeName))
             {

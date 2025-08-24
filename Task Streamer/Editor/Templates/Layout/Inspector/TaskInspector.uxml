@@ -1,9 +1,8 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/TaskStreamer/Task%20Streamer/Editor/Layout%20Templates/Inspector/InspectorStyle.uss?fileID=7433441132597879392&amp;guid=a285340815d834a45b02dc7a0303c3eb&amp;type=3#InspectorStyle" />
+    <Style src="project://database/Assets/TaskStreamer/Task%20Streamer/Editor/Templates/Layout/Inspector/InspectorStyle.uss?fileID=7433441132597879392&amp;guid=a285340815d834a45b02dc7a0303c3eb&amp;type=3#InspectorStyle" />
     <ui:VisualElement name="container" style="flex-grow: 0; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;">
         <ui:VisualElement name="base" class="inspector-partition" style="flex-grow: 0;">
-            <ui:Label text="Task Inspector" name="base-title-header" class="label-header" style="margin-top: 3px; margin-bottom: 2px;" />
-            <ui:VisualElement name="header-line" class="line" />
+            <ui:Label text="Task Inspector" name="base-title-header" class="label-header" style="width: auto;" />
             <uie:ObjectField label="Script" name="script-field" enabled="false" type="UnityEditor.MonoScript, UnityEditor.CoreModule" />
             <ui:TextField name="name-field" label="Name" />
             <ui:DropdownField label="Tag&#10;" name="tag-field" />
@@ -12,10 +11,8 @@
         </ui:VisualElement>
         <ui:VisualElement name="header-line" class="line" style="margin-left: -5px; margin-right: -5px;" />
         <ui:VisualElement name="child" class="inspector-partition" style="flex-grow: 0;">
-            <ui:Label text="Label" name="child-title-header" class="label-header" style="margin-top: 3px; margin-bottom: 2px;" />
-            <ui:VisualElement name="header-line" class="line" />
+            <ui:Label text="Label" name="child-title-header" class="label-header" style="width: auto;" />
             <ui:VisualElement name="property-container" style="flex-grow: 0;" />
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="header-line" class="line" />
 </ui:UXML>

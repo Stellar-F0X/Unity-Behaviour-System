@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
 
@@ -11,9 +10,6 @@ namespace TaskStreamer
     {
         protected Action onNodeEnter;
         protected Action onNodeExit;
-
-        [SerializeField, DontCreateProperty]
-        protected UGUID _guid;
 
 #if UNITY_EDITOR
         [SerializeField, DontCreateProperty]
@@ -37,13 +33,6 @@ namespace TaskStreamer
         public virtual string tooltip
         {
             get;
-        }
-
-        public UGUID guid
-        {
-            get { return _guid; }
-
-            internal set { _guid = value; }
         }
 
         public TaskStreamer streamer

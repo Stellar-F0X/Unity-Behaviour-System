@@ -1,9 +1,10 @@
 using System;
+using Unity.Properties;
 using UnityEngine;
 
 namespace TaskStreamer.BT
 {
-    [Serializable, Readable]
+    [Serializable, GeneratePropertyBag, Readable]
     public class LogTunnelNode : DecoratorNode
     {
         public BlackboardVariable<string> onEnterMessages;

@@ -20,7 +20,6 @@ namespace TaskStreamer.Injection
         {
             foreach (KeyValuePair<UGUID, NodeBase> nodePairs in value)
             {
-                nodePairs.Value.name += "(Clone)";
                 nodePairs.Value.OnInstantiate();
             }
 
@@ -71,6 +70,7 @@ namespace TaskStreamer.Injection
 
             Variable foundVariable = processor.blackboard.FindVariable(value.guid);
             Debug.Assert(foundVariable != null, "Variable not found in blackboard.");
+
 
             BlackboardVariable blackboardVariable = value.Duplicate(); 
             blackboardVariable.variable = foundVariable;

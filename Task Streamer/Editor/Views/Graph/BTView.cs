@@ -317,7 +317,7 @@ namespace TaskStreamer.Tool
 
             List<GraphElement> edges = ListPool<GraphElement>.Get();
             edges.Add(edge);
-            TaskStreamerEditor.Instance.view.DeleteElements(edges);
+            TaskStreamerEditor.Instance.taskGraphView.DeleteElements(edges);
             ListPool<GraphElement>.Release(edges);
         }
     }

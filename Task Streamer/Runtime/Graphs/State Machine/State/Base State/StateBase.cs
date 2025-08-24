@@ -5,11 +5,10 @@ using UnityEngine;
 
 namespace TaskStreamer.FSM
 {
-    [Serializable, Readable]
+    [Serializable]
     public abstract class StateBase : NodeBase
     {
         private bool _blockTransition;
-        
         private StateMachine _machine;
 
         [SerializeField, HideInInspector]
@@ -23,7 +22,7 @@ namespace TaskStreamer.FSM
             internal set { _machine = value; }
         }
 
-        public List<Transition> transitions
+        public IReadOnlyList<Transition> transitions
         {
             get { return _transitions; }
         }

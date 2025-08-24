@@ -2,6 +2,6 @@ using System;
 
 namespace TaskStreamer
 {
-    [Serializable]
+    [Serializable, Readable]
     public class FloatVariable : Variable<float> { }
 }

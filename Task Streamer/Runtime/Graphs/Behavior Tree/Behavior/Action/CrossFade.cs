@@ -4,43 +4,41 @@ using UnityEngine;
 
 namespace TaskStreamer.BT
 {
-    [Serializable, Readable]
+    [Serializable, GeneratePropertyBag, Readable]
     public class CrossFade : ActionNode
     {
         public BlackboardVariable<Animator> animator;
+        public BlackboardVariable<string> animationName;
 
-        public string animationName;
-        
-        [SerializeField, ReadOnly, DontCreateProperty]
-        private int _animationHash;
-        
-        public int layer = 0;
-        
+        [SetValue(0)]
+        public BlackboardVariable<int> layer;
+
+        [SetValue(0.1f)]
         [Tooltip("Duration of the crossfade transition in seconds.")]
-        public float transitionDuration = 0.1f;
-        public float timeOffset = 0;
-        
+        public BlackboardVariable<float> transitionDuration;
+        public BlackboardVariable<float> timeOffset;
+
         [Tooltip("Time in seconds to wait for the transition to complete before returning success.")]
-        public float transitionTime = 0;
+        public BlackboardVariable<float> transitionTime;
+        public BlackboardVariable<bool> useFixedCrossFade;
+        public BlackboardVariable<bool> waitForTransition;
 
-        [Header("Options")]
-        public bool useFixedCrossFade;
-        public bool waitForTransition;
-
+        [SerializeField, DontCreateProperty]
+        private int _animationHash;
         private float _playStartTime;
         private bool _invalidated;
 
 
         public override void OnAwake()
         {
-            if (string.IsNullOrEmpty(animationName))
+            if (string.IsNullOrEmpty(animationName.value))
             {
                 Debug.LogError($"{typeof(CrossFade)}: Animation Name is empty.");
                 _animationHash = -1;
                 return;
             }
-            
-            _animationHash = Animator.StringToHash(animationName);
+
+            _animationHash = Animator.StringToHash(animationName.value);
         }
 
 
@@ -50,14 +48,28 @@ namespace TaskStreamer.BT
             {
                 return;
             }
-            
-            if (useFixedCrossFade)
+
+            if (useFixedCrossFade.value)
             {
-                animator.value.CrossFadeInFixedTime(_animationHash, transitionDuration, layer, timeOffset, transitionTime);
+                animator.value.CrossFadeInFixedTime
+                (
+                    _animationHash, 
+                    transitionDuration.value,
+                    layer.value,
+                    timeOffset.value,
+                    transitionTime.value
+                );
             }
             else
             {
-                animator.value.CrossFade(_animationHash, transitionDuration, layer, timeOffset, transitionTime);
+                animator.value.CrossFade
+                (
+                    _animationHash,
+                    transitionDuration.value,
+                    layer.value,
+                    timeOffset.value,
+                    transitionTime.value
+                );
             }
 
             _playStartTime = Time.time;
@@ -70,10 +82,10 @@ namespace TaskStreamer.BT
             {
                 return Status.Failure;
             }
-            
-            if (waitForTransition)
+
+            if (waitForTransition.value)
             {
-                if (Time.time >= _playStartTime + transitionTime)
+                if (Time.time >= _playStartTime + transitionTime.value)
                 {
                     return Status.Success;
                 }

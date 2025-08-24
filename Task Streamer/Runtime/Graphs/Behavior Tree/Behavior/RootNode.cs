@@ -1,38 +1,23 @@
 using System.Collections.Generic;
+using Unity.Properties;
 
 namespace TaskStreamer.BT
 {
+    [GeneratePropertyBag]
     public sealed class RootNode : BehaviorNodeBase, IChildProvider
     {
-        public BehaviorNodeBase child
+        public RootNode()
         {
-            get
-            {
-                if (_children.Count == 0)
-                {
-                    return null;
-                }
-
-                return _children[0];
-            }
-            
-            set
-            {
-                if (value is null)
-                {
-                    _children.Clear();
-                }
-                else if (_children.Count == 1)
-                {
-                    _children[0] = value;
-                }
-                else
-                {
-                    _children.Add(value);
-                }
-            }
+            _children.Add(null);
         }
         
+        
+        public BehaviorNodeBase child
+        {
+            get { return _children[0]; }
+            
+            set { _children[0] = value; }
+        }
 
         public override BehaviorNodeType nodeType
         {

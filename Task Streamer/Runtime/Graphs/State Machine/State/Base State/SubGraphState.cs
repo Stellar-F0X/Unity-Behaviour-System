@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TaskStreamer.FSM
 {
-    [Serializable, Readable]
+    [Serializable]
     public abstract class SubGraphState : StateBase, ISubGraphProvider
     {
         [DontCreateProperty]

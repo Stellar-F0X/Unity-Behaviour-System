@@ -2,7 +2,7 @@ using System;
 
 namespace TaskStreamer
 {
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class ComparableAttribute : Attribute
     {
         public ComparableAttribute(Comparison comparison)

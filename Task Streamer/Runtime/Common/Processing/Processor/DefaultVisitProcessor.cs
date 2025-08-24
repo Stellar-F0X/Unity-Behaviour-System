@@ -31,7 +31,7 @@ namespace TaskStreamer.Injection
                 return false; //Ignore filtering
             }
             
-            if (type.HasAttribute<ReadableAttribute>(true))
+            if (type.HasAttribute<ReadableAttribute>())
             {
                 _VisitAvailable.Add(type);
                 return false; //Ignore filtering

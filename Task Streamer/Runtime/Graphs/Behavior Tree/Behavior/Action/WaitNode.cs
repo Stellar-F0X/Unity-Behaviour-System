@@ -1,9 +1,10 @@
 using System;
+using Unity.Properties;
 using UnityEngine;
 
 namespace TaskStreamer.BT
 {
-    [Readable, Serializable]
+    [Readable, GeneratePropertyBag, Serializable]
     public class WaitNode : ActionNode
     {
         [SetValue(1f)]

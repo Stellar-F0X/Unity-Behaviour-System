@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TaskStreamer.BT
 {
-    [Serializable, Readable]
+    [Serializable]
     public abstract class BehaviorNodeBase : NodeBase
     {
         private BehaviorTree _tree;
@@ -14,7 +14,7 @@ namespace TaskStreamer.BT
         private BehaviorNodeBase _parent;
 
         [SerializeReference, DontCreateProperty, HideInInspector]
-        protected List<BehaviorNodeBase> _children = new List<BehaviorNodeBase>();
+        protected List<BehaviorNodeBase> _children = new List<BehaviorNodeBase>(1);
 
 
         public abstract BehaviorNodeType nodeType

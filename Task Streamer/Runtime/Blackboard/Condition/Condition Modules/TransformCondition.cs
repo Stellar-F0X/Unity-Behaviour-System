@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TaskStreamer
 {
-    [Serializable, Comparable(Comparison.EQ | Comparison.NE)]
+    [Serializable, Readable, Comparable(Comparison.EQ | Comparison.NE)]
     public class TransformCondition : Condition<Transform>
     {
         public override bool Execute(Comparison comparison)

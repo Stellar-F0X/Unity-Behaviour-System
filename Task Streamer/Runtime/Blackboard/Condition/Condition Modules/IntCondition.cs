@@ -2,7 +2,7 @@ using System;
 
 namespace TaskStreamer
 {
-    [Serializable, Comparable(Comparison.EQ | Comparison.NE | Comparison.GT | Comparison.LT | Comparison.GE | Comparison.LE)]
+    [Serializable, Readable, Comparable(Comparison.EQ | Comparison.NE | Comparison.GT | Comparison.LT | Comparison.GE | Comparison.LE)]
     public class IntCondition : Condition<int>
     {
         public override bool Execute(Comparison comparison)

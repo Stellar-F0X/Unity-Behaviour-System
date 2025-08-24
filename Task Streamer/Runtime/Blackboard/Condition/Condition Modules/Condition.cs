@@ -7,6 +7,8 @@ namespace TaskStreamer
     [Serializable, Readable]
     public abstract class Condition
     {
+        public const Comparison DEFAULT_COMPARISON = Comparison.EQ | Comparison.NE;
+        
         [SerializeField, DontCreateProperty]
         internal Comparison comparisonValue;
 
@@ -34,7 +36,7 @@ namespace TaskStreamer
     }
 
 
-    [Serializable, Comparable(Comparison.EQ | Comparison.NE)]
+    [Serializable]
     public abstract class Condition<T> : Condition
     {
         [CreateProperty]

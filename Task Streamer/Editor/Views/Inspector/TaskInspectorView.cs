@@ -94,9 +94,9 @@ namespace TaskStreamer.Tool
 
         private void AddFieldWithSetValueAttribute(Tuple<string, object, IEnumerable<Attribute>> property, BlackboardVariable bbVariable)
         {
-            SetValueAttribute attribute = property.Item3.OfType<SetValueAttribute>().FirstOrDefault();
+            SetValueAttribute attribute = property.Item3.OfType<SetValueAttribute>().FirstOrDefault(); 
 
-            _fieldContainer.Add(VisualUtility.GetFieldByValueType(property.Item1, bbVariable, attribute));
+            _fieldContainer.Add(VisualUtility.GetFieldByValueType(property.Item1, bbVariable, attribute)); 
         }
     }
 }

@@ -61,7 +61,7 @@ namespace TaskStreamer.Tool
             outputPort.Connect(transitionEdge);
             inputPort.Connect(transitionEdge);
 
-            TaskStreamerEditor.Instance.view.AddElement(transitionEdge);
+            TaskStreamerEditor.Instance.taskGraphView.AddElement(transitionEdge);
             return true;
         }
 
@@ -210,7 +210,7 @@ namespace TaskStreamer.Tool
             if (fsm is not null && enter is not null && enter.transitions.Count > 0)
             {
                 fsm.DisconnectStates(enter, enter.transitions[0].destinationNode as StateBase);
-                TaskStreamerEditor.Instance.view.DeleteElements(sourceState.outputPort.connections);
+                TaskStreamerEditor.Instance.taskGraphView.DeleteElements(sourceState.outputPort.connections);
             }
         }
 

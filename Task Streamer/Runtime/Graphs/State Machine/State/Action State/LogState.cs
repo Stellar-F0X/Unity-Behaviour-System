@@ -1,15 +1,16 @@
 using System;
+using Unity.Properties;
 using UnityEngine;
 
 namespace TaskStreamer.FSM
 {
-    [Serializable, Readable]
+    [Serializable, GeneratePropertyBag, Readable]
     public class LogState : ActionState
     {
         public BlackboardVariable<string> onEnterMessages;
-        
+
         public BlackboardVariable<string> onUpdateMessages;
-        
+
         public BlackboardVariable<string> onExitMessages;
 
 
@@ -22,7 +23,7 @@ namespace TaskStreamer.FSM
 
             Debug.Log(onEnterMessages.value);
         }
-        
+
 
         protected override void OnUpdate()
         {
@@ -30,10 +31,10 @@ namespace TaskStreamer.FSM
             {
                 return;
             }
-            
+
             Debug.Log(onUpdateMessages.value);
         }
-        
+
 
         protected override void OnExit()
         {
@@ -41,7 +42,7 @@ namespace TaskStreamer.FSM
             {
                 return;
             }
-            
+
             Debug.Log(onExitMessages.value);
         }
     }

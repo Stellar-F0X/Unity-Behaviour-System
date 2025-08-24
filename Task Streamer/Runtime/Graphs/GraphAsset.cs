@@ -187,7 +187,11 @@ namespace TaskStreamer
         }
         
         
-        internal void ResetBoundVariables()
+        /// <summary>
+        /// 노드에 부착된 BBVariable들을 순회하며 현재 Blackboard에 없는 Variable이라면 필드에 Null을 할당한다.
+        /// 마찬가지로 BlackboardBasedCondition의 내부 Condition에 등록된 BBVariable도 포함하여 정리한다.
+        /// </summary>
+        internal void TryCleanUpBoundVariables()
         {
             if (this.blackboard == null || blackboard.count == 0)
             {
@@ -199,6 +203,11 @@ namespace TaskStreamer
                 Debug.LogError("GraphAsset does not have a property bag.");
                 return;
             }
+            
+            if (Application.isPlaying == false && Undo.isProcessing == false)
+            {
+                Undo.RecordObject(this, "Task Streamer (CleanUpVariablesOfField)");
+            }
 
             GraphVisitProcessor processor = new GraphVisitProcessor(blackboard, this, null);
             processor.AddAdapter(new BlackboardCleanupProcess(processor));
@@ -207,6 +216,11 @@ namespace TaskStreamer
             GraphAsset reference = this;
 
             bag.Accept(processor, ref reference);
+            
+            if (Application.isPlaying == false && Undo.isProcessing == false)
+            {
+                EditorUtility.SetDirty(this);
+            }
         }
         
         

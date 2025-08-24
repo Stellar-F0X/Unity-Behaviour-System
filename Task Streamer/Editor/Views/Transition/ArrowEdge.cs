@@ -20,24 +20,25 @@ namespace TaskStreamer.Tool
             this.generateVisualContent = this.DrawArrow;
             this.isGhostEdgeMode = true;
 
-            this.RegisterCallback<MouseEnterEvent>(_ => _hover = true);
-            this.RegisterCallback<MouseLeaveEvent>(_ => _hover = false);
+            this.RegisterCallback<MouseEnterEvent>(this.OnMouseEnterCallback);
+            this.RegisterCallback<MouseLeaveEvent>(this.OnMouseLeaveCallback);
         }
+        
 
         public ArrowEdge(Transition transition) : this()
         {
             this.RefreshTransitionData(transition);
         }
-        
+
 
         private const float _ARROW_WIDTH = 12f;
 
-        private bool _hover;
+        private bool _isHoverActivated;
 
 
         public event Action<GraphElement> onTransitionSelected;
         public event Action<GraphElement> onTransitionUnselected;
-
+        
         private Transition _targetTransition;
 
 
@@ -67,12 +68,12 @@ namespace TaskStreamer.Tool
         {
             return base.CreateEdgeControl();
         }
-        
-        
+
+
         public void RefreshTransitionData(in Transition newTransition)
         {
             Type type = newTransition.GetType();
-            
+
             this.targetTransition = newTransition;
             this.fieldProperties = TypeUtility.TryGetFieldProperties(type, newTransition);
         }
@@ -87,6 +88,20 @@ namespace TaskStreamer.Tool
         public override void OnUnselected()
         {
             onTransitionUnselected?.Invoke(this);
+        }
+        
+        
+        private void OnMouseLeaveCallback(MouseLeaveEvent evt)
+        {
+            this._isHoverActivated = false;
+            this.MarkDirtyRepaint(); //call generateVisualContent
+        }
+
+        
+        private void OnMouseEnterCallback(MouseEnterEvent evt)
+        {
+            this._isHoverActivated = true;
+            this.MarkDirtyRepaint(); //call generateVisualContent
         }
 
 
@@ -134,9 +149,8 @@ namespace TaskStreamer.Tool
             if (isGhostEdge == false && output?.node is not null && input?.node is not null)
             {
                 Vector2 dir = (to - from).normalized;
-                float distance = Vector2.Distance(from, to);
                 Vector2 perpendicular = new Vector2(-dir.y, dir.x);
-                float curveStrength = Mathf.Min(5f, distance * 0.3f);
+                float curveStrength = Mathf.Min(5f, Vector2.Distance(from, to) * 0.3f);
                 tangent = perpendicular * curveStrength;
             }
 
@@ -156,30 +170,18 @@ namespace TaskStreamer.Tool
         /// <param name="context">The mesh generation context used for rendering the arrow.</param>
         private void DrawArrow(MeshGenerationContext context)
         {
-            Vector2 start = PointsAndTangents[PointsAndTangents.Length / 2 - 1];
-            Vector2 end = PointsAndTangents[PointsAndTangents.Length / 2];
-            Vector2 mid = (start + end) * 0.5f;
-            Vector2 direction = end - start;
-
-            if (direction.sqrMagnitude < 0.01f)
+            if (this.CalculateArrowGeometry(out Vector2 mid, out Vector2 dir, out float disFromMid, out Vector2 perpendicular) == false)
             {
                 return;
             }
-
-            direction.Normalize();
-
-            float width = _ARROW_WIDTH * (_hover ? 1.5f : 1f);
-            float perpendicularLength = width * 0.5f;
-            float distanceFromMid = width * 1.732050f * 0.25f;
-            Vector2 perpendicular = new Vector2(-direction.y, direction.x) * perpendicularLength;
-
+            
             MeshWriteData mesh = context.Allocate(3, 3);
             Vertex[] vertices = new Vertex[3];
             ushort[] indices = new ushort[3];
 
-            vertices[0].position = mid + direction * distanceFromMid;
-            vertices[1].position = mid - direction * distanceFromMid + perpendicular;
-            vertices[2].position = mid - direction * distanceFromMid - perpendicular;
+            vertices[0].position = mid + dir * disFromMid;
+            vertices[1].position = mid - dir * disFromMid + perpendicular;
+            vertices[2].position = mid - dir * disFromMid - perpendicular;
 
             for (int i = 0; i < vertices.Length; i++)
             {
@@ -191,6 +193,31 @@ namespace TaskStreamer.Tool
             mesh.SetAllVertices(vertices);
             mesh.SetAllIndices(indices);
         }
+
+
+
+        private bool CalculateArrowGeometry(out Vector2 mid, out Vector2 dis, out float disFromMid, out Vector2 perpendicular)
+        {
+            Vector2 start = PointsAndTangents[PointsAndTangents.Length / 2 - 1];
+            Vector2 end = PointsAndTangents[PointsAndTangents.Length / 2];
+            mid = (start + end) * 0.5f;
+            dis = end - start;
+
+            if (dis.sqrMagnitude < 0.01f)
+            {
+                perpendicular = Vector2.zero;
+                disFromMid = 0;
+                return false;
+            }
+
+            dis.Normalize();
+
+            float width = _ARROW_WIDTH * (_isHoverActivated ? 1.5f : 1f);
+            perpendicular = new Vector2(-dis.y, dis.x) * width * 0.5f;
+            disFromMid = width * 1.732050f * 0.25f;
+            return true;
+        }
+
 
 
         /// Calculates the edge points needed for rendering a connection between nodes.
