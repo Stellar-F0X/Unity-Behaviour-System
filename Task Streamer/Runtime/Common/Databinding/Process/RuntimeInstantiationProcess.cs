@@ -62,7 +62,7 @@ namespace TaskStreamer.Injection
                 return;
             }
 
-            if (value.isGlobal == false)
+            if (value.isShared == false)
             {
                 context.Property.SetValue(ref container, value.Duplicate());
                 return;

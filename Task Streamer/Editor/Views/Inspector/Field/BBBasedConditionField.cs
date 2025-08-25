@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using TaskStreamer.Injection;
-using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEngine.UIElements;
 
@@ -12,7 +11,6 @@ namespace TaskStreamer.Tool
     /// </summary>
     public class BBBasedConditionField : VisualElement
     {
-        /// <summary> BBBasedConditionField를 정의하는 클래스 </summary>
         public BBBasedConditionField()
         {
             TaskStreamerEditor.settings.bbBasedConditionFieldXml.CloneTree(this);
@@ -29,23 +27,30 @@ namespace TaskStreamer.Tool
             _comparisionField.RegisterValueChangedCallback(this.OnChangeComparisonType);
         }
 
+
         /// <summary> 삭제 요청 이벤트를 발생시킵니다. </summary>
         public event Action<BBBasedConditionField> OnDeleteRequested;
+
 
         /// <summary> VisualElement that represents the left variable field in the condition UI. </summary>
         private readonly VisualElement _leftVariableField;
 
+
         /// <summary>사용자 데이터의 오른쪽 필드를 나타냅니다.</summary>
         private readonly VisualElement _rightVariableField;
+
 
         /// <summary> DropdownField representing the comparison type options. </summary>
         private readonly DropdownField _comparisionField;
 
+
         /// <summary> 버튼을 클릭하여 조건을 삭제하는 기능을 제공하는 버튼입니다. </summary>
         private readonly Button _conditionDeleteButton;
 
+
         /// <summary>조건 처리에 사용되는 값을 저장합니다.</summary>
         private Condition _conditionValue;
+
 
 
         /// <summary> 현재 조건의 값을 반환합니다. </summary>
@@ -70,13 +75,13 @@ namespace TaskStreamer.Tool
 
             Func<Condition, object> getLeft = c => c.encapsulatedLeftVariable;
             Func<Condition, object> getRight = c => c.encapsulatedRightVariable;
-            
+
             Action<Condition, object> setLeft = (c, v) => c.encapsulatedLeftVariable = v as BlackboardVariable;
             Action<Condition, object> setRight = (c, v) => c.encapsulatedRightVariable = v as BlackboardVariable;
-            
-            VariableHandle rightHandle = new VariableHandle("", leftVariable, condition, null, getLeft, setLeft);
-            VariableHandle leftHandle = new VariableHandle("", rightVariable, condition, null, getRight, setRight);
-            
+
+            VariableHandle rightHandle = new VariableHandle("", leftVariable, condition, leftVariable.type.BaseType, null, getLeft, setLeft);
+            VariableHandle leftHandle = new VariableHandle("", rightVariable, condition, rightVariable.type.BaseType, null, getRight, setRight);
+
             _leftVariableField.Add(VisualUtility.GetFieldByValueType(rightHandle));
             _rightVariableField.Add(VisualUtility.GetFieldByValueType(leftHandle));
 

@@ -26,13 +26,13 @@ namespace TaskStreamer.Injection
 
         public void Visit<TContainer>(in VisitContext<TContainer> context, ref TContainer container, BlackboardVariable bbVariable)
         {
-            if (this.IsVariableValidInBlackboard(bbVariable) == false || bbVariable.isGlobal == false)
+            if (this.IsVariableValidInBlackboard(bbVariable) == false || bbVariable.isShared == false)
             {
                 return;
             }
             
             //제대로 Variable이 유효하지 않은 경우 (BB가 변경됐거나, 참조 중인 BB의 Variable이 삭제됨)
-            var newVariable = ObjectFactory.CreateBBVariable(bbVariable.type, BlackboardVariable.DEFAULT_VARIABLE_NAME, isLocal: true);
+            var newVariable = ObjectFactory.CreateBBVariable(bbVariable.type, BlackboardVariable.DEFAULT_VARIABLE_NAME);
             context.Property.SetValue(ref container, newVariable);
         }
 
@@ -51,14 +51,14 @@ namespace TaskStreamer.Injection
                 {
                     Type type = condition.encapsulatedLeftVariable.type;
                     string name = BlackboardVariable.DEFAULT_VARIABLE_NAME;
-                    condition.encapsulatedLeftVariable = ObjectFactory.CreateBBVariable(type, name, isLocal: true);
+                    condition.encapsulatedLeftVariable = ObjectFactory.CreateBBVariable(type, name);
                 }
 
                 if (this.IsVariableValidInBlackboard(condition.encapsulatedRightVariable))
                 {
                     Type type = condition.encapsulatedLeftVariable.type;
                     string name = BlackboardVariable.DEFAULT_VARIABLE_NAME;
-                    condition.encapsulatedRightVariable = ObjectFactory.CreateBBVariable(type, name, isLocal: true);
+                    condition.encapsulatedRightVariable = ObjectFactory.CreateBBVariable(type, name);
                 }
             }
         }

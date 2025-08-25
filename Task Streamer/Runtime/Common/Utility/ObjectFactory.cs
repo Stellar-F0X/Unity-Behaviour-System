@@ -24,12 +24,10 @@ namespace TaskStreamer.Utility
             }
 
             object createdObject = Activator.CreateInstance(nodeType);
-
-            if (createdObject is not NodeBase newNode)
-            {
-                throw new ArgumentException($"{typeof(ObjectFactory)}: Failed to create node of type {nodeType}");
-            }
-
+            
+            Debug.Assert(createdObject is NodeBase, $"{typeof(ObjectFactory)}: Failed to create node of type {nodeType}");
+            
+            NodeBase newNode = createdObject as NodeBase;
             newNode.position = position;
             newNode.guid = UGUID.Create();
             newNode.name = StringUtility.ToNicifyName(nodeType.Name);
@@ -55,21 +53,12 @@ namespace TaskStreamer.Utility
         }
 
 
-        public static BlackboardVariable CreateBBVariable(Type blackboardVariableType, string variableName, object defaultValue = null, bool isLocal = false)
+        public static BlackboardVariable CreateBBVariable(Type blackboardVariableType, string variableName, object defaultValue = null)
         {
-            if (blackboardVariableType is null)
-            {
-                throw new ArgumentException($"{typeof(ObjectFactory)}: Wrong blackboard variable type");
-            }
-
+            Debug.Assert(blackboardVariableType is not null, $"{typeof(ObjectFactory)}: Wrong blackboard variable type");
             BlackboardVariable createValue = (BlackboardVariable)Activator.CreateInstance(blackboardVariableType);
-
-            if (createValue is null)
-            {
-                throw new ArgumentException($"{typeof(ObjectFactory)}: Failed to create a blackboard variable.");
-            }
+            Debug.Assert(createValue is not null, $"{typeof(ObjectFactory)}: Failed to create a blackboard variable.");
             
-            createValue.isGlobal = !isLocal;
             createValue.key = variableName;
             createValue.type = blackboardVariableType;
 
@@ -82,27 +71,25 @@ namespace TaskStreamer.Utility
         }
 
 
-        public static Condition CreateConditionModule(Type conditionType)
+        public static BlackboardVariable CreateSharedBBVariable(IBlackboard blackboard, UGUID guid, Type sharedBBVariableType)
         {
-            if (conditionType is null)
-            {
-                throw new ArgumentException($"{typeof(ObjectFactory)}: Wrong condition type");
-            }
+            Debug.Assert(sharedBBVariableType is not null, $"{typeof(ObjectFactory)}: Wrong blackboard variable type");
+            
+            BlackboardVariable bbVariable = (BlackboardVariable)Activator.CreateInstance(sharedBBVariableType);
+            
+            Debug.Assert(bbVariable is not null, $"{typeof(ObjectFactory)}: Failed to create a blackboard variable.");
+            
+            ISharedBlackboardVariable sharedVariable = bbVariable as ISharedBlackboardVariable;
 
-            Condition module = Activator.CreateInstance(conditionType) as Condition;
+            Debug.Assert(sharedVariable is not null, "bbVariable is not ISharedBlackboardVariable sharedVariable");
+            sharedVariable.SetBlackboardAndVariableReference(blackboard, guid);
 
-            if (module is null)
-            {
-                throw new ArgumentException($"{typeof(ObjectFactory)}: Failed to create a condition module.");
-            }
-
-            Type bbType = typeof(BlackboardVariable<>).MakeGenericType(conditionType!.BaseType!.GenericTypeArguments[0]);
-            module.encapsulatedLeftVariable = CreateBBVariable(bbType, "", true);
-            module.encapsulatedRightVariable = CreateBBVariable(bbType, "", true);
-
-            ComparableAttribute comparable = conditionType.GetAttribute<ComparableAttribute>();
-            module.configuredComparisonType = comparable is null ? Condition.DEFAULT_COMPARISON : comparable.comparison;
-            return module;
+            BlackboardVariable foundVariable = blackboard.FindVariable(guid);
+            bbVariable.key = blackboard.FindVariable(guid).key;
+            bbVariable.boxedValue = foundVariable.boxedValue;
+            bbVariable.type = typeof(BlackboardVariable<>).GetImplementedType(sharedBBVariableType.GenericTypeArguments[0]);
+            bbVariable.isShared = true;
+            return bbVariable;
         }
 
 

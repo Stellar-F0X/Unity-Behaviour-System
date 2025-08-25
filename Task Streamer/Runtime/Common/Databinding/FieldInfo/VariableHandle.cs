@@ -17,6 +17,17 @@ namespace TaskStreamer.Injection
             this._getVariableFromContainer = getValue;
         }
         
+        public VariableHandle(string context, object value, object container, Type fieldType, IEnumerable<Attribute> attributes, Delegate getValue, Delegate setValue)
+        {
+            this.value = value;
+            this.context = context;
+            this._container = container;
+            this.fieldType = fieldType;
+            this._fieldAttributes = attributes;
+            this._setVariableToContainer = setValue;
+            this._getVariableFromContainer = getValue;
+        }
+        
         public readonly string context;
         public readonly Type fieldType;
         public readonly object value;

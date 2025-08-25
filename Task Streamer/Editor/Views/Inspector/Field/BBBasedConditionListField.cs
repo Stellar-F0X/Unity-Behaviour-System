@@ -19,9 +19,22 @@ namespace TaskStreamer.Tool
 
             this.InitializeConditionListView(fieldInfo);
         }
-        
-        
 
+
+        /// 조건 리스트를 표시하는 ListView UI 요소입니다.
+        /// BBBasedConditionListField 클래스에서 BlackboardBasedCondition의 모듈을 시각화하여 관리하기 위해 사용됩니다.
+        private readonly ListView _conditionListView;
+
+        
+        /// 조건 삭제 버튼을 나타내는 변수로, 조건 삭제와 관련된 이벤트 핸들링 연결에 사용됩니다.
+        private readonly Button _conditionDeleteBtn;
+        
+        
+        /// BlackboardBasedCondition 타입의 데이터를 저장하는 읽기 전용 변수입니다.
+        private BlackboardBasedCondition _bbCondition;
+        
+        
+        
         private void InitializeConditionListView(VariableHandle fieldInfo)
         {
             _bbCondition = fieldInfo.GetValue<BlackboardBasedCondition>();
@@ -34,16 +47,6 @@ namespace TaskStreamer.Tool
             _conditionDeleteBtn.clickable.clickedWithEventInfo -= this.OnAddButtonClicked;
             _conditionDeleteBtn.clickable.clickedWithEventInfo += this.OnAddButtonClicked;
         }
-
-        /// 조건 리스트를 표시하는 ListView UI 요소입니다.
-        /// BBBasedConditionListField 클래스에서 BlackboardBasedCondition의 모듈을 시각화하여 관리하기 위해 사용됩니다.
-        private readonly ListView _conditionListView;
-
-        /// 조건 삭제 버튼을 나타내는 변수로, 조건 삭제와 관련된 이벤트 핸들링 연결에 사용됩니다.
-        private readonly Button _conditionDeleteBtn;
-        
-        /// BlackboardBasedCondition 타입의 데이터를 저장하는 읽기 전용 변수입니다.
-        private BlackboardBasedCondition _bbCondition;
         
 
 

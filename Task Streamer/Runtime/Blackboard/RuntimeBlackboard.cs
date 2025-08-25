@@ -112,9 +112,9 @@ namespace TaskStreamer
         }
 
 
-        public bool HasVariable(string key)
+        public bool HasVariable(UGUID key)
         {
-            if (_clonedVariables.Find(v => v.key == key) is null)
+            if (_clonedVariables.Find(v => v.guid == key) is null)
             {
                 return false;
             }

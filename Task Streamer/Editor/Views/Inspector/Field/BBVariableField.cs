@@ -4,7 +4,6 @@ using System.Linq;
 using TaskStreamer.Injection;
 using TaskStreamer.Utility;
 using UnityEditor;
-using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.UIElements;
 using ObjectFactory = TaskStreamer.Utility.ObjectFactory;
@@ -85,9 +84,9 @@ namespace TaskStreamer.Tool
             _nameField.style.display = needLabel ? DisplayStyle.Flex : DisplayStyle.None;
             _nameField.text = ObjectNames.NicifyVariableName(fieldInfo.context);
 
-            this.RegisterVariableField();
+            this.RegisterVariableField(_bbVariable.isShared);
 
-            _contextSwapButton.SetValueWithoutNotify(_bbVariable.isGlobal);
+            _contextSwapButton.SetValueWithoutNotify(_bbVariable.isShared);
             _contextSwapButton.UnregisterValueChangedCallback(this.UsageContextChangeCallback);
             _contextSwapButton.RegisterValueChangedCallback(this.UsageContextChangeCallback);
         }
@@ -113,12 +112,12 @@ namespace TaskStreamer.Tool
 
 
         /// <summary> 지정된 변수를 필드로 등록하고 초기화를 수행합니다. </summary>
-        private void RegisterVariableField()
+        private void RegisterVariableField(bool isShared)
         {
             VisualElement originalField = null;
             VisualElement newField = null;
 
-            if (this._bbVariable.isGlobal)
+            if (isShared)
             {
                 originalField = variableField;
                 newField = this.CreateGlobalVariableField();
@@ -226,21 +225,19 @@ namespace TaskStreamer.Tool
 
 
 #region Value Change Callbacks
-
         /// <summary> BlackboardVariable의 사용 컨텍스트(global/local)를 변경하기 위해 호출되는 콜백 함수입니다. </summary>
         /// <param name="evt">컨텍스트 변경 상태를 포함하는 이벤트입니다.</param>
         private void UsageContextChangeCallback(ChangeEvent<bool> evt)
         {
             Debug.Assert(_bbVariable != null, "Blackboard Variable is null");
+            this._bbVariable.isShared = evt.newValue;
 
-            this._bbVariable.isGlobal = evt.newValue;
-
-            if (evt.newValue) //isGlobal
+            if (evt.newValue) //sharedVariable
             {
-                this.RegisterVariableField();
+                this.RegisterVariableField(true);
                 return;
             }
-
+            
             Type variableType = _bbVariable.type;
 
             if (variableType is null)
@@ -251,9 +248,8 @@ namespace TaskStreamer.Tool
 
             string variableName = _nameField.text;
             object defaultValue = _fieldInfo.GetAttribute<SetValueAttribute>()?.defaultValue;
-            
             _fieldInfo.SetValue(ObjectFactory.CreateBBVariable(variableType, variableName, defaultValue));
-            this.RegisterVariableField();
+            this.RegisterVariableField(false);
         }
 
 
@@ -284,13 +280,18 @@ namespace TaskStreamer.Tool
 
             if (string.CompareOrdinal(evt.newValue, "None") == 0)
             {
-                _fieldInfo.SetValue(ObjectFactory.CreateBBVariable(_bbVariable.type, BlackboardVariable.DEFAULT_VARIABLE_NAME));
+                //TODO: 그냥 Null을 대입하고 Null도 가능하게 구현.
+                string variableName = BlackboardVariable.DEFAULT_VARIABLE_NAME;
+                var newVariable = ObjectFactory.CreateBBVariable(_bbVariable.type, variableName);
+                newVariable.isShared = true;
+                _fieldInfo.SetValue(newVariable);
                 return;
             }
-
-            BlackboardAsset blackboard = TaskStreamerEditor.Instance.graphAsset.blackboard;
-            BlackboardVariable selectedVariable = blackboard.FindVariable(evt.newValue);
-            _fieldInfo.SetValue(selectedVariable);
+ 
+            BlackboardAsset blackboard = TaskStreamerEditor.Instance.graphAsset.blackboard; 
+            BlackboardVariable selectedVariable = blackboard.FindVariable(evt.newValue); 
+            Type type = typeof(SharedBlackboardVariable<>).MakeGenericType(_fieldInfo.fieldType.GenericTypeArguments[0]);
+            _fieldInfo.SetValue(ObjectFactory.CreateSharedBBVariable(blackboard, selectedVariable.guid, type));
         }
 
 #endregion

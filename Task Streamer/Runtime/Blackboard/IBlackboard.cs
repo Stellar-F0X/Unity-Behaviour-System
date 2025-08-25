@@ -12,6 +12,6 @@ namespace TaskStreamer
 
         public void RemoveVariable(BlackboardVariable variable);
 
-        public bool HasVariable(string key);
+        public bool HasVariable(UGUID key);
     }
 }
