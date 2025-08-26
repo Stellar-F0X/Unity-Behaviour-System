@@ -4,17 +4,18 @@ using UnityEngine;
 
 namespace TaskStreamer.Tool
 {
-    public class NodeFactoryModule : FactoryModule<NodeViewBase>
+    public class NodeFactoryModule<T> : FactoryModule<NodeViewBase>
     {
-        public NodeFactoryModule(TaskGraphView view, Type targetType, string title, int layer = 1) : base(targetType, title, true, true, layer)
+        public NodeFactoryModule(TaskGraphView view, string title, int layer = 1) : base(typeof(T), title, true, layer)
         {
             this._view = view;
         }
 
+
         private readonly TaskGraphView _view;
 
 
-        protected override NodeViewBase Create(Type type, Vector2 position)
+        protected override NodeViewBase Create(Type type, Vector2 position, string entryName)
         {
             return _view.CreateNewNodeAndView(type, position);
         }
@@ -25,11 +26,11 @@ namespace TaskStreamer.Tool
             if (creation.targetNode is ISubGraphProvider graphNode)
             {
                 GraphAsset graphAsset = TaskStreamerEditor.Instance.graphAsset;
-                Debug.Assert(graphAsset is not null, $"{nameof(NodeFactoryModule)}: GraphAsset is null");
+                Debug.Assert(graphAsset is not null, $"{nameof(NodeFactoryModule<T>)}: GraphAsset is null");
 
                 Graph baseGraph = TaskStreamerEditor.Instance.taskGraphView.focusGraph;
                 Graph newGraph = null;
-                
+
                 ObjectFactory.CreateGraph(graphAsset, graphNode.subGraphType, ref newGraph, creation.title);
 
                 baseGraph.AddSubGraph(newGraph);

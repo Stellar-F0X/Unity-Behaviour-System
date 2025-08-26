@@ -20,12 +20,6 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>
-        /// 노드 생성 창 인스턴스 (지연 초기화)
-        /// </summary>
-        private CreationWindow _taskCreationWindow;
-
-
-        /// <summary>
         /// 스크립트 리로드 시 프로세서 인스턴스들을 초기화합니다.
         /// Unity 에디터에서 스크립트가 다시 컴파일될 때 자동으로 호출됩니다.
         /// </summary>
@@ -65,23 +59,7 @@ namespace TaskStreamer.Tool
             _ProcessorInstances[(int)graph.graphType] = result;
             return result;
         }
-
-
-        /// <summary>
-        /// 그래프 노드 생성 창을 반환합니다.
-        /// 지연 초기화 패턴을 사용하여 필요할 때만 생성합니다.
-        /// </summary>
-        /// <returns>노드 생성 창 인스턴스</returns>
-        public CreationWindow GetGraphNodeCreationWindow(TaskGraphView graphView)
-        {
-            if (_taskCreationWindow is null) // 아직 생성되지 않았다면 새로 생성
-            {
-                _taskCreationWindow = this.CreateGraphNodeCreationWindow(graphView);
-                Debug.Assert(_taskCreationWindow != null, "CreationWindow is null");
-            }
-
-            return _taskCreationWindow;
-        }
+        
 
         /// <summary>
         /// 그래프에서 노드를 삭제합니다.
@@ -175,6 +153,6 @@ namespace TaskStreamer.Tool
         /// 하위 클래스에서 적절한 창 타입을 반환해야 합니다.
         /// </summary>
         /// <returns>생성된 노드 생성 창</returns>
-        protected abstract CreationWindow CreateGraphNodeCreationWindow(TaskGraphView graphView);
+        public abstract BindingWindow CreateGraphNodeCreationWindow(TaskGraphView graphView);
     }
 }

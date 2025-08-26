@@ -80,7 +80,7 @@ namespace TaskStreamer.Tool
 
             this.itemIndexChanged -= this.OnPropertyIndicesSwapped;
             this.itemIndexChanged += this.OnPropertyIndicesSwapped;
-            
+
             this._variableAddButton.UnregisterCallback<ClickEvent>(this.OpenContextualMenuWindow);
             this._variableAddButton.RegisterCallback<ClickEvent>(this.OpenContextualMenuWindow);
 
@@ -98,17 +98,17 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            BlackboardAsset newBlackboard = changeEvent.newValue as BlackboardAsset; 
-            
+            BlackboardAsset newBlackboard = changeEvent.newValue as BlackboardAsset;
+
             if (newBlackboard == null && this._blackboard != null)
             {
                 //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
                 TaskStreamerEditor.Instance.graphAsset.TryCleanUpBoundVariables();
             }
-            
+
             //2. 교체.
             this.TrySetupBlackboard(newBlackboard);
-            
+
             TaskStreamerEditor.Instance.graphAsset.blackboard = _blackboard;
             TaskStreamerEditor.Instance.inspectorView.ClearInspectorView();
         }
@@ -126,7 +126,7 @@ namespace TaskStreamer.Tool
 
             _serializedObject.Update();
             _serializedObject.ApplyModifiedProperties();
-            
+
             this.RefreshItems();
         }
 
@@ -157,15 +157,15 @@ namespace TaskStreamer.Tool
             {
                 return;
             }
-            
+
             newBlackboard?.UpdateAppliedVersion();
 
             this._blackboard = newBlackboard;
             this._blackboardBindingField.value = newBlackboard;
             this._variableAddButton.enabledSelf = !Application.isPlaying;
             this._blackboardBindingField.enabledSelf = !Application.isPlaying;
-            
-            if (newBlackboard is null) 
+
+            if (newBlackboard is null)
             {
                 //블랙보드가 null인 경우, 아이템 소스(Variable 배열)를 초기화하고 새로고침한다.
                 this.ResetItemsOnBlackboardRemoved();
@@ -215,14 +215,11 @@ namespace TaskStreamer.Tool
             {
                 return;
             }
-            
-            ICreationWindow window = CreationWindow.GetCreationWindow("Blackboard Variables", false);
 
-            if (window.modulesIsEmpty)
-            {
-                window.AddFactoryModule(new BBVariableFactoryModule(typeof(BlackboardVariable), "Variables", 0));
-            }
-            
+            BindingWindow window = BindingWindowBuilder.GetBuilder("Blackboard Variables", false)
+                                                       .AddFactoryModule(() => new BBVariableFactoryModule("Variables", 0), () => new TypeTreeProvider(true))
+                                                       .Build();
+
             window.RegisterCreationCallbackOnce((Action<BlackboardVariable>)this.AddVariableToList);
             window.OpenWindow(clickEvent.position);
         }
@@ -247,8 +244,8 @@ namespace TaskStreamer.Tool
         {
             Undo.RecordObject(_blackboard, "Task Streamer (RemoveBlackboardVariable)");
 
-            _blackboard.RemoveVariable(itemsSource[index] as BlackboardVariable); 
-            
+            _blackboard.RemoveVariable(itemsSource[index] as BlackboardVariable);
+
             //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
             TaskStreamerEditor.Instance.graphAsset.TryCleanUpBoundVariables();
 
@@ -289,9 +286,9 @@ namespace TaskStreamer.Tool
         /// <summary>리스트 아이템을 UI 요소에 바인딩합니다.</summary>
         /// <param name="element">바인딩할 UI 요소를 나타내는 VisualElement입니다.</param>
         /// <param name="index">바인딩할 아이템의 인덱스입니다.</param>
-        private void BindItemToList(VisualElement element, int index) 
+        private void BindItemToList(VisualElement element, int index)
         {
-            if (_serializedList.arraySize <= index || element is not BlackboardVariableView variableView) 
+            if (_serializedList.arraySize <= index || element is not BlackboardVariableView variableView)
             {
                 return;
             }
@@ -362,7 +359,7 @@ namespace TaskStreamer.Tool
 
             _serializedObject.Update();
             _serializedObject.ApplyModifiedProperties();
-            
+
             UnityEditor.EditorUtility.SetDirty(_blackboard);
         }
     }

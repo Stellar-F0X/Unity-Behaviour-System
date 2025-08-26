@@ -208,17 +208,15 @@ namespace TaskStreamer.Tool
         /// </summary>
         /// <param name="graphView">The task graph view for which the node creation window will be created.</param>
         /// <returns>A creation window instance populated with factory modules for creating different node types.</returns>
-        protected override CreationWindow CreateGraphNodeCreationWindow(TaskGraphView graphView)
+        public override BindingWindow CreateGraphNodeCreationWindow(TaskGraphView graphView)
         {
-            ICreationWindow window = CreationWindow.GetCreationWindow("Behavior Tree");
-
-            window.AddFactoryModule(new NodeFactoryModule(graphView, typeof(ActionNode), "Action"))
-                  .AddFactoryModule(new NodeFactoryModule(graphView, typeof(DecoratorNode), "Decorator"))
-                  .AddFactoryModule(new NodeFactoryModule(graphView, typeof(CompositeNode), "Composite"))
-                  .AddFactoryModule(new NodeFactoryModule(graphView, typeof(SubGraphNode), "Graph"))
-                  .AddFactoryModule(new NodeGroupFactoryModule(graphView, typeof(NodeGroup), "Utility"));
-
-            return window as CreationWindow;
+            return BindingWindowBuilder.GetBuilder("Behavior Tree", reuse: true)
+                                       .AddFactoryModule(() => new NodeFactoryModule<ActionNode>(graphView, "Action"), () => new TypeTreeProvider(true))
+                                       .AddFactoryModule(() => new NodeFactoryModule<DecoratorNode>(graphView, "Decorator"), () => new TypeTreeProvider(true))
+                                       .AddFactoryModule(() => new NodeFactoryModule<CompositeNode>(graphView, "Composite"), () => new TypeTreeProvider(true))
+                                       .AddFactoryModule(() => new NodeFactoryModule<SubGraphNode>(graphView, "Graph"), () => new TypeTreeProvider(true))
+                                       .AddFactoryModule(() => new NodeGroupFactoryModule<NodeGroup>(graphView, "Utility"), () => new TypeTreeProvider(false))
+                                       .Build();
         }
 
 
@@ -311,7 +309,7 @@ namespace TaskStreamer.Tool
         {
             BehaviorTree behaviorTree = TaskStreamerEditor.Instance.currentGraph as BehaviorTree;
             Debug.Assert(behaviorTree is not null, $"{nameof(TaskGraphView)}: BehaviorTree is null");
-            
+
             behaviorTree.DisconnectNodes((BehaviorNodeBase)parentView.targetNode, (BehaviorNodeBase)childView.targetNode);
             port.Disconnect(edge);
 

@@ -100,15 +100,13 @@ namespace TaskStreamer.Tool
         /// <summary> 상태 머신 그래프 작업을 위한 노드 생성 창을 생성하고 반환한다. </summary>
         /// <param name="graphView"> 상태 머신 그래프 작업을 위한 그래프 뷰 </param>
         /// <returns> 노드 생성 및 추가를 지원하는 CreationWindow 인스턴스 </returns>
-        protected override CreationWindow CreateGraphNodeCreationWindow(TaskGraphView graphView)
+        public override BindingWindow CreateGraphNodeCreationWindow(TaskGraphView graphView)
         {
-            ICreationWindow window = CreationWindow.GetCreationWindow("State Machine");
-
-            window.AddFactoryModule(new NodeFactoryModule(graphView, typeof(ActionState), "Action"))
-                  .AddFactoryModule(new NodeFactoryModule(graphView, typeof(SubGraphState), "Graph"))
-                  .AddFactoryModule(new NodeGroupFactoryModule(graphView, typeof(NodeGroup), "Utility"));
-
-            return window as CreationWindow;
+            return BindingWindowBuilder.GetBuilder("State Machine", reuse: true)
+                                       .AddFactoryModule(() => new NodeFactoryModule<ActionState>(graphView, "Action"), () => new TypeTreeProvider(true))
+                                       .AddFactoryModule(() => new NodeFactoryModule<SubGraphState>(graphView, "Graph"), () => new TypeTreeProvider(true))
+                                       .AddFactoryModule(() => new NodeGroupFactoryModule<NodeGroup>(graphView, "Utility"), () => new TypeTreeProvider(false))
+                                       .Build();
         }
 
 

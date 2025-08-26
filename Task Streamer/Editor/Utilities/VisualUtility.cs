@@ -57,7 +57,6 @@ namespace TaskStreamer.Tool
 
         public static VisualElement GetFieldByValueType(VariableHandle context)
         {
-            Debug.Log(context.fieldType);
             Type type = context.fieldType.GenericTypeArguments[0];
 
             if (type == typeof(float))

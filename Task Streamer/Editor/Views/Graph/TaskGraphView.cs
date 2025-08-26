@@ -139,9 +139,9 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            CreationWindow creationWindow = _graphView.GetGraphNodeCreationWindow(this);
-            creationWindow.RegisterCreationCallbackOnce(onNodeCreated);
-            creationWindow.OpenWindow(mousePosition);
+            BindingWindow bindingWindow = _graphView.CreateGraphNodeCreationWindow(this);
+            bindingWindow.RegisterCreationCallbackOnce(onNodeCreated);
+            bindingWindow.OpenWindow(mousePosition);
         }
 
 

@@ -1,22 +1,28 @@
 using System;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace TaskStreamer.Tool
 {
     public abstract class FactoryModule
     {
-        protected FactoryModule(Type targetType, string title, bool tagetIsSubClass, int layer = 1)
+        protected FactoryModule(Type targetType, string title, int layer = 1)
         {
-            this.targetType = targetType;
             this.title = string.IsNullOrEmpty(title) ? targetType.Name : title;
-            this.tagetIsSubClass = tagetIsSubClass;
+            this.targetType = targetType;
             this.layer = layer;
         }
 
-        public Action<Type, Vector2, Delegate> sendCreationSignal
+        public Action<Type, Vector2, string, Delegate> onTryCreate
         {
             get;
             protected set;
+        }
+
+        public ICategoryTreeProvider categoryProvider
+        {
+            get;
+            set;
         }
 
         public Type targetType
@@ -36,28 +42,21 @@ namespace TaskStreamer.Tool
             get;
             private set;
         }
-
-        public bool tagetIsSubClass
-        {
-            get;
-            private set;
-        }
     }
 
 
     public abstract class FactoryModule<T> : FactoryModule
     {
-        protected FactoryModule(Type targetType, string title, bool tagetIsSubClass, bool useCreationCallback, int layer = 1) : 
-            base(targetType, title, tagetIsSubClass, layer)
+        protected FactoryModule(Type targetType, string title, bool useCallback = false, int layer = 1) : base(targetType, title, layer)
         {
-            base.sendCreationSignal = this.ExecuteCreateActions;
-            this._useCreationCallback = useCreationCallback;
+            base.onTryCreate = this.ExecuteCreateActions;
+            this._useCallback = useCallback;
         }
 
-        private readonly bool _useCreationCallback;
+        private readonly bool _useCallback;
 
         
-        private void ExecuteCreateActions(Type childType, Vector2 position, Delegate createAction)
+        private void ExecuteCreateActions(Type childType, Vector2 position, string entryName, Delegate createAction)
         {
             this.BeforeCreate(childType, position);
             
@@ -65,7 +64,7 @@ namespace TaskStreamer.Tool
 
             try
             {
-                creation = this.Create(childType, position);
+                creation = this.Create(childType, position, entryName);
             }
             catch (Exception e)
             {
@@ -73,7 +72,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            if (this._useCreationCallback)
+            if (this._useCallback)
             {
                 createAction?.DynamicInvoke(creation);
             }
@@ -86,6 +85,6 @@ namespace TaskStreamer.Tool
 
         protected virtual void AfterCreate(T creation) { }
 
-        protected abstract T Create(Type type, Vector2 position);
+        protected abstract T Create(Type type, Vector2 position, string entryName);
     }
 }
