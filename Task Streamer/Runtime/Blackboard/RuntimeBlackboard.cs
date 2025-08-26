@@ -52,7 +52,7 @@ namespace TaskStreamer
         }
 
 
-        public bool CanUpdateable(UGUID lastAppliedVersion)
+        public bool RequiresUpdate(UGUID lastAppliedVersion)
         {
             if (this._appliedVersion != lastAppliedVersion)
             {

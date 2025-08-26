@@ -8,12 +8,13 @@ namespace TaskStreamer.Tool
 {
     public class TypeTreeProvider : ICategoryTreeProvider
     {
-        public TypeTreeProvider(bool isSubClassType)
+        public TypeTreeProvider(bool bindSubClassTypes)
         {
-            this._isSubClassType = isSubClassType;
+            this._bindSubClassTypes = bindSubClassTypes;
         }
 
-        private bool _isSubClassType;
+        
+        private readonly bool _bindSubClassTypes;
 
 
         public SearchTreeEntry[] ProvideCategories(FactoryModule module)
@@ -38,7 +39,7 @@ namespace TaskStreamer.Tool
 
         private Type[] GetTypes(FactoryModule module)
         {
-            if (this._isSubClassType)
+            if (this._bindSubClassTypes)
             {
                 return TypeCache.GetTypesDerivedFrom(module.targetType).OrderByNameAndFilterAbstracts();
             }

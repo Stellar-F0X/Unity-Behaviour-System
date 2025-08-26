@@ -232,12 +232,10 @@ namespace TaskStreamer
             }
             
             //마지막 반영 버전과 같으면 굳이 다시 업데이트하지 않고 함수를 종료한다.
-            if (_runtimeBlackboard.CanUpdateable(_graphAsset.blackboard.appliedVersion))
+            if (runtimeBlackboard.RequiresUpdate(_graphAsset.blackboard.appliedVersion))
             {
-                return;
+                this.UpdateRuntimeBlackboardVariables();
             }
-
-            this.UpdateRuntimeBlackboardVariables();
         }
 
 

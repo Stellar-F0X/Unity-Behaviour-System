@@ -8,9 +8,9 @@ using UnityEngine.UIElements;
 namespace TaskStreamer.Tool
 {
     /// BlackboardBasedCondition의 조건 목록을 UI로 표시하는 VisualElement 클래스.
-    public class BBBasedConditionListField : VisualElement
+    public class BlackboaradBasedConditionListField : VisualElement
     {
-        public BBBasedConditionListField(VariableHandle fieldInfo)
+        public BlackboaradBasedConditionListField(VariableHandle fieldInfo)
         {
             TaskStreamerEditor.settings.bbBasedConditionListFieldXml.CloneTree(this);
 
@@ -42,7 +42,7 @@ namespace TaskStreamer.Tool
             _conditionListView.headerTitle = StringUtility.ToNicifyName(fieldInfo.context);
             _conditionListView.itemsSource = _bbCondition!.modules;
             _conditionListView.bindItem = this.BindConditionItem;
-            _conditionListView.makeItem = () => new BBBasedConditionField();
+            _conditionListView.makeItem = () => new BlackBoardBasedConditionField();
 
             _conditionDeleteBtn.clickable.clickedWithEventInfo -= this.OnAddButtonClicked;
             _conditionDeleteBtn.clickable.clickedWithEventInfo += this.OnAddButtonClicked;
@@ -54,8 +54,12 @@ namespace TaskStreamer.Tool
         /// <param name="evt">사용자가 추가 버튼 클릭 시 전달된 EventBase 객체입니다.</param>
         private void OnAddButtonClicked(EventBase evt)
         {
+            Func<FactoryModule> moduleProvider = () => new ConditionFactoryModule("Conditions", 0);
+            
+            Func<ICategoryTreeProvider> provider = () => new TypeTreeProvider(true);
+
             BindingWindow window = BindingWindowBuilder.GetBuilder("Conditions", false)
-                                                       .AddFactoryModule(() => new ConditionFactoryModule("Conditions", 0), () => new TypeTreeProvider(true))
+                                                       .AddFactoryModule(moduleProvider, provider)
                                                        .Build();
 
             window.RegisterCreationCallbackOnce((Action<Condition>)this.AddItemToList);
@@ -70,7 +74,7 @@ namespace TaskStreamer.Tool
         /// <param name="index">바인딩할 데이터의 인덱스.</param>
         private void BindConditionItem(VisualElement element, int index)
         {
-            BBBasedConditionField conditionField = element as BBBasedConditionField;
+            BlackBoardBasedConditionField conditionField = element as BlackBoardBasedConditionField;
 
             Debug.Assert(conditionField is not null, "conditionField is null");
 
@@ -96,7 +100,7 @@ namespace TaskStreamer.Tool
 
         /// 특정 변수가 삭제 요청되었을 때 처리하는 메서드입니다.
         /// <param name="variableView">삭제 요청된 BBBasedConditionField의 참조입니다.</param>
-        private void OnVariableDeleteRequested(BBBasedConditionField variableView)
+        private void OnVariableDeleteRequested(BlackBoardBasedConditionField variableView)
         {
             int index = _conditionListView.itemsSource.IndexOf(variableView.conditionValueValue);
 

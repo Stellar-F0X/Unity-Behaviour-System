@@ -26,7 +26,6 @@ namespace TaskStreamer.Injection
         {
             if (value == null)
             {
-                Debug.LogError($"{typeof(TContainer)}'s {property.Name} field is NullReference");
                 return;
             }
             

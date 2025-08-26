@@ -10,20 +10,26 @@ using UnityEditor;
 
 namespace TaskStreamer
 {
+    /// <summary> 블랙보드 데이터를 저장하는 ScriptableObject </summary>
+    [Serializable]
     public sealed class BlackboardAsset : ScriptableObject, IBlackboard
     {
+        /// <summary> 현재 적용된 버전의 UGUID를 나타냅니다. </summary>
         [SerializeField, HideInInspector]
         private UGUID _appliedVersion;
 
+        /// <summary> Internal list of blackboard variables </summary>
         [SerializeReference, HideInInspector]
         private List<BlackboardVariable> _variables = new List<BlackboardVariable>();
 
-        
+
+        /// <summary>현재 적용된 버전을 나타냅니다.</summary>
         internal UGUID appliedVersion
         {
             get { return _appliedVersion; }
         }
 
+        /// <summary> 블랙보드에 적용된 버전 정보를 나타냅니다. </summary>
         internal List<BlackboardVariable> variables
         {
             get { return _variables; }
@@ -31,6 +37,7 @@ namespace TaskStreamer
             set { _variables = value; }
         }
 
+        /// <summary>Gets the count of variables in the blackboard.</summary>
         public int count
         {
             get { return variables is null ? 0 : variables.Count; }
@@ -38,12 +45,16 @@ namespace TaskStreamer
 
 
 
+        /// <summary> Updates the applied version of the BlackboardAsset. </summary>
         public void UpdateAppliedVersion()
         {
             this._appliedVersion = UGUID.Create();
         }
-        
 
+
+        /// <summary> 지정된 UGUID 키에 해당하는 BlackboardVariable을 반환합니다. </summary>
+        /// <param name="key">찾고자 하는 변수의 고유 식별자(UGUID).</param>
+        /// <returns>해당 키에 매칭되는 BlackboardVariable 객체. 없으면 null 반환.</returns>
         public BlackboardVariable FindVariable(in UGUID key)
         {
             if (key.IsEmpty())
@@ -57,6 +68,9 @@ namespace TaskStreamer
         }
 
 
+        /// <summary> 주어진 변수 이름으로 블랙보드 변수 객체를 검색합니다. </summary>
+        /// <param name="variableName">검색할 변수의 이름입니다.</param>
+        /// <returns>검색된 블랙보드 변수 객체를 반환하며, 존재하지 않을 경우 null을 반환합니다.</returns>
         public BlackboardVariable FindVariable(string variableName)
         {
             int hashCode = StringUtility.StringToHash(variableName);
@@ -72,6 +86,9 @@ namespace TaskStreamer
         }
 
 
+        /// <summary> 특정 UGUID를 제외하거나 전체 변수 이름을 배열로 반환합니다. </summary>
+        /// <param name="excluded"> 제외할 UGUID 값 (기본값은 default) </param>
+        /// <returns> 변수 이름 배열 </returns>
         public string[] VariableNames(UGUID excluded = default)
         {
             if (excluded.IsEmpty())
@@ -86,6 +103,8 @@ namespace TaskStreamer
 
 
 #if UNITY_EDITOR
+        /// <summary> 새로운 변수를 블랙보드에 추가합니다. </summary>
+        /// <param name="variable"> 추가할 BlackboardVariable 객체입니다. </param>
         public void AddVariable(BlackboardVariable variable)
         {
             this._appliedVersion = UGUID.Create();
@@ -101,6 +120,8 @@ namespace TaskStreamer
         }
 
 
+        /// <summary>블랙보드에서 지정된 변수를 제거합니다.</summary>
+        /// <param name="variable">제거하려는 블랙보드 변수입니다.</param>
         public void RemoveVariable(BlackboardVariable variable)
         {
             this._appliedVersion = UGUID.Create();
@@ -118,6 +139,9 @@ namespace TaskStreamer
         }
 
 
+        /// <summary>지정된 키를 가진 변수가 존재하는지 확인합니다.</summary>
+        /// <param name="key">확인할 변수의 UGUID 키입니다.</param>
+        /// <returns>변수가 존재하면 true, 그렇지 않으면 false를 반환합니다.</returns>
         public bool HasVariable(UGUID key)
         {
             if (this.FindVariable(key) is null)
@@ -131,6 +155,9 @@ namespace TaskStreamer
         }
 
 
+        /// <summary> 주어진 타입에 해당하는 BlackboardVariable들을 반환한다. </summary>
+        /// <param name="variableType"> 검색하려는 변수들의 타입 </param>
+        /// <returns> 주어진 타입과 호환되는 BlackboardVariable 배열 </returns>
         internal BlackboardVariable[] GetVariablesByType(Type variableType)
         {
             List<BlackboardVariable> variableList = ListPool<BlackboardVariable>.Get();
@@ -139,7 +166,7 @@ namespace TaskStreamer
             {
                 if (string.IsNullOrEmpty(variable.key))
                 {
-                    Debug.LogError($"Invalid key: {variable.type.Name}");
+                    Debug.LogError($"Invalid key: {variable.implementedType.Name}");
                     continue;
                 }
 
@@ -155,10 +182,20 @@ namespace TaskStreamer
         }
 
 
+        /// <summary> 지정된 변수의 키를 새로운 키로 변경 시도합니다. </summary>
+        /// <param name="variable">키를 변경하려는 BlackboardVariable 객체입니다.</param>
+        /// <param name="newKey">변경할 새로운 키 값입니다.</param>
+        /// <returns>키 변경에 성공하면 true를, 실패하면 false를 반환합니다.</returns>
         internal bool TryRenameKey(BlackboardVariable variable, in string newKey)
         {
-            //이미 변경하려는 이름과 같은 이름이라면 Early Return 한다.
-            if (string.Compare(variable.key, newKey) == 0)
+            // Null 검증
+            if (variable == null || string.IsNullOrWhiteSpace(newKey))
+            {
+                return false;
+            }
+    
+            // FindVariable과 동일한 해시 기반 비교 사용
+            if (variable.keyHash == StringUtility.StringToHash(newKey))
             {
                 return true;
             }

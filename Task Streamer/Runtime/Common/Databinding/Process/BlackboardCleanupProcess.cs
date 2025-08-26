@@ -30,9 +30,9 @@ namespace TaskStreamer.Injection
             {
                 return;
             }
-            
+
             //제대로 Variable이 유효하지 않은 경우 (BB가 변경됐거나, 참조 중인 BB의 Variable이 삭제됨)
-            var newVariable = ObjectFactory.CreateBBVariable(bbVariable.type, BlackboardVariable.DEFAULT_VARIABLE_NAME);
+            var newVariable = ObjectFactory.CreateBlackboardVariable(bbVariable.implementedType);
             context.Property.SetValue(ref container, newVariable);
         }
 
@@ -49,16 +49,12 @@ namespace TaskStreamer.Injection
                 //Blackboard는 BBVariable이 아니라 Variable을 사용하기 때문에 BB에서 등록된 BBVariable의 Variable만 없애주면 됨. 
                 if (this.IsVariableValidInBlackboard(condition.encapsulatedLeftVariable))
                 {
-                    Type type = condition.encapsulatedLeftVariable.type;
-                    string name = BlackboardVariable.DEFAULT_VARIABLE_NAME;
-                    condition.encapsulatedLeftVariable = ObjectFactory.CreateBBVariable(type, name);
+                    condition.encapsulatedLeftVariable = ObjectFactory.CreateBlackboardVariable(condition.encapsulatedLeftVariable.implementedType);
                 }
 
                 if (this.IsVariableValidInBlackboard(condition.encapsulatedRightVariable))
                 {
-                    Type type = condition.encapsulatedLeftVariable.type;
-                    string name = BlackboardVariable.DEFAULT_VARIABLE_NAME;
-                    condition.encapsulatedRightVariable = ObjectFactory.CreateBBVariable(type, name);
+                    condition.encapsulatedRightVariable = ObjectFactory.CreateBlackboardVariable(condition.encapsulatedRightVariable.implementedType);
                 }
             }
         }
@@ -67,7 +63,7 @@ namespace TaskStreamer.Injection
         private bool IsVariableValidInBlackboard(BlackboardVariable variable)
         {
             Debug.Assert(variable is not null, "variable is not null");
-            
+
             if (processor.blackboard == null)
             {
                 return false;

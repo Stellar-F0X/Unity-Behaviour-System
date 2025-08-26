@@ -21,15 +21,13 @@ namespace TaskStreamer.Tool
         private Condition CreateConditionModule(Type conditionType)
         {
             Debug.Assert(conditionType is not null, $"{typeof(ObjectFactory)}: Wrong condition type");
-
             Condition module = Activator.CreateInstance(conditionType) as Condition;
-
             Debug.Assert(module is not null, $"{typeof(ObjectFactory)}: Failed to create a condition module.");
-
-            string variableName = BlackboardVariable.DEFAULT_VARIABLE_NAME;
-            Type bbType = typeof(BlackboardVariable<>).GetImplementedType(conditionType!.BaseType!.GenericTypeArguments[0]);
-            module.encapsulatedLeftVariable = ObjectFactory.CreateBBVariable(bbType, variableName);
-            module.encapsulatedRightVariable = ObjectFactory.CreateBBVariable(bbType, variableName);
+            
+            Type bbType = typeof(BlackboardVariable<>).GetImplementedType(conditionType.BaseType.GenericTypeArguments[0]);
+            
+            module.encapsulatedLeftVariable = ObjectFactory.CreateBlackboardVariable(bbType);
+            module.encapsulatedRightVariable = ObjectFactory.CreateBlackboardVariable(bbType);
 
             ComparableAttribute comparable = conditionType.GetAttribute<ComparableAttribute>();
             module.configuredComparisonType = comparable is null ? Condition.DEFAULT_COMPARISON : comparable.comparison;

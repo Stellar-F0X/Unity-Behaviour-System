@@ -81,7 +81,7 @@ namespace TaskStreamer.Tool
                 {
                     case BlackboardVariable: _fieldContainer.Add(VisualUtility.GetFieldByValueType(property)); break;
 
-                    case BlackboardBasedCondition: _fieldContainer.Add(new BBBasedConditionListField(property)); break;
+                    case BlackboardBasedCondition: _fieldContainer.Add(new BlackboaradBasedConditionListField(property)); break;
                 }
             }
         }

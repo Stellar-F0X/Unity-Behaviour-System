@@ -57,99 +57,99 @@ namespace TaskStreamer.Tool
 
         public static VisualElement GetFieldByValueType(VariableHandle context)
         {
-            Type type = context.fieldType.GenericTypeArguments[0];
+            Type type = context.GetValue<BlackboardVariable>()?.valueType;
 
             if (type == typeof(float))
             {
-                return new BBVariableField<float, FloatField>(context);
+                return new BlackboardVariableField<float, FloatField>(context);
             }
 
             if (type == typeof(double))
             {
-                return new BBVariableField<double, DoubleField>(context);
+                return new BlackboardVariableField<double, DoubleField>(context);
             }
 
             if (type == typeof(int))
             {
-                return new BBVariableField<int, IntegerField>(context);
+                return new BlackboardVariableField<int, IntegerField>(context);
             }
 
             if (type == typeof(bool))
             {
-                return new BBVariableField<bool, Toggle>(context);
+                return new BlackboardVariableField<bool, Toggle>(context);
             }
 
             if (type == typeof(string))
             {
-                return new BBVariableField<string, TextField>(context);
+                return new BlackboardVariableField<string, TextField>(context);
             }
 
             if (type.IsEnum)
             {
-                var enumField = new BBVariableField<Enum, EnumField>(context);
-                enumField.variableField.Init(Activator.CreateInstance(type) as Enum);
+                var enumField = new BlackboardVariableField<Enum, EnumField>(context);
+                enumField.localVariableInputField.Init(Activator.CreateInstance(type) as Enum);
                 return enumField;
             }
 
             if (type == typeof(Vector2))
             {
-                return new BBVariableField<Vector2, Vector2Field>(context);
+                return new BlackboardVariableField<Vector2, Vector2Field>(context);
             }
 
             if (type == typeof(Vector3))
             {
-                return new BBVariableField<Vector3, Vector3Field>(context);
+                return new BlackboardVariableField<Vector3, Vector3Field>(context);
             }
 
             if (type == typeof(Quaternion))
             {
-                return new BBVariableField<Quaternion, QuaternionField>(context);
+                return new BlackboardVariableField<Quaternion, QuaternionField>(context);
             }
             
             if (type == typeof(Vector4))
             {
-                return new BBVariableField<Vector4, Vector4Field>(context);
+                return new BlackboardVariableField<Vector4, Vector4Field>(context);
             }
 
             if (type == typeof(Vector2Int))
             {
-                return new BBVariableField<Vector2Int, Vector2IntField>(context);
+                return new BlackboardVariableField<Vector2Int, Vector2IntField>(context);
             }
 
             if (type == typeof(Vector3Int))
             {
-                return new BBVariableField<Vector3Int, Vector3IntField>(context);
+                return new BlackboardVariableField<Vector3Int, Vector3IntField>(context);
             }
 
             if (type == typeof(Color))
             {
-                return new BBVariableField<Color, ColorField>(context);
+                return new BlackboardVariableField<Color, ColorField>(context);
             }
 
             if (typeof(GameObject).IsAssignableFrom(type))
             {
-                var objectField = new BBVariableField<Object, ObjectField>(context);
-                objectField.variableField.allowSceneObjects = true;
-                objectField.variableField.objectType = type;
-                objectField.variableField.label = "";
+                var objectField = new BlackboardVariableField<Object, ObjectField>(context);
+                objectField.localVariableInputField.allowSceneObjects = true;
+                objectField.localVariableInputField.objectType = type;
+                objectField.localVariableInputField.label = "";
                 return objectField;
             }
 
             if (typeof(ScriptableObject).IsAssignableFrom(type))
             {
-                var objectField = new BBVariableField<Object, ObjectField>(context);
-                objectField.variableField.allowSceneObjects = false;
-                objectField.variableField.objectType = type;
-                objectField.variableField.label = "";
+                var objectField = new BlackboardVariableField<Object, ObjectField>(context);
+                objectField.localVariableInputField.allowSceneObjects = false;
+                objectField.localVariableInputField.objectType = type;
+                objectField.localVariableInputField.label = "";
                 return objectField;
             }
 
             if (typeof(Object).IsAssignableFrom(type))
             {
-                var objectField = new BBVariableField<Object, ObjectField>(context);
-                objectField.variableField.allowSceneObjects = false;
-                objectField.variableField.objectType = type;
-                objectField.variableField.label = "";
+                var objectField = new BlackboardVariableField<Object, ObjectField>(context);
+                objectField.localVariableInputField.allowSceneObjects = false;
+                objectField.localVariableInputField.objectType = type;
+                objectField.localVariableInputField.label = "";
                 return objectField;
             }
 

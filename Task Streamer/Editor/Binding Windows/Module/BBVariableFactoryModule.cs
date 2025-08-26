@@ -12,7 +12,7 @@ namespace TaskStreamer.Tool
 
         protected override BlackboardVariable Create(Type type, Vector2 position, string entryName)
         {
-            BlackboardVariable variable = ObjectFactory.CreateBBVariable(type, StringUtility.ToNicifyName(type.Name));
+            BlackboardVariable variable = ObjectFactory.CreateBlackboardVariable(type, StringUtility.ToNicifyName(type.Name));
             Debug.Assert(variable is not null, "Variable is null");
             return variable;
         }

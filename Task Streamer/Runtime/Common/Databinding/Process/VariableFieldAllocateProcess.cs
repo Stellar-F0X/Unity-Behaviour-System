@@ -20,7 +20,7 @@ namespace TaskStreamer.Injection
             
             SetValueAttribute setValue = context.Property.GetAttribute<SetValueAttribute>();
             
-            BlackboardVariable bbVariable = ObjectFactory.CreateBBVariable(valueType, name, setValue?.defaultValue);
+            BlackboardVariable bbVariable = ObjectFactory.CreateBlackboardVariable(valueType, name, setValue?.defaultValue);
 
             if (bbVariable == null)
             {

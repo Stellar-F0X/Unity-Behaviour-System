@@ -9,9 +9,9 @@ namespace TaskStreamer.Tool
     /// <summary>
     /// BBBasedConditionField는 시각적 요소로, 조건 필드에 관련된 UI를 정의합니다.
     /// </summary>
-    public class BBBasedConditionField : VisualElement
+    public class BlackBoardBasedConditionField : VisualElement
     {
-        public BBBasedConditionField()
+        public BlackBoardBasedConditionField()
         {
             TaskStreamerEditor.settings.bbBasedConditionFieldXml.CloneTree(this);
 
@@ -29,7 +29,7 @@ namespace TaskStreamer.Tool
 
 
         /// <summary> 삭제 요청 이벤트를 발생시킵니다. </summary>
-        public event Action<BBBasedConditionField> OnDeleteRequested;
+        public event Action<BlackBoardBasedConditionField> OnDeleteRequested;
 
 
         /// <summary> VisualElement that represents the left variable field in the condition UI. </summary>
@@ -79,8 +79,8 @@ namespace TaskStreamer.Tool
             Action<Condition, object> setLeft = (c, v) => c.encapsulatedLeftVariable = v as BlackboardVariable;
             Action<Condition, object> setRight = (c, v) => c.encapsulatedRightVariable = v as BlackboardVariable;
 
-            VariableHandle rightHandle = new VariableHandle("", leftVariable, condition, leftVariable.type.BaseType, null, getLeft, setLeft);
-            VariableHandle leftHandle = new VariableHandle("", rightVariable, condition, rightVariable.type.BaseType, null, getRight, setRight);
+            VariableHandle rightHandle = new VariableHandle("", leftVariable, condition, leftVariable.implementedType.BaseType, null, getLeft, setLeft);
+            VariableHandle leftHandle = new VariableHandle("", rightVariable, condition, rightVariable.implementedType.BaseType, null, getRight, setRight);
 
             _leftVariableField.Add(VisualUtility.GetFieldByValueType(rightHandle));
             _rightVariableField.Add(VisualUtility.GetFieldByValueType(leftHandle));

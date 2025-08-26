@@ -53,43 +53,32 @@ namespace TaskStreamer.Utility
         }
 
 
-        public static BlackboardVariable CreateBBVariable(Type blackboardVariableType, string variableName, object defaultValue = null)
+        public static BlackboardVariable CreateBlackboardVariable(Type blackboardVariableType, string variableName = "", object defaultValue = null, bool shared = false)
         {
-            Debug.Assert(blackboardVariableType is not null, $"{typeof(ObjectFactory)}: Wrong blackboard variable type");
-            BlackboardVariable createValue = (BlackboardVariable)Activator.CreateInstance(blackboardVariableType);
-            Debug.Assert(createValue is not null, $"{typeof(ObjectFactory)}: Failed to create a blackboard variable.");
+            BlackboardVariable createdValue = BlackboardVariable.Create(blackboardVariableType, shared);
             
-            createValue.key = variableName;
-            createValue.type = blackboardVariableType;
+            createdValue.implementedType = blackboardVariableType;
+
+            if (shared)
+            {
+                return createdValue;
+            }
+
+            if (string.IsNullOrEmpty(variableName))
+            {
+                createdValue.key = BlackboardVariable.DEFAULT_VARIABLE_NAME;
+            }
+            else
+            {
+                createdValue.key = variableName;
+            }
 
             if (defaultValue != null)
             {
-                createValue.boxedValue = defaultValue;
+                createdValue.boxedValue = defaultValue;
             }
             
-            return createValue;
-        }
-
-
-        public static BlackboardVariable CreateSharedBBVariable(IBlackboard blackboard, UGUID guid, Type sharedBBVariableType)
-        {
-            Debug.Assert(sharedBBVariableType is not null, $"{typeof(ObjectFactory)}: Wrong blackboard variable type");
-            
-            BlackboardVariable bbVariable = (BlackboardVariable)Activator.CreateInstance(sharedBBVariableType);
-            
-            Debug.Assert(bbVariable is not null, $"{typeof(ObjectFactory)}: Failed to create a blackboard variable.");
-            
-            ISharedBlackboardVariable sharedVariable = bbVariable as ISharedBlackboardVariable;
-
-            Debug.Assert(sharedVariable is not null, "bbVariable is not ISharedBlackboardVariable sharedVariable");
-            sharedVariable.SetBlackboardAndVariableReference(blackboard, guid);
-
-            BlackboardVariable foundVariable = blackboard.FindVariable(guid);
-            bbVariable.key = blackboard.FindVariable(guid).key;
-            bbVariable.boxedValue = foundVariable.boxedValue;
-            bbVariable.type = typeof(BlackboardVariable<>).GetImplementedType(sharedBBVariableType.GenericTypeArguments[0]);
-            bbVariable.isShared = true;
-            return bbVariable;
+            return createdValue;
         }
 
 

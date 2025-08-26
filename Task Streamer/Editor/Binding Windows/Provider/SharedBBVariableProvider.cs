@@ -1,3 +1,4 @@
+using System;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
@@ -5,21 +6,32 @@ namespace TaskStreamer.Tool
 {
     public class SharedBBVariableProvider : ICategoryTreeProvider
     {
+        public SharedBBVariableProvider(Type bindTargetVariableType)
+        {
+            this._bindTargetVariableType = bindTargetVariableType;
+        }
+
+
+        private readonly Type _bindTargetVariableType;
+        
+        
         public SearchTreeEntry[] ProvideCategories(FactoryModule module)
         {
-            Debug.Assert(TaskStreamerEditor.canEditGraph == false, "Cannot edit graph");
+            Debug.Assert(TaskStreamerEditor.canEditGraph, "Cannot edit graph");
             BlackboardAsset blackboard = TaskStreamerEditor.Instance.graphAsset.blackboard;
-            Debug.Assert(blackboard != null, "");
+            Debug.Assert(blackboard != null, "Blackboard cannot be null");
+
+            BlackboardVariable[] variables = blackboard.GetVariablesByType(_bindTargetVariableType);
             
-            SearchTreeEntry[] entries = new SearchTreeEntry[blackboard.count + 1];
+            SearchTreeEntry[] entries = new SearchTreeEntry[variables.Length + 1];
             entries[0] = new SearchTreeGroupEntry(new GUIContent(module.title));
             entries[0].level = module.layer;
 
             for (int i = 1; i < entries.Length; ++i)
             {
-                BlackboardVariable bbVariable = blackboard.variables[i];
+                BlackboardVariable bbVariable = variables[i - 1];
                 entries[i] = new SearchTreeEntry(new GUIContent(bbVariable.key));
-                entries[i].userData = (bbVariable.type, module);
+                entries[i].userData = (bbVariable.implementedType, module);
                 entries[i].level = module.layer + 1;
             }
 
