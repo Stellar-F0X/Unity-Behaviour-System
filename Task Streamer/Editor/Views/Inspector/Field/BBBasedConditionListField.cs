@@ -10,10 +10,12 @@ namespace TaskStreamer.Tool
     /// BlackboardBasedCondition의 조건 목록을 UI로 표시하는 VisualElement 클래스.
     public class BlackboaradBasedConditionListField : VisualElement
     {
+        /// BlackboardBasedCondition의 조건 목록을 UI로 표시하는 VisualElement 클래스입니다.
         public BlackboaradBasedConditionListField(VariableHandle fieldInfo)
         {
             TaskStreamerEditor.settings.bbBasedConditionListFieldXml.CloneTree(this);
 
+            _conditionPolicyEnumView = this.Q<EnumField>("condition-evaluation-policy");
             _conditionListView = this.Q<ListView>("condition-list-view");
             _conditionDeleteBtn = this.Q<Button>("condition-delete-btn");
 
@@ -22,19 +24,26 @@ namespace TaskStreamer.Tool
 
 
         /// 조건 리스트를 표시하는 ListView UI 요소입니다.
-        /// BBBasedConditionListField 클래스에서 BlackboardBasedCondition의 모듈을 시각화하여 관리하기 위해 사용됩니다.
+        /// BlackboaradBasedConditionListField 클래스에서 BlackboardBasedCondition의 모듈을 시각화하여 관리합니다.
         private readonly ListView _conditionListView;
 
 
-        /// 조건 삭제 버튼을 나타내는 변수로, 조건 삭제와 관련된 이벤트 핸들링 연결에 사용됩니다.
+        /// <summary> 조건 삭제 버튼을 나타내는 변수입니다. </summary>
         private readonly Button _conditionDeleteBtn;
 
 
-        /// BlackboardBasedCondition 타입의 데이터를 저장하는 읽기 전용 변수입니다.
+        /// <summary> 조건 평가 정책을 설정하기 위한 EnumField UI 요소입니다. </summary>
+        private readonly EnumField _conditionPolicyEnumView;
+
+
+        /// BlackboardBasedCondition 데이터를 참조하는 읽기 전용 변수입니다.
         private BlackboardBasedCondition _bbCondition;
 
 
 
+
+        /// <summary>조건 목록 뷰를 초기화하는 메서드입니다.</summary>
+        /// <param name="fieldInfo">초기화에 필요한 VariableHandle 객체입니다.</param>
         private void InitializeConditionListView(VariableHandle fieldInfo)
         {
             _bbCondition = fieldInfo.GetValue<BlackboardBasedCondition>();
@@ -44,14 +53,19 @@ namespace TaskStreamer.Tool
             _conditionListView.bindItem = this.BindConditionItem;
             _conditionListView.makeItem = () => new BlackBoardBasedConditionField();
 
+            _conditionPolicyEnumView.value = _bbCondition.evaluationPolicy;
+
             _conditionDeleteBtn.clickable.clickedWithEventInfo -= this.OnAddButtonClicked;
             _conditionDeleteBtn.clickable.clickedWithEventInfo += this.OnAddButtonClicked;
+
+            _conditionPolicyEnumView.UnregisterValueChangedCallback(this.OnChangeConditionEvaluationPolicy);
+            _conditionPolicyEnumView.RegisterValueChangedCallback(this.OnChangeConditionEvaluationPolicy);
         }
 
 
 
         /// 조건(CreationWindow)의 추가 버튼 클릭 시 수행되는 메서드입니다.
-        /// <param name="evt">사용자가 추가 버튼 클릭 시 전달된 EventBase 객체입니다.</param>
+        /// <param name="evt">사용자가 추가 버튼을 클릭했을 때 전달된 EventBase 객체입니다.</param>
         private void OnAddButtonClicked(EventBase evt)
         {
             Func<FactoryModule> moduleProvider = () => new ConditionFactoryModule("Conditions", 0);
@@ -67,9 +81,7 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>
-        /// 주어진 VisualElement에 조건 데이터를 바인딩합니다.
-        /// </summary>
+        /// <summary>주어진 VisualElement에 조건 데이터를 바인딩합니다.</summary>
         /// <param name="element">조건 데이터를 표시할 VisualElement.</param>
         /// <param name="index">바인딩할 데이터의 인덱스.</param>
         private void BindConditionItem(VisualElement element, int index)
@@ -98,7 +110,7 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// 특정 변수가 삭제 요청되었을 때 처리하는 메서드입니다.
+        /// <summary> 특정 변수가 삭제 요청되었을 때 처리하는 메서드입니다. </summary>
         /// <param name="variableView">삭제 요청된 BBBasedConditionField의 참조입니다.</param>
         private void OnVariableDeleteRequested(BlackBoardBasedConditionField variableView)
         {
@@ -115,6 +127,22 @@ namespace TaskStreamer.Tool
             _conditionListView.RefreshItems();
 
             UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
+        }
+
+
+        /// <summary> 조건 평가 정책이 변경될 때 호출되는 메서드입니다. </summary>
+        /// <param name="evt">새롭게 선택된 평가 정책을 포함하는 ChangeEvent 객체입니다.</param>
+        private void OnChangeConditionEvaluationPolicy(ChangeEvent<Enum> evt)
+        {
+            if (evt.newValue is EvaluationPolicy policy)
+            {
+                _conditionPolicyEnumView.value = policy;
+                _bbCondition.evaluationPolicy = policy;
+            }
+            else
+            {
+                Debug.LogError("");
+            }
         }
     }
 }

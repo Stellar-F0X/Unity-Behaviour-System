@@ -8,6 +8,18 @@ namespace TaskStreamer.Tool
     {
         public SharedBBVariableProvider(Type bindTargetVariableType)
         {
+            if (bindTargetVariableType is null)
+            {
+                Debug.LogError("Bind Target Variable Type is null");
+                return;
+            }
+
+            if (typeof(BlackboardVariable).IsAssignableFrom(bindTargetVariableType) == false)
+            {
+                Debug.LogError($"Invalid type binding: {bindTargetVariableType.Name} should not be assignable from BlackboardVariable");
+                return;
+            }
+            
             this._bindTargetVariableType = bindTargetVariableType;
         }
 
@@ -21,6 +33,7 @@ namespace TaskStreamer.Tool
             BlackboardAsset blackboard = TaskStreamerEditor.Instance.graphAsset.blackboard;
             Debug.Assert(blackboard != null, "Blackboard cannot be null");
 
+            
             BlackboardVariable[] variables = blackboard.GetVariablesByType(_bindTargetVariableType);
             
             SearchTreeEntry[] entries = new SearchTreeEntry[variables.Length + 1];

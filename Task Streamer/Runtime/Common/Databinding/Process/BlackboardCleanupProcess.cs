@@ -48,14 +48,14 @@ namespace TaskStreamer.Injection
             foreach (Condition condition in value.modules)
             {
                 //Blackboard는 BBVariable이 아니라 Variable을 사용하기 때문에 BB에서 등록된 BBVariable의 Variable만 없애주면 됨. 
-                if (this.IsVariableValidInBlackboard(condition.encapsulatedLeftVariable))
+                if (this.IsVariableValidInBlackboard(condition.lVariable))
                 {
-                    condition.encapsulatedLeftVariable = ObjectFactory.CreateBlackboardVariable(condition.encapsulatedLeftVariable.implementedType);
+                    condition.lVariable = ObjectFactory.CreateBlackboardVariable(condition.lVariable.implementedType);
                 }
 
-                if (this.IsVariableValidInBlackboard(condition.encapsulatedRightVariable))
+                if (this.IsVariableValidInBlackboard(condition.rVariable))
                 {
-                    condition.encapsulatedRightVariable = ObjectFactory.CreateBlackboardVariable(condition.encapsulatedRightVariable.implementedType);
+                    condition.rVariable = ObjectFactory.CreateBlackboardVariable(condition.rVariable.implementedType);
                 }
             }
         }

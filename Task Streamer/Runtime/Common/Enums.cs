@@ -28,6 +28,7 @@ namespace TaskStreamer
     };
     
     
+    
     /// <summary> 행동 트리(Behavior Tree)에서 사용되는 노드의 유형을 정의합니다. </summary>
     public enum BehaviorNodeType : byte
     {
@@ -51,6 +52,7 @@ namespace TaskStreamer
         [Tooltip("Node that executes another behavior tree or sub-graph.")]
         SubGraph
     };
+    
     
     
     /// <summary> 값 비교 연산에 사용되는 비교 타입을 정의합니다. </summary>
@@ -87,6 +89,7 @@ namespace TaskStreamer
     };
     
     
+    
     /// <summary> Parallel 노드에서 자식 노드들의 성공/실패를 평가하는 정책을 정의합니다. </summary>
     public enum ParallelPolicy : byte
     {
@@ -108,6 +111,7 @@ namespace TaskStreamer
     };
     
     
+    
     /// <summary> 노드 실행 중 호출되는 콜백의 상태를 나타냅니다. </summary>
     public enum NodeCallState : byte
     {
@@ -123,6 +127,7 @@ namespace TaskStreamer
         [Tooltip("State before exiting the node execution.")]
         BeforeExit,
     };
+    
     
     
     /// <summary> TaskStreamer에서 지원하는 그래프 타입을 정의합니다. </summary>
@@ -142,6 +147,7 @@ namespace TaskStreamer
     };
     
     
+    
     /// <summary> 노드 실행 결과 상태를 나타냅니다. </summary>
     public enum Status : byte
     {
@@ -159,9 +165,13 @@ namespace TaskStreamer
     };
     
     
+    
     /// <summary> 다중 조건 평가 시 사용되는 정책을 정의합니다. </summary>
     public enum EvaluationPolicy : byte
     {
+        /// <summary>무조건 True</summary>
+        None,
+        
         /// <summary>하나라도 조건이 만족되면 true</summary>
         [Tooltip("Returns true if any of the conditions is satisfied.")]
         Any,
@@ -170,6 +180,7 @@ namespace TaskStreamer
         [Tooltip("Returns true only if all conditions are satisfied.")]
         All
     };
+    
     
     
     /// <summary> 그래프 업데이트 실행 타이밍을 정의합니다. </summary>
@@ -196,6 +207,7 @@ namespace TaskStreamer
         ExternalUpdate,
     };
 
+    
 
     /// <summary> 그래프 순회 방식의 유형을 정의합니다. </summary>
     [Tooltip("Defines the type of graph traversal using a linear search approach.")]
@@ -211,6 +223,7 @@ namespace TaskStreamer
     };
     
     
+    
     /// <summary> Until 노드가 지정된 조건이 만족될 때까지 자식 노드를 반복 실행하는 방식을 정의합니다. </summary>
     [Tooltip("Defines how the Until node repeatedly executes its child node until a specified condition is met.")]
     public enum UntilCondition
@@ -222,5 +235,20 @@ namespace TaskStreamer
         /// <summary>자식 노드가 성공할 때까지 반복 실행</summary>
         [Tooltip("Repeatedly executes the child node until it succeeds.")]
         Success = 2
+    };
+
+    
+    
+    /// <summary> 변수가 조건 평가에 사용됨을 나타냅니다. </summary>
+    [Tooltip("Defines how variables are used in evaluation or as fields.")]
+    public enum VariableUsage
+    {
+        /// <summary> 필드 변수로 사용됨을 나타냅니다. </summary>
+        [Tooltip("Variable used as a field.")]
+        Field = 0,
+
+        /// <summary> 변수가 조건 평가에 사용됨을 나타냅니다. </summary>
+        [Tooltip("Variable used in condition evaluation.")]
+        Condition = 1
     };
 }

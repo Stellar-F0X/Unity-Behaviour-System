@@ -66,24 +66,12 @@ namespace TaskStreamer.Tool
         {
             this._conditionValue = condition;
             this.tooltip = condition.tooltip;
-
-            BlackboardVariable leftVariable = condition.encapsulatedLeftVariable;
-            BlackboardVariable rightVariable = condition.encapsulatedRightVariable;
-
+            
             _leftVariableField.Clear();
             _rightVariableField.Clear();
 
-            Func<Condition, object> getLeft = c => c.encapsulatedLeftVariable;
-            Func<Condition, object> getRight = c => c.encapsulatedRightVariable;
-
-            Action<Condition, object> setLeft = (c, v) => c.encapsulatedLeftVariable = v as BlackboardVariable;
-            Action<Condition, object> setRight = (c, v) => c.encapsulatedRightVariable = v as BlackboardVariable;
-
-            VariableHandle rightHandle = new VariableHandle("", leftVariable, condition, leftVariable.implementedType.BaseType, null, getLeft, setLeft);
-            VariableHandle leftHandle = new VariableHandle("", rightVariable, condition, rightVariable.implementedType.BaseType, null, getRight, setRight);
-
-            _leftVariableField.Add(VisualUtility.GetFieldByValueType(rightHandle));
-            _rightVariableField.Add(VisualUtility.GetFieldByValueType(leftHandle));
+            _leftVariableField.Add(VisualUtility.GetFieldByValueType(condition.GetLeftVariableHandle()));
+            _rightVariableField.Add(VisualUtility.GetFieldByValueType(condition.GetRightVariableHandle()));
 
             this._comparisionField.value = _conditionValue.comparisonValue.ToString();
             this.TrySetComparisonTypeNames(condition.configuredComparisonType, this._comparisionField.choices);

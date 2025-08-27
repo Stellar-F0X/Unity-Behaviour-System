@@ -29,13 +29,13 @@ namespace TaskStreamer.Injection
                 return;
             }
             
-            Delegate getValue = (ValueGetter<TContainer, TValue>)property.GetValue;
-            Debug.Assert(getValue != null, "getValue is null");
-            
-            Delegate setValue = (ValueSetter<TContainer, TValue>)property.SetValue;
-            Debug.Assert(setValue != null, "setValue is null");
+            VariableHandle handle = VariableHandleBuilder.GetHandle(property.Name, value, container)
+                                                         .WithAttributes(property.GetAttributes())
+                                                         .WithGetter((ValueGetter<TContainer, TValue>)property.GetValue)
+                                                         .WithSetter((ValueSetter<TContainer, TValue>)property.SetValue)
+                                                         .Build();
 
-            _propertiesContainer.Add(new VariableHandle(property.Name, value, container, property.GetAttributes(), getValue, setValue));
+            _propertiesContainer.Add(handle);
         }
     }
 }

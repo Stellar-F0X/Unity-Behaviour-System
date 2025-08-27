@@ -33,7 +33,7 @@ namespace TaskStreamer.Tool
             this._localVariableInputField.SetValueWithoutNotify((TValue)_blackboardVariable.boxedValue);
             this._localVariableInputField.UnregisterValueChangedCallback(this.OnVariableValueChanged);
             this._localVariableInputField.RegisterValueChangedCallback(this.OnVariableValueChanged);
-            
+
             this.SetupVariableField(this._blackboardVariable.isShared);
 
             this._unlinkButton.clickable.clicked -= this.OnConvertSharedToLocal;
@@ -65,9 +65,6 @@ namespace TaskStreamer.Tool
 
         /// 변수의 이름을 표시하는 UI 요소를 나타냅니다.
         private readonly Label _variableNameLabel;
-
-        /// <summary>Blackboard에서 선택 가능한 변수 이름들의 목록을 저장한다.</summary>
-        private readonly List<string> _availableVariableNames = new List<string>();
 
         /// <summary>BlackBoard 변수에 대한 내부 데이터를 저장하는 필드이다.</summary>
         private BlackboardVariable _blackboardVariable;
@@ -135,6 +132,15 @@ namespace TaskStreamer.Tool
         /// <param name="isSharedVariable"> 변수가 공유 변수인지 여부를 나타냅니다. </param>
         private void SetupVariableField(bool isSharedVariable)
         {
+            switch (_blackboardVariable.usage)
+            {
+                case VariableUsage.Field: this._variableNameLabel.style.display = DisplayStyle.Flex; break;
+
+                case VariableUsage.Condition: this._variableNameLabel.style.display = DisplayStyle.None; break;
+
+                default: throw new ArgumentOutOfRangeException();
+            }
+
             this._valueFieldContainer.Clear();
 
             if (isSharedVariable)
@@ -158,7 +164,7 @@ namespace TaskStreamer.Tool
         {
             BlackboardAsset blackboardAsset = TaskStreamerEditor.Instance.graphAsset?.blackboard;
             Debug.Assert(blackboardAsset != null, "blackboardAsset is null");
-            
+
             Label displayLabel = new Label();
             displayLabel.style.letterSpacing = 2f;
 
@@ -177,7 +183,7 @@ namespace TaskStreamer.Tool
             return displayLabel;
         }
 
-        
+
 #region Value Change Callbacks
 
         /// <summary> 내부적으로 값을 변경하지만, 변경 알림은 발생시키지 않습니다. </summary>
@@ -202,11 +208,18 @@ namespace TaskStreamer.Tool
         {
             Debug.Assert(sharedVariable is not null, "variable is null");
 
+            if (sharedVariable is not BlackboardVariable variable)
+            {
+                Debug.LogError($"Cannot cast the BlackboardVariable<{typeof(TValue).Name}>");
+                return;
+            }
+            
+            variable.usage = _blackboardVariable.usage;
             this._variableHandle.SetValue(sharedVariable);
-            
+
             UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
-            
-            this._blackboardVariable = sharedVariable as BlackboardVariable;
+
+            this._blackboardVariable = variable;
             this.SetupVariableField(true);
         }
 
@@ -217,13 +230,15 @@ namespace TaskStreamer.Tool
             BlackboardVariable newLocalVariable = ObjectFactory.CreateBlackboardVariable(_variableHandle.fieldType);
             Debug.Assert(newLocalVariable is not null, "newVariable is null");
 
+            newLocalVariable.usage = _blackboardVariable.usage;
             this._variableHandle.SetValue(newLocalVariable);
-            
+
             UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
-            
+
             this._blackboardVariable = newLocalVariable;
             this.SetupVariableField(false);
         }
+
 #endregion
     }
 }

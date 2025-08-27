@@ -8,19 +8,15 @@ namespace TaskStreamer.FSM
     [Serializable, GeneratePropertyBag, Readable]
     public sealed class Transition : Task
     {
-        internal Transition(NodeBase sourceNode, NodeBase destinationNode, bool coditional = false)
+        internal Transition(NodeBase sourceNode, NodeBase destinationNode)
         {
             this._guid = UGUID.Create();
-            this._conditional = coditional;
             this._sourceNode = sourceNode;
             this._destinationNode = destinationNode;
             this._conditions = new BlackboardBasedCondition();
             base.name = $"{sourceNode.name} To {destinationNode.name}";
             base.canEditName = false;
         }
-
-        [SerializeField, DontCreateProperty]
-        private bool _conditional;
 
         [SerializeField, CreateProperty]
         private BlackboardBasedCondition _conditions;
@@ -40,13 +36,6 @@ namespace TaskStreamer.FSM
         public UGUID toNodeGuid
         {
             get { return destinationNode.guid; }
-        }
-
-        public bool conditional
-        {
-            get { return this._conditional; }
-
-            internal set { this._conditional = value; }
         }
 
         public BlackboardBasedCondition conditions
@@ -71,14 +60,7 @@ namespace TaskStreamer.FSM
 
         public bool CheckConditions()
         {
-            if (this.conditional)
-            {
-                return this.conditions.Execute();
-            }
-            else
-            {
-                return true;
-            }
+            return this.conditions.Execute();
         }
     }
 }

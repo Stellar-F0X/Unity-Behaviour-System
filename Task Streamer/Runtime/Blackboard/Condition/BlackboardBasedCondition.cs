@@ -17,6 +17,11 @@ namespace TaskStreamer
 
         public bool Execute()
         {
+            if (evaluationPolicy == EvaluationPolicy.None)
+            {
+                return true;
+            }
+            
             if (modules is null)
             {
                 Debug.LogWarning("Blackboard variables is not set for this condition.");

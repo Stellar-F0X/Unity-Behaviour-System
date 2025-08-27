@@ -1,7 +1,7 @@
 VisualElement {
 }
 
-#container > .unity-list-view--with-header > #unity-list-view__foldout-header {
+#list-container > .unity-list-view--with-header > #unity-list-view__foldout-header {
     margin-top: 0;
     margin-right: 0;
     margin-bottom: 0;
@@ -12,11 +12,11 @@ VisualElement {
     padding-right: 1px;
 }
 
-#container > #condition-list-view > #unity-list-view__foldout-header > .unity-collection-view__scroll-view > #unity-content-and-vertical-scroll-container > #unity-content-viewport > #unity-content-container {
+#list-container > #condition-list-view > #unity-list-view__foldout-header > .unity-collection-view__scroll-view > #unity-content-and-vertical-scroll-container > #unity-content-viewport > #unity-content-container {
     background-color: rgb(53, 53, 53);
 }
 
-#container > #condition-list-view > #unity-list-view__foldout-header > .unity-foldout__toggle > .unity-foldout__input {
+#list-container > #condition-list-view > #unity-list-view__foldout-header > .unity-foldout__toggle > .unity-foldout__input {
     background-color: rgb(88, 88, 88);
     border-top-width: 1px;
     border-right-width: 1px;

@@ -7,10 +7,10 @@ using UnityEngine;
 
 namespace TaskStreamer.Utility
 {
+#if UNITY_EDITOR
     /// <summary> 'T'ask 'S'treamer Object Factory </summary>
     internal static class ObjectFactory
     {
-#if UNITY_EDITOR
         /// <summary> 지정된 유형의 노드를 생성한다. </summary>
         /// <param name="nodeType">생성할 노드의 Type.</param>
         /// <param name="position">생성된 노드의 초기 위치 (기본값: (0, 0)).</param>
@@ -52,6 +52,7 @@ namespace TaskStreamer.Utility
         }
 
 
+
         /// <summary> 두 상태 간의 전이를 생성합니다. </summary>
         /// <param name="from"> 전이의 시작 상태 </param>
         /// <param name="to"> 전이의 도착 상태 </param>
@@ -80,48 +81,51 @@ namespace TaskStreamer.Utility
         }
 
 
+
         /// <summary> 새로운 BlackboardVariable 객체를 생성한다. </summary>
-        /// <param name="blackboardVariableType">생성할 BlackboardVariable의 타입</param>
+        /// <param name="implementedType">생성할 BlackboardVariable의 타입</param>
         /// <param name="name">BlackboardVariable의 이름 (기본값: 빈 문자열)</param>
         /// <param name="defaultValue">BlackboardVariable의 기본 값 (기본값: null)</param>
         /// <returns>생성된 BlackboardVariable 객체 또는 null</returns>
-        public static BlackboardVariable CreateBlackboardVariable(Type blackboardVariableType, string name = "", object defaultValue = null)
+        public static BlackboardVariable CreateBlackboardVariable(Type implementedType, string name = "", object defaultValue = null)
         {
-            Debug.Assert(blackboardVariableType != null, $"{typeof(ObjectFactory)}: BlackboardVariableType is null");
+            Debug.Assert(implementedType != null, $"{typeof(ObjectFactory)}: BlackboardVariableType is null");
 
-            BlackboardVariable createdValue = BlackboardVariable.Create(blackboardVariableType, false);
-            
+            BlackboardVariable createdValue = BlackboardVariable.Create(implementedType, false);
+
             if (createdValue == null)
             {
-                Debug.LogError($"{typeof(ObjectFactory)}: Failed to create BlackboardVariable of type {blackboardVariableType}");
+                Debug.LogError($"{typeof(ObjectFactory)}: Failed to create BlackboardVariable of type {implementedType}");
                 return null;
             }
 
             createdValue.key = name.IsNotNullOrEmpty() ? name : BlackboardVariable.DEFAULT_VARIABLE_NAME;
-            createdValue.implementedType = blackboardVariableType;
+            createdValue.implementedType = implementedType;
             createdValue.boxedValue = defaultValue;
             return createdValue;
         }
 
 
-        /// <summary> Creates a shared BlackboardVariable instance of the specified type. </summary>
-        /// <param name="blackboardVariableType">The type of the BlackboardVariable to create.</param>
-        /// <returns>Returns the created shared BlackboardVariable or null if creation failed.</returns>
-        public static BlackboardVariable CreateSharedBlackboardVariable(Type blackboardVariableType)
-        {
-            Debug.Assert(blackboardVariableType != null, $"{typeof(ObjectFactory)}: BlackboardVariableType is null");
 
-            BlackboardVariable createdValue = BlackboardVariable.Create(blackboardVariableType, true);
-            
+        /// <summary> Creates a shared BlackboardVariable instance of the specified type. </summary>
+        /// <param name="implementedType">The type of the BlackboardVariable to create.</param>
+        /// <returns>Returns the created shared BlackboardVariable or null if creation failed.</returns>
+        public static BlackboardVariable CreateSharedBlackboardVariable(Type implementedType)
+        {
+            Debug.Assert(implementedType != null, $"{typeof(ObjectFactory)}: BlackboardVariableType is null");
+
+            BlackboardVariable createdValue = BlackboardVariable.Create(implementedType, true);
+
             if (createdValue == null)
             {
-                Debug.LogError($"{typeof(ObjectFactory)}: Failed to create BlackboardVariable of type {blackboardVariableType}");
+                Debug.LogError($"{typeof(ObjectFactory)}: Failed to create BlackboardVariable of type {implementedType}");
                 return null;
             }
 
-            createdValue.implementedType = blackboardVariableType;
+            createdValue.implementedType = implementedType;
             return createdValue;
         }
+
 
 
         /// <summary> 지정된 GraphAsset을 기반으로 FSM 또는 BT 그래프를 생성합니다. </summary>
@@ -131,7 +135,11 @@ namespace TaskStreamer.Utility
         /// <param name="graphName">생성할 그래프의 이름입니다.</param>
         public static void CreateGraph(GraphAsset asset, GraphType graphType, ref Graph graph, string graphName)
         {
-            Debug.Assert(asset != null, $"{typeof(ObjectFactory)}: GraphAsset is null");
+            if (asset == null)
+            {
+                Debug.LogError($"{typeof(ObjectFactory)}: GraphAsset is null");
+                return;
+            }
 
             switch (graphType)
             {
@@ -141,6 +149,63 @@ namespace TaskStreamer.Utility
             }
 
             Debug.Assert(graph != null, $"{typeof(ObjectFactory)}: Failed to create a graph.");
+        }
+
+
+
+        /// <summary> 지정된 유형의 Condition 모듈을 생성한다. </summary>
+        /// <param name="conditionType">생성할 Condition의 Type.</param>
+        /// <returns>생성된 Condition 인스턴스. 실패 시 null 반환.</returns>
+        public static Condition CreateConditionModule(Type conditionType)
+        {
+            Debug.Assert(conditionType is not null, $"{typeof(ObjectFactory)}: Wrong condition type");
+
+            // 인스턴스 생성 및 타입 검사
+            if (Activator.CreateInstance(conditionType) is not Condition module)
+            {
+                Debug.LogError($"{typeof(ObjectFactory)}: Failed to create a condition module of type '{conditionType?.FullName}'.");
+                return null;
+            }
+
+            // 베이스 타입 및 제네릭 인자 추출
+            Type baseType = conditionType.BaseType;
+
+            if (baseType == null || baseType.IsGenericType == false)
+            {
+                Debug.LogError($"{typeof(ObjectFactory)}: Condition type '{conditionType.FullName}' does not have a generic base type to infer element type.");
+                return module;
+            }
+
+            Type[] genericArgs = baseType.GenericTypeArguments;
+            if (genericArgs == null || genericArgs.Length == 0 || genericArgs[0] == null)
+            {
+                Debug.LogError($"{typeof(ObjectFactory)}: Could not determine generic argument for '{conditionType.FullName}'.");
+                return module;
+            }
+
+            Type elementType = genericArgs[0];
+
+            // BlackboardVariable<> 타입 구성
+            Type bbType = typeof(BlackboardVariable<>).GetImplementedType(elementType);
+
+            if (bbType == null)
+            {
+                Debug.LogError($"{typeof(ObjectFactory)}: Failed to construct BlackboardVariable<> for element type '{elementType.FullName}'.");
+                return module;
+            }
+
+            // 캡슐 변수 생성
+            module.lVariable = ObjectFactory.CreateBlackboardVariable(bbType);
+            module.rVariable = ObjectFactory.CreateBlackboardVariable(bbType);
+
+            module.lVariable.usage = VariableUsage.Condition;
+            module.rVariable.usage = VariableUsage.Condition;
+
+            // ComparableAttribute로 비교 타입 구성 (기본값 사용)
+            ComparableAttribute comparable = conditionType.GetAttribute<ComparableAttribute>();
+            module.configuredComparisonType = comparable?.comparison ?? Condition.DEFAULT_COMPARISON;
+
+            return module;
         }
     }
 #endif
