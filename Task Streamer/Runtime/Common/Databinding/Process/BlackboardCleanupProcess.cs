@@ -14,9 +14,14 @@ namespace TaskStreamer.Injection
                                               IVisitPropertyAdapter<BBCondition>,
                                               IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
+        /// <summary> Blackboard 교체 시, 기존에 등록된 BlackboardVariable을 해제하는 과정 처리 객체입니다. </summary>
         public BlackboardCleanupProcess(GraphVisitProcessor processor) : base(processor) { }
 
 
+        /// <summary> NodeDictionary 프로퍼티를 방문하여 값을 처리합니다. </summary>
+        /// <param name="context"> 방문 시 제공되는 컨텍스트입니다. </param>
+        /// <param name="container"> 방문 중인 콘테이너 객체입니다. </param>
+        /// <param name="value"> 방문 대상 NodeDictionary 값입니다. </param>
         public void Visit<TContainer>(in VisitContext<TContainer, NodeDictionary> context, ref TContainer container, ref NodeDictionary value)
         {
             IPropertyBag<Dictionary<UGUID, NodeBase>> propertyBag = PropertyBag.GetPropertyBag<Dictionary<UGUID, NodeBase>>();
@@ -25,42 +30,71 @@ namespace TaskStreamer.Injection
         }
 
 
+        /// <summary> NodeDictionary 타입의 프로퍼티를 방문할 때 실행되는 메서드입니다. </summary>
+        /// <param name="context">프로퍼티 방문에 대한 컨텍스트를 나타냅니다.</param>
+        /// <param name="container">프로퍼티가 속한 컨테이너 객체입니다.</param>
+        /// <param name="value">방문 중인 NodeDictionary 타입의 값입니다.</param>
         public void Visit<TContainer>(in VisitContext<TContainer> context, ref TContainer container, BlackboardVariable bbVariable)
         {
-            if (this.IsVariableValidInBlackboard(bbVariable) == false || bbVariable.isShared == false)
+            //CleanupProcess는 블랙보드가 없어졌거나, 다른 BB로 교체, 또는 BB내, Variable이 하나라도 제거됐을때, 동작한다.
+            //따라서 매개변수로 전달된 variable이 블랙보드에 존재하면 Pass, 없다면 노드의 필드에 등록된 Variable을 제거한다.
+            if (bbVariable.isShared == false || this.IsVariableValidInBlackboard(bbVariable))
             {
                 return;
             }
 
             //제대로 Variable이 유효하지 않은 경우 (BB가 변경됐거나, 참조 중인 BB의 Variable이 삭제됨)
-            var newVariable = ObjectFactory.CreateBlackboardVariable(bbVariable.implementedType);
+            BlackboardVariable newVariable = ObjectFactory.CreateBlackboardVariable(bbVariable.implementedType);
             context.Property.SetValue(ref container, newVariable);
         }
 
 
+        /// <summary> NodeDictionary 속성을 방문하여 관련 작업을 수행합니다. </summary>
+        /// <param name="context">방문 컨텍스트 정보입니다.</param>
+        /// <param name="container">속성이 포함된 컨테이너 객체입니다.</param>
+        /// <param name="value">방문 중인 NodeDictionary 값입니다.</param>
         public void Visit<TContainer>(in VisitContext<TContainer, BBCondition> context, ref TContainer container, ref BBCondition value)
         {
             if (value.modules is null || value.modules.Count == 0)
             {
                 return;
             }
-
+            
+            // Blackboard에 등록된 BBVariable의 Variable만 새로 생성해서 교체해야 하므로
+            // 해당 판단과 생성 로직을 함수로 추출하여 중복을 제거합니다.
             foreach (Condition condition in value.modules)
             {
-                //Blackboard는 BBVariable이 아니라 Variable을 사용하기 때문에 BB에서 등록된 BBVariable의 Variable만 없애주면 됨. 
-                if (this.IsVariableValidInBlackboard(condition.lVariable))
+                if (condition is null)
                 {
-                    condition.lVariable = ObjectFactory.CreateBlackboardVariable(condition.lVariable.implementedType);
+                    continue;
                 }
-
-                if (this.IsVariableValidInBlackboard(condition.rVariable))
-                {
-                    condition.rVariable = ObjectFactory.CreateBlackboardVariable(condition.rVariable.implementedType);
-                }
+                
+                condition.lVariable = this.ReplaceIfRegistered(condition.lVariable);
+                
+                condition.rVariable = this.ReplaceIfRegistered(condition.rVariable);
             }
         }
 
 
+        private BlackboardVariable ReplaceIfRegistered(BlackboardVariable variable)
+        {
+            //Condition의 l/rVariable은 항상 함께 만들어지기 때문에 하나라도 없으면 문제가 됨.
+            Debug.Assert(variable is not null, "variable is null");
+
+            if (this.IsVariableValidInBlackboard(variable))
+            {
+                return ObjectFactory.CreateBlackboardVariable(variable.implementedType);
+            }
+            else
+            {
+                return variable;
+            }
+        }
+
+
+        /// <summary> 전달된 BlackboardVariable이 해당 블랙보드에 유효한지 검사한다. </summary>
+        /// <param name="variable">유효성을 검사할 BlackboardVariable.</param>
+        /// <returns>변수가 블랙보드에 존재하면 true, 그렇지 않으면 false.</returns>
         private bool IsVariableValidInBlackboard(BlackboardVariable variable)
         {
             Debug.Assert(variable is not null, "variable is not null");
