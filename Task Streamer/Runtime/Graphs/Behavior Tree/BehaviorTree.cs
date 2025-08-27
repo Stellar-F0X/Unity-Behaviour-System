@@ -30,7 +30,7 @@ namespace TaskStreamer.BT
         {
             BehaviorTree graph = new BehaviorTree(graphName, graphAsset);
 
-            graph.entry = graph.CreateNode("Root", typeof(RootNode), new Vector2Int(0, 0));
+            graph.entry = graph.CreateAndAddNodeToList("Root", typeof(RootNode), new Vector2Int(0, 0));
 
             return graph;
         }
@@ -114,7 +114,7 @@ namespace TaskStreamer.BT
             //Foreach를 사용하는 도중에 컬렉션을 수정할 수 없으므로 ToList()를 사용하여 컬렉션을 복사한 후 원본 컬렉션을 수정.
             foreach (NodeBase node in this._nodeLookup.Values.ToList())
             {
-                this.DeleteNode(node, false);
+                this.DeleteAndRemoveNodeFromList(node, false);
             }
         }
 

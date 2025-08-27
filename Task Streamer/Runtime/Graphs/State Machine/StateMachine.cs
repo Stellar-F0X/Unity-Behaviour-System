@@ -44,9 +44,9 @@ namespace TaskStreamer.FSM
         {
             StateMachine graph = new StateMachine(graphName, graphAsset);
 
-            graph.entry = graph.CreateNode("Enter", typeof(EnterState), new Vector2Int(0, 0)) as StateBase;
-            graph._exit = graph.CreateNode("Exit", typeof(ExitState), new Vector2Int(0, 200)) as StateBase;
-            graph._any = graph.CreateNode("Any", typeof(AnyState), new Vector2Int(-230, 0)) as StateBase;
+            graph.entry = graph.CreateAndAddNodeToList("Enter", typeof(EnterState), new Vector2Int(0, 0)) as StateBase;
+            graph._exit = graph.CreateAndAddNodeToList("Exit", typeof(ExitState), new Vector2Int(0, 200)) as StateBase;
+            graph._any = graph.CreateAndAddNodeToList("Any", typeof(AnyState), new Vector2Int(-230, 0)) as StateBase;
             graph._current = graph.entry as StateBase;
 
             return graph;
@@ -192,7 +192,7 @@ namespace TaskStreamer.FSM
                     continue;
                 }
 
-                this.DeleteNode(node, false);
+                this.DeleteAndRemoveNodeFromList(node, false);
             }
         }
 

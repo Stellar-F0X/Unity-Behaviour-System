@@ -24,17 +24,12 @@ namespace TaskStreamer
         private GraphAsset _graphAsset;
 
         [SerializeField]
-        private RuntimeBlackboard _runtimeBlackboard = new RuntimeBlackboard();
+        private BlackboardData _runtimeBlackboard = new BlackboardData();
 
 
         internal GraphAsset graphAsset
         {
             get { return _graphAsset; }
-        }
-
-        internal RuntimeBlackboard runtimeBlackboard
-        {
-            get { return _runtimeBlackboard; }
         }
 
         public bool pause
@@ -61,7 +56,7 @@ namespace TaskStreamer
 
             _runtimeBlackboard?.InitializeOnEnterRuntime();
             
-            _graphAsset = _graphAsset.Clone(this);
+            _graphAsset = _graphAsset.Clone(this, _runtimeBlackboard);
 
             if (this.graphAsset == null)
             {
@@ -232,7 +227,7 @@ namespace TaskStreamer
             }
             
             //마지막 반영 버전과 같으면 굳이 다시 업데이트하지 않고 함수를 종료한다.
-            if (runtimeBlackboard.RequiresUpdate(_graphAsset.blackboard.appliedVersion))
+            if (_runtimeBlackboard.RequiresUpdate(_graphAsset.blackboard.appliedVersion))
             {
                 this.UpdateRuntimeBlackboardVariables();
             }

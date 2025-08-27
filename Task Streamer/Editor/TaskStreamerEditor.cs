@@ -343,8 +343,11 @@ namespace TaskStreamer.Tool
 
             if (gameObject != null && gameObject.TryGetComponent(out TaskStreamer streamer))
             {
-                graphAsset = streamer.graphAsset;
-                return true;
+                GraphAsset gotGraphAsset = streamer.graphAsset;
+
+                graphAsset = gotGraphAsset != null ? gotGraphAsset : graphAsset;
+
+                return graphAsset != null;
             }
 
             if (Selection.activeObject is GraphAsset selectedGraphAsset)

@@ -151,7 +151,7 @@ namespace TaskStreamer
         protected TValue _value;
 
         [SerializeField]
-        protected BlackboardAsset _blackboard;
+        private protected BlackboardData _blackboard;
 
 
         internal override sealed string key
@@ -282,7 +282,7 @@ namespace TaskStreamer
         }
 
 
-        void ISharedBlackboardVariable.SetBlackboardAndVariableReference(in IBlackboard blackboard, in UGUID variableGuid)
+        void ISharedBlackboardVariable.SetBlackboardAndVariableReference(in BlackboardData blackboard, in UGUID variableGuid)
         {
             if (_isShareable == false)
             {
@@ -291,7 +291,7 @@ namespace TaskStreamer
             }
 
             Debug.Assert(blackboard is not null, "Cannot bind to null blackboard reference");
-            this._blackboard = blackboard as BlackboardAsset;
+            this._blackboard = blackboard;
 
             Debug.Assert(blackboard.HasVariable(variableGuid), "Failed to find variable with GUID in blackboard");
             this._guid = variableGuid;

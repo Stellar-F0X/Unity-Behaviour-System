@@ -17,20 +17,20 @@ namespace TaskStreamer.Tool
             BlackboardVariable bbVariable = blackboardAsset.FindVariable(bbVariableKey);
             Debug.Assert(bbVariable is not null, "blackboard Variable is not null");
             
-            BlackboardVariable createdNewSharedVariable = this.CreateSharedBlackboardVariable(blackboardAsset, bbVariable, type);
+            BlackboardVariable createdNewSharedVariable = this.CreateSharedBlackboardVariable(blackboardAsset.data, bbVariable, type);
             Debug.Assert(createdNewSharedVariable is ISharedBlackboardVariable, "Failed shared variable creation");
 
             return (ISharedBlackboardVariable)createdNewSharedVariable;
         }
         
         
-        private BlackboardVariable CreateSharedBlackboardVariable(IBlackboard blackboard, BlackboardVariable variable, Type variableType)
+        private BlackboardVariable CreateSharedBlackboardVariable(BlackboardData data, BlackboardVariable variable, Type variableType)
         {
-            BlackboardVariable bbVariable = ObjectFactory.CreateBlackboardVariable(variableType, shared: true);
+            BlackboardVariable bbVariable = ObjectFactory.CreateSharedBlackboardVariable(variableType);
             ISharedBlackboardVariable sharedVariable = bbVariable as ISharedBlackboardVariable;
             Debug.Assert(sharedVariable is not null, $"{variableType.Name} type is cannot be ISharedBlackboardVariable");
             
-            sharedVariable.SetBlackboardAndVariableReference(blackboard, variable.guid);
+            sharedVariable.SetBlackboardAndVariableReference(data, variable.guid);
             bbVariable.boxedValue = variable.boxedValue;
             return bbVariable;
         }

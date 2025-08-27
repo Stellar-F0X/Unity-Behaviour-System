@@ -12,31 +12,31 @@ namespace TaskStreamer
 {
     /// <summary> 블랙보드 데이터를 저장하는 ScriptableObject </summary>
     [Serializable]
-    public sealed class BlackboardAsset : ScriptableObject, IBlackboard
+    public sealed class BlackboardAsset : ScriptableObject
     {
-        /// <summary> 현재 적용된 버전의 UGUID를 나타냅니다. </summary>
-        [SerializeField, HideInInspector]
-        private UGUID _appliedVersion;
-
-        /// <summary> Internal list of blackboard variables </summary>
-        [SerializeReference, HideInInspector]
-        private List<BlackboardVariable> _variables = new List<BlackboardVariable>();
+        [SerializeField]
+        private BlackboardData _blackboardData;
 
 
-        /// <summary>현재 적용된 버전을 나타냅니다.</summary>
+        internal BlackboardData data
+        {
+            get { return _blackboardData; }
+        }
+        
+        
         internal UGUID appliedVersion
         {
-            get { return _appliedVersion; }
+            get { return _blackboardData.appliedVersion; }
         }
+        
 
         /// <summary> 블랙보드에 적용된 버전 정보를 나타냅니다. </summary>
         internal List<BlackboardVariable> variables
         {
-            get { return _variables; }
-            
-            set { _variables = value; }
+            get { return _blackboardData.variables; }
         }
 
+        
         /// <summary>Gets the count of variables in the blackboard.</summary>
         public int count
         {
@@ -44,11 +44,19 @@ namespace TaskStreamer
         }
 
 
+        
+        internal void ChangeBlackboardData(BlackboardData newData)
+        {
+            Debug.Assert(newData is not null, "newData is null");
+            this._blackboardData = newData;
+        }
+
 
         /// <summary> Updates the applied version of the BlackboardAsset. </summary>
         public void UpdateAppliedVersion()
         {
-            this._appliedVersion = UGUID.Create();
+            Debug.Assert(this._blackboardData is not null, "BlackboardData is null");
+            this._blackboardData.UpdateAppliedVersion();
         }
 
 
@@ -57,14 +65,8 @@ namespace TaskStreamer
         /// <returns>해당 키에 매칭되는 BlackboardVariable 객체. 없으면 null 반환.</returns>
         public BlackboardVariable FindVariable(in UGUID key)
         {
-            if (key.IsEmpty())
-            {
-                return null;
-            }
-
-            UGUID guid = key;
-
-            return _variables.Find(v => v.guid == guid);
+            Debug.Assert(this._blackboardData is not null, "BlackboardData is null");
+            return _blackboardData.FindVariable(key);
         }
 
 
@@ -73,16 +75,8 @@ namespace TaskStreamer
         /// <returns>검색된 블랙보드 변수 객체를 반환하며, 존재하지 않을 경우 null을 반환합니다.</returns>
         public BlackboardVariable FindVariable(string variableName)
         {
-            int hashCode = StringUtility.StringToHash(variableName);
-
-            if (hashCode == -1)
-            {
-                return null;
-            }
-            else
-            {
-                return _variables.Find(v => v.keyHash == hashCode);
-            }
+            Debug.Assert(this._blackboardData is not null, "BlackboardData is null");
+            return _blackboardData.FindVariable(variableName);
         }
 
 
@@ -93,11 +87,11 @@ namespace TaskStreamer
         {
             if (excluded.IsEmpty())
             {
-                return _variables.Select(v => v.key).ToArray();
+                return variables.Select(v => v.key).ToArray();
             }
             else
             {
-                return _variables.Where(v => v.guid != excluded).Select(v => v.key).ToArray();
+                return variables.Where(v => v.guid != excluded).Select(v => v.key).ToArray();
             }
         }
 
@@ -107,7 +101,7 @@ namespace TaskStreamer
         /// <param name="variable"> 추가할 BlackboardVariable 객체입니다. </param>
         public void AddVariable(BlackboardVariable variable)
         {
-            this._appliedVersion = UGUID.Create();
+            this._blackboardData.UpdateAppliedVersion();
 
             BlackboardVariable foundVariable = this.FindVariable(variable.key);
 
@@ -116,7 +110,7 @@ namespace TaskStreamer
                 variable.key = ObjectNames.GetUniqueName(this.VariableNames(variable.guid), variable.key);
             }
 
-            _variables.Add(variable);
+            _blackboardData.AddVariable(variable);
         }
 
 
@@ -124,17 +118,17 @@ namespace TaskStreamer
         /// <param name="variable">제거하려는 블랙보드 변수입니다.</param>
         public void RemoveVariable(BlackboardVariable variable)
         {
-            this._appliedVersion = UGUID.Create();
+            this._blackboardData.UpdateAppliedVersion();
 
             BlackboardVariable foundVariable = this.FindVariable(variable.guid);
 
-            if (foundVariable == null)
+            if (foundVariable is not null)
             {
-                Debug.LogError("Failed to find the specified blackboard variable.");
+                _blackboardData.RemoveVariable(variable);
             }
             else
             {
-                _variables.Remove(variable);
+                Debug.LogError("Failed to find the specified blackboard variable.");
             }
         }
 
@@ -201,19 +195,20 @@ namespace TaskStreamer
             }
 
             BlackboardVariable foundVariable = this.FindVariable(newKey);
-            this._appliedVersion = UGUID.Create();
+            
+            this._blackboardData.UpdateAppliedVersion();
 
             //동일한 이름의 BBVariable이 있다면, 현재 이름 뒤에 인덱스를 붙인다.
             if (foundVariable != null)
             {
                 variable.key = ObjectNames.GetUniqueName(this.VariableNames(variable.guid), newKey);
-                return true;
             }
             else //동일한 이름이 없다면 Hash를 Key로 재등록한다.
             {
                 variable.key = newKey;
-                return true;
             }
+
+            return true;
         }
 #endif
     }

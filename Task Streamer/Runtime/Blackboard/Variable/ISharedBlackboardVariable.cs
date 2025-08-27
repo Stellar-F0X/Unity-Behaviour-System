@@ -4,6 +4,6 @@ namespace TaskStreamer
 {
     public interface ISharedBlackboardVariable
     {
-        internal void SetBlackboardAndVariableReference(in IBlackboard blackboard, in UGUID variableGuid);
+        internal void SetBlackboardAndVariableReference(in BlackboardData blackboard, in UGUID variableGuid);
     }
 }

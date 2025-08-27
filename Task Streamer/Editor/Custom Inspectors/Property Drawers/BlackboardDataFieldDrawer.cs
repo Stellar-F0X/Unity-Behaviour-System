@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace TaskStreamer.Tool
 {
-    [CustomPropertyDrawer(typeof(RuntimeBlackboard))]
-    public class RuntimeBlackboardInspector : PropertyDrawer
+    [CustomPropertyDrawer(typeof(BlackboardData))]
+    public class BlackboardDataFieldDrawer : PropertyDrawer
     {
         private const string _KEY_PROPERTY_NAME = "_key";
         private const string _VALUE_PROPERTY_NAME = "_value";
-        private const string _VARIABLES_PROPERTY_NAME = "_clonedVariables";
+        private const string _VARIABLES_PROPERTY_NAME = "_variables";
         private const float _BACKGROUND_OPACITY_ACTIVE = 0.5f;
         private const float _BACKGROUND_OPACITY_NORMAL = 0.2f;
         private const float _VERTICAL_SPACING_MULTIPLIER = 0.5f;

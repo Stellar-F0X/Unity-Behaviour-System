@@ -238,7 +238,7 @@ namespace TaskStreamer.Tool
         /// <summary>새로운 노드를 생성하고 해당하는 NodeView를 반환합니다.</summary>
         public NodeViewBase CreateNewNodeAndView(Type type, Vector2 mousePosition)
         {
-            NodeBase node = focusGraph.CreateNode(type.Name, type);
+            NodeBase node = focusGraph.CreateAndAddNodeToList(type.Name, type);
             node.position = Vector2Int.CeilToInt(mousePosition);
 
             NodeViewBase nodeView = this._graphView.RecreateNodeViewOnLoad(node);

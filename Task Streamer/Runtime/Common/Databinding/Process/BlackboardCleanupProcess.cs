@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
@@ -70,7 +71,7 @@ namespace TaskStreamer.Injection
             }
 
             // 블랙보드에서 해당 Variable의 GUID로 검색
-            return processor.blackboard.variables.Exists(v => v != null && v.guid == variable.guid);
+            return processor.blackboard.variables.FirstOrDefault(v => v != null && v.guid == variable.guid) is not null;
         }
     }
 }

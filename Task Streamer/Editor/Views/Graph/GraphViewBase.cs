@@ -81,7 +81,7 @@ namespace TaskStreamer.Tool
             }
 
             // 노드 자체도 삭제
-            graph.DeleteNode(targetNode);
+            graph.DeleteAndRemoveNodeFromList(targetNode);
         }
 
 

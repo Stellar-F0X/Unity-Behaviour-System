@@ -238,7 +238,7 @@ namespace TaskStreamer
         /// <param name="position">노드의 위치 (기본값: default)</param>
         /// <returns>생성된 NodeBase 객체</returns>
         /// <exception cref="Exception">노드 생성 실패 시 발생</exception>
-        internal NodeBase CreateNode(string nodeName, Type nodeType, Vector2Int position = default)
+        internal NodeBase CreateAndAddNodeToList(string nodeName, Type nodeType, Vector2Int position = default)
         {
             // GraphGroup에 변경사항 기록
             if (Application.isPlaying == false && Undo.isProcessing == false)
@@ -266,7 +266,7 @@ namespace TaskStreamer
         }
 
 
-        internal void DeleteNode(NodeBase node, bool record = true)
+        internal void DeleteAndRemoveNodeFromList(NodeBase node, bool record = true)
         {
             if (Application.isPlaying == false && Undo.isProcessing == false && record)
             {

@@ -21,47 +21,55 @@ namespace TaskStreamer
     public partial class GraphAsset : ScriptableObject, IEquatable<GraphAsset>
     {
         /// <summary>
-        /// 그래프 에셋이 생성될때 사용되는 메인 그래프의 타입이다.
-        /// 에셋 생성과 메인 그래프 생성을 동시에 할 수 없어서 사용된다.
+        /// 그래프 에셋이 생성될 때 설정되는 메인 그래프의 타입.
         /// </summary>
-        /// <value> BT or FSM </value>
+        /// <value> BT, FSM, 또는 GOAP </value>
         [DontCreateProperty]
-        public GraphType mainGraphType;
+        internal GraphType mainGraphType;
 
-        /// <summary> 현재 사용 중인 블랙보드이다. </summary>
+        /// <summary>
+        /// 그래프 에셋에서 사용되는 블랙보드 데이터이다.
+        /// </summary>
         [SerializeField, DontCreateProperty]
-        public BlackboardAsset blackboard;
+        internal BlackboardAsset blackboard;
 
-        /// <summary> 그래프 에셋의 GUID로, 그래프 에셋을 식별 </summary>
+        /// <summary> 그래프 에셋을 고유하게 식별하기 위한 GUID </summary>
         [SerializeField, DontCreateProperty]
         private UGUID _graphGuid;
-        
-        /// <summary> 진입 그래프이자, 가장 최상위 그래프이다. </summary>
+
+        /// <summary>
+        /// 진입 그래프이자, 가장 최상위 그래프를 나타낸다.
+        /// </summary>
         [SerializeReference, DontCreateProperty, HideInInspector]
         private Graph _main;
 
         /// <summary>
-        /// 그래프의 부모-자식 관계를 정리하는 딕셔너리로 부모 그래프의 GUID를 Key, 자식 그래프 GUID List를 Value로 사용한다.
-        /// 그래프를 삭제할때, 그 그래프를 부모로 하는 하위 그래프를 삭제하는 용도로 사용된다. 
+        /// 그래프의 부모-자식 관계를 저장하는 딕셔너리로, 부모 그래프의 GUID를 Key로, 자식 그래프 GUID 리스트를 Value로 사용한다.
+        /// 그래프 삭제 시, 관련된 하위 그래프들을 처리하는 데 활용된다.
         /// </summary>
         [SerializeField, DontCreateProperty]
         private UGUIDDictionary _graphTreeMap = new UGUIDDictionary();
 
         /// <summary>
-        /// 해당 에셋의 메인 그래프를 비롯한 모든 그래프를 저장하는 그래프 컨테이너이다.
-        /// 메인 그래프가 첫 번째로 들어가고, 이후 메인 그래프의 자식들이 들어간다.
+        /// 메인 그래프와 해당 에셋의 모든 서브 그래프를 저장 및 관리하는 사전 컨테이너이다.
         /// </summary>
         [SerializeField]
         private GraphDictionary _graphMap = new GraphDictionary();
 
 
+        /// <summary>
+        /// 그래프의 고유 식별자로 사용되는 GUID이다.
+        /// 그래프의 참조 및 관리를 위해 사용된다.
+        /// </summary>
         public UGUID graphGuid
         {
             get { return _graphGuid; }
-            
+
             internal set { _graphGuid = value; }
         }
 
+        /// <summary> 메인 그래프를 나타내는 프로퍼티로, GraphAsset 내에서 주요 작업에 사용된다. </summary>
+        /// <value>Graph</value>
         public Graph main
         {
             get { return _main; }
@@ -69,13 +77,16 @@ namespace TaskStreamer
             set { _graphMap[value.guid] = (_main = value); }
         }
 
+        /// <summary> 그래프 간의 관계 및 GUID 관리에 사용되는 딕셔너리이다. </summary>
         internal UGUIDDictionary graphMap
         {
             get { return _graphTreeMap; }
-            
+
             set { _graphTreeMap = value; }
         }
 
+        /// <summary> 그래프 자산에 포함된 모든 그래프의 컬렉션을 반환한다. </summary>
+        /// <value> 포함된 그래프의 값을 나타내는 컬렉션. </value>
         public GraphDictionary.ValueCollection graphs
         {
             get { return _graphMap.Values; }
@@ -84,34 +95,36 @@ namespace TaskStreamer
 
         /// <summary> 그래프를 런타임용으로 복제한다. </summary>
         /// <param name="streamer"> 그래프가 런타임에 필요한 객체들을 위해 그래프를 실행시키는 TaskStreamer를 매개변수로 받는다. </param>
+        /// <param name="runtimeData"> 런타임 시 사용할 블랙보드 데이터를 매개변수로 받는다. </param>
         /// <returns> 복제된 그래프를 반환한다. </returns>
-        public GraphAsset Clone(TaskStreamer streamer)
+        internal GraphAsset Clone(TaskStreamer streamer, BlackboardData runtimeData)
         {
-            if (PropertyBag.Exists<GraphAsset>() == false)
-            {
-                Debug.LogError("GraphAsset does not have a property bag.");
-                return null;
-            }
-            
-            BlackboardAsset instantiatedBlackboard = null;
-            GraphAsset instantiatedGraphAsset = Object.Instantiate(this);
+            Debug.Assert(PropertyBag.Exists<GraphAsset>() == false, "GraphAsset does not have a property bag.");
 
+            GraphAsset newGraphAsset = Object.Instantiate(this);
+            BlackboardAsset newBlackboard = null;
+            
             if (this.blackboard != null)
             {
-                instantiatedBlackboard = Object.Instantiate(this.blackboard);
-                instantiatedGraphAsset.blackboard = instantiatedBlackboard;
-                instantiatedBlackboard.variables = streamer.runtimeBlackboard.variables.ToList();
+                newBlackboard = Object.Instantiate(this.blackboard);
+                newBlackboard.ChangeBlackboardData(runtimeData);
+
+                newGraphAsset.blackboard = newBlackboard;
             }
 
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
+
+            GraphVisitProcessor processor = new GraphVisitProcessor(newBlackboard, newGraphAsset, streamer);
             
-            GraphVisitProcessor processor = new GraphVisitProcessor(instantiatedBlackboard, instantiatedGraphAsset, streamer);
             processor.AddAdapter(new RuntimeInstantiationProcess(processor));
-            bag.Accept(processor, ref instantiatedGraphAsset);
-            return instantiatedGraphAsset;
+            bag.Accept(processor, ref newGraphAsset);
+            return newGraphAsset;
         }
 
-        
+
+        /// <summary> 지정된 GUID에 해당하는 서브 그래프 목록을 반환한다. </summary>
+        /// <param name="baseGraphGuid"> 서브 그래프들을 식별할 기준이 되는 그래프의 GUID. </param>
+        /// <returns> 기준 그래프의 서브 그래프 목록을 반환하거나, 기준 GUID가 비어있거나 데이터가 없을 경우 null을 반환한다. </returns>
         public List<Graph> GetSubGraphs(UGUID baseGraphGuid)
         {
             if (baseGraphGuid.IsEmpty() || _graphTreeMap.TryGetValue(baseGraphGuid, out List<UGUID> subGraphGuids) == false)
@@ -133,6 +146,9 @@ namespace TaskStreamer
         }
 
 
+        /// <summary> 지정된 UGUID에 해당하는 그래프를 반환한다. </summary>
+        /// <param name="graphGuid"> 검색할 그래프의 UGUID. </param>
+        /// <returns> UGUID에 해당하는 그래프를 반환하거나, 없으면 null을 반환한다. </returns>
         public Graph GetGraph(UGUID graphGuid)
         {
             if (_graphMap.TryGetValue(graphGuid, out Graph graph))
@@ -145,6 +161,9 @@ namespace TaskStreamer
         }
 
 
+        /// <summary> 두 GraphAsset 객체가 동일한지 비교한다. </summary>
+        /// <param name="other"> 비교 대상이 되는 GraphAsset 객체. </param>
+        /// <returns> 두 객체가 동일하다면 true, 그렇지 않으면 false를 반환한다. </returns>
         public bool Equals(GraphAsset other)
         {
             if (other is null)
@@ -167,6 +186,7 @@ namespace TaskStreamer
 
 
 #if UNITY_EDITOR
+        /// <summary> 모든 그래프 요소의 GUID를 새로 생성된 GUID로 재할당한다. </summary>
         public void ReassignAllGraphElementGuids()
         {
             if (PropertyBag.Exists<GraphAsset>() == false)
@@ -177,20 +197,17 @@ namespace TaskStreamer
 
             GraphVisitProcessor processor = new GraphVisitProcessor(null, this, null);
             processor.AddAdapter(new GuidRebindingProcess(processor));
-            
+
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;
-            
+
             bag.Accept(processor, ref reference);
 
             this.graphGuid = UGUID.Create();
         }
-        
-        
-        /// <summary>
-        /// 노드에 부착된 BBVariable들을 순회하며 현재 Blackboard에 없는 Variable이라면 필드에 Null을 할당한다.
-        /// 마찬가지로 BlackboardBasedCondition의 내부 Condition에 등록된 BBVariable도 포함하여 정리한다.
-        /// </summary>
+
+
+        /// <summary> 그래프의 변수 중 현재 Blackboard에 없는 변수들을 정리한다. </summary>
         internal void TryCleanUpBoundVariables()
         {
             if (this.blackboard == null || blackboard.count == 0)
@@ -203,7 +220,7 @@ namespace TaskStreamer
                 Debug.LogError("GraphAsset does not have a property bag.");
                 return;
             }
-            
+
             if (Application.isPlaying == false && Undo.isProcessing == false)
             {
                 Undo.RecordObject(this, "Task Streamer (CleanUpVariablesOfField)");
@@ -216,14 +233,17 @@ namespace TaskStreamer
             GraphAsset reference = this;
 
             bag.Accept(processor, ref reference);
-            
+
             if (Application.isPlaying == false && Undo.isProcessing == false)
             {
                 EditorUtility.SetDirty(this);
             }
         }
-        
-        
+
+
+        /// <summary> 서브 그래프를 추가한다. </summary>
+        /// <param name="baseGuid"> 기준 그래프의 GUID. </param>
+        /// <param name="graph"> 추가할 서브 그래프 객체. </param>
         public void AddSubGraph(UGUID baseGuid, Graph graph)
         {
             if (Application.isPlaying == false && Undo.isProcessing == false)
@@ -255,6 +275,9 @@ namespace TaskStreamer
         }
 
 
+        /// <summary> 그래프와 해당 그래프의 모든 하위 그래프를 삭제한다. </summary>
+        /// <param name="baseGuid"> 제거 대상 그래프의 부모 그래프 GUID. </param>
+        /// <param name="graph"> 제거할 그래프 객체. </param>
         public void RemoveSubGraph(UGUID baseGuid, Graph graph)
         {
             if (Application.isPlaying == false && Undo.isProcessing == false)
@@ -304,6 +327,9 @@ namespace TaskStreamer
         }
 
 
+        /// <summary> 그래프 간 종속성을 추가한다. </summary>
+        /// <param name="from"> 종속성을 추가할 기준이 되는 그래프의 GUID. </param>
+        /// <param name="to"> 기준 그래프에 종속될 대상 그래프의 GUID. </param>
         private void AddSubGraphGuid(UGUID from, UGUID to)
         {
             if (from.IsEmpty() || to.IsEmpty())
@@ -324,6 +350,9 @@ namespace TaskStreamer
         }
 
 
+        /// <summary> 그래프 간의 의존성을 제거한다. </summary>
+        /// <param name="from"> 부모 그래프의 GUID. </param>
+        /// <param name="to"> 제거할 자식 그래프의 GUID. </param>
         private void RemoveSubGraphGuid(UGUID from, UGUID to)
         {
             if (from.IsEmpty() || to.IsEmpty())
