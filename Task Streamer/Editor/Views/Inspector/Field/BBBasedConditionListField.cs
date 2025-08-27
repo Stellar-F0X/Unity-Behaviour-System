@@ -52,14 +52,11 @@ namespace TaskStreamer.Tool
             _conditionListView.itemsSource = _bbCondition!.modules;
             _conditionListView.bindItem = this.BindConditionItem;
             _conditionListView.makeItem = () => new BlackBoardBasedConditionField();
-
-            _conditionPolicyEnumView.value = _bbCondition.evaluationPolicy;
-
-            _conditionDeleteBtn.clickable.clickedWithEventInfo -= this.OnAddButtonClicked;
+            
             _conditionDeleteBtn.clickable.clickedWithEventInfo += this.OnAddButtonClicked;
-
-            _conditionPolicyEnumView.UnregisterValueChangedCallback(this.OnChangeConditionEvaluationPolicy);
-            _conditionPolicyEnumView.RegisterValueChangedCallback(this.OnChangeConditionEvaluationPolicy);
+            
+            _conditionPolicyEnumView.value = _bbCondition.evaluationPolicy;
+            _conditionPolicyEnumView.RegisterValueChangedCallback(e => _bbCondition.evaluationPolicy = (EvaluationPolicy)e.newValue);
         }
 
 
@@ -127,22 +124,6 @@ namespace TaskStreamer.Tool
             _conditionListView.RefreshItems();
 
             UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
-        }
-
-
-        /// <summary> 조건 평가 정책이 변경될 때 호출되는 메서드입니다. </summary>
-        /// <param name="evt">새롭게 선택된 평가 정책을 포함하는 ChangeEvent 객체입니다.</param>
-        private void OnChangeConditionEvaluationPolicy(ChangeEvent<Enum> evt)
-        {
-            if (evt.newValue is EvaluationPolicy policy)
-            {
-                _conditionPolicyEnumView.value = policy;
-                _bbCondition.evaluationPolicy = policy;
-            }
-            else
-            {
-                Debug.LogError("");
-            }
         }
     }
 }
