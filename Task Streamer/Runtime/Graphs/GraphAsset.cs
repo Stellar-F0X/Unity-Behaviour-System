@@ -210,11 +210,6 @@ namespace TaskStreamer
         /// <summary> 그래프의 변수 중 현재 Blackboard에 없는 변수들을 정리한다. </summary>
         internal void TryCleanUpBoundVariables()
         {
-            if (this.blackboard == null || blackboard.count == 0)
-            {
-                return;
-            }
-
             if (PropertyBag.Exists<GraphAsset>() == false)
             {
                 Debug.LogError("GraphAsset does not have a property bag.");

@@ -59,6 +59,11 @@ namespace TaskStreamer.Tool
         {
             Type type = context.GetValue<BlackboardVariable>()?.valueType;
 
+            if (type == null)
+            {
+                return new UnsupportedTypeField(context.context);
+            }
+
             if (type == typeof(float))
             {
                 return new BlackboardVariableField<float, FloatField>(context);
@@ -153,7 +158,7 @@ namespace TaskStreamer.Tool
                 return objectField;
             }
 
-            return new UnsupportedTypeField(context.context);
+            throw new ArgumentException($"Unsupported value type: {type.Name}");
         }
     }
 }

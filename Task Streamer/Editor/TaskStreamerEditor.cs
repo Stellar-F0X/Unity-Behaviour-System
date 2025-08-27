@@ -58,6 +58,11 @@ namespace TaskStreamer.Tool
             private set;
         }
 
+        public static bool hasBlackboard
+        {
+            get { return Instance != null && Instance.graphAsset?.blackboard != null; }
+        }
+
         /// <summary>현재 Task Streamer 에디터에서 사용 중인 그래프 데이터를 참조합니다.</summary>
         public GraphAsset graphAsset
         {
@@ -188,7 +193,7 @@ namespace TaskStreamer.Tool
             taskGraphView.onElementSelected += inspectorView.UpdateSelection;
 
             taskGraphView.onElementUnselected = null;
-            taskGraphView.onElementUnselected += _ => inspectorView.ClearInspectorView();
+            taskGraphView.onElementUnselected += _ => inspectorView.ClearInspector();
 
             this.OnSelectionChange();
         }
@@ -287,7 +292,7 @@ namespace TaskStreamer.Tool
 
             isLoadingTreeToView = true;
             taskGraphView?.TrySetupGraphEditorView(currentGraph);
-            inspectorView?.ClearInspectorView();
+            inspectorView?.ClearInspector();
             _blackboardView?.RefreshItemsWhenUndoPerformed();
             isLoadingTreeToView = false;
         }
@@ -403,7 +408,7 @@ namespace TaskStreamer.Tool
                 isLoadingTreeToView = true;
                 currentGraph = drawGraph;
 
-                inspectorView?.ClearInspectorView();
+                inspectorView?.ClearInspector();
                 taskGraphView?.TrySetupGraphEditorView(drawGraph);
                 _blackboardView?.TrySetupBlackboard(graphAsset?.blackboard);
 

@@ -1,5 +1,4 @@
 using System;
-using NUnit.Framework.Internal;
 using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEngine;
@@ -55,7 +54,10 @@ namespace TaskStreamer.Tool
             set { throw new FieldAccessException(); }
         }
 
-        
-        public void SetValueWithoutNotify(object newValue) { }
+
+        public void SetValueWithoutNotify(object newValue)
+        {
+            throw new FieldAccessException();
+        }
     }
 }

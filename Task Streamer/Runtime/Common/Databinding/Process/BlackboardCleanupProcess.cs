@@ -14,7 +14,6 @@ namespace TaskStreamer.Injection
                                               IVisitPropertyAdapter<BBCondition>,
                                               IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
-        /// <summary> Blackboard 교체 시, 기존에 등록된 BlackboardVariable을 해제하는 과정 처리 객체입니다. </summary>
         public BlackboardCleanupProcess(GraphVisitProcessor processor) : base(processor) { }
 
 
@@ -76,6 +75,9 @@ namespace TaskStreamer.Injection
         }
 
 
+        /// <summary> 등록된 BlackboardVariable이 유효한지 확인하고 필요 시 새로 교체합니다. </summary>
+        /// <param name="variable"> 검사 및 교체 대상 BlackboardVariable입니다. </param>
+        /// <returns> 유효성에 따라 교체된 혹은 입력된 원래의 BlackboardVariable을 반환합니다. </returns>
         private BlackboardVariable ReplaceIfRegistered(BlackboardVariable variable)
         {
             //Condition의 l/rVariable은 항상 함께 만들어지기 때문에 하나라도 없으면 문제가 됨.
@@ -99,6 +101,7 @@ namespace TaskStreamer.Injection
         {
             Debug.Assert(variable is not null, "variable is not null");
 
+            //Blackboard가 없으면 무조건 새로운 BlackboardVariable을 할당해야되므로 Early Return을 하는 True가 아닌 False를 반환.
             if (processor.blackboard == null)
             {
                 return false;

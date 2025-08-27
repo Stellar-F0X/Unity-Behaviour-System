@@ -14,7 +14,6 @@ namespace TaskStreamer.Tool
     /// <summary>Blackboard 변수의 필드를 UI로 나타내기 위한 클래스. TValue는 값의 타입, TBindableField는 값 바인딩에 사용하는 VisualElement 타입을 나타냅니다.</summary>
     public class BlackboardVariableField<TValue, TBindableField> : VisualElement, INotifyValueChanged<TValue> where TBindableField : BindableElement, INotifyValueChanged<TValue>, new()
     {
-        /// <summary> BlackboardVariable을 바인딩할 수 있는 UI 요소를 제공합니다. </summary>
         public BlackboardVariableField(VariableHandle variableHandle)
         {
             Debug.Assert(variableHandle is not null, "bbVariable is not null");
@@ -25,60 +24,53 @@ namespace TaskStreamer.Tool
             this._unlinkButton = this.Q<Button>("unlink-button");
             this._linkToSharedButton = this.Q<Button>("link-button");
 
-            this._variableHandle = variableHandle;
-            this._blackboardVariable = variableHandle.GetValue<BlackboardVariable>();
-            this._variableNameLabel.text = ObjectNames.NicifyVariableName(variableHandle.context);
-
-            this._localVariableInputField = new TBindableField();
-            this._localVariableInputField.SetValueWithoutNotify((TValue)_blackboardVariable.boxedValue);
-            this._localVariableInputField.UnregisterValueChangedCallback(this.OnVariableValueChanged);
-            this._localVariableInputField.RegisterValueChangedCallback(this.OnVariableValueChanged);
-
-            this.SetupVariableField(this._blackboardVariable.isShared);
-
-            this._unlinkButton.clickable.clicked -= this.OnConvertSharedToLocal;
-            this._unlinkButton.clickable.clicked += this.OnConvertSharedToLocal;
-
-            this._linkToSharedButton.clickable.clickedWithEventInfo -= this.OnOpenSharedVariableSelector;
-            this._linkToSharedButton.clickable.clickedWithEventInfo += this.OnOpenSharedVariableSelector;
+            this.InitializeBlackboardVariableField(variableHandle);
         }
 
+        
 #region Fields
-
-        /// 경고 메시지에 사용되는 색상으로, 기본값은 노란색이다.
+        /// <summary>경고 메시지에 사용되는 색상으로, 기본값은 노란색이다.</summary>
         private readonly Color _warningColor = Color.yellow;
 
+        
         /// <summary>기본 색상으로 사용되며, 초기값은 흰색이다.</summary>
         private readonly Color _defaultColor = Color.white;
 
+        
         /// <summary>공유되는 BlackboardVariable을 나타내는 색상입니다.</summary>
         private readonly Color _sharedVariableColor = new Color(0.1f, 0.85f, 1f, 1);
 
-        /// <summary>변수의 값을 표시하거나 수정할 수 있는 UI 요소를 포함하는 컨테이너입니다.</summary>
+        
+        /// <summary>변수 값을 표시하거나 수정하는 UI 요소가 포함된 컨테이너입니다.</summary>
         private readonly VisualElement _valueFieldContainer;
 
+        
         /// <summary>공유 변수에서 로컬 변수로 변환하는 버튼.</summary>
         private readonly Button _unlinkButton;
 
+        
         /// <summary>공유 변수 선택기를 열기 위한 버튼을 나타냅니다.</summary>
         private readonly Button _linkToSharedButton;
 
-        /// 변수의 이름을 표시하는 UI 요소를 나타냅니다.
+        
+        /// <summary>변수 이름을 표시하는 UI 요소입니다.</summary>
         private readonly Label _variableNameLabel;
 
-        /// <summary>BlackBoard 변수에 대한 내부 데이터를 저장하는 필드이다.</summary>
+        
+        /// <summary>Blackboard 변수에 대한 내부 데이터를 저장하는 필드이다.</summary>
         private BlackboardVariable _blackboardVariable;
 
+        
         /// <summary>BlackboardVariable의 정보를 저장하고 조작하기 위한 변수입니다.</summary>
         private VariableHandle _variableHandle;
 
-        /// <summary>Blackboard 변수 값을 UI에서 입력 및 바인딩할 수 있도록 처리하는 필드입니다.</summary>
+        
+        /// <summary>Blackboard 변수 입력값 처리를 위한 바인딩 가능한 필드입니다.</summary>
         private TBindableField _localVariableInputField;
-
 #endregion
 
 
-        /// <summary>블랙보드 변수의 값을 나타내고 제어하는 프로퍼티입니다.</summary>
+        /// <summary> 이 필드 값은 BlackboardVariable에 바인딩된 값을 나타냅니다. </summary>
         public TValue value
         {
             get;
@@ -86,10 +78,33 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>Blackboard 변수의 로컬 입력 필드를 나타냅니다.</summary>
+        /// <summary>로컬 변수 값을 나타내거나 수정하기 위한 입력 필드입니다.</summary>
         public TBindableField localVariableInputField
         {
             get { return _localVariableInputField; }
+        }
+
+
+
+        /// <summary> BlackboardVariableField를 초기화합니다. </summary>
+        /// <param name="variableHandle"> 초기화에 필요한 VariableHandle 객체입니다. </param>
+        private void InitializeBlackboardVariableField(VariableHandle variableHandle)
+        {
+            this._variableHandle = variableHandle;
+            this._blackboardVariable = variableHandle.GetValue<BlackboardVariable>();
+            this._variableNameLabel.text = ObjectNames.NicifyVariableName(variableHandle.context);
+
+            this._localVariableInputField = new TBindableField();
+            this._localVariableInputField.SetValueWithoutNotify((TValue)_blackboardVariable.boxedValue);
+            this._localVariableInputField.RegisterValueChangedCallback(this.OnVariableValueChanged);
+
+            this._unlinkButton.clickable.clicked += this.OnConvertSharedToLocal;
+            this._unlinkButton.enabledSelf = TaskStreamerEditor.canEditGraph && TaskStreamerEditor.hasBlackboard;
+
+            this._linkToSharedButton.clickable.clickedWithEventInfo += this.OnOpenSharedVariableSelector;
+            this._linkToSharedButton.enabledSelf = TaskStreamerEditor.canEditGraph && TaskStreamerEditor.hasBlackboard;
+
+            this.SetupVariableField(this._blackboardVariable.isShared);
         }
 
 
@@ -111,7 +126,7 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 내부적으로 BlackboardVariable의 값을 설정합니다. </summary>
+        /// <summary> Blackboard 변수의 값을 갱신합니다. </summary>
         /// <param name="newValue"> 새롭게 설정할 변수 값입니다. </param>
         private void UpdateBlackboardVariableValue(TValue newValue)
         {
@@ -128,8 +143,8 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 지정된 변수를 필드로 등록하고 초기화를 수행합니다. </summary>
-        /// <param name="isSharedVariable"> 변수가 공유 변수인지 여부를 나타냅니다. </param>
+        /// <summary> 변수의 공유 상태에 따라 필드를 설정하고 초기화합니다. </summary>
+        /// <param name="isSharedVariable"> 공유 변수 여부를 나타냅니다. </param>
         private void SetupVariableField(bool isSharedVariable)
         {
             switch (_blackboardVariable.usage)
@@ -138,7 +153,7 @@ namespace TaskStreamer.Tool
 
                 case VariableUsage.Condition: this._variableNameLabel.style.display = DisplayStyle.None; break;
 
-                default: throw new ArgumentOutOfRangeException();
+                default: Debug.LogError($"Unknown VariableUsage: {_blackboardVariable.usage}"); break;
             }
 
             this._valueFieldContainer.Clear();
@@ -151,9 +166,7 @@ namespace TaskStreamer.Tool
             else
             {
                 this._localVariableInputField.style.display = DisplayStyle.Flex;
-                this._unlinkButton.style.display = DisplayStyle.None;
-                this._variableNameLabel.style.color = _defaultColor;
-                this._valueFieldContainer.Add(_localVariableInputField);
+                this._valueFieldContainer.Add(this.CreateLocalVariableDisplayField());
             }
         }
 
@@ -163,24 +176,56 @@ namespace TaskStreamer.Tool
         private VisualElement CreateSharedVariableDisplayField()
         {
             BlackboardAsset blackboardAsset = TaskStreamerEditor.Instance.graphAsset?.blackboard;
-            Debug.Assert(blackboardAsset != null, "blackboardAsset is null");
-
-            Label displayLabel = new Label();
-            displayLabel.style.letterSpacing = 2f;
-
+            
+            //이 경우 블랙보드가 제거되면서 필드에 등록된 BBVariable들도 모두 제거됐어야 정상이다.
             if (blackboardAsset == null || blackboardAsset.count == 0 || _blackboardVariable is null)
             {
                 _variableHandle.SetValue(null);
-                displayLabel.text = "Missing";
-                displayLabel.style.color = _warningColor;
-                _variableNameLabel.style.color = _warningColor;
-                return displayLabel;
+                throw new ArgumentException();
+            }
+            
+            Label displayLabel = new Label(_blackboardVariable.key);
+            displayLabel.style.letterSpacing = 2f;
+            
+            _variableNameLabel.style.color = _sharedVariableColor;
+            _unlinkButton.style.display = DisplayStyle.Flex;
+                
+            schedule.Execute(() => displayLabel.text = this._blackboardVariable.key)
+                    .Until(() => _blackboardVariable is null || this.enabledInHierarchy == false)
+                    .Every(250);
+
+            return displayLabel;
+        }
+
+
+        /// <summary> 로컬 변수를 표시하기 위한 UI 필드를 생성합니다. </summary>
+        /// <returns> 생성된 VisualElement입니다. </returns>
+        private VisualElement CreateLocalVariableDisplayField()
+        {
+            this._unlinkButton.style.display = DisplayStyle.None;
+            this._variableNameLabel.style.color = _defaultColor;
+
+            SetValueAttribute setValue = this._variableHandle.GetAttribute<SetValueAttribute>();
+            ReadOnlyAttribute readOnly = this._variableHandle.GetAttribute<ReadOnlyAttribute>();
+
+            if (setValue is not null)
+            {
+                BlackboardVariable.TrySetValue<TValue>(_blackboardVariable, (TValue)setValue.defaultValue);
             }
 
-            _unlinkButton.style.display = DisplayStyle.Flex;
-            _variableNameLabel.style.color = _sharedVariableColor;
-            displayLabel.text = _blackboardVariable.key;
-            return displayLabel;
+            if (readOnly is null)
+            {
+                this._localVariableInputField.enabledSelf = true;
+                this._linkToSharedButton.enabledSelf = true;
+            }
+            else
+            {
+                this._localVariableInputField.enabledSelf = false;
+                this._linkToSharedButton.enabledSelf = false;
+            }
+
+            this._localVariableInputField.SetValueWithoutNotify((TValue)_blackboardVariable.boxedValue);
+            return this._localVariableInputField;
         }
 
 
@@ -194,8 +239,8 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>BlackboardVariable의 값이 변경되었을 때 호출되는 콜백 메서드입니다.</summary>
-        /// <param name="changeEvent">값 변경 이벤트로 새로운 값(newValue)이 포함됩니다.</param>
+        /// <summary> BlackboardVariable의 값이 변경되었을 때 호출되는 콜백 메서드입니다. </summary>
+        /// <param name="changeEvent"> 값 변경 이벤트로 새로운 값(newValue)이 포함됩니다. </param>
         private void OnVariableValueChanged(ChangeEvent<TValue> changeEvent)
         {
             this.UpdateBlackboardVariableValue(changeEvent.newValue);
@@ -213,7 +258,7 @@ namespace TaskStreamer.Tool
                 Debug.LogError($"Cannot cast the BlackboardVariable<{typeof(TValue).Name}>");
                 return;
             }
-            
+
             variable.usage = _blackboardVariable.usage;
             this._variableHandle.SetValue(sharedVariable);
 
@@ -238,7 +283,6 @@ namespace TaskStreamer.Tool
             this._blackboardVariable = newLocalVariable;
             this.SetupVariableField(false);
         }
-
 #endregion
     }
 }

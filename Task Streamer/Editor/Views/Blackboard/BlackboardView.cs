@@ -103,7 +103,10 @@ namespace TaskStreamer.Tool
             }
 
             this.itemsSource = null;
+
             this.RefreshItems();
+
+            TaskStreamerEditor.Instance.inspectorView.RefreshInspector();
         }
 
 
@@ -118,30 +121,37 @@ namespace TaskStreamer.Tool
 
             BlackboardAsset newBlackboard = changeEvent.newValue as BlackboardAsset;
 
-            if (newBlackboard == null && this._blackboard != null)
+            BlackboardAsset previousBlackboard = _blackboard;
+            
+            if (this.TrySetupBlackboard(newBlackboard) == false)
+            {
+                return;
+            }
+
+            //TrySetupBlackboard에서 여러 조건을 비교한 뒤, 새로운 값이 반영된 블랙보드 필드를 에디터 BB에 대입한다. 
+            TaskStreamerEditor.Instance.graphAsset.blackboard = this._blackboard;
+
+            if (this._blackboard == null && previousBlackboard != null)
             {
                 //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
                 TaskStreamerEditor.Instance.graphAsset.TryCleanUpBoundVariables();
+
+                TaskStreamerEditor.Instance.inspectorView.ClearInspector();
             }
-
-            //2. 교체.
-            this.TrySetupBlackboard(newBlackboard);
-
-            TaskStreamerEditor.Instance.graphAsset.blackboard = _blackboard;
-            TaskStreamerEditor.Instance.inspectorView.ClearInspectorView();
         }
 
 
         /// <summary>새로운 블랙보드 자산으로 블랙보드 뷰를 업데이트합니다.</summary>
         /// <param name="newBlackboard">뷰와 연결할 새로운 블랙보드 자산입니다. null일 경우 뷰를 초기화합니다.</param>
-        public void TrySetupBlackboard(BlackboardAsset newBlackboard)
+        public bool TrySetupBlackboard(BlackboardAsset newBlackboard)
         {
             //새롭게 들어온 블랙보드가 null이거나, 현재 블랙보드와 동일한 경우에는 아무 작업도 하지 않는다.
             if (newBlackboard != null && this._blackboard == newBlackboard)
             {
-                return;
+                return false;
             }
 
+            //업데이트 버전을 갱신한다.
             newBlackboard?.UpdateAppliedVersion();
 
             this._blackboard = newBlackboard;
@@ -153,19 +163,19 @@ namespace TaskStreamer.Tool
             {
                 //블랙보드가 null인 경우, 아이템 소스(Variable 배열)를 초기화하고 새로고침한다.
                 this.ResetItemsOnBlackboardRemoved();
-                return;
+                return true;
             }
 
             this._serializedObject = new SerializedObject(this._blackboard);
-            
+
             SerializedProperty blackboardData = this._serializedObject.FindProperty("_blackboardData");
 
             if (SerializedProperty.DataEquals(blackboardData, null))
             {
                 Debug.LogWarning("Serialized blackboard data property is null.");
-                return;
+                return false;
             }
-            
+
             this._serializedList = blackboardData.FindPropertyRelative("_variables");
 
             if (SerializedProperty.DataEquals(this._serializedList, null))
@@ -173,12 +183,13 @@ namespace TaskStreamer.Tool
                 //블랙보드의 변수 리스트가 null인 경우, 경고 메시지를 출력하고 초기화한다.
                 //이 경우 대부분의 경우는 필드 변수의 이름이 수정된 경우.
                 Debug.LogWarning("Serialized list property is null.");
-                return;
+                return false;
             }
 
             //블랙보드가 null이 아닌 경우, 아이템 소스를 블랙보드의 변수 리스트로 설정하고 새로고침한다.
             this.itemsSource = this._blackboard.variables;
             this.RefreshItems();
+            return true;
         }
 
 
@@ -192,12 +203,12 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            Func<FactoryModule> ModuleProvider = () => new BBVariableFactoryModule("Variables", 0);
+            Func<FactoryModule> moduleProvider = () => new BBVariableFactoryModule("Variables", 0);
 
             Func<ICategoryTreeProvider> provider = () => new TypeTreeProvider(true);
 
             BindingWindow window = BindingWindowBuilder.GetBuilder("Blackboard Variables", false)
-                                                       .AddFactoryModule(ModuleProvider, provider)
+                                                       .AddFactoryModule(moduleProvider, provider)
                                                        .Build();
 
             window.RegisterCreationCallbackOnce((Action<BlackboardVariable>)this.AddVariableToList);
@@ -231,6 +242,8 @@ namespace TaskStreamer.Tool
 
             this.ApplyBlackboardChanges();
             this.RefreshItems();
+
+            TaskStreamerEditor.Instance.inspectorView.RefreshInspector();
         }
 
 
@@ -317,6 +330,7 @@ namespace TaskStreamer.Tool
             _blackboard.TryRenameKey(variableView.variable, newName);
 
             this.ApplyBlackboardChanges();
+            this.RefreshItems();
         }
 
 

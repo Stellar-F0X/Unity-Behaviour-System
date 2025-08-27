@@ -4,6 +4,11 @@ namespace TaskStreamer
 {
     public interface ISharedBlackboardVariable
     {
-        internal void SetBlackboardAndVariableReference(in BlackboardData blackboard, in UGUID variableGuid);
+        internal bool isValid
+        {
+            get;
+        }
+
+        internal void SetBlackboardAndVariableReference(in BlackboardAsset blackboard, in UGUID variableGuid);
     }
 }

@@ -6,7 +6,7 @@ namespace TaskStreamer
     [Serializable, Readable, Comparable(Comparison.EQ | Comparison.NE)]
     public class EnumCondition : Condition<Enum>
     {
-        public override bool Execute(Comparison comparison)
+        public override bool Execute(Comparison comparison) 
         {
             switch (comparison)
             {
