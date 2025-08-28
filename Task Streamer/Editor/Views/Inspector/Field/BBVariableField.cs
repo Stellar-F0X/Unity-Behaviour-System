@@ -277,7 +277,7 @@ namespace TaskStreamer.Tool
             SetValueAttribute setValue = this._variableHandle.GetAttribute<SetValueAttribute>();
             BlackboardVariable newLocal = null;
 
-            if (setValue?.defaultValue is not null)
+            if (setValue is not null)
             {
                 newLocal = ObjectFactory.CreateBlackboardVariable(_variableHandle.fieldType, defaultValue: setValue.defaultValue);
             }

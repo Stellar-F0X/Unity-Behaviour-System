@@ -126,8 +126,8 @@ namespace TaskStreamer
             createdVariable._isShared = shared;
             return createdVariable;
         }
-        
-        
+
+
         /// <summary> 새 블랙보드 변수 인스턴스를 생성합니다. </summary>
         /// <param name="implementedType">생성할 변수의 타입입니다.</param>
         /// <param name="shared">변수의 공유 가능 여부를 설정합니다.</param>
@@ -137,7 +137,7 @@ namespace TaskStreamer
         {
             Debug.Assert(variableGuid.IsEmpty() == false, "reference Guid is empty");
             BlackboardVariable createdVariable = Create(implementedType, shared);
-            
+
             createdVariable._guid = variableGuid;
             return createdVariable;
         }
@@ -239,9 +239,9 @@ namespace TaskStreamer
         /// <summary> 변수의 객체형 값을 가져오거나 설정합니다. </summary>
         internal override sealed object boxedValue
         {
-            get { return _value; }
+            get { return this.value; }
 
-            set { _value = (value is TValue converted) ? converted : _value; }
+            set { this.SetValue(value); }
         }
 
 
@@ -276,6 +276,19 @@ namespace TaskStreamer
             }
 
             base.key = newKey; //잘못하면 무한 루프 걸리니 주의.
+        }
+
+
+        private void SetValue(object newValue)
+        {
+            if (newValue is TValue typedValue)
+            {
+                this.SetValue(typedValue);
+            }
+            else
+            {
+                Debug.LogError($"Failed to set value of type '{value?.GetType()}' to BlackboardVariable<{typeof(TValue)}>");
+            }
         }
 
 

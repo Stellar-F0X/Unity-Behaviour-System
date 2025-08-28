@@ -9,8 +9,6 @@ namespace TaskStreamer
         {
             switch (comparison)
             {
-                case Comparison.None: return false;
-
                 case Comparison.EQ: return leftVariable.value == rightVariable.value;
 
                 case Comparison.NE: return leftVariable.value != rightVariable.value;

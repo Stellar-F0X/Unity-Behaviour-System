@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TaskStreamer.Injection;
+using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEngine.UIElements;
 
@@ -74,7 +75,8 @@ namespace TaskStreamer.Tool
             _rightVariableField.Add(VisualUtility.GetFieldByValueType(condition.GetRightVariableHandle()));
 
             this._comparisionField.value = _conditionValue.comparisonValue.ToString();
-            this.TrySetComparisonTypeNames(condition.configuredComparisonType, this._comparisionField.choices);
+            
+            StringUtility.TrySetNamesOfEnumFlag(condition.configuredComparisonType, this._comparisionField.choices);
         }
 
 
@@ -92,7 +94,9 @@ namespace TaskStreamer.Tool
             Undo.RecordObject(TaskStreamerEditor.Instance.graphAsset, "TaskStreamer (ChangeBBVariableComparisonType)");
 
             _comparisionField.value = this._comparisionField.choices[index];
-            _conditionValue.comparisonValue = (Comparison)(index == 0 ? 0 : 1 << (index - 1));
+            
+            //Comparison의 가장 첫 번째 값인 Comparison.EQ는 1부터 시작한다.
+            _conditionValue.comparisonValue = (Comparison)(1 << index);
 
             UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
         }
@@ -108,33 +112,6 @@ namespace TaskStreamer.Tool
             }
 
             this.OnDeleteRequested?.Invoke(this);
-        }
-
-
-        /// <summary> 주어진 비교 타입과 이름 목록을 기반으로 비교 타입 이름을 설정합니다. </summary>
-        /// <param name="comparison">적용할 비교 타입 플래그입니다.</param>
-        /// <param name="names">비교 타입 이름 목록입니다.</param>
-        private void TrySetComparisonTypeNames(Comparison comparison, List<string> names)
-        {
-            if (names is null)
-            {
-                names = new List<string>();
-            }
-
-            if (names.Count != 0)
-            {
-                return;
-            }
-
-            names.Add("None");
-
-            for (int index = (int)Comparison.EQ; index <= (int)Comparison.LE; index <<= 1)
-            {
-                if (((Comparison)index & comparison) != Comparison.None)
-                {
-                    names.Add(((Comparison)index).ToString());
-                }
-            }
         }
     }
 }

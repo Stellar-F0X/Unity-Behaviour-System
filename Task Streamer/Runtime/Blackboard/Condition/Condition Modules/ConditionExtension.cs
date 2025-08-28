@@ -14,13 +14,14 @@ namespace TaskStreamer
         /// <returns>Condition의 EncapsulatedLeftVariable을 기반으로 생성된 VariableHandle</returns>
         internal static VariableHandle GetLeftVariableHandle(this Condition condition)
         {
-            if (ConditionExtension.ReassignmentMissingBlackboardVariable(condition, condition.lVariable, out BlackboardVariable variable))
+            //만약 condition의 left Variable이 null이거나, 이용할 수 없는 객체라면 재할당한다.
+            if (TryReassignmentMissingBlackboardVariable(condition, condition.lVariable, out BlackboardVariable variable))
             {
                 condition.lVariable = variable;
             }
 
-            return VariableHandleBuilder.GetHandle(variable.key, variable, condition)
-                                        .WithFieldType(variable.genericVariableType)
+            return VariableHandleBuilder.GetHandle(condition.lVariable.key, condition.lVariable, condition)
+                                        .WithFieldType(condition.lVariable.genericVariableType)
                                         .WithGetter<Func<Condition, object>>(c => c.lVariable)
                                         .WithSetter<Action<Condition, object>>((c, v) => c.lVariable = (BlackboardVariable)v)
                                         .Build();
@@ -32,13 +33,14 @@ namespace TaskStreamer
         /// <returns>생성된 VariableHandle.</returns>
         internal static VariableHandle GetRightVariableHandle(this Condition condition)
         {
-            if (ConditionExtension.ReassignmentMissingBlackboardVariable(condition, condition.rVariable, out BlackboardVariable variable))
+            //만약 condition의 right Variable이 null이거나, 이용할 수 없는 객체라면 재할당한다.
+            if (TryReassignmentMissingBlackboardVariable(condition, condition.rVariable, out BlackboardVariable variable))
             {
                 condition.rVariable = variable;
             }
 
-            return VariableHandleBuilder.GetHandle(variable.key, variable, condition)
-                                        .WithFieldType(variable.genericVariableType)
+            return VariableHandleBuilder.GetHandle(condition.rVariable.key, condition.rVariable, condition)
+                                        .WithFieldType(condition.rVariable.genericVariableType)
                                         .WithGetter<Func<Condition, object>>(c => c.rVariable)
                                         .WithSetter<Action<Condition, object>>((c, v) => c.rVariable = (BlackboardVariable)v)
                                         .Build();
@@ -50,22 +52,17 @@ namespace TaskStreamer
         /// <param name="variable">기존 블랙보드 변수</param>
         /// <param name="newVariable">반환될 새 블랙보드 변수 또는 null</param>
         /// <returns>블랙보드 변수가 유효하지 않아 새로 생성된 경우 true, 그렇지 않으면 false</returns>
-        private static bool ReassignmentMissingBlackboardVariable(Condition condition, BlackboardVariable variable, out BlackboardVariable newVariable)
+        private static bool TryReassignmentMissingBlackboardVariable(Condition condition, BlackboardVariable variable, out BlackboardVariable newVariable)
         {
-            if (variable is not ISharedBlackboardVariable shared)
-            {
-                newVariable = null;
-                return false;
-            }
-
-            if (shared.isValid)
+            //ISharedBlackboardVariable을 상속받은 클래스들은 모두 구체 클래스라, 형변환에 실패할 수 없고, 만약에 variable 변수가 유효하면 Early Return.
+            if (((ISharedBlackboardVariable)variable).isValid)
             {
                 newVariable = null;
                 return false;
             }
 
             Type variableType = typeof(BlackboardVariable<>).GetImplementedType(condition.valueType);
-            newVariable = ObjectFactory.CreateBlackboardVariable(variableType);
+            newVariable = ObjectFactory.CreateBlackboardVariable(variableType, defaultValue: variable?.boxedValue);
             newVariable.usage = VariableUsage.Condition;
             return true;
         }

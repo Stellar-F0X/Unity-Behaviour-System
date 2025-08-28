@@ -16,7 +16,7 @@ namespace TaskStreamer
 
         /// <summary> Condition에서 비교에 사용되는 값을 나타냅니다. </summary>
         [SerializeField, DontCreateProperty]
-        internal Comparison comparisonValue;
+        internal Comparison comparisonValue = Comparison.EQ;
 
 
         /// <summary> 지정된 비교 유형을 나타냅니다. </summary>

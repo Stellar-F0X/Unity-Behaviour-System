@@ -306,9 +306,12 @@ namespace TaskStreamer.Tool
                 case PlayModeStateChange.EnteredEditMode:
                 {
                     EditorApplication.update -= this.RuntimeUpdate;
-                    bool clickedNewAsset = this.TryGetGraphAsset();
-                    Debug.Assert(clickedNewAsset, "Task Streamer component not found.");
-                    this.ChangeGraph(graphAsset.main);
+                    
+                    if (this.TryGetGraphAsset())
+                    {
+                        this.ChangeGraph(graphAsset.main);
+                    }
+                    
                     return;
                 }
 
