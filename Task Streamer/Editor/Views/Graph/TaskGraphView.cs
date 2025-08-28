@@ -7,9 +7,11 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
+    /// <summary>TaskGraphView 클래스를 정의하고 그래프 작업을 위한 뷰를 제공합니다.</summary>
     [UxmlElement]
     public partial class TaskGraphView : GraphView
     {
+        /// <summary>Task 그래프를 표시하고 편집할 수 있는 그래프 뷰를 제공합니다.</summary>
         public TaskGraphView()
         {
             base.Insert(0, new GridBackground());
@@ -23,26 +25,38 @@ namespace TaskStreamer.Tool
             styleSheets.Add(TaskStreamerEditor.settings.editorStyle);
         }
 
-        /// <summary>노드가 선택될 때 호출되는 이벤트입니다.</summary>
+        
+        /// <summary>그래프 요소가 선택될 때 호출되는 이벤트입니다.</summary>
         public Action<GraphElement> onElementSelected;
+
         
+        /// <summary>노드가 선택 해제될 때 호출되는 이벤트입니다.</summary>
         public Action<GraphElement> onElementUnselected;
+
         
+        /// <summary>내부에서 그래프 뷰 동작을 관리하는 필드입니다.</summary>
         private GraphViewBase _graphView;
 
-        private float _nextUpdateTime;
         
+        /// <summary>다음 업데이트 시점을 나타내는 변수입니다.</summary>
+        private float _nextUpdateTime;
 
+
+        
+        /// <summary>TaskGraphView에서 사용하는 GraphViewBase 인스턴스를 반환합니다.</summary>
         public GraphViewBase graphView
         {
             get { return _graphView; }
         }
 
+        
+        /// <summary>현재 활성화된 그래프를 반환합니다.</summary>
         public Graph focusGraph
         {
             get { return TaskStreamerEditor.Instance.currentGraph; }
         }
 
+        
 
         /// <summary>에디터 뷰를 초기화하고 모든 그래프 요소를 제거합니다.</summary>
         public void ClearEditorView()
@@ -54,7 +68,8 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 주어진 Behaviour Tree를 그래프 에디터 뷰에 표시하기 위해 노드들과 연결을 생성하고 그룹 데이터를 복원하는 함수. </summary>
+        /// <summary>그래프 에디터 뷰를 초기화하고 주어진 그래프 데이터를 기반으로 노드, 연결 및 그룹을 재구성합니다.</summary>
+        /// <param name="changeGraph">에디터 뷰에 설정할 새로운 그래프 데이터입니다.</param>
         public void TrySetupGraphEditorView(Graph changeGraph)
         {
             Debug.Assert(changeGraph is not null, "changeGraph is not null");
@@ -72,6 +87,9 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>입력 포트와 연결 가능한 호환되는 포트들의 목록을 반환합니다.</summary>
+        /// <param name="input">연결 검사를 수행할 입력 포트입니다.</param>
+        /// <param name="nodeAdapter">포트 연결 규칙을 확인하기 위한 어댑터입니다.</param>
+        /// <returns>호환 가능한 출력 포트들의 리스트를 반환합니다.</returns>
         public override List<Port> GetCompatiblePorts(Port input, NodeAdapter nodeAdapter)
         {
             if (input is null)
@@ -86,6 +104,8 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>주어진 노드에 해당하는 NodeView를 찾아 반환합니다.</summary>
+        /// <param name="node">대상이 되는 노드 객체입니다.</param>
+        /// <returns>노드에 해당하는 NodeView를 반환하며, 노드를 찾을 수 없을 경우 null을 반환합니다.</returns>
         public NodeViewBase FindNodeView(NodeBase node)
         {
             if (node is null || node.guid.IsEmpty())
@@ -97,6 +117,9 @@ namespace TaskStreamer.Tool
         }
 
 
+        /// <summary>주어진 노드에 해당하는 NodeView를 찾습니다.</summary>
+        /// <param name="node">NodeBase 인스턴스입니다.</param>
+        /// <returns>찾은 NodeBase에 대한 NodeViewBase입니다. 없으면 null을 반환합니다.</returns>
         public NodeViewBase FindNodeView(string guid)
         {
             if (string.IsNullOrEmpty(guid))
@@ -131,7 +154,10 @@ namespace TaskStreamer.Tool
 
 
 #region Mouse Related Events
-        /// <summary> 마우스 위치에서 컨텍스트 메뉴(노드 생성) 창을 엽니다. </summary>
+
+        /// <summary>마우스 위치에서 컨텍스트 메뉴(노드 생성) 창을 엽니다.</summary>
+        /// <param name="mousePosition">컨텍스트 메뉴 창을 열 좌표입니다.</param>
+        /// <param name="onNodeCreated">노드 생성 후 실행할 콜백입니다.</param>
         public void OpenContextualMenuWindow(Vector2 mousePosition, Action<NodeViewBase> onNodeCreated = null)
         {
             if (TaskStreamerEditor.canEditGraph == false)
@@ -145,7 +171,8 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 우클릭 시 컨텍스트 메뉴를 구성합니다. </summary>
+        /// <summary>우클릭 시 컨텍스트 메뉴를 구성합니다.</summary>
+        /// <param name="evt">컨텍스트 메뉴 이벤트 데이터입니다.</param>
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt)
         {
             this.OpenContextualMenuWindow(evt.mousePosition);
@@ -153,6 +180,7 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>지정된 노드를 선택합니다.</summary>
+        /// <param name="nodeView">선택할 노드를 나타내는 NodeViewBase 인스턴스</param>
         public void SelectNode(NodeViewBase nodeView)
         {
             if (nodeView is null || nodeView.targetNode == null)
@@ -168,7 +196,10 @@ namespace TaskStreamer.Tool
 
 
 #region Delete Of Modify Graph Elements
+
         /// <summary>그래프 뷰가 변경될 때 호출되는 콜백 메서드입니다.</summary>
+        /// <param name="graphViewChange">그래프 뷰의 변경 사항을 담고 있는 객체입니다.</param>
+        /// <returns>처리된 그래프 뷰 변경 사항 객체를 반환합니다.</returns>
         private GraphViewChange OnGraphViewChanged(GraphViewChange graphViewChange)
         {
             if (graphViewChange.elementsToRemove is not null)
@@ -204,6 +235,8 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>선택된 요소들을 삭제할 때 호출되는 콜백 메서드입니다.</summary>
+        /// <param name="operationName">현재 수행 중인 작업의 이름입니다.</param>
+        /// <param name="user">사용자 입력을 나타내는 객체입니다.</param>
         private void OnDeleteSelectionElements(string operationName, AskUser user)
         {
             if (TaskStreamerEditor.canEditGraph == false)
@@ -224,6 +257,7 @@ namespace TaskStreamer.Tool
 #region Create Graph Elements
 
         /// <summary>로딩 시 그룹 데이터로부터 NodeGroupView를 재생성합니다.</summary>
+        /// <param name="data">재생성 대상이 되는 NodeGroup 데이터입니다.</param>
         private void RecreateNodeGroupViewOnLoad(NodeGroup data)
         {
             NodeGroupView nodeGroupView = new NodeGroupView(data, TaskStreamerEditor.settings.nodeGroupColor);
@@ -235,7 +269,10 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>새로운 노드를 생성하고 해당하는 NodeView를 반환합니다.</summary>
+        /// <summary>지정된 타입과 위치에서 새로운 노드를 생성하고 NodeView를 반환합니다.</summary>
+        /// <param name="type">생성할 노드의 타입입니다.</param>
+        /// <param name="mousePosition">노드의 초기 위치입니다.</param>
+        /// <returns>생성된 노드와 연결된 NodeViewBase 인스턴스입니다.</returns>
         public NodeViewBase CreateNewNodeAndView(Type type, Vector2 mousePosition)
         {
             NodeBase node = focusGraph.CreateAndAddNodeToList(type.Name, type);
@@ -247,6 +284,8 @@ namespace TaskStreamer.Tool
         }
 
 
+        /// <summary>새로운 노드 뷰를 추가하고 관련 이벤트를 처리합니다.</summary>
+        /// <param name="nodeView">추가할 노드 뷰 객체입니다.</param>
         public void AddNewNodeView(NodeViewBase nodeView)
         {
             if (nodeView == null || nodeView.targetNode == null)
@@ -265,6 +304,9 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>새로운 노드 그룹 뷰를 생성하고 반환합니다.</summary>
+        /// <param name="title">노드 그룹의 제목.</param>
+        /// <param name="position">노드 그룹의 초기 위치.</param>
+        /// <returns>생성된 NodeGroupView 객체.</returns>
         public NodeGroupView CreateNewNodeGroupView(string title, Vector2 position)
         {
             NodeGroup nodeNodeGroupData = focusGraph.CreateGroupData(title, position);

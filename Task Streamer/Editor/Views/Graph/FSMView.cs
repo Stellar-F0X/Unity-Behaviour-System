@@ -161,19 +161,29 @@ namespace TaskStreamer.Tool
             StateMachine fsm = graph as StateMachine;
 
             //Edge Connector Listener에서 만들어진 커스텀 Edge들이 IEnumerable로 반환된다.
-            foreach (Edge edge in edges)
+            for (int index = edges.Count - 1; index >= 0; index--)
             {
+                Edge edge = edges[index];
+                
                 StateBase sourceNode = edge.output.node.GetNodeByView<StateBase>();
                 StateBase targetNode = edge.input.node.GetNodeByView<StateBase>();
                 Debug.Assert(sourceNode != null && targetNode != null, "sourceNode or targetNode is null");
 
                 Transition transition = fsm.ConnectStates(sourceNode, targetNode);
-                ArrowEdge transitionView = edge as ArrowEdge;
-                Debug.Assert(transition != null && transitionView != null, "transition or transitionView is null");
+
+                if (transition is null || edge is not ArrowEdge transitionView) 
+                {
+                    //graphViewChange는 Graph의 변경사항을 담은 컨테이너.
+                    //그 안에 Edges가 이 함수의 매개변수로 전달되는데,
+                    //이미 연결되어있는 경우라면 앞으로 반영될 사항 중, Edge를 제외시킨다.
+                    edges.RemoveAt(index); 
+                    continue;
+                }
+
                 ((StateNodeView)edge.output.node).connectionEdges[sourceNode.guid] = transitionView;
-                
+
                 transitionView.targetTransition = transition; //이미 만들어진거라 대입할 수 밖에 없다.
-                transitionView.RefreshTransitionData(transition);
+                transitionView.CollectTransitionFields(transition);
                 this.RegisterTransitionEdgeEvents(transitionView, view);
             }
         }

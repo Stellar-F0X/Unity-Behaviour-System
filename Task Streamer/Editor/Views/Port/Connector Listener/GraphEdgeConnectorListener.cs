@@ -127,7 +127,7 @@ namespace TaskStreamer.Tool
             {
                 graphView.AddElement(e);
                 edge.input.Connect(e);
-                edge.output.Connect(e);
+                edge.output.Connect(e); 
             }
         }
 

@@ -12,8 +12,10 @@ namespace TaskStreamer.Tool
     // Referenced: https://github.com/FBast/unity-graphtools-fsm/blob/main/Editor/Edges/TransitionEdge.cs
     // Copyright (c) 2021 Original Author
     // Licensed under the MIT License. See LICENSE file in the root for details.
+    /// <summary> Edge class with arrow styling and transition management. </summary>
     public class ArrowEdge : Edge
     {
+        /// Represents a custom Unity edge with arrow functionality for graph-based tools.
         public ArrowEdge()
         {
             this.styleSheets.Add(TaskStreamerEditor.settings.EdgeStyle); //USS 추가
@@ -23,27 +25,38 @@ namespace TaskStreamer.Tool
             this.RegisterCallback<MouseEnterEvent>(this.OnMouseEnterCallback);
             this.RegisterCallback<MouseLeaveEvent>(this.OnMouseLeaveCallback);
         }
-        
 
+
+        /// Represents a custom edge in a graph view with additional functionalities such as events and transition data.
         public ArrowEdge(Transition transition) : this()
         {
-            this.RefreshTransitionData(transition);
+            this.CollectTransitionFields(transition);
         }
 
-
+        
+        /// <summary> 화살표의 너비를 나타내는 상수 값 </summary>
         private const float _ARROW_WIDTH = 12f;
 
+        
+        /// <summary> Indicates whether the hover state is currently active. </summary>
         private bool _isHoverActivated;
 
 
+        /// <summary> Event triggered when a transition is selected. </summary>
         public event Action<GraphElement> onTransitionSelected;
-        public event Action<GraphElement> onTransitionUnselected;
+
         
+        /// <summary> 이벤트 핸들러로, 트랜지션이 선택 해제될 때 호출됩니다. </summary>
+        public event Action<GraphElement> onTransitionUnselected;
+
+        
+        /// <summary> Transition 대상 데이터를 저장하는 비공개 필드입니다. </summary>
         private Transition _targetTransition;
 
 
 
 
+        /// <summary> 연결된 Transition 개체를 나타내며, 내부적으로 설정 가능합니다. </summary>
         public Transition targetTransition
         {
             get { return _targetTransition; }
@@ -51,12 +64,14 @@ namespace TaskStreamer.Tool
             internal set { this._targetTransition = value; }
         }
 
+        /// <summary> 필드 속성 리스트를 관리하는 내부 프로퍼티 </summary>
         internal List<object> fieldProperties
         {
             get;
             private set;
         }
 
+        /// <summary> Indicates whether the edge is in ghost mode. </summary>
         public bool isGhostEdgeMode
         {
             set { this.isGhostEdge = value; }
@@ -64,13 +79,17 @@ namespace TaskStreamer.Tool
 
 
 
+        /// <summary>EdgeControl 객체를 생성하여 반환한다.</summary>
+        /// <returns>생성된 EdgeControl 객체.</returns>
         protected override EdgeControl CreateEdgeControl()
         {
             return base.CreateEdgeControl();
         }
 
 
-        public void RefreshTransitionData(in Transition newTransition)
+        /// <summary> Refreshes the transition data for the edge using the specified transition. </summary>
+        /// <param name="newTransition">The new transition data to apply to the edge.</param>
+        public void CollectTransitionFields(in Transition newTransition)
         {
             Type type = newTransition.GetType();
 
@@ -79,25 +98,31 @@ namespace TaskStreamer.Tool
         }
 
 
+        /// <summary>Triggers the transition selection event if it exists.</summary>
         public override void OnSelected()
         {
             onTransitionSelected?.Invoke(this);
         }
 
 
+        /// <summary>Called when the edge is unselected by the user.</summary>
         public override void OnUnselected()
         {
             onTransitionUnselected?.Invoke(this);
         }
-        
-        
+
+
+        /// <summary>Handles the mouse leave event for the arrow edge.</summary>
+        /// <param name="evt">The mouse leave event instance.</param>
         private void OnMouseLeaveCallback(MouseLeaveEvent evt)
         {
             this._isHoverActivated = false;
             this.MarkDirtyRepaint(); //call generateVisualContent
         }
 
-        
+
+        /// Handles the event triggered when the mouse pointer enters the edge.
+        /// <param name="evt">The mouse enter event containing event-specific details.</param>
         private void OnMouseEnterCallback(MouseEnterEvent evt)
         {
             this._isHoverActivated = true;
@@ -105,8 +130,7 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// Determines whether the specified local point resides within the boundaries
-        /// of the edge, including the arrow section.
+        /// Determines whether the specified local point resides within the boundaries of the edge, including the arrow section.
         /// <param name="localPoint">The local point to check, relative to the edge.</param>
         /// <returns>true if the local point resides within the boundary of the edge or near the arrow area; false otherwise.</returns>
         public override bool ContainsPoint(Vector2 localPoint)
@@ -124,12 +148,8 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// Updates the edge control points and tangents for the edge based on the positions
-        /// of the associated input and output nodes, applying curvature and styling adjustments
-        /// if necessary. If conditions for updating are not met, it returns false.
-        /// <returns>
-        /// True if the edge control was successfully updated; otherwise, false.
-        /// </returns>
+        /// <summary>Updates the edge control points and tangents based on input and output node positions.</summary>
+        /// <returns>True if the edge control was successfully updated; otherwise, false.</returns>
         public override bool UpdateEdgeControl()
         {
             base.UpdateEdgeControl();
@@ -164,9 +184,7 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>
-        /// Draws a visual arrow for the edge in a graph view using the provided context.
-        /// </summary>
+        /// <summary>Draws a visual arrow for the edge in a graph view using the provided context.</summary>
         /// <param name="context">The mesh generation context used for rendering the arrow.</param>
         private void DrawArrow(MeshGenerationContext context)
         {
@@ -196,6 +214,12 @@ namespace TaskStreamer.Tool
 
 
 
+        /// <summary>Calculates the geometry of the arrow for rendering.</summary>
+        /// <param name="mid">The midpoint of the arrow geometry.</param>
+        /// <param name="dis">The direction vector from start to end.</param>
+        /// <param name="disFromMid">The distance from the midpoint to the arrow tip.</param>
+        /// <param name="perpendicular">The perpendicular direction for defining the arrow's width.</param>
+        /// <returns>true if the geometry is successfully calculated; otherwise, false.</returns>
         private bool CalculateArrowGeometry(out Vector2 mid, out Vector2 dis, out float disFromMid, out Vector2 perpendicular)
         {
             Vector2 start = PointsAndTangents[PointsAndTangents.Length / 2 - 1];
@@ -220,7 +244,7 @@ namespace TaskStreamer.Tool
 
 
 
-        /// Calculates the edge points needed for rendering a connection between nodes.
+        /// <summary>Calculates the edge points needed for rendering a connection between nodes.</summary>
         /// <param name="inputNode">The input node of the edge. This can be null if only the output node is defined.</param>
         /// <param name="outputNode">The output node of the edge. This can be null if only the input node is defined.</param>
         /// <param name="from">The starting point of the edge. This is an output parameter that will contain the calculated position.</param>
@@ -267,13 +291,8 @@ namespace TaskStreamer.Tool
 
 
 
-        /// Returns a color based on the current status of the edge.
-        /// The method determines the appropriate color for the edge based on its state.
-        /// If the edge is in ghost mode, it returns the ghost color.
-        /// If the edge is selected, it returns the selected color.
-        /// If the edge has an input or output, it returns the corresponding input or output color.
-        /// Otherwise, it returns the default edge color.
-        /// <returns>The color corresponding to the current state of the edge.</returns>
+        /// <summary>Returns the color corresponding to the current edge status.</summary>
+        /// <returns>The color based on the edge state such as ghost, selected, input, or output status.</returns>
         private Color GetColorByStatus()
         {
             if (base.isGhostEdge)

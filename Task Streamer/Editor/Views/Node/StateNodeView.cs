@@ -37,6 +37,12 @@ namespace TaskStreamer.Tool
                     break;
                 }
 
+                case StateNodeType.Any:
+                {
+                    outputPort = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Multi, typeof(bool));
+                    break;
+                }
+
                 case StateNodeType.Exit:
                 {
                     inputPort = this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Multi, typeof(bool));
@@ -46,12 +52,6 @@ namespace TaskStreamer.Tool
                 case StateNodeType.SubGraph:
                 {
                     inputPort = this.InstantiatePort(Orientation.Vertical, Direction.Input, Port.Capacity.Multi, typeof(bool));
-                    outputPort = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Multi, typeof(bool));
-                    break;
-                }
-
-                case StateNodeType.Any:
-                {
                     outputPort = this.InstantiatePort(Orientation.Vertical, Direction.Output, Port.Capacity.Multi, typeof(bool));
                     break;
                 }

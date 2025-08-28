@@ -201,7 +201,7 @@ namespace TaskStreamer.FSM
         {
             if (from.TryGetTransition(to.guid, out _))
             {
-                return null;
+                return null; //이미 연결되어 있음.
             }
 
             // GraphAsset과 from 노드 모두 기록
