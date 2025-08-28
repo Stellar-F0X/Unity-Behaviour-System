@@ -18,8 +18,7 @@ MonoBehaviour:
   durationReciprocal: 2.5
   tagList:
   - None
-  - Test Tag 1
-  - Test Tag 22
+  - Test
   minimapColor: {r: 0.11764706, g: 0.11764706, b: 0.11764706, a: 1}
   nodeGroupColor: {r: 0.09803922, g: 0.09803922, b: 0.09803922, a: 0.627451}
   successNodeColor: {r: 0, g: 0.39215687, b: 0, a: 1}
