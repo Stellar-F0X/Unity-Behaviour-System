@@ -9,12 +9,12 @@ using BBCondition = TaskStreamer.BlackboardBasedCondition;
 namespace TaskStreamer.Injection
 {
     /// <summary> Blackboard 교체될 때, 이미 등록되어 있는 BlackboardVariable을 해제하는 용도로 사용되는 객체. </summary>
-    internal class BlackboardCleanupProcess : GraphVisitProcess,
-                                              IVisitPropertyAdapter<NodeDictionary>,
-                                              IVisitPropertyAdapter<BBCondition>,
-                                              IVisitContravariantPropertyAdapter<BlackboardVariable>
+    internal class BlackboardSyncVisitor : GraphVisitorBase,
+                                           IVisitPropertyAdapter<NodeDictionary>,
+                                           IVisitPropertyAdapter<BBCondition>,
+                                           IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
-        public BlackboardCleanupProcess(GraphVisitProcessor processor) : base(processor) { }
+        public BlackboardSyncVisitor(GraphContext context) : base(context) { }
 
 
         /// <summary> NodeDictionary 프로퍼티를 방문하여 값을 처리합니다. </summary>
@@ -25,7 +25,7 @@ namespace TaskStreamer.Injection
         {
             IPropertyBag<Dictionary<UGUID, NodeBase>> propertyBag = PropertyBag.GetPropertyBag<Dictionary<UGUID, NodeBase>>();
             Dictionary<UGUID, NodeBase> dictionaryValue = (Dictionary<UGUID, NodeBase>)value;
-            propertyBag.Accept(processor, ref dictionaryValue);
+            propertyBag.Accept(this, ref dictionaryValue);
         }
 
 
@@ -35,6 +35,12 @@ namespace TaskStreamer.Injection
         /// <param name="value">방문 중인 NodeDictionary 타입의 값입니다.</param>
         public void Visit<TContainer>(in VisitContext<TContainer> context, ref TContainer container, BlackboardVariable bbVariable)
         {
+            if (context.Property.IsReadOnly)
+            {
+                Debug.LogError($"'{typeof(TContainer)}.{context.Property.Name}' is read-only and cannot be modified.");
+                return;
+            }
+            
             //CleanupProcess는 블랙보드가 없어졌거나, 다른 BB로 교체, 또는 BB내, Variable이 하나라도 제거됐을때, 동작한다.
             //따라서 매개변수로 전달된 variable이 블랙보드에 존재하면 Pass, 없다면 노드의 필드에 등록된 Variable을 제거한다.
             if (bbVariable.isShared == false || this.IsVariableValidInBlackboard(bbVariable))
@@ -58,7 +64,7 @@ namespace TaskStreamer.Injection
             {
                 return;
             }
-            
+
             // Blackboard에 등록된 BBVariable의 Variable만 새로 생성해서 교체해야 하므로
             // 해당 판단과 생성 로직을 함수로 추출하여 중복을 제거합니다.
             foreach (Condition condition in value.modules)
@@ -67,9 +73,9 @@ namespace TaskStreamer.Injection
                 {
                     continue;
                 }
-                
+
                 condition.lVariable = this.ReplaceIfRegistered(condition.lVariable);
-                
+
                 condition.rVariable = this.ReplaceIfRegistered(condition.rVariable);
             }
         }
@@ -102,13 +108,13 @@ namespace TaskStreamer.Injection
             Debug.Assert(variable is not null, "variable is not null");
 
             //Blackboard가 없으면 무조건 새로운 BlackboardVariable을 할당해야되므로 Early Return을 하는 True가 아닌 False를 반환.
-            if (processor.blackboard == null)
+            if (_context.blackboard == null)
             {
                 return false;
             }
 
             // 블랙보드에서 해당 Variable의 GUID로 검색
-            return processor.blackboard.variables.FirstOrDefault(v => v != null && v.guid == variable.guid) is not null;
+            return _context.blackboard.variables.FirstOrDefault(v => v != null && v.guid == variable.guid) is not null;
         }
     }
 }

@@ -7,11 +7,11 @@ using UnityEngine;
 
 namespace TaskStreamer.Injection
 {
-    internal abstract class GraphVisitProcess : IVisitPropertyAdapter<KeyValuePair<UGUID, Graph>>, IVisitPropertyAdapter<GraphDictionary>
+    internal abstract class GraphVisitorBase : ReadableVisitorBase, IVisitPropertyAdapter<KeyValuePair<UGUID, Graph>>, IVisitPropertyAdapter<GraphDictionary>
     {
-        protected GraphVisitProcess(GraphVisitProcessor processor)
+        protected GraphVisitorBase(GraphContext context)
         {
-            this.processor = processor;
+            this._context = context;
 
             _behaviorTreeBag = PropertyBag.GetPropertyBag<BehaviorTree>();
             _stateMachineBag = PropertyBag.GetPropertyBag<StateMachine>();
@@ -20,8 +20,9 @@ namespace TaskStreamer.Injection
         private readonly IPropertyBag<BehaviorTree> _behaviorTreeBag;
         private readonly IPropertyBag<StateMachine> _stateMachineBag;
         
-        protected readonly GraphVisitProcessor processor;
+        protected readonly GraphContext _context;
 
+        
         
         public virtual void Visit<TContainer>(in VisitContext<TContainer, GraphDictionary> context, ref TContainer container, ref GraphDictionary value)
         {
@@ -31,26 +32,26 @@ namespace TaskStreamer.Injection
             Dictionary<UGUID, Graph> dictionaryValue = value as Dictionary<UGUID, Graph>;
             Debug.Assert(dictionaryValue != null, "Dictionary value not found for GraphDictionary");
             
-            propertyBag.Accept(processor, ref dictionaryValue);
+            propertyBag.Accept(this, ref dictionaryValue);
         }
         
         
         public void Visit<TContainer>(in VisitContext<TContainer, KeyValuePair<UGUID, Graph>> context, ref TContainer container, ref KeyValuePair<UGUID, Graph> graphKeyValuePair)
         {
-            processor.currentGraph = graphKeyValuePair.Value;
+            _context.currentGraph = graphKeyValuePair.Value;
             
             switch (graphKeyValuePair.Value)
             {
-                case BehaviorTree behaviorTree: _behaviorTreeBag.Accept(processor, ref behaviorTree); break;
+                case BehaviorTree behaviorTree: _behaviorTreeBag.Accept(this, ref behaviorTree); break;
 
-                case StateMachine stateMachine: _stateMachineBag.Accept(processor, ref stateMachine); break;
+                case StateMachine stateMachine: _stateMachineBag.Accept(this, ref stateMachine); break;
 
                 //TODO: GOAP
 
                 default: Debug.LogError("Invalid graph type"); break;
             }
 
-            processor.currentGraph = null;
+            _context.currentGraph = null;
         }
     }
 }

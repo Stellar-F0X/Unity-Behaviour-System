@@ -105,18 +105,19 @@ namespace TaskStreamer
             GraphAsset newGraphAsset = Object.Instantiate(this);
             BlackboardAsset newBlackboard = null;
             
+            //블랙보드가 없어도 동작해야 되기 때문에.
             if (this.blackboard != null)
             {
+                //이거 순서 잘 지켜야 된다. 복사 이후 대입임, 대입 이후 복사하면 모든 런타임용 블랙보드 값이 바뀌니 주의.
                 newBlackboard = Object.Instantiate(this.blackboard);
-                newBlackboard.ChangeBlackboardData(runtimeData);
-                newGraphAsset.blackboard = newBlackboard;
+                newBlackboard.ChangeBlackboardData(runtimeData);         //대입 1
+                newGraphAsset.blackboard = newBlackboard;                //대입 2
             }
 
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
 
-            GraphVisitProcessor processor = new GraphVisitProcessor(newBlackboard, newGraphAsset, streamer);
-            processor.AddAdapter(new RuntimeInstantiationProcess(processor));
-            bag.Accept(processor, ref newGraphAsset);
+            GraphContext context = new GraphContext(newGraphAsset, newBlackboard, streamer);
+            bag.Accept(new GraphRuntimeInitializeVisitor(context), ref newGraphAsset);
             return newGraphAsset;
         }
 
@@ -194,20 +195,17 @@ namespace TaskStreamer
                 return;
             }
 
-            GraphVisitProcessor processor = new GraphVisitProcessor(null, this, null);
-            processor.AddAdapter(new GuidRebindingProcess(processor));
-
+            GuidReassignmentVisitor visitor = new GuidReassignmentVisitor(new GraphContext(this));
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;
-
-            bag.Accept(processor, ref reference);
+            bag.Accept(visitor, ref reference);
 
             this.graphGuid = UGUID.Create();
         }
 
 
         /// <summary> 그래프의 변수 중 현재 Blackboard에 없는 변수들을 정리한다. </summary>
-        internal void TryCleanUpBoundVariables()
+        internal void TrySynchronizeVariablesOfNodes()
         {
             if (PropertyBag.Exists<GraphAsset>() == false)
             {
@@ -220,13 +218,10 @@ namespace TaskStreamer
                 Undo.RecordObject(this, "Task Streamer (CleanUpVariablesOfField)");
             }
 
-            GraphVisitProcessor processor = new GraphVisitProcessor(blackboard, this, null);
-            processor.AddAdapter(new BlackboardCleanupProcess(processor));
-
+            BlackboardSyncVisitor visitor = new BlackboardSyncVisitor(new GraphContext(this, blackboard));
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;
-
-            bag.Accept(processor, ref reference);
+            bag.Accept(visitor, ref reference);
 
             if (Application.isPlaying == false && Undo.isProcessing == false)
             {

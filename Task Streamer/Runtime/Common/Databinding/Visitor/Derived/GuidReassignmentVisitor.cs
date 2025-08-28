@@ -5,12 +5,18 @@ using UnityEngine;
 
 namespace TaskStreamer.Injection
 {
-    internal class GuidRebindingProcess : GraphVisitProcess, IVisitPropertyAdapter<NodeDictionary>
+    /// <summary> GUID를 재할당하는 프로세서를 구현합니다. </summary>
+    internal class GuidReassignmentVisitor : GraphVisitorBase, IVisitPropertyAdapter<NodeDictionary>
     {
-        public GuidRebindingProcess(GraphVisitProcessor processor) : base(processor) { }
+        /// <summary> 특정 Graph에 대한 Guid 재할당 처리를 지원하는 프로세서 </summary>
+        public GuidReassignmentVisitor(GraphContext context) : base(context) { }
 
 
 
+        /// <summary> 그래프 속성을 방문하여 Guid를 재할당합니다. </summary>
+        /// <param name="context">속성을 방문할 때의 컨텍스트</param>
+        /// <param name="container">방문 중인 컨테이너 객체</param>
+        /// <param name="value">그래프 딕셔너리 값</param>
         public override void Visit<TContainer>(in VisitContext<TContainer, GraphDictionary> context, ref TContainer container, ref GraphDictionary value)
         {
             value = this.ProcessGraphGuidReassignment(value);
@@ -19,6 +25,11 @@ namespace TaskStreamer.Injection
         }
 
 
+        
+        /// <summary> NodeDictionary에 대한 GUID 재할당 처리를 진행합니다. </summary>
+        /// <param name="context"> 방문 중인 컨텍스트 정보 </param>
+        /// <param name="container"> 컨테이너 객체의 참조 </param>
+        /// <param name="value"> 변환 중인 NodeDictionary의 참조 </param>
         public void Visit<TContainer>(in VisitContext<TContainer, NodeDictionary> context, ref TContainer container, ref NodeDictionary value)
         {
             value = this.ProcessNodeGuidReassignment(value);
@@ -26,6 +37,9 @@ namespace TaskStreamer.Injection
         }
 
 
+        /// <summary>GraphDictionary의 GUID를 재할당합니다.</summary>
+        /// <param name="originalDictionary">원본 GraphDictionary 객체.</param>
+        /// <returns>GUID가 재할당된 새 GraphDictionary 객체.</returns>
         private GraphDictionary ProcessGraphGuidReassignment(GraphDictionary originalDictionary)
         {
             GraphDictionary newDictionary = new GraphDictionary();
@@ -61,11 +75,15 @@ namespace TaskStreamer.Injection
                 newDictionary.Add(graphPair.Value.guid, graphPair.Value);
             }
 
-            processor.graphAsset.graphMap = guidMapping;
+            _context.graphAsset.graphMap = guidMapping;
             return newDictionary;
         }
 
+        
 
+        /// <summary> 노드 GUID를 재할당하는 처리를 수행합니다. </summary>
+        /// <param name="originalDictionary">GUID 재할당이 필요한 노드 사전입니다.</param>
+        /// <returns> GUID가 재할당된 새로운 노드 사전입니다.</returns>
         private NodeDictionary ProcessNodeGuidReassignment(NodeDictionary originalDictionary)
         {
             NodeDictionary newNodeDictionary = new NodeDictionary();
@@ -81,11 +99,11 @@ namespace TaskStreamer.Injection
 
                 if (node is ISubGraphProvider subGraphNode)
                 {
-                    Graph graph = processor.graphAsset.GetGraph(subGraphNode.subGraphGuid);
+                    Graph graph = _context.graphAsset.GetGraph(subGraphNode.subGraphGuid);
                     subGraphNode.subGraphGuid = graph.guid;
                 }
 
-                List<NodeGroup> groups = processor.currentGraph.nodeGroup;
+                List<NodeGroup> groups = _context.currentGraph.nodeGroup;
                 NodeGroup group = groups.Find(e => e.Contains(oldGuid));
 
                 if (group is null)

@@ -42,10 +42,7 @@ namespace TaskStreamer.Utility
             newNode.name = StringUtility.ToNicifyName(nodeType.Name);
 
             IPropertyBag propertyBag = PropertyBag.GetPropertyBag(nodeType);
-            DefaultVisitProcessor visitWorker = new DefaultVisitProcessor();
-            visitWorker.AddAdapter(new VariableFieldAllocateProcess());
-
-            propertyBag.Accept(visitWorker, ref createdObject);
+            propertyBag.Accept(new BlackboardVariableFieldInitializeVisitor(), ref createdObject);
 
             newNode.OnCreateInEditor();
             return newNode;

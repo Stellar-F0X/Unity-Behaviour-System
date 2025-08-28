@@ -59,10 +59,6 @@ namespace TaskStreamer
     [Flags]
     public enum Comparison : byte
     {
-        /// <summary>비교 없음</summary>
-        [Tooltip("No comparison operation.")]
-        None = 0,
-
         /// <summary>Equals (==)</summary>
         [Tooltip("Equal (==)")]
         EQ = 1 << 0,

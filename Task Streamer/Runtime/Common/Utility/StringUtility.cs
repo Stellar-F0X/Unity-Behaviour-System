@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace TaskStreamer.Utility
@@ -9,8 +10,8 @@ namespace TaskStreamer.Utility
         {
             return string.IsNullOrEmpty(s) == false;
         }
-        
-        
+
+
         public static int StringToHash(in string key)
         {
             if (string.IsNullOrEmpty(key))
@@ -20,6 +21,27 @@ namespace TaskStreamer.Utility
             }
 
             return Animator.StringToHash(key);
+        }
+
+
+        public static bool TrySetNamesOfEnumFlag<TEnum>(TEnum value, List<string> bucket) where TEnum : Enum
+        {
+            Type enumType = typeof(TEnum);
+
+            if (enumType.HasAttribute<FlagsAttribute>() == false)
+            {
+                return false;
+            }
+
+            foreach (TEnum element in Enum.GetValues(enumType))
+            {
+                if (value.HasFlag(element))
+                {
+                    bucket.Add(element.ToString());
+                }
+            }
+
+            return true;
         }
 
 

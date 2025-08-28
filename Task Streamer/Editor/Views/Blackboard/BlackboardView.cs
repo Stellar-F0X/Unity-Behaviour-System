@@ -134,7 +134,7 @@ namespace TaskStreamer.Tool
             if (this._blackboard == null && previousBlackboard != null)
             {
                 //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
-                TaskStreamerEditor.Instance.graphAsset.TryCleanUpBoundVariables();
+                TaskStreamerEditor.Instance.graphAsset.TrySynchronizeVariablesOfNodes();
 
                 TaskStreamerEditor.Instance.inspectorView.ClearInspector();
             }
@@ -238,7 +238,7 @@ namespace TaskStreamer.Tool
             _blackboard.RemoveVariable(itemsSource[index] as BlackboardVariable);
 
             //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
-            TaskStreamerEditor.Instance.graphAsset.TryCleanUpBoundVariables();
+            TaskStreamerEditor.Instance.graphAsset.TrySynchronizeVariablesOfNodes();
 
             this.ApplyBlackboardChanges();
             this.RefreshItems();
