@@ -219,6 +219,11 @@ namespace TaskStreamer
 
         public void OnBeforeSerialize()
         {
+            if (Application.isPlaying)
+            {
+                return;
+            }
+            
             //GraphAsset이 없어졌거나 Blackboard가 제거될 경우 Variable 리스트를 삭제하고 함수를 종료한다.
             if (_graphAsset == null || _graphAsset.blackboard == null)
             {

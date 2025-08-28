@@ -36,7 +36,7 @@ namespace TaskStreamer.Injection
             IPropertyBag bag = PropertyBag.GetPropertyBag(pair.Value.GetType());
             Debug.Assert(bag != null, $"Property bag not found for {pair.Value.name}");
 
-            object reference = pair.Value; //어차피 노드는 항상 Class 타입이므로, object로 형변환해도 Boxing/Unboxing은 문제 없음.
+            object reference = pair.Value; 
             bag.Accept(processor, ref reference);
         }
 
@@ -52,31 +52,45 @@ namespace TaskStreamer.Injection
                 graph.InitializeOnEnterRuntime(processor.taskStreamer);
             }
         }
-
+        
 
 
         public void Visit<TContainer>(in VisitContext<TContainer> context, ref TContainer container, BlackboardVariable value)
         {
-            if (value is null || processor.blackboard == null || processor.blackboard.count == 0)
+            //정상적으로 동작한다면, value가 null일 수 없다.
+            if (value is null)
             {
+                Debug.LogError($"잘못된 {typeof(TContainer)}의 {context.Property} 필드입니다.");
                 return;
             }
-
+            
+            //null도, shared variable도, 아니라면 그냥 필드에 새 로컬(Local) 객체만 할당 해주면 된다.
             if (value.isShared == false)
             {
                 context.Property.SetValue(ref container, value.Duplicate());
                 return;
             }
+            
+            //shared variable이지만, blackboard가 null이라면 제때 제거되지 않은 잘못된 객체이므로 경고를 띄운다. 
+            if (processor.blackboard == null || processor.blackboard.count == 0)
+            {
+                Debug.LogError($"잘못된 {typeof(TContainer)}의 {context.Property} 필드입니다.");
+                return;
+            }
 
-            BlackboardVariable foundVariable = processor.blackboard.FindVariable(value.guid);
-            Debug.Assert(foundVariable != null, "Variable not found in blackboard.");
-            context.Property.SetValue(ref container, value.Duplicate());
+            //Runtime instantiated 객체가 작동 중임은 런타임 blackboard가 할당됐음을 의미하니, runtime bb variable을 찾아서 할당해준다.
+            BlackboardVariable shared = ObjectFactory.CreateSharedBlackboardVariable(value.implementedType, processor.blackboard, value.guid);
+            shared.usage = value.usage;
+            Debug.Assert(shared != null, "Variable not found in blackboard.");
+            context.Property.SetValue(ref container, shared);
         }
 
+        
 
         public void Visit<TContainer>(in VisitContext<TContainer, Transition> context, ref TContainer container, ref Transition value)
         {
-            if (value.conditions.modules.Count == 0) //ConditionModule이 없다면 BBVariable을 할당하지 않아도 되므로 Early Return.
+            //ConditionModule이 없다면 BBVariable을 할당하지 않아도 되므로 Early Return.
+            if (value.conditions.modules.Count == 0)
             {
                 return;
             }

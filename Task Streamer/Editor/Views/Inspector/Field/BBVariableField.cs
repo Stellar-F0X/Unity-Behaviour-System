@@ -98,13 +98,13 @@ namespace TaskStreamer.Tool
             this._localVariableInputField.SetValueWithoutNotify((TValue)_blackboardVariable.boxedValue);
             this._localVariableInputField.RegisterValueChangedCallback(this.OnVariableValueChanged);
 
+            this.SelectVariableField(this._blackboardVariable.isShared);
+            
             this._unlinkButton.clickable.clicked += this.OnConvertSharedToLocal;
             this._unlinkButton.enabledSelf = TaskStreamerEditor.canEditGraph && TaskStreamerEditor.hasBlackboard;
 
             this._linkToSharedButton.clickable.clickedWithEventInfo += this.OnOpenSharedVariableSelector;
             this._linkToSharedButton.enabledSelf = TaskStreamerEditor.canEditGraph && TaskStreamerEditor.hasBlackboard;
-
-            this.SelectVariableField(this._blackboardVariable.isShared);
         }
 
 
@@ -138,7 +138,10 @@ namespace TaskStreamer.Tool
                 default: Debug.LogError($"Unknown VariableUsage: {_blackboardVariable.usage}"); break;
             }
 
-            this._valueFieldContainer.Clear();
+            if (this._valueFieldContainer.childCount > 0)
+            {
+                this._valueFieldContainer.Clear();
+            }
 
             if (isSharedVariable)
             {
@@ -248,24 +251,19 @@ namespace TaskStreamer.Tool
         {
             this._unlinkButton.style.display = DisplayStyle.None;
             this._variableNameLabel.style.color = _defaultVariableLabelColor;
-
-            SetValueAttribute setValue = this._variableHandle.GetAttribute<SetValueAttribute>();
+            
             ReadOnlyAttribute readOnly = this._variableHandle.GetAttribute<ReadOnlyAttribute>();
 
-            if (setValue is not null)
-            {
-                BlackboardVariable.TrySetValue<TValue>(_blackboardVariable, (TValue)setValue.defaultValue);
-            }
-
-            if (readOnly is null)
-            {
-                this._localVariableInputField.enabledSelf = true;
-                this._linkToSharedButton.enabledSelf = true;
-            }
-            else
+            //여기서 결정해도 InitializeBlackboardVariableField 함수에서 런타임 중인지 아닌지에 따라 활성화가 다시 결정된다.
+            if (readOnly is not null)
             {
                 this._localVariableInputField.enabledSelf = false;
                 this._linkToSharedButton.enabledSelf = false;
+            }
+            else
+            {
+                this._localVariableInputField.enabledSelf = true;
+                this._linkToSharedButton.enabledSelf = true;
             }
 
             this._localVariableInputField.SetValueWithoutNotify((TValue)_blackboardVariable.boxedValue);
@@ -276,15 +274,26 @@ namespace TaskStreamer.Tool
         /// <summary> BlackboardVariable를 Local로 변환합니다. </summary>
         private void OnConvertSharedToLocal()
         {
-            BlackboardVariable newLocalVariable = ObjectFactory.CreateBlackboardVariable(_variableHandle.fieldType);
-            Debug.Assert(newLocalVariable is not null, "newVariable is null");
+            SetValueAttribute setValue = this._variableHandle.GetAttribute<SetValueAttribute>();
+            BlackboardVariable newLocal = null;
 
-            newLocalVariable.usage = _blackboardVariable.usage;
-            this._variableHandle.SetValue(newLocalVariable);
+            if (setValue?.defaultValue is not null)
+            {
+                newLocal = ObjectFactory.CreateBlackboardVariable(_variableHandle.fieldType, defaultValue: setValue.defaultValue);
+            }
+            else
+            {
+                newLocal = ObjectFactory.CreateBlackboardVariable(_variableHandle.fieldType);
+            }
+            
+            Debug.Assert(newLocal is not null, "newVariable is null");
+            
+            newLocal.usage = _blackboardVariable.usage;
+            this._variableHandle.SetValue(newLocal);
 
             UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
 
-            this._blackboardVariable = newLocalVariable;
+            this._blackboardVariable = newLocal;
             this.SelectVariableField(false);
         }
 #endregion

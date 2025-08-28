@@ -20,29 +20,27 @@ namespace TaskStreamer
     [Readable, GeneratePropertyBag]
     public partial class GraphAsset : ScriptableObject, IEquatable<GraphAsset>
     {
-        /// <summary>
-        /// 그래프 에셋이 생성될 때 설정되는 메인 그래프의 타입.
-        /// </summary>
-        /// <value> BT, FSM, 또는 GOAP </value>
+        /// <summary> 그래프 에셋이 생성될 때 설정되는 메인 그래프의 타입. </summary>
+        /// <value> BT, FSM, GOAP(미구현) </value>
         [DontCreateProperty]
         internal GraphType mainGraphType;
 
-        /// <summary>
-        /// 그래프 에셋에서 사용되는 블랙보드 데이터이다.
-        /// </summary>
+        
+        /// <summary> 그래프 에셋에서 사용되는 블랙보드 데이터이다. </summary>
         [SerializeField, DontCreateProperty]
         internal BlackboardAsset blackboard;
 
+        
         /// <summary> 그래프 에셋을 고유하게 식별하기 위한 GUID </summary>
         [SerializeField, DontCreateProperty]
         private UGUID _graphGuid;
 
-        /// <summary>
-        /// 진입 그래프이자, 가장 최상위 그래프를 나타낸다.
-        /// </summary>
+        
+        /// <summary> 진입 그래프이자, 가장 최상위 그래프를 나타낸다. </summary>
         [SerializeReference, DontCreateProperty, HideInInspector]
         private Graph _main;
 
+        
         /// <summary>
         /// 그래프의 부모-자식 관계를 저장하는 딕셔너리로, 부모 그래프의 GUID를 Key로, 자식 그래프 GUID 리스트를 Value로 사용한다.
         /// 그래프 삭제 시, 관련된 하위 그래프들을 처리하는 데 활용된다.
@@ -50,13 +48,13 @@ namespace TaskStreamer
         [SerializeField, DontCreateProperty]
         private UGUIDDictionary _graphTreeMap = new UGUIDDictionary();
 
-        /// <summary>
-        /// 메인 그래프와 해당 에셋의 모든 서브 그래프를 저장 및 관리하는 사전 컨테이너이다.
-        /// </summary>
+        
+        /// <summary> 메인 그래프와 해당 에셋의 모든 서브 그래프를 저장 및 관리하는 사전 컨테이너이다. </summary>
         [SerializeField]
         private GraphDictionary _graphMap = new GraphDictionary();
 
 
+        
         /// <summary>
         /// 그래프의 고유 식별자로 사용되는 GUID이다.
         /// 그래프의 참조 및 관리를 위해 사용된다.
@@ -68,6 +66,7 @@ namespace TaskStreamer
             internal set { _graphGuid = value; }
         }
 
+        
         /// <summary> 메인 그래프를 나타내는 프로퍼티로, GraphAsset 내에서 주요 작업에 사용된다. </summary>
         /// <value>Graph</value>
         public Graph main
@@ -77,6 +76,7 @@ namespace TaskStreamer
             set { _graphMap[value.guid] = (_main = value); }
         }
 
+        
         /// <summary> 그래프 간의 관계 및 GUID 관리에 사용되는 딕셔너리이다. </summary>
         internal UGUIDDictionary graphMap
         {
@@ -85,6 +85,7 @@ namespace TaskStreamer
             set { _graphTreeMap = value; }
         }
 
+        
         /// <summary> 그래프 자산에 포함된 모든 그래프의 컬렉션을 반환한다. </summary>
         /// <value> 포함된 그래프의 값을 나타내는 컬렉션. </value>
         public GraphDictionary.ValueCollection graphs
@@ -99,7 +100,7 @@ namespace TaskStreamer
         /// <returns> 복제된 그래프를 반환한다. </returns>
         internal GraphAsset Clone(TaskStreamer streamer, BlackboardData runtimeData)
         {
-            Debug.Assert(PropertyBag.Exists<GraphAsset>() == false, "GraphAsset does not have a property bag.");
+            Debug.Assert(PropertyBag.Exists<GraphAsset>(), "GraphAsset does not have a property bag.");
 
             GraphAsset newGraphAsset = Object.Instantiate(this);
             BlackboardAsset newBlackboard = null;
@@ -108,14 +109,12 @@ namespace TaskStreamer
             {
                 newBlackboard = Object.Instantiate(this.blackboard);
                 newBlackboard.ChangeBlackboardData(runtimeData);
-
                 newGraphAsset.blackboard = newBlackboard;
             }
 
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
 
             GraphVisitProcessor processor = new GraphVisitProcessor(newBlackboard, newGraphAsset, streamer);
-            
             processor.AddAdapter(new RuntimeInstantiationProcess(processor));
             bag.Accept(processor, ref newGraphAsset);
             return newGraphAsset;

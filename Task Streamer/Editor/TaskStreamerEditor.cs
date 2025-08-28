@@ -147,7 +147,6 @@ namespace TaskStreamer.Tool
         }
 
 
-
         /// <summary>TaskStreamer 에디터를 초기 상태로 재설정합니다.</summary>
         private void Initialize()
         {
