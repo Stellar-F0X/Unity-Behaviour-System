@@ -98,7 +98,12 @@ namespace TaskStreamer.Utility
 
             createdValue.key = name.IsNotNullOrEmpty() ? name : BlackboardVariable.DEFAULT_VARIABLE_NAME;
             createdValue.implementedType = implementedType;
-            createdValue.boxedValue = defaultValue;
+
+            if (defaultValue is not null)
+            {
+                createdValue.boxedValue = defaultValue;
+            }
+            
             return createdValue;
         }
 

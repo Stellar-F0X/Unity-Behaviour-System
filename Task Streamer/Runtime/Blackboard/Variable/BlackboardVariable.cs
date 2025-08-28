@@ -105,8 +105,6 @@ namespace TaskStreamer
         /// <summary> 변수의 공유 여부를 나타내는 속성 </summary>
         internal bool isShared
         {
-            private set { _isShared = value; }
-
             get { return _isShared; }
         }
 
@@ -281,6 +279,13 @@ namespace TaskStreamer
 
         private void SetValue(object newValue)
         {
+            //Null 정도는 허용 값이라 오류를 내지 않아도 됨.
+            if (newValue is null)
+            {
+                return;
+            }
+            
+            //문제는 완전히 다른 유형의 값이 들어왔을 때.
             if (newValue is TValue typedValue)
             {
                 this.SetValue(typedValue);
@@ -369,6 +374,7 @@ namespace TaskStreamer
 
             Debug.Assert(blackboard is not null, "Cannot bind to null blackboard reference");
             this._blackboard = blackboard;
+            this._isShared = true;
         }
     }
 }

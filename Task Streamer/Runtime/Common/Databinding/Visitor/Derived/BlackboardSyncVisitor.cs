@@ -89,13 +89,15 @@ namespace TaskStreamer.Injection
             //Condition의 l/rVariable은 항상 함께 만들어지기 때문에 하나라도 없으면 문제가 됨.
             Debug.Assert(variable is not null, "variable is null");
 
-            if (this.IsVariableValidInBlackboard(variable))
+            if (variable.isShared == false || this.IsVariableValidInBlackboard(variable))
             {
-                return ObjectFactory.CreateBlackboardVariable(variable.implementedType);
+                //Condition에서 사용 중인 l/r Variable이 Local Variable이라면 그대로 Return.
+                return variable;
             }
             else
             {
-                return variable;
+                //Shared Variable이라면 BB에 변동이 생겨, 동작하는 것이므로 기존 Shared Variable 대신 쓸, Local Variable로 만들어 반환한다.
+                return ObjectFactory.CreateBlackboardVariable(variable.implementedType);
             }
         }
 

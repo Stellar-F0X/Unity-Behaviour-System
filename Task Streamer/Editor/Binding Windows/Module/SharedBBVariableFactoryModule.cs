@@ -30,7 +30,11 @@ namespace TaskStreamer.Tool
             ISharedBlackboardVariable sharedVariable = bbVariable as ISharedBlackboardVariable;
             Debug.Assert(sharedVariable is not null, $"{variableType.Name} type is cannot be ISharedBlackboardVariable");
             
-            bbVariable.boxedValue = variable.boxedValue;
+            if (variable.boxedValue is not null)
+            {
+                bbVariable.boxedValue = variable.boxedValue;
+            }
+            
             return bbVariable;
         }
     }

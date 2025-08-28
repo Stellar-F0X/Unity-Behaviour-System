@@ -84,7 +84,7 @@ namespace TaskStreamer.Injection
             //정상적으로 동작한다면, value가 null일 수 없다.
             if (value is null)
             {
-                Debug.LogError($"잘못된 {typeof(TContainer)}의 {context.Property} 필드입니다.");
+                Debug.LogError($"Wrong {typeof(TContainer)}'s {context.Property.Name} Field.");
                 return;
             }
 
@@ -98,7 +98,7 @@ namespace TaskStreamer.Injection
             //shared variable이지만, blackboard가 null이라면 제때 제거되지 않은 잘못된 객체이므로 경고를 띄운다. 
             if (_context.blackboard == null || _context.blackboard.count == 0)
             {
-                Debug.LogError($"잘못된 {typeof(TContainer)}의 {context.Property} 필드입니다.");
+                Debug.LogError($"Wrong {typeof(TContainer)}'s {context.Property.Name} Field.");
                 return;
             }
 

@@ -62,7 +62,17 @@ namespace TaskStreamer
             }
 
             Type variableType = typeof(BlackboardVariable<>).GetImplementedType(condition.valueType);
-            newVariable = ObjectFactory.CreateBlackboardVariable(variableType, defaultValue: variable?.boxedValue);
+            
+            if (variable.isShared)
+            {
+                //variable.boxedValue는 Property라서 getter/setter가 호출되는데 blackboard가 유효하지 않아서 호출하기 애매함.
+                newVariable = ObjectFactory.CreateBlackboardVariable(variableType);
+            }
+            else
+            {
+                newVariable = ObjectFactory.CreateBlackboardVariable(variableType, defaultValue: variable.boxedValue);
+            }
+            
             newVariable.usage = VariableUsage.Condition;
             return true;
         }
