@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace TaskStreamer.Tool
 {
-    public class SharedBBVariableFactoryModule : FactoryModule<ISharedBlackboardVariable>
+    public class SharedBlackboardVariableFactoryModule : FactoryModule<ISharedBlackboardVariable>
     {
-        public SharedBBVariableFactoryModule(string title, bool useCallback = false, int layer = 1) : base(typeof(BlackboardVariable), title, useCallback, layer) { }
+        public SharedBlackboardVariableFactoryModule(string title, bool useCallback = false, int layer = 1) : base(typeof(BlackboardVariable), title, useCallback, layer) { }
 
 
         protected override ISharedBlackboardVariable Create(Type type, Vector2 position, string bbVariableKey)
@@ -26,11 +26,10 @@ namespace TaskStreamer.Tool
         
         private BlackboardVariable CreateSharedBlackboardVariable(BlackboardAsset asset, BlackboardVariable variable, Type variableType)
         {
-            BlackboardVariable bbVariable = ObjectFactory.CreateSharedBlackboardVariable(variableType);
+            BlackboardVariable bbVariable = ObjectFactory.CreateSharedBlackboardVariable(variableType, asset, variable.guid);
             ISharedBlackboardVariable sharedVariable = bbVariable as ISharedBlackboardVariable;
             Debug.Assert(sharedVariable is not null, $"{variableType.Name} type is cannot be ISharedBlackboardVariable");
             
-            sharedVariable.SetBlackboardAndVariableReference(asset, variable.guid);
             bbVariable.boxedValue = variable.boxedValue;
             return bbVariable;
         }

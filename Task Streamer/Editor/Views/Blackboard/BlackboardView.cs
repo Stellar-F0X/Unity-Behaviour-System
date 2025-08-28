@@ -203,7 +203,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            Func<FactoryModule> moduleProvider = () => new BBVariableFactoryModule("Variables", 0);
+            Func<FactoryModule> moduleProvider = () => new BlackboardVariableFactoryModule("Variables", 0);
 
             Func<ICategoryTreeProvider> provider = () => new TypeTreeProvider(true);
 

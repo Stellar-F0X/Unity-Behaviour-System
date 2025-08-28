@@ -8,7 +8,7 @@ namespace TaskStreamer
         {
             get;
         }
-
-        internal void SetBlackboardAndVariableReference(in BlackboardAsset blackboard, in UGUID variableGuid);
+        
+        internal void SetBlackboardReference(in BlackboardAsset blackboard);
     }
 }

@@ -78,7 +78,7 @@ namespace TaskStreamer.Injection
 
         /// <summary>제네릭 타입의 어트리뷰트를 반환한다.</summary>
         /// <return>찾은 제네릭 타입의 어트리뷰트.</return>
-        public T GetAttribute<T>()
+        public T GetAttribute<T>() where T : Attribute
         {
             return _fieldAttributes.GetAttribute<T>();
         }

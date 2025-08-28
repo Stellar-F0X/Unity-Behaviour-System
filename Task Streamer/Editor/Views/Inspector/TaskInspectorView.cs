@@ -124,7 +124,12 @@ namespace TaskStreamer.Tool
 
             foreach (VariableHandle property in fieldProperties)
             {
-                _fieldContainer.Add(this.GetPropertyField(property));
+                switch (property.value)
+                {
+                    case BlackboardVariable: _fieldContainer.Add(VisualUtility.GetFieldByValueType(property)); break;
+
+                    case BlackboardBasedCondition: _fieldContainer.Add(new BlackboaradBasedConditionListField(property)); break;
+                }
             }
         }
 
@@ -142,19 +147,6 @@ namespace TaskStreamer.Tool
             this._fieldContainer.Clear();
             this.InitializeTaskFields(this._targetTask);
             this.SetupBlackboardVariableFields(this._fieldProperties);
-        }
-
-
-        private VisualElement GetPropertyField(VariableHandle property)
-        {
-            switch (property.value)
-            {
-                case BlackboardVariable: return VisualUtility.GetFieldByValueType(property);
-
-                case BlackboardBasedCondition: return new BlackboaradBasedConditionListField(property);
-                
-                default: throw new ArgumentException("");
-            }
         }
     }
 }

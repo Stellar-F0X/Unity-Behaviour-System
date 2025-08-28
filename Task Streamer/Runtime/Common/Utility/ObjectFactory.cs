@@ -107,22 +107,30 @@ namespace TaskStreamer.Utility
 
 
 
-        /// <summary> Creates a shared BlackboardVariable instance of the specified type. </summary>
-        /// <param name="implementedType">The type of the BlackboardVariable to create.</param>
-        /// <returns>Returns the created shared BlackboardVariable or null if creation failed.</returns>
-        public static BlackboardVariable CreateSharedBlackboardVariable(Type implementedType)
+        /// <summary> 지정된 유형의 공유 BlackboardVariable 인스턴스를 생성한다. </summary>
+        /// <param name="implementedType">생성할 BlackboardVariable의 Type.</param>
+        /// <param name="reference">참조할 BlackboardAsset 객체.</param>
+        /// <param name="variableGuid">BlackboardVariable의 고유 ID.</param>
+        /// <returns>생성된 공유 BlackboardVariable 인스턴스. 실패 시 null 반환.</returns>
+        public static BlackboardVariable CreateSharedBlackboardVariable(Type implementedType, BlackboardAsset reference, UGUID variableGuid)
         {
+            Debug.Assert(reference != null, "blackboard is null");
+
+            Debug.Assert(variableGuid.IsEmpty() == false, "variable guid is empty");
+            
             Debug.Assert(implementedType != null, $"{typeof(ObjectFactory)}: BlackboardVariableType is null");
 
-            BlackboardVariable createdValue = BlackboardVariable.Create(implementedType, true);
+            BlackboardVariable createdValue = BlackboardVariable.Create(implementedType, variableGuid, true);
 
-            if (createdValue == null)
+            if (createdValue is not ISharedBlackboardVariable variable)
             {
                 Debug.LogError($"{typeof(ObjectFactory)}: Failed to create BlackboardVariable of type {implementedType}");
                 return null;
             }
-
+            
             createdValue.implementedType = implementedType;
+            
+            variable.SetBlackboardReference(reference);
             return createdValue;
         }
 

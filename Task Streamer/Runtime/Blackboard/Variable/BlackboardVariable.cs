@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TaskStreamer
 {
-    /// <summary> Variable wrapper class </summary>
+    /// <summary> Represents a wrapper for variables used in a blackboard system. </summary>
     [Serializable, Readable]
     public abstract class BlackboardVariable : ISerializationCallbackReceiver
     {
@@ -32,44 +32,44 @@ namespace TaskStreamer
         protected string _typeName;
 
 
-        /// <summary> 이 변수가 공유 가능한 상태인지 여부를 나타내는 플래그. </summary>
+        /// <summary> 이 변수가 공유 상태인지 나타내는 플래그 </summary>
         [SerializeField]
-        protected bool _isShareable;
+        protected bool _isShared;
 
 
-        /// <summary> 변수 사용 힌트를 저장하는 필드. </summary>
+        /// <summary> 변수 사용 힌트를 저장하는 필드 </summary>
         [SerializeField]
         protected VariableUsage _usage;
 
 
-        /// <summary> 구현된 타입을 나타내는 프로퍼티 </summary>
+        /// <summary> 블랙보드 변수에서 구현된 타입 정보를 나타내는 프로퍼티 </summary>
         internal Type implementedType
         {
             get;
             set;
         }
 
-        /// <summary> 제네릭 변수 타입을 나타내는 속성 </summary>
+        /// <summary> 제네릭 변수의 타입을 나타내는 속성 </summary>
         internal abstract Type genericVariableType
         {
             get;
         }
 
-        /// <summary> 변수가 가지고 있는 값의 타입을 나타내는 프로퍼티 </summary>
+        /// <summary> 이 변수의 실제 데이터 유형을 반환 </summary>
         internal abstract Type valueType
         {
             get;
         }
 
 
-        /// <summary> BlackboardVariable의 고유 식별자 </summary>
+        /// <summary> 변수의 고유 식별자를 나타내는 프로퍼티 </summary>
         internal UGUID guid
         {
             get { return _guid; }
         }
 
 
-        /// <summary> 블랙보드 변수의 고유 키를 나타내는 속성 </summary>
+        /// <summary> 변수의 이름을 가져오거나 설정하는 프로퍼티 </summary>
         internal virtual string key
         {
             get { return this._key; }
@@ -78,14 +78,14 @@ namespace TaskStreamer
         }
 
 
-        /// <summary> 키의 해시값을 나타냅니다. </summary>
+        /// <summary> 키의 해시값을 반환합니다 </summary>
         internal int keyHash
         {
             get { return this._keyHash; }
         }
 
 
-        /// <summary> 변수의 사용 용도를 나타내는 프로퍼티 </summary>
+        /// <summary> 직렬화 콜백을 구현한 BlackboardVariable의 추상 기본 클래스 </summary>
         internal VariableUsage usage
         {
             get { return _usage; }
@@ -94,7 +94,7 @@ namespace TaskStreamer
         }
 
 
-        /// <summary> 항상 박스된 형태로 값을 가져오거나 설정하는 프로퍼티 </summary>
+        /// <summary> 박스 처리된 값을 반환하거나 설정하는 프로퍼티 </summary>
         internal abstract object boxedValue
         {
             get;
@@ -102,12 +102,12 @@ namespace TaskStreamer
         }
 
 
-        /// <summary> 블랙보드 변수의 공유 여부를 나타내는 값 </summary>
+        /// <summary> 변수의 공유 여부를 나타내는 속성 </summary>
         internal bool isShared
         {
-            private set { _isShareable = value; }
+            private set { _isShared = value; }
 
-            get { return _isShareable; }
+            get { return _isShared; }
         }
 
 
@@ -115,16 +115,30 @@ namespace TaskStreamer
         /// <summary> 새 블랙보드 변수 인스턴스를 생성합니다. </summary>
         /// <param name="implementedType">생성할 변수의 타입입니다.</param>
         /// <param name="shared">변수의 공유 가능 여부를 설정합니다.</param>
-        /// <return>생성된 블랙보드 변수 인스턴스를 반환합니다.</return>
+        /// <returns>생성된 블랙보드 변수 인스턴스를 반환합니다.</returns>
         internal static BlackboardVariable Create(Type implementedType, bool shared)
         {
             Debug.Assert(implementedType is not null, $"{typeof(ObjectFactory)}: Wrong blackboard variable type");
-
             BlackboardVariable createdVariable = Activator.CreateInstance(implementedType) as BlackboardVariable;
-
             Debug.Assert(createdVariable is not null, $"{typeof(ObjectFactory)}: Failed to create a blackboard variable.");
+
             createdVariable.implementedType = implementedType;
-            createdVariable._isShareable = shared;
+            createdVariable._isShared = shared;
+            return createdVariable;
+        }
+        
+        
+        /// <summary> 새 블랙보드 변수 인스턴스를 생성합니다. </summary>
+        /// <param name="implementedType">생성할 변수의 타입입니다.</param>
+        /// <param name="shared">변수의 공유 가능 여부를 설정합니다.</param>
+        /// <param name="variableGuid">변수의 고유 식별자입니다.</param>
+        /// <returns>생성된 블랙보드 변수 인스턴스를 반환합니다.</returns>
+        internal static BlackboardVariable Create(Type implementedType, UGUID variableGuid, bool shared)
+        {
+            Debug.Assert(variableGuid.IsEmpty() == false, "reference Guid is empty");
+            BlackboardVariable createdVariable = Create(implementedType, shared);
+            
+            createdVariable._guid = variableGuid;
             return createdVariable;
         }
 
@@ -176,21 +190,21 @@ namespace TaskStreamer
         [SerializeField]
         protected TValue _value;
 
-        
-        /// <summary> 변수의 소속된 Blackboard를 나타내는 필드 </summary>
+
+        /// <summary> 이 변수의 소속된 블랙보드를 나타내는 필드 </summary>
         [SerializeField]
         private protected BlackboardAsset _blackboard;
 
-        
 
-        /// <summary> 변수의 유효성을 검증하는 프로퍼티 </summary>
+
+        /// <summary> 공유된 BlackboardVariable이 유효한지 여부를 나타냅니다 </summary>
         bool ISharedBlackboardVariable.isValid
         {
             get { return _blackboard != null && _blackboard.HasVariable(this._guid); }
         }
 
 
-        /// <summary> 이 변수의 고유 키를 나타내는 속성 </summary>
+        /// <summary> 블랙보드 변수의 키를 가져오거나 설정합니다 </summary>
         internal override sealed string key
         {
             get { return this.GetKey(); }
@@ -199,7 +213,7 @@ namespace TaskStreamer
         }
 
 
-        /// <summary> 변수의 값을 관리하는 프로퍼티 </summary>
+        /// <summary> 변수의 값을 가져오거나 설정합니다. </summary>
         public virtual TValue value
         {
             get { return this.GetValue(); }
@@ -208,21 +222,21 @@ namespace TaskStreamer
         }
 
 
-        /// <summary> 제네릭 변수의 타입을 반환하는 프로퍼티 </summary>
+        /// <summary> 제네릭 변수의 타입을 나타내는 프로퍼티 </summary>
         internal override sealed Type genericVariableType
         {
             get { return typeof(BlackboardVariable<TValue>); }
         }
 
 
-        /// <summary> 변수의 값 타입을 반환하는 프로퍼티 </summary>
+        /// <summary> 프로퍼티의 값 타입을 나타냄 </summary>
         internal override sealed Type valueType
         {
             get { return typeof(TValue); }
         }
 
 
-        /// <summary> 객체 타입으로 래핑된 값에 접근하거나 설정하는 속성 </summary>
+        /// <summary> 변수의 객체형 값을 가져오거나 설정합니다. </summary>
         internal override sealed object boxedValue
         {
             get { return _value; }
@@ -235,7 +249,7 @@ namespace TaskStreamer
         /// <return> 변수의 고유 키. </return>
         private string GetKey()
         {
-            if (this._isShareable)
+            if (this._isShared)
             {
                 Debug.Assert(_blackboard != null, "A reference to the Blackboard is required but was not found");
                 BlackboardVariable variable = _blackboard.FindVariable(base._guid);
@@ -252,7 +266,7 @@ namespace TaskStreamer
         /// <param name="newKey">새로 설정할 키 값입니다.</param>
         private void SetKey(in string newKey)
         {
-            if (this._isShareable)
+            if (this._isShared)
             {
                 Debug.Assert(_blackboard != null, "A reference to the Blackboard is required but was not found");
                 BlackboardVariable variable = _blackboard.FindVariable(base._guid);
@@ -269,7 +283,7 @@ namespace TaskStreamer
         /// <param name="newValue">설정할 값입니다.</param>
         private void SetValue(TValue newValue)
         {
-            if (_isShareable == false)
+            if (_isShared == false)
             {
                 this._value = newValue;
                 return;
@@ -292,7 +306,7 @@ namespace TaskStreamer
         /// <returns> 현재 값 또는 연결된 Blackboard에서 구한 값 </returns>
         private TValue GetValue()
         {
-            if (_isShareable == false)
+            if (_isShared == false)
             {
                 return this._value;
             }
@@ -313,14 +327,14 @@ namespace TaskStreamer
 
 
         /// <summary> 현재 객체를 복제한 새로운 BlackboardVariable 인스턴스를 반환합니다. </summary>
-        /// <returns> 복제된 BlackboardVariable 객체. </returns>
+        /// <return> 복제된 BlackboardVariable 객체. </return>
         internal override BlackboardVariable Duplicate()
         {
-            BlackboardVariable<TValue> clone = Create(implementedType, _isShareable) as BlackboardVariable<TValue>;
+            BlackboardVariable<TValue> clone = Create(implementedType, _isShared) as BlackboardVariable<TValue>;
             Debug.Assert(clone is not null, "Failed to duplicate a blackboard variable.");
 
             clone.implementedType = this.implementedType;
-            clone._isShareable = this._isShareable;
+            clone._isShared = this._isShared;
             clone._blackboard = this._blackboard;
             clone._typeName = this._typeName;
             clone._guid = this._guid;
@@ -328,14 +342,13 @@ namespace TaskStreamer
             clone.key = this.key;
             return clone;
         }
-        
 
-        /// <summary> 공유 가능한 블랙보드 변수에 블랙보드와 변수 GUID를 설정합니다. </summary>
+
+        /// <summary> 공유 가능한 블랙보드 변수에 블랙보드 참조를 설정합니다. </summary>
         /// <param name="blackboard"> 연결할 블랙보드 데이터입니다. </param>
-        /// <param name="variableGuid"> 설정할 변수의 GUID입니다. </param>
-        void ISharedBlackboardVariable.SetBlackboardAndVariableReference(in BlackboardAsset blackboard, in UGUID variableGuid)
+        void ISharedBlackboardVariable.SetBlackboardReference(in BlackboardAsset blackboard)
         {
-            if (_isShareable == false)
+            if (_isShared == false)
             {
                 Debug.LogError("Variable is not shareable and cannot bind to shared blackboard");
                 return;
@@ -343,9 +356,6 @@ namespace TaskStreamer
 
             Debug.Assert(blackboard is not null, "Cannot bind to null blackboard reference");
             this._blackboard = blackboard;
-
-            Debug.Assert(blackboard.HasVariable(variableGuid), "Failed to find variable with GUID in blackboard");
-            this._guid = variableGuid;
         }
     }
 }
