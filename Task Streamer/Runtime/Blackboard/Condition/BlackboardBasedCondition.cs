@@ -17,7 +17,7 @@ namespace TaskStreamer
 
         public bool Execute()
         {
-            if (evaluationPolicy == EvaluationPolicy.None)
+            if (evaluationPolicy == EvaluationPolicy.Pass)
             {
                 return true;
             }

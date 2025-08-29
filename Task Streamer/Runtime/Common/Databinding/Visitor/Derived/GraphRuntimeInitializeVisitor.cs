@@ -16,41 +16,7 @@ namespace TaskStreamer.Injection
         /// <summary> 런타임 시 노드 및 그래프의 인스턴스화를 처리하는 클래스 </summary>
         public GraphRuntimeInitializeVisitor(GraphContext context) : base(context) { }
 
-
-
-        /// <summary> NodeDictionary 속성을 방문하며 처리합니다. </summary>
-        /// <param name="context">방문 컨텍스트를 나타냅니다.</param>
-        /// <param name="container">방문 중인 컨테이너 객체입니다.</param>
-        /// <param name="value">방문 중인 NodeDictionary 값입니다.</param>
-        public void Visit<TContainer>(in VisitContext<TContainer, NodeDictionary> context, ref TContainer container, ref NodeDictionary value)
-        {
-            foreach (KeyValuePair<UGUID, NodeBase> nodePairs in value)
-            {
-                nodePairs.Value.OnInstantiate();
-            }
-
-            IPropertyBag<Dictionary<UGUID, NodeBase>> propertyBag = PropertyBag.GetPropertyBag<Dictionary<UGUID, NodeBase>>();
-            Dictionary<UGUID, NodeBase> dictionaryValue = (Dictionary<UGUID, NodeBase>)value;
-            propertyBag.Accept(this, ref dictionaryValue);
-        }
-
-
-
-        /// <summary> NodeDictionary 방문을 처리합니다. </summary>
-        /// <param name="context">현재 방문 컨텍스트입니다.</param>
-        /// <param name="container">방문 중인 컨테이너입니다.</param>
-        /// <param name="value">방문 중인 NodeDictionary 값입니다.</param>
-        public void Visit<TContainer>(in VisitContext<TContainer, KeyValuePair<UGUID, NodeBase>> context, ref TContainer container, ref KeyValuePair<UGUID, NodeBase> value)
-        {
-            //굳이 이렇게 하는 이유는 PropertyVisit이 Dictionary<TKey, TValue>에서 Key에 방문하는 것을 무시를 위해서.
-            IPropertyBag bag = PropertyBag.GetPropertyBag(value.Value.GetType());
-            Debug.Assert(bag != null, $"Property bag not found for {value.Value.name}");
-
-            object reference = value.Value;
-            bag.Accept(this, ref reference);
-        }
-
-
+        
 
         /// <summary> NodeDictionary 타입의 프로퍼티를 방문하는 메서드입니다. </summary>
         /// <param name="context">방문 컨텍스트입니다.</param>
@@ -65,6 +31,44 @@ namespace TaskStreamer.Injection
                 Debug.Assert(graph.entry != null, "entry node is null.");
                 graph.InitializeOnEnterRuntime(_context.taskStreamer);
             }
+        }
+        
+        
+
+        /// <summary> NodeDictionary 속성을 방문하며 처리합니다. </summary>
+        /// <param name="context">방문 컨텍스트를 나타냅니다.</param>
+        /// <param name="container">방문 중인 컨테이너 객체입니다.</param>
+        /// <param name="value">방문 중인 NodeDictionary 값입니다.</param>
+        public void Visit<TContainer>(in VisitContext<TContainer, NodeDictionary> context, ref TContainer container, ref NodeDictionary value)
+        {
+            foreach (KeyValuePair<UGUID, NodeBase> nodePairs in value)
+            {
+                nodePairs.Value.OnInstantiate();
+            }
+            
+            IPropertyBag<Dictionary<UGUID, NodeBase>> propertyBag = PropertyBag.GetPropertyBag<Dictionary<UGUID, NodeBase>>(); 
+            Dictionary<UGUID, NodeBase> dictionaryValue = (Dictionary<UGUID, NodeBase>)value; 
+            propertyBag.Accept(this, ref dictionaryValue); 
+        }
+
+
+
+        /// <summary> NodeDictionary 방문을 처리합니다. </summary>
+        /// <param name="context">현재 방문 컨텍스트입니다.</param>
+        /// <param name="container">방문 중인 컨테이너입니다.</param>
+        /// <param name="value">방문 중인 NodeDictionary 값입니다.</param>
+        public void Visit<TContainer>(in VisitContext<TContainer, KeyValuePair<UGUID, NodeBase>> context, ref TContainer container, ref KeyValuePair<UGUID, NodeBase> value)
+        {
+            IPropertyBag bag = PropertyBag.GetPropertyBag(value.Value.GetType());
+
+            if (bag is null)
+            {
+                Debug.LogError($"Property bag not found for {value.Value.name}");
+                return;
+            }
+
+            object reference = value.Value;
+            bag.Accept(this, ref reference); 
         }
 
 

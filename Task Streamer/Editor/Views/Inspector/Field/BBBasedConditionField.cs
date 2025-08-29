@@ -74,9 +74,10 @@ namespace TaskStreamer.Tool
             _leftVariableField.Add(VisualUtility.GetFieldByValueType(condition.GetLeftVariableHandle()));
             _rightVariableField.Add(VisualUtility.GetFieldByValueType(condition.GetRightVariableHandle()));
 
-            this._comparisionField.value = _conditionValue.comparisonValue.ToString();
+            this._conditionDeleteButton.enabledSelf = TaskStreamerEditor.canEditGraph;
+            this._comparisionField.value = _conditionValue.comparisonValue.ToString(); 
             
-            StringUtility.TrySetNamesOfEnumFlag(condition.configuredComparisonType, this._comparisionField.choices);
+            StringUtility.TrySetNamesOfEnumFlag(condition.configuredComparisonType, this._comparisionField.choices); 
         }
 
 

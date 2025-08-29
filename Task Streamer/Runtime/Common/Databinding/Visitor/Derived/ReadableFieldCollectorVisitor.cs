@@ -43,12 +43,19 @@ namespace TaskStreamer.Injection
             }
 
             VariableHandle handle = VariableHandleBuilder.GetHandle(property.Name, value, container)
-                                                         .WithAttributes(property.GetAttributes())
                                                          .WithGetter<ValueGetter<TContainer, TValue>>(property.GetValue)
                                                          .WithSetter<ValueSetter<TContainer, TValue>>(property.SetValue)
+                                                         .WithAttributes(property.GetAttributes())
                                                          .Build();
 
-            _propertiesContainer.Add(handle);
+            if (handle.IsValid())
+            {
+                _propertiesContainer.Add(handle);
+            }
+            else
+            {
+                Debug.LogError("잘못된 VariableHandle 값, 고쳐라 인간.");
+            }
         }
     }
 }

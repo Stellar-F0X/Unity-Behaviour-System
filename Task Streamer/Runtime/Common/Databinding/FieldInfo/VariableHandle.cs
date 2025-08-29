@@ -48,6 +48,13 @@ namespace TaskStreamer.Injection
         private readonly IEnumerable<Attribute> _fieldAttributes;
 
 
+
+        public bool IsValid()
+        {
+            return context.IsNotNullOrEmpty() && fieldType != null && _container != null && value != null;
+        }
+        
+        
         
         /// <summary>지정된 값을 설정합니다.</summary>
         /// <param name="newValue">설정할 새로운 값입니다.</param>

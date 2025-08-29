@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TaskStreamer.Injection
 {
-    //에디터에서 노드가 생성될때 쓰이는 PropertyVisitor로 필드의 BlackboardVariable을 할당한다.
+    //에디터에서 노드가 생성될때 쓰이는 PropertyVisitor로, 'Node 객체를 대상'으로 필드의 BlackboardVariable을 할당한다.
     public class BlackboardVariableFieldInitializeVisitor : ReadableVisitorBase, IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
         public void Visit<TContainer>(in VisitContext<TContainer> context, ref TContainer container, BlackboardVariable value)

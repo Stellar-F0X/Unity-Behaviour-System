@@ -166,7 +166,7 @@ namespace TaskStreamer
     public enum EvaluationPolicy : byte
     {
         /// <summary>무조건 True</summary>
-        None,
+        Pass,
         
         /// <summary>하나라도 조건이 만족되면 true</summary>
         [Tooltip("Returns true if any of the conditions is satisfied.")]

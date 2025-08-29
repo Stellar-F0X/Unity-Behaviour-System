@@ -9,19 +9,18 @@ namespace TaskStreamer.Injection
 {
     internal abstract class GraphVisitorBase : ReadableVisitorBase, IVisitPropertyAdapter<KeyValuePair<UGUID, Graph>>, IVisitPropertyAdapter<GraphDictionary>
     {
-        protected GraphVisitorBase(GraphContext context)
+        protected GraphVisitorBase(GraphContext context) : base()
         {
             this._context = context;
 
             _behaviorTreeBag = PropertyBag.GetPropertyBag<BehaviorTree>();
             _stateMachineBag = PropertyBag.GetPropertyBag<StateMachine>();
         }
-
-        private readonly IPropertyBag<BehaviorTree> _behaviorTreeBag;
-        private readonly IPropertyBag<StateMachine> _stateMachineBag;
         
         protected readonly GraphContext _context;
 
+        private readonly IPropertyBag<BehaviorTree> _behaviorTreeBag;
+        private readonly IPropertyBag<StateMachine> _stateMachineBag;
         
         
         public virtual void Visit<TContainer>(in VisitContext<TContainer, GraphDictionary> context, ref TContainer container, ref GraphDictionary value)
