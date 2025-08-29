@@ -3,7 +3,8 @@ using UnityEngine;
 using TaskStreamer.FSM;
 
     #ROOTNAMESPACEBEGIN#
-public class #SCRIPTNAME# : CustomStateNode
+[Serializable, GeneratePropertyBag, Readable]
+public class #SCRIPTNAME# : ActionState
 {
     protected override void OnEnter() 
     {

@@ -1,0 +1,7 @@
+using System;
+using UnityEngine;
+
+    #ROOTNAMESPACEBEGIN#
+[Serializable, Readable]
+public class #SCRIPTNAME# : BlackboardVariable<> { }
+#ROOTNAMESPACEEND#

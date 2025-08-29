@@ -3,53 +3,53 @@ using UnityEngine;
 
 namespace TaskStreamer.Tool
 {
-    public static class TaskStreamerMenuItems
+    internal static class TaskStreamerMenuItems
     {
-        [MenuItem("Assets/Create/Task Streamer/BT/Action Node", false, 1)]
+        [MenuItem("Assets/Create/Task Streamer/BT/Action Node", false, 11)]
         public static void CreateActionNodeMenuItem()
         {
             string path = EditorUtility.FindAssetPath("NewActionNode.cs t:TextAsset");
-            ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "NewActionNode.cs");
+            ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "New Action Node.cs");
         }
 
 
-        [MenuItem("Assets/Create/Task Streamer/BT/Composite Node", false, 1)]
+        [MenuItem("Assets/Create/Task Streamer/BT/Composite Node", false, 11)]
         public static void CreateCompositeNodeMenuItem()
         {
             string path = EditorUtility.FindAssetPath("NewCompositeNode.cs t:TextAsset");
-            ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "NewCompositeNode.cs");
+            ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "New Composite Node.cs");
         }
 
 
-        [MenuItem("Assets/Create/Task Streamer/BT/Decorator Node", false, 1)]
+        [MenuItem("Assets/Create/Task Streamer/BT/Decorator Node", false, 11)]
         public static void CreateDecoratorNodeMenuItem()
         {
             string path = EditorUtility.FindAssetPath("NewDecoratorNode.cs t:TextAsset");
-            ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "NewDecoratorNode.cs");
+            ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "New Decorator Node.cs");
         }
 
 
-        [MenuItem("Assets/Create/Task Streamer/FSM/State Node", false, 2)]
+        [MenuItem("Assets/Create/Task Streamer/FSM/State Node", false, 12)]
         public static void CreateStateNodeMenuItem()
         {
-            string path = EditorUtility.FindAssetPath("NewStateNode.cs t:TextAsset");
-            ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "NewStateNode.cs");
+            string path = EditorUtility.FindAssetPath("NewActionState.cs t:TextAsset");
+            ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "New Action State.cs");
         }
 
 
-        [MenuItem("Assets/Create/Task Streamer/FSM/Transition", false, 1)]
+        [MenuItem("Assets/Create/Task Streamer/Blackboard Variable Based Condition", false)]
         public static void CreateTransitionMenuItem()
         {
-            string path = EditorUtility.FindAssetPath("NewTransition.cs t:TextAsset");
-            ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "Compare__Type__Variables.cs");
+            string path = EditorUtility.FindAssetPath("NewCondition.cs t:TextAsset");
+            ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "New Condition.cs");
         }
 
 
-        [MenuItem("Assets/Create/Task Streamer/Variable")]
+        [MenuItem("Assets/Create/Task Streamer/Blackboard Variable")]
         public static void CreateVariableMenuItem()
         {
-            string path = EditorUtility.FindAssetPath("NewVariable.cs t:TextAsset");
-            ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "__Type__Variables.cs");
+            string path = EditorUtility.FindAssetPath("NewBlackboardVariable.cs t:TextAsset");
+            ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "New Blackboard Variables.cs");
         }
 
 

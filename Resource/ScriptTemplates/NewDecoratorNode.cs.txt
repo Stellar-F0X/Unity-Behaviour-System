@@ -3,6 +3,7 @@ using UnityEngine;
 using TaskStreamer.BT;
 
     #ROOTNAMESPACEBEGIN#
+[Serializable, GeneratePropertyBag, Readable]
 public class #SCRIPTNAME# : DecoratorNode
 {
     protected override void OnEnter() 
