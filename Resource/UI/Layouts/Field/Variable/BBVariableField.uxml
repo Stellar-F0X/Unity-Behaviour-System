@@ -2,7 +2,7 @@
     <ui:VisualElement name="container" style="margin-bottom: 0; margin-top: 2px; margin-left: 3px; margin-right: 1px; flex-direction: row;">
         <ui:Label text="Label" name="name-field" style="margin-right: 2px; width: 150px; flex-direction: column; flex-shrink: 0; overflow: hidden; -unity-text-align: middle-left;" />
         <ui:VisualElement name="value-field" tabindex="0" style="padding-left: 2px; padding-right: 2px; flex-grow: 1; flex-shrink: 0; overflow: hidden; margin-left: 0; min-width: auto; width: 100px; align-self: center; margin-right: 3px;" />
-        <ui:Button name="unlink-button" icon-image="project://database/Assets/TaskStreamer/Task%20Streamer/Resource/Delete.png?fileID=2800000&amp;guid=8091cef9245c02446876c26c51e446e9&amp;type=3#Delete" style="margin-left: 1px; padding-left: 4px; padding-right: 4px; margin-right: 1px; align-content: flex-end;" />
+        <ui:Button name="unlink-button" icon-image="project://database/Assets/TaskStreamer/Resource/UI/Images/Delete.png?fileID=2800000&amp;guid=8091cef9245c02446876c26c51e446e9&amp;type=3#Delete" style="margin-left: 1px; padding-left: 4px; padding-right: 4px; margin-right: 1px; align-content: flex-end;" />
         <ui:Button name="link-button" icon-image="project://database/Packages/com.unity.inputsystem/InputSystem/Editor/Icons/d_Add%20Binding.png?fileID=2800000&amp;guid=a4bbff684804d4c84b61cd0256cd2360&amp;type=3#d_Add Binding" style="padding-left: 2px; padding-right: 2px; margin-left: 1px; margin-right: 1px; align-content: flex-end;" />
     </ui:VisualElement>
 </ui:UXML>
