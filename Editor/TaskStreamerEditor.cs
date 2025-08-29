@@ -410,9 +410,9 @@ namespace TaskStreamer.Tool
                 isLoadingTreeToView = true;
                 currentGraph = drawGraph;
 
-                editorInspectorView?.ClearInspector();
-                taskGraphView?.TrySetupGraphEditorView(drawGraph);
-                _blackboardView?.TrySetupBlackboard(graphAsset?.blackboard);
+                editorInspectorView.ClearInspector();
+                taskGraphView.TrySetupGraphEditorView(drawGraph);
+                _blackboardView.TrySetupBlackboard(graphAsset?.blackboard);
 
                 isLoadingTreeToView = false;
             }

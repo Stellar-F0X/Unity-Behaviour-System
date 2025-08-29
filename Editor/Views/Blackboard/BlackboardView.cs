@@ -72,9 +72,11 @@ namespace TaskStreamer.Tool
                 return;
             }
 
+            this.TrySetupBlackboard(TaskStreamerEditor.Instance.graphAsset.blackboard);
+            
             _serializedObject.Update();
             _serializedObject.ApplyModifiedProperties();
-
+            
             this.RefreshItems();
         }
 
@@ -121,22 +123,33 @@ namespace TaskStreamer.Tool
 
             BlackboardAsset newBlackboard = changeEvent.newValue as BlackboardAsset;
 
-            BlackboardAsset previousBlackboard = _blackboard;
-            
+            BlackboardAsset previousBlackboard = this._blackboard;
+
+            if (Undo.isProcessing == false)
+            {
+                GraphAsset asset = TaskStreamerEditor.Instance.graphAsset;
+                
+                UndoUtility.RecordObjects("TaskStreamer(SetBlackboard)", asset, _blackboard);
+            }
+
             if (this.TrySetupBlackboard(newBlackboard) == false)
             {
                 return;
             }
 
             //TrySetupBlackboard에서 여러 조건을 비교한 뒤, 새로운 값이 반영된 블랙보드 필드를 에디터 BB에 대입한다. 
-            TaskStreamerEditor.Instance.graphAsset.blackboard = this._blackboard;
+            TaskStreamerEditor.Instance.graphAsset.blackboard = newBlackboard;
 
-            if (this._blackboard == null && previousBlackboard != null)
+            if (previousBlackboard != newBlackboard)
             {
                 //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
                 TaskStreamerEditor.Instance.graphAsset.TrySynchronizeVariablesOfNodes();
-
                 TaskStreamerEditor.Instance.editorInspectorView.ClearInspector();
+            }
+
+            if (newBlackboard == null)
+            {
+                this.ApplyBlackboardChanges();
             }
         }
 
@@ -145,47 +158,40 @@ namespace TaskStreamer.Tool
         /// <param name="newBlackboard">뷰와 연결할 새로운 블랙보드 자산입니다. null일 경우 뷰를 초기화합니다.</param>
         public bool TrySetupBlackboard(BlackboardAsset newBlackboard)
         {
-            //새롭게 들어온 블랙보드가 null이거나, 현재 블랙보드와 동일한 경우에는 아무 작업도 하지 않는다.
-            if (newBlackboard != null && this._blackboard == newBlackboard)
+            //새롭게 들어온 블랙보드가 현재 블랙보드와 동일한 경우에는 아무 작업도 하지 않는다.
+            if (this._blackboard == newBlackboard)
             {
                 return false;
             }
-
-            //업데이트 버전을 갱신한다.
-            newBlackboard?.UpdateAppliedVersion();
-
+           
+            newBlackboard?.UpdateAppliedVersion();  //업데이트 버전을 갱신한다.
+            
             this._blackboard = newBlackboard;
-            this._blackboardBindingField.value = newBlackboard;
-            this._variableAddButton.enabledSelf = !Application.isPlaying;
-            this._blackboardBindingField.enabledSelf = !Application.isPlaying;
+            this._blackboardBindingField.SetValueWithoutNotify(newBlackboard);
 
             if (newBlackboard is null)
             {
-                //블랙보드가 null인 경우, 아이템 소스(Variable 배열)를 초기화하고 새로고침한다.
                 this.ResetItemsOnBlackboardRemoved();
                 return true;
             }
 
-            this._serializedObject = new SerializedObject(this._blackboard);
-
-            SerializedProperty blackboardData = this._serializedObject.FindProperty("_blackboardData");
-
-            if (SerializedProperty.DataEquals(blackboardData, null))
+            try
             {
-                Debug.LogWarning("Serialized blackboard data property is null.");
+                this._serializedObject = new SerializedObject(newBlackboard);
+                
+                this._serializedList = this._serializedObject
+                                           ?.FindProperty("_blackboardData")
+                                           ?.FindPropertyRelative("_variables");
+            }
+            catch
+            {
+                Debug.LogError("Serialized list property is null.");
                 return false;
             }
-
-            this._serializedList = blackboardData.FindPropertyRelative("_variables");
-
-            if (SerializedProperty.DataEquals(this._serializedList, null))
-            {
-                //블랙보드의 변수 리스트가 null인 경우, 경고 메시지를 출력하고 초기화한다.
-                //이 경우 대부분의 경우는 필드 변수의 이름이 수정된 경우.
-                Debug.LogWarning("Serialized list property is null.");
-                return false;
-            }
-
+            
+            this._variableAddButton.enabledSelf = !Application.isPlaying;
+            this._blackboardBindingField.enabledSelf = !Application.isPlaying;
+            
             //블랙보드가 null이 아닌 경우, 아이템 소스를 블랙보드의 변수 리스트로 설정하고 새로고침한다.
             this.itemsSource = this._blackboard.variables;
             this.RefreshItems();
@@ -233,7 +239,7 @@ namespace TaskStreamer.Tool
         /// <param name="index">삭제할 블랙보드 프로퍼티의 인덱스입니다.</param>
         private void DeleteVariableFromList(int index)
         {
-            Undo.RecordObject(_blackboard, "Task Streamer (RemoveBlackboardVariable)");
+            UndoUtility.RecordObjects("Task Streamer (RemoveBlackboardVariable)", _blackboard, TaskStreamerEditor.Instance.graphAsset);
 
             _blackboard.RemoveVariable(itemsSource[index] as BlackboardVariable);
 
@@ -345,7 +351,10 @@ namespace TaskStreamer.Tool
             _serializedObject.Update();
             _serializedObject.ApplyModifiedProperties();
 
-            UnityEditor.EditorUtility.SetDirty(_blackboard);
+            if (_blackboard != null)
+            {
+                UnityEditor.EditorUtility.SetDirty(_blackboard);
+            }
         }
     }
 }
