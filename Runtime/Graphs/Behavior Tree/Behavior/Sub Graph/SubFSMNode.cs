@@ -3,7 +3,7 @@ using Unity.Properties;
 namespace TaskStreamer.BT
 {
     [GeneratePropertyBag, Readable]
-    public class SubFSMNode : SubGraphNode
+    internal class SubFSMNode : SubGraphNode
     {
         public override GraphType subGraphType
         {
