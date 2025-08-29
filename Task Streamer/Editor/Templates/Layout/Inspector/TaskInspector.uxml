@@ -11,7 +11,7 @@
         </ui:VisualElement>
         <ui:VisualElement name="header-line" class="line" style="margin-left: -5px; margin-right: -5px;" />
         <ui:VisualElement name="child" class="inspector-partition" style="flex-grow: 0;">
-            <ui:Label text="Label" name="child-title-header" class="label-header" style="width: auto;" />
+            <ui:Label text="Field" name="child-title-header" class="label-header" style="width: auto;" />
             <ui:VisualElement name="property-container" style="flex-grow: 0;" />
         </ui:VisualElement>
     </ui:VisualElement>

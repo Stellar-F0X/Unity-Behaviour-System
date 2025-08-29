@@ -14,8 +14,20 @@ namespace TaskStreamer.Injection
                                                    IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
         /// <summary> 런타임 시 노드 및 그래프의 인스턴스화를 처리하는 클래스 </summary>
-        public GraphRuntimeInitializeVisitor(GraphContext context) : base(context) { }
+        public GraphRuntimeInitializeVisitor(GraphContext context) : base(context)
+        {
+            //내부적으로 Concurrent dictionary에서 PropertyBag을 가져오는 방식이라 평균 O(1)이지만, 역시 캐싱이 제일 빠르다. 
+            _nodeDictionaryVisitBag = PropertyBag.GetPropertyBag<Dictionary<UGUID, NodeBase>>();
+            
+            _conditionModulesVisitBag = PropertyBag.GetPropertyBag<List<Condition>>();
+        }
 
+
+
+        private static IPropertyBag<Dictionary<UGUID, NodeBase>> _nodeDictionaryVisitBag;
+
+        private static IPropertyBag<List<Condition>> _conditionModulesVisitBag;
+        
         
 
         /// <summary> NodeDictionary 타입의 프로퍼티를 방문하는 메서드입니다. </summary>
@@ -46,9 +58,8 @@ namespace TaskStreamer.Injection
                 nodePairs.Value.OnInstantiate();
             }
             
-            IPropertyBag<Dictionary<UGUID, NodeBase>> propertyBag = PropertyBag.GetPropertyBag<Dictionary<UGUID, NodeBase>>(); 
-            Dictionary<UGUID, NodeBase> dictionaryValue = (Dictionary<UGUID, NodeBase>)value; 
-            propertyBag.Accept(this, ref dictionaryValue); 
+            Dictionary<UGUID, NodeBase> dictionaryValue = value; 
+            _nodeDictionaryVisitBag.Accept(this, ref dictionaryValue); 
         }
 
 
@@ -126,10 +137,9 @@ namespace TaskStreamer.Injection
             {
                 return;
             }
-
-            IPropertyBag<List<Condition>> bag = PropertyBag.GetPropertyBag<List<Condition>>();
+            
             List<Condition> conditions = value.conditions.modules;
-            bag.Accept(this, ref conditions);
+            _conditionModulesVisitBag.Accept(this, ref conditions);
         }
     }
 }

@@ -19,18 +19,21 @@ namespace TaskStreamer.Tool
             VisualElement baseContainer = this.Q<VisualElement>("base");
             VisualElement childContainer = this.Q<VisualElement>("child");
 
-            _nameField = baseContainer.Q<TextField>("name-field");
-            _monoScriptField = baseContainer.Q<ObjectField>("script-field");
-            _tagSelectionField = baseContainer.Q<DropdownField>("tag-field");
+            _nameField = baseContainer.Q<TextField>("name-field"); 
+            _monoScriptField = baseContainer.Q<ObjectField>("script-field"); 
+            _tagSelectionField = baseContainer.Q<DropdownField>("tag-field"); 
             _desContentField = baseContainer.Q<TextField>("description-content");
-            _childTitleHeader = childContainer.Q<Label>("child-title-header");
-            _fieldContainer = childContainer.Q<VisualElement>("property-container");
+            _baseTitleHeader = baseContainer.Q<Label>("base-title-header");
+            
+            _childTitleHeader = childContainer.Q<Label>("child-title-header"); 
+            _fieldContainer = childContainer.Q<VisualElement>("property-container"); 
             
             this._fieldProperties = fieldProperties;
             this._renamingCallback = renamingCallback;
 
             this.SetupDefaultFields(targetTask);
             this.SetupBlackboardVariableFields(fieldProperties);
+            this.ControlTitleHeader();
         }
 
         
@@ -48,6 +51,10 @@ namespace TaskStreamer.Tool
 
         /// <summary> Task의 필드 데이터를 담고 있는 속성 리스트를 나타냅니다. </summary>
         private IReadOnlyList<object> _fieldProperties;
+        
+        
+        
+        private readonly Label _baseTitleHeader;
 
         
         /// <summary>TextField UI element for displaying and editing the task's name.</summary>
@@ -60,6 +67,7 @@ namespace TaskStreamer.Tool
         
         /// <summary> Dropdown field used for tag selection. </summary>
         private readonly DropdownField _tagSelectionField;
+
 
         
         /// <summary> Task의 설명 내용을 편집하는 데 사용되는 필드입니다. </summary>
@@ -74,6 +82,8 @@ namespace TaskStreamer.Tool
         private readonly VisualElement _fieldContainer;
 
         
+
+
 
         /// <summary> Task의 기본 필드를 초기화한다. </summary>
         /// <param name="task"> 초기화할 대상 Task 객체 </param>
@@ -106,9 +116,9 @@ namespace TaskStreamer.Tool
         private void InitializeTaskFields(Task task)
         {
             _nameField.enabledSelf = task.canEditName;
-            _nameField.SetValueWithoutNotify(task.name);
-            _desContentField.SetValueWithoutNotify(task.description);
-            _childTitleHeader.text = ObjectNames.NicifyVariableName(_nodeType.Name);
+            _nameField.SetValueWithoutNotify(task.name); 
+            _desContentField.SetValueWithoutNotify(task.description); 
+            _baseTitleHeader.text = ObjectNames.NicifyVariableName(_nodeType.Name); 
         }
 
 
@@ -131,6 +141,7 @@ namespace TaskStreamer.Tool
                     case BlackboardBasedCondition: _fieldContainer.Add(new BlackboaradBasedConditionListField(property)); break;
                 }
             }
+
         }
 
         
@@ -147,6 +158,21 @@ namespace TaskStreamer.Tool
             this._fieldContainer.Clear();
             this.InitializeTaskFields(this._targetTask);
             this.SetupBlackboardVariableFields(this._fieldProperties);
+            this.ControlTitleHeader();
+        }
+
+
+
+        private void ControlTitleHeader()
+        {
+            if (_fieldProperties.Count == 0 || _fieldContainer.childCount == 0)
+            {
+                _childTitleHeader.style.display = DisplayStyle.None;
+            }
+            else
+            {
+                _childTitleHeader.style.display = DisplayStyle.Flex;
+            }
         }
     }
 }

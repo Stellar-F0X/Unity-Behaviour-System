@@ -59,6 +59,7 @@ namespace TaskStreamer.Tool
         {
             get { return _conditionValue; }
         }
+        
 
 
         /// <summary> Condition 데이터를 기반으로 UI와 값을 초기화합니다. </summary>
@@ -80,6 +81,7 @@ namespace TaskStreamer.Tool
             StringUtility.TrySetNamesOfEnumFlag(condition.configuredComparisonType, this._comparisionField.choices); 
         }
 
+        
 
         /// <summary>비교 유형 변경 시 호출되는 로직을 처리합니다.</summary>
         /// <param name="evt">변경 이벤트 결과 객체입니다.</param>
@@ -103,6 +105,7 @@ namespace TaskStreamer.Tool
         }
 
 
+        
         /// <summary> 삭제 버튼이 클릭되었을 때 호출됩니다. </summary>
         /// <param name="evt"> 클릭 이벤트를 나타내는 ClickEvent 객체입니다. </param>
         private void OnDeleteButtonClicked(ClickEvent evt)

@@ -6,7 +6,7 @@
                 <ui:VisualElement name="inspector" style="flex-grow: 1; flex-shrink: 1; min-height: 20px;">
                     <ui:Label tabindex="-1" text=" Inspector" parse-escape-sequences="true" display-tooltip-when-elided="true" name="left-view-label" picking-mode="Ignore" class="window-label" style="flex-shrink: 1; flex-grow: 0; height: 20px; align-items: center; -unity-text-align: middle-left;" />
                     <ui:ScrollView horizontal-scroller-visibility="Hidden" style="flex-grow: 1;">
-                        <TaskStreamer.Tool.InspectorView style="margin-top: 5px; margin-bottom: 0; margin-right: 2px; margin-left: 2px; height: auto; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+                        <TaskStreamer.Tool.EditorInspectorView style="margin-top: 5px; margin-bottom: 0; margin-right: 2px; margin-left: 2px; height: auto; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
                     </ui:ScrollView>
                 </ui:VisualElement>
                 <ui:VisualElement name="blackboard" style="flex-grow: 1; flex-shrink: 1; background-color: rgb(61, 61, 61); top: auto; height: auto; min-height: 34px; position: relative; overflow: hidden;">

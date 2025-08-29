@@ -14,8 +14,16 @@ namespace TaskStreamer.Injection
                                            IVisitPropertyAdapter<BBCondition>,
                                            IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
-        public BlackboardSyncVisitor(GraphContext context) : base(context) { }
+        public BlackboardSyncVisitor(GraphContext context) : base(context)
+        {
+            //내부적으로 Concurrent dictionary에서 PropertyBag을 가져오는 방식이라 평균 O(1)이지만, 역시 캐싱이 제일 빠르다. 
+            _nodeDictionaryVisitBag = PropertyBag.GetPropertyBag<Dictionary<UGUID, NodeBase>>();
+        }
 
+        
+        private static IPropertyBag<Dictionary<UGUID, NodeBase>> _nodeDictionaryVisitBag; 
+
+        
 
         /// <summary> NodeDictionary 프로퍼티를 방문하여 값을 처리합니다. </summary>
         /// <param name="context"> 방문 시 제공되는 컨텍스트입니다. </param>
@@ -23,9 +31,8 @@ namespace TaskStreamer.Injection
         /// <param name="value"> 방문 대상 NodeDictionary 값입니다. </param>
         public void Visit<TContainer>(in VisitContext<TContainer, NodeDictionary> context, ref TContainer container, ref NodeDictionary value)
         {
-            IPropertyBag<Dictionary<UGUID, NodeBase>> propertyBag = PropertyBag.GetPropertyBag<Dictionary<UGUID, NodeBase>>();
             Dictionary<UGUID, NodeBase> dictionaryValue = (Dictionary<UGUID, NodeBase>)value;
-            propertyBag.Accept(this, ref dictionaryValue);
+            _nodeDictionaryVisitBag.Accept(this, ref dictionaryValue);
         }
 
 

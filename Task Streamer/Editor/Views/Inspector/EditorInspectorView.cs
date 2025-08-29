@@ -8,7 +8,7 @@ namespace TaskStreamer.Tool
 {
     /// <summary> 인스펙터 요소를 확장하여 사용자 정의 인스펙터 인터페이스를 제공하는 클래스 </summary>
     [UxmlElement]
-    public partial class InspectorView : InspectorElement
+    public partial class EditorInspectorView : InspectorElement
     {
         /// <summary> 인스펙터 뷰의 모든 내용을 제거 </summary>
         public void ClearInspector()

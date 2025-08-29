@@ -15,10 +15,10 @@ namespace TaskStreamer.Tool
         private readonly ListView _nodeListView = new ListView();
 
         private TaskGraphView _treeView;
-        private InspectorView _inspectorView;
+        private EditorInspectorView _editorInspectorView;
 
 
-        public void Setup(InspectorView inspectorView, TaskGraphView treeView)
+        public void Setup(EditorInspectorView editorInspectorView, TaskGraphView treeView)
         {
             this.UnregisterValueChangedCallback(this.OnSearchingNodesCallback);
             this.RegisterValueChangedCallback(this.OnSearchingNodesCallback);
@@ -27,7 +27,7 @@ namespace TaskStreamer.Tool
             this.RegisterCallback<FocusInEvent>(this.OnFocusInSearchField);
 
             _treeView = treeView;
-            _inspectorView = inspectorView;
+            _editorInspectorView = editorInspectorView;
 
             _nodeListView.itemsSource = this._itemSource;
 
