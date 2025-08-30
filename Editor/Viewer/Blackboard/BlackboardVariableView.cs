@@ -19,7 +19,7 @@ namespace TaskStreamer.Tool
         /// This class extends `VisualElement` and provides user interface elements for managing variables in the editor.
         public BlackboardVariableView()
         {
-            TaskStreamerEditor.settings.bbVariableXml.CloneTree(this);
+            TaskStreamerResourcesLoader.BBVariableItem.CloneTree(this);
 
             _deleteButton = this.Q<Button>("delete-button");
             _nameField = this.Q<TextField>("name-field");

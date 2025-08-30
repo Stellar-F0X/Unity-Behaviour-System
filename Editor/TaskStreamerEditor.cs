@@ -85,7 +85,7 @@ namespace TaskStreamer.Tool
         }
 
         /// <summary>InspectorView 객체를 참조하여 그래프 요소의 상세 정보를 표시하거나 갱신합니다.</summary>
-        public EditorInspectorView editorInspectorView
+        public InspectorView inspectorView
         {
             get;
             private set;
@@ -167,10 +167,9 @@ namespace TaskStreamer.Tool
         private void InitializeVisualTree()
         {
             Debug.Assert(rootVisualElement is not null, "Root Visual Element is null.");
-            Debug.Assert(settings.editorXml is not null, "EditorXml is null.");
     
-            settings.editorXml.CloneTree(rootVisualElement);
-            rootVisualElement.styleSheets.Add(settings.editorStyle);
+            TaskStreamerResourcesLoader.Window.CloneTree(rootVisualElement);
+            rootVisualElement.styleSheets.Add(TaskStreamerResourcesLoader.WindowStyle);
         }
 
         
@@ -179,7 +178,7 @@ namespace TaskStreamer.Tool
         {
             this.taskGraphView = rootVisualElement.Q<TaskGraphView>();
             this.miniMapView = rootVisualElement.Q<MiniMapView>();
-            this.editorInspectorView = rootVisualElement.Q<EditorInspectorView>();
+            this.inspectorView = rootVisualElement.Q<InspectorView>();
             this._blackboardView = rootVisualElement.Q<BlackboardView>();
             this._graphBreadcrumbs = rootVisualElement.Q<GraphBreadcrumbs>();
         }
@@ -200,11 +199,11 @@ namespace TaskStreamer.Tool
         /// <summary>GraphView의 요소 선택 및 해제를 처리하는 이벤트를 바인딩합니다.</summary>
         private void BindGraphViewEvents()
         {
-            this.taskGraphView.onElementSelected -= editorInspectorView.UpdateSelection;
-            this.taskGraphView.onElementSelected += editorInspectorView.UpdateSelection;
+            this.taskGraphView.onElementSelected -= inspectorView.UpdateSelection;
+            this.taskGraphView.onElementSelected += inspectorView.UpdateSelection;
             
             this.taskGraphView.onElementUnselected = null;
-            this.taskGraphView.onElementUnselected += _ => editorInspectorView.ClearInspector();
+            this.taskGraphView.onElementUnselected += _ => inspectorView.ClearInspector();
         }
 
 #endregion
@@ -253,7 +252,7 @@ namespace TaskStreamer.Tool
             this.currentGraph = null;
             this.graphAsset = null;
 
-            this.editorInspectorView?.ClearInspector();
+            this.inspectorView?.ClearInspector();
             this.taskGraphView?.ClearEditorView();
             this._blackboardView?.ClearBlackboardView();
         }
@@ -355,7 +354,7 @@ namespace TaskStreamer.Tool
         /// <summary>에디터에서 선택된 객체가 변경될 때 호출되며, 그래프 에셋을 확인하고 적절한 그래프를 로드합니다.</summary>
         private void OnSelectionChange()
         {
-            if (Instance == null || taskGraphView == null || editorInspectorView == null)
+            if (Instance == null || taskGraphView == null || inspectorView == null)
             {
                 Debug.LogError("TaskStreamerEditor is not initialized.");
                 return;
@@ -413,10 +412,10 @@ namespace TaskStreamer.Tool
 
             if (isSubGraph == false)
             {
-                _graphBreadcrumbs.Clear();
+                _graphBreadcrumbs?.Clear();
             }
 
-            _graphBreadcrumbs.PushItem(graph, () =>
+            _graphBreadcrumbs?.PushItem(graph, () =>
             {
                 _graphBreadcrumbs.PopToClickItems(graph.guid);
                 this.OpenGraph(graph);
@@ -440,9 +439,9 @@ namespace TaskStreamer.Tool
             isLoadingTreeToView = true;
             currentGraph = drawGraph;
 
-            editorInspectorView.ClearInspector();
-            taskGraphView.TrySetupGraphEditorView(drawGraph);
-            _blackboardView.TryChangeBlackboard(graphAsset?.blackboard);
+            inspectorView?.ClearInspector();
+            taskGraphView?.TrySetupGraphEditorView(drawGraph);
+            _blackboardView?.TryChangeBlackboard(graphAsset?.blackboard);
 
             isLoadingTreeToView = false;
         }

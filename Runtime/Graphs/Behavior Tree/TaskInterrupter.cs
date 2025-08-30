@@ -4,21 +4,35 @@ using UnityEngine;
 
 namespace TaskStreamer.BT
 {
+    /// <summary> Behavior Tree의 노드 호출 스택과 서브트리 중단 기능을 관리하는 클래스 </summary>
     public class TreeInterrupter
     {
-        /// <summary> 중단(Abort) 작업 정보를 담는 구조체 </summary>
+        /// <summary> Behavior Tree의 중단(Abort) 작업 처리를 위한 필수 정보를 나타내는 구조체 </summary>
         private readonly struct AbortInfo
         {
+            /// <summary>
+            /// 비동기 작업 중단에 대한 정보를 저장하는 불변 구조체입니다.
+            /// </summary>
             public AbortInfo(int callStackID, BehaviorNodeBase targetNode = null)
             {
                 this.callStackID = callStackID;
                 this.targetNode = targetNode;
             }
 
+            /// <summary>
+            /// 특정 호출 스택(Call Stack)을 식별하기 위한 고유 ID입니다.
+            /// </summary>
             public readonly int callStackID;
+
+            /// <summary>
+            /// 특정 작업(Call Stack) 중단 시 대상이 되는 노드를 나타냅니다. null일 경우 전체 스택이 중단됨.
+            /// </summary>
             public readonly BehaviorNodeBase targetNode; //null이면 전체 스택 중단
         }
 
+        /// <summary>
+        /// 트리형 비헤이비어 그래프의 실행 중단 및 호출 스택을 관리하는 클래스입니다.
+        /// </summary>
         public TreeInterrupter(Graph graph, int callStackSize)
         {
             int count = callStackSize + 1;
@@ -34,16 +48,25 @@ namespace TaskStreamer.BT
         }
 
 
+        /// <summary>
+        /// 서브트리 중단 동작이 진행 중인지 여부를 나타내는 플래그입니다.
+        /// </summary>
         private bool _isAbortSubtreeInProgress = false;
 
+        /// <summary>
+        /// 실행 중 호출 스택을 관리하기 위한 <see cref="FixedList{T}"/>로, 각 호출 스택은 <see cref="Stack{T}"/> 형태로 구성된다.
+        /// </summary>
         private FixedList<Stack<BehaviorNodeBase>> _runtimeCallStack;
 
+        /// <summary>
+        /// 중단 작업(Abort)의 정보를 보관하고 관리하기 위한 대기열입니다.
+        /// </summary>
         private FixedQueue<AbortInfo> _abortQueue;
 
-        
+
 
         /// <summary>
-        /// 콜스택과 중지 대기열을 초기화합니다.
+        /// 실행 중인 모든 호출 스택과 중지 대기열을 초기화합니다.
         /// </summary>
         public void ClearCallStack()
         {
@@ -58,8 +81,10 @@ namespace TaskStreamer.BT
         }
 
 
-        /// <summary> 지정된 호출 스택의 현재 실행 중인 노드를 반환 </summary>
-        /// <param name="callStackID">호출 스택 ID</param>
+        /// <summary>
+        /// 호출 스택의 현재 실행 중인 노드를 반환합니다.
+        /// </summary>
+        /// <param name="callStackID">확인할 호출 스택의 ID</param>
         /// <returns>현재 노드, 없으면 null</returns>
         public NodeBase GetCurrentNode(in int callStackID)
         {
@@ -72,16 +97,20 @@ namespace TaskStreamer.BT
         }
 
 
-        /// <summary> 지정된 호출 스택에 노드를 푸시 </summary>
+        /// <summary>
+        /// 호출 스택에 특정 노드를 추가합니다.
+        /// </summary>
         /// <param name="callStackID">호출 스택 ID</param>
-        /// <param name="node">푸시할 노드</param>
+        /// <param name="node">추가할 노드</param>
         public void PushInCallStack(in int callStackID, BehaviorNodeBase node)
         {
             _runtimeCallStack[callStackID].Push(node);
         }
 
 
-        /// <summary> 지정된 호출 스택에서 최상단 노드를 팝 </summary>
+        /// <summary>
+        /// 지정된 호출 스택에서 최상단 노드를 제거합니다.
+        /// </summary>
         /// <param name="callStackID">호출 스택 ID</param>
         public void PopInCallStack(in int callStackID)
         {
@@ -96,10 +125,9 @@ namespace TaskStreamer.BT
 
 
         /// <summary>
-        /// 지정된 노드부터 상위까지의 서브트리를 중단
-        /// 해당 노드보다 깊은 depth의 노드들을 모두 정리
+        /// 지정된 노드에서 시작하여 상위 서브트리를 중단합니다.
         /// </summary>
-        /// <param name="callStackID">호출 스택 ID</param>
+        /// <param name="callStackID">호출 스택의 ID</param>
         /// <param name="node">중단할 기준 노드</param>
         public void AbortSubtreeFrom(in int callStackID, BehaviorNodeBase node)
         {
@@ -110,7 +138,9 @@ namespace TaskStreamer.BT
         }
 
 
-        /// <summary> 지정된 호출 스택의 전체 서브트리를 중단 </summary>
+        /// <summary>
+        /// 지정된 호출 스택의 모든 서브트리를 중단합니다.
+        /// </summary>
         /// <param name="callStackID">중단할 호출 스택 ID</param>
         public void AbortSubtree(in int callStackID)
         {
@@ -128,9 +158,10 @@ namespace TaskStreamer.BT
         }
 
 
-        /// <summary> 중단 큐를 처리하여 노드들을 정리 </summary>
-        /// <param name="abortQueue">중단할 노드들의 큐</param>
-        /// <param name="hasTargetNode">특정 노드까지만 중단할지 여부</param>
+        /// <summary>
+        /// 중단 큐를 처리하여 노드들을 정리합니다.
+        /// </summary>
+        /// <param name="hasTargetNode">특정 노드까지만 중단할지 여부를 나타냅니다.</param>
         private void ProcessAbortQueue(bool hasTargetNode)
         {
             while (_abortQueue.count > 0)
@@ -154,7 +185,10 @@ namespace TaskStreamer.BT
         }
 
 
-        /// <summary> 특정 노드까지의 타겟 중단을 처리 </summary>
+        /// <summary>
+        /// 특정 노드까지의 타겟 중단을 처리합니다.
+        /// </summary>
+        /// <param name="abortInfo">중단 대상 정보를 담고 있는 AbortInfo 구조체입니다.</param>
         private void ProcessTargetedAbort(AbortInfo abortInfo)
         {
             int currentID = abortInfo.callStackID;
@@ -182,7 +216,10 @@ namespace TaskStreamer.BT
         }
 
 
-        /// <summary> 전체 스택 중단을 처리 </summary>
+        /// <summary>
+        /// 전체 콜스택의 중단 작업을 처리합니다.
+        /// </summary>
+        /// <param name="abortInfo">처리할 중단 작업에 대한 정보입니다.</param>
         private void ProcessFullStackAbort(AbortInfo abortInfo)
         {
             int currentID = abortInfo.callStackID;
@@ -203,7 +240,10 @@ namespace TaskStreamer.BT
         }
 
 
-        /// <summary> 노드 종료 처리 (병렬 노드의 경우 자식들도 중단) </summary>
+        /// <summary>
+        /// 지정된 노드의 종료 작업을 처리합니다.
+        /// </summary>
+        /// <param name="node">종료 작업을 처리할 대상 노드입니다.</param>
         private void ProcessNodeExit(NodeBase node)
         {
             if (node is BehaviorNodeBase behaviourNode)
@@ -224,7 +264,9 @@ namespace TaskStreamer.BT
         }
 
 
-        /// <summary> 호출 스택이 유효한지 확인  </summary>
+        /// <summary> 호출 스택 ID가 유효한지 확인합니다. </summary>
+        /// <param name="callStackID">유효성 검사를 수행할 호출 스택 ID</param>
+        /// <returns>유효하면 true, 그렇지 않으면 false</returns>
         private bool IsValidCallStack(int callStackID)
         {
             return callStackID >= 0 && callStackID < _runtimeCallStack.count;

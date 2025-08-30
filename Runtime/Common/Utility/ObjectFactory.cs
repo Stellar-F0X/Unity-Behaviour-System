@@ -163,6 +163,36 @@ namespace TaskStreamer.Utility
 
 
 
+
+        /// <summary> 새로운 ServiceBase 객체를 생성한다. </summary>
+        /// <param name="serviceType">생성할 ServiceBase의 타입</param>
+        /// <returns>생성된 ServiceBase 객체 또는 null</returns>
+        public static ServiceBase CreateService(Type serviceType)
+        {
+            if (serviceType == null || typeof(ServiceBase).IsAssignableFrom(serviceType) == false)
+            {
+                Debug.LogError($"{typeof(ObjectFactory)}: Type {serviceType} is not derived from ServiceBase");
+                return null;
+            }
+
+            object createdObject = Activator.CreateInstance(serviceType);
+            
+            ServiceBase result = createdObject as ServiceBase;
+
+            if (result == null)
+            {
+                Debug.LogError($"{typeof(ObjectFactory)}: Failed to create service of type {serviceType}");
+                return null;
+            }
+
+            IPropertyBag propertyBag = PropertyBag.GetPropertyBag(serviceType);
+            propertyBag.Accept(new BlackboardVariableFieldInitializeVisitor(), ref createdObject);
+            return result;
+        }
+        
+
+
+
         /// <summary> 지정된 유형의 Condition 모듈을 생성한다. </summary>
         /// <param name="conditionType">생성할 Condition의 Type.</param>
         /// <returns>생성된 Condition 인스턴스. 실패 시 null 반환.</returns>

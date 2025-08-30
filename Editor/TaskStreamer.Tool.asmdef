@@ -12,7 +12,9 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "USE_ASSETS_PATH"
+    ],
     "versionDefines": [],
     "noEngineReferences": false
 }

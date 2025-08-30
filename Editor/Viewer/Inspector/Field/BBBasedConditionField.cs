@@ -12,7 +12,7 @@ namespace TaskStreamer.Tool
     {
         public BlackBoardBasedConditionField()
         {
-            TaskStreamerEditor.settings.bbBasedConditionFieldXml.CloneTree(this);
+            TaskStreamerResourcesLoader.BBBConditionField.CloneTree(this);
 
             _leftVariableField = this.Q<VisualElement>("left--field-view--field");
             _rightVariableField = this.Q<VisualElement>("right--field-view--field");

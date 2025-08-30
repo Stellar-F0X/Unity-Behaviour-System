@@ -15,7 +15,7 @@ namespace TaskStreamer.Tool
         public override VisualElement CreateInspectorGUI()
         {
             this._settings = (EditorSettings)target;
-            VisualElement inspectorView = _settings.editorSettingsXml.CloneTree();
+            VisualElement inspectorView = TaskStreamerResourcesLoader.Settings.CloneTree();
 
             UnsignedIntegerField updateRate = inspectorView.Q<UnsignedIntegerField>("update-rate");
             FloatField highlightDuration = inspectorView.Q<FloatField>("highlight-duration");

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using TaskStreamer.BT;
 using TaskStreamer.FSM;
 using TaskStreamer.Utility;
 using Unity.Properties;
@@ -29,6 +30,7 @@ namespace TaskStreamer
 #endif
             typeof(List<Transition>),
             typeof(List<Condition>),
+            typeof(List<ServiceBase>),
             typeof(KeyValuePair<UGUID, Graph>),
             typeof(KeyValuePair<UGUID, NodeBase>)
         };

@@ -22,7 +22,7 @@ namespace TaskStreamer.Tool
             this.AddManipulator(new RectangleSelector());
             this.AddManipulator(new GraphZoomer(2f, 0.2f));
 
-            styleSheets.Add(TaskStreamerEditor.settings.editorStyle);
+            styleSheets.Add(TaskStreamerResourcesLoader.WindowStyle);
         }
 
         

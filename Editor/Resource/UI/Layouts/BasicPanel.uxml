@@ -1,0 +1,12 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/TaskStreamer/Editor/Resource/UI/Styles/PanelStyle.uss?fileID=7433441132597879392&amp;guid=a285340815d834a45b02dc7a0303c3eb&amp;type=3#PanelStyle" />
+    <ui:VisualElement name="container">
+        <ui:Label text="Task Inspector" name="base-title-header" class="label-header" />
+        <uie:ObjectField label="Script" name="script-field" enabled="false" type="UnityEditor.MonoScript, UnityEditor.CoreModule" />
+        <ui:TextField name="name-field" label="Name" />
+        <ui:DropdownField label="Tag&#10;" name="tag-field" />
+        <ui:Label text="Description" name="description-label" enable-rich-text="false" style="margin-left: 3px; padding-left: 0; padding-right: 0; margin-right: 3px; margin-top: 1px; margin-bottom: 1px; overflow: hidden; opacity: 1;" />
+        <ui:TextField auto-correction="true" multiline="true" is-delayed="false" select-line-by-triple-click="true" vertical-scroller-visibility="Hidden" name="description-content" style="max-height: 50px; min-height: auto; height: auto;" />
+        <ui:VisualElement name="header-line" class="line" />
+    </ui:VisualElement>
+</ui:UXML>

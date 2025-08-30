@@ -205,7 +205,7 @@ namespace TaskStreamer.Tool
                 return null;
             }
 
-            NodeViewBase nodeView = new StateNodeView(node, TaskStreamerEditor.settings.stateNodeXml);
+            NodeViewBase nodeView = new StateNodeView(node, TaskStreamerResourcesLoader.StateNode);
             Debug.Assert(nodeView is not null, $"{nameof(TaskGraphView)}: NodeViewBase is null");
 
             return nodeView;

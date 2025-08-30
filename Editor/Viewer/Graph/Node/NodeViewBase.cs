@@ -12,8 +12,6 @@ namespace TaskStreamer.Tool
     /// Node 클래스에서 확장된 추상 베이스 클래스이며, 노드의 시각적 표현과 데이터 동기화를 관리합니다.
     public abstract class NodeViewBase : Node
     {
-        /// NodeViewBase는 Unity의 GraphView 기반으로 그래프 노드 UI의 기본 구현을 제공하는 추상 클래스입니다.
-        /// 노드 생성, 위치 설정, 포트 정의 등 그래프 노드 관련 기능을 제공합니다.
         public NodeViewBase(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(AssetDatabase.GetAssetPath(nodeUxml))
         {
             this._elementGroup = this.Q<VisualElement>("group");
@@ -34,35 +32,39 @@ namespace TaskStreamer.Tool
         /// 사용자가 Node를 선택했을 때 발생하는 이벤트로, 선택된 Node 정보를 전달합니다.
         public event Action<GraphElement> onNodeSelected;
 
+        
         /// onNodeUnselected 변수는 노드가 선택 해제될 때 실행되는 이벤트를 정의합니다.
         public event Action<GraphElement> onNodeUnselected;
-
-        /// **_nodeTypeLabel**
+        
+        
         /// 노드의 종류를 표시하기 위한 UI 텍스트 요소를 나타내는 변수입니다.
         protected readonly TextElement _nodeTypeLabel;
 
-        /// <summary>
-        /// 노드 내부에서 UI 그룹 요소를 참조하기 위한 VisualElement 변수.
-        /// </summary>
+        
+        /// <summary> 노드 내부에서 UI 그룹 요소를 참조하기 위한 VisualElement 변수. </summary>
         protected readonly VisualElement _elementGroup;
 
+        
         /// NodeViewBase 클래스 내에서 노드의 테두리 스타일링 및 레이아웃을 정의하는 비주얼 엘리먼트입니다.
         private readonly VisualElement _nodeBorder;
 
-        /// <summary>
-        /// 노드의 상태 또는 강조 표시를 나타내며, UI 테두리 색상 등의 시각적 피드백을 처리하는 데 사용됩니다.
-        /// </summary>
+        
+        /// <summary> 노드의 상태 또는 강조 표시를 나타내며, UI 테두리 색상 등의 시각적 피드백을 처리하는 데 사용됩니다. </summary>
         protected NodeIndicatorBase Indicator;
 
+        
         /// _connectionEdges 변수는 각 노드의 연결 정보를 관리하는 Dictionary로, UGUID와 Edge 객체의 매핑을 저장합니다.
         private Dictionary<UGUID, Edge> _connectionEdges = new Dictionary<UGUID, Edge>();
 
+        
         /// _targetNode는 현재 NodeView가 참조하는 데이터 모델인 NodeBase 타입의 객체로, 노드의 상태와 정보를 관리합니다.
         private NodeBase _targetNode;
 
+        
         /// 노드의 입력 데이터를 처리하기 위한 입력 포트이며, 다른 노드와 연결될 수 있습니다.
         public Port inputPort;
 
+        
         /// outputPort는 노드의 출력 데이터를 다른 노드와 연결할 수 있도록 제공하는 출력 포트입니다.
         public Port outputPort;
 
@@ -78,7 +80,7 @@ namespace TaskStreamer.Tool
 
         /// 특정 노드 또는 엣지의 필드 속성 정보를 저장하는 읽기 전용 List 객체입니다.
         /// TypeUtility를 통해 초기화되며, 필드 속성 관리를 위한 데이터로 활용됩니다.
-        internal List<object> fieldProperties
+        internal List<VariableHandle> fieldProperties
         {
             get;
             private set;
@@ -121,7 +123,7 @@ namespace TaskStreamer.Tool
         /// <summary>
         /// NodeView 를 초기화하고, 관련 속성 및 필드 정보를 설정합니다.
         /// </summary>
-        private void Initialize()
+        protected virtual void Initialize()
         {
             this.onRenamingNode = this.ChangeNodeViewName;
             
@@ -173,6 +175,7 @@ namespace TaskStreamer.Tool
             }
 
             this.title = newName;
+            this.targetNode.name = newName;
         }
 
 

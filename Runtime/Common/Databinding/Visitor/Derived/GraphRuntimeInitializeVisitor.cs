@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using TaskStreamer.BT;
 using TaskStreamer.FSM;
 using TaskStreamer.Utility;
 using Unity.Properties;
@@ -11,6 +13,7 @@ namespace TaskStreamer
                                                    IVisitPropertyAdapter<NodeDictionary>,
                                                    IVisitPropertyAdapter<KeyValuePair<UGUID, NodeBase>>,
                                                    IVisitPropertyAdapter<Transition>,
+                                                   IVisitPropertyAdapter<List<ServiceBase>>,
                                                    IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
         /// <summary> 런타임 시 노드 및 그래프의 인스턴스화를 처리하는 클래스 </summary>
@@ -18,7 +21,7 @@ namespace TaskStreamer
         {
             //내부적으로 Concurrent dictionary에서 PropertyBag을 가져오는 방식이라 평균 O(1)이지만, 역시 캐싱이 제일 빠르다. 
             _nodeDictionaryVisitBag = PropertyBag.GetPropertyBag<Dictionary<UGUID, NodeBase>>();
-            
+
             _conditionModulesVisitBag = PropertyBag.GetPropertyBag<List<Condition>>();
         }
 
@@ -27,8 +30,8 @@ namespace TaskStreamer
         private static IPropertyBag<Dictionary<UGUID, NodeBase>> _nodeDictionaryVisitBag;
 
         private static IPropertyBag<List<Condition>> _conditionModulesVisitBag;
-        
-        
+
+
 
         /// <summary> NodeDictionary 타입의 프로퍼티를 방문하는 메서드입니다. </summary>
         /// <param name="context">방문 컨텍스트입니다.</param>
@@ -44,8 +47,8 @@ namespace TaskStreamer
                 graph.InitializeOnEnterRuntime(_context.taskStreamer);
             }
         }
-        
-        
+
+
 
         /// <summary> NodeDictionary 속성을 방문하며 처리합니다. </summary>
         /// <param name="context">방문 컨텍스트를 나타냅니다.</param>
@@ -57,9 +60,9 @@ namespace TaskStreamer
             {
                 nodePairs.Value.OnInstantiate();
             }
-            
-            Dictionary<UGUID, NodeBase> dictionaryValue = value; 
-            _nodeDictionaryVisitBag.Accept(this, ref dictionaryValue); 
+
+            Dictionary<UGUID, NodeBase> dictionaryValue = value;
+            _nodeDictionaryVisitBag.Accept(this, ref dictionaryValue);
         }
 
 
@@ -79,7 +82,7 @@ namespace TaskStreamer
             }
 
             object reference = value.Value;
-            bag.Accept(this, ref reference); 
+            bag.Accept(this, ref reference);
         }
 
 
@@ -95,7 +98,7 @@ namespace TaskStreamer
                 Debug.LogError($"'{typeof(TContainer)}.{context.Property.Name}' is read-only and cannot be modified.");
                 return;
             }
-            
+
             //정상적으로 동작한다면, value가 null일 수 없다.
             if (value is null)
             {
@@ -137,9 +140,28 @@ namespace TaskStreamer
             {
                 return;
             }
-            
+
             List<Condition> conditions = value.conditions.modules;
             _conditionModulesVisitBag.Accept(this, ref conditions);
+        }
+
+        
+        public void Visit<TContainer>(in VisitContext<TContainer, List<ServiceBase>> context, ref TContainer container, ref List<ServiceBase> value)
+        {
+            foreach (ServiceBase service in value)
+            {
+                Type serviceType = service.GetType();
+
+                if (PropertyBag.Exists(serviceType) == false)
+                {
+                    Debug.LogError($"Property bag not found for {context.Property.Name}");
+                    continue;
+                }
+                
+                IPropertyBag bag = PropertyBag.GetPropertyBag(serviceType);
+                object reference = service;
+                bag.Accept(this, ref reference);
+            }
         }
     }
 }

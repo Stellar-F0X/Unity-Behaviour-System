@@ -17,14 +17,14 @@ namespace TaskStreamer
 
 
         /// <summary> Unity Properties의 기본 방문 처리기 </summary>
-        public ReadableFieldCollectorVisitor(List<object> propertiesContainer)
+        public ReadableFieldCollectorVisitor(List<VariableHandle> propertiesContainer)
         {
             this._propertiesContainer = propertiesContainer;
         }
 
 
         /// <summary>읽기 가능한 필드 정보를 수집하는 프로세서를 나타냅니다.</summary>
-        private readonly List<object> _propertiesContainer;
+        private readonly List<VariableHandle> _propertiesContainer;
 
 
         /// <summary>특정 프로퍼티에 대한 방문 로직을 처리합니다.</summary>

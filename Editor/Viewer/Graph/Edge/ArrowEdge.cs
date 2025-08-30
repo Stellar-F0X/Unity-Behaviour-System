@@ -18,7 +18,7 @@ namespace TaskStreamer.Tool
         /// Represents a custom Unity edge with arrow functionality for graph-based tools.
         public ArrowEdge()
         {
-            this.styleSheets.Add(TaskStreamerEditor.settings.EdgeStyle); //USS 추가
+            this.styleSheets.Add(TaskStreamerResourcesLoader.EdgeStyle); //USS 추가
             this.generateVisualContent = this.DrawArrow;
             this.isGhostEdgeMode = true;
 
@@ -65,7 +65,7 @@ namespace TaskStreamer.Tool
         }
 
         /// <summary> 필드 속성 리스트를 관리하는 내부 프로퍼티 </summary>
-        internal List<object> fieldProperties
+        internal List<VariableHandle> fieldProperties
         {
             get;
             private set;

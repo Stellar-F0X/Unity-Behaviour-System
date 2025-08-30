@@ -65,7 +65,7 @@ namespace TaskStreamer.Utility
 
 
 #if UNITY_EDITOR
-        public static List<object> TryGetFieldProperties(Type type, object targetReference)
+        public static List<VariableHandle> TryGetFieldProperties(Type type, object targetReference)
         {
             IPropertyBag propertyBag = PropertyBag.GetPropertyBag(type);
 
@@ -75,7 +75,7 @@ namespace TaskStreamer.Utility
                 return null;
             }
 
-            List<object> properties = new List<object>();
+            List<VariableHandle> properties = new List<VariableHandle>();
             propertyBag.Accept(new ReadableFieldCollectorVisitor(properties), ref targetReference);
             return properties;
         }

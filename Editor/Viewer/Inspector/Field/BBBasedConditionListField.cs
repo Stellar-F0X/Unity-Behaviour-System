@@ -8,12 +8,12 @@ using UnityEngine.UIElements;
 namespace TaskStreamer.Tool
 {
     /// BlackboardBasedCondition의 조건 목록을 UI로 표시하는 VisualElement 클래스.
-    public class BlackboaradBasedConditionListField : VisualElement
+    public class BlackboardBasedConditionListField : VisualElement, IRefreshableField
     {
         /// BlackboardBasedCondition의 조건 목록을 UI로 표시하는 VisualElement 클래스입니다.
-        public BlackboaradBasedConditionListField(VariableHandle fieldInfo)
+        public BlackboardBasedConditionListField(VariableHandle fieldInfo)
         {
-            TaskStreamerEditor.settings.bbBasedConditionListFieldXml.CloneTree(this);
+            TaskStreamerResourcesLoader.BBBConditionListField.CloneTree(this);
 
             _conditionPolicyEnumView = this.Q<EnumField>("condition-evaluation-policy");
             _conditionListView = this.Q<ListView>("condition-list-view");
@@ -57,6 +57,13 @@ namespace TaskStreamer.Tool
             
             _conditionPolicyEnumView.value = _bbCondition.evaluationPolicy;
             _conditionPolicyEnumView.RegisterValueChangedCallback(e => _bbCondition.evaluationPolicy = (EvaluationPolicy)e.newValue);
+        }
+        
+        
+        
+        public void RefreshVariableFieldPanel(VariableHandle handle)
+        {
+            _conditionListView?.RefreshItems();
         }
 
 

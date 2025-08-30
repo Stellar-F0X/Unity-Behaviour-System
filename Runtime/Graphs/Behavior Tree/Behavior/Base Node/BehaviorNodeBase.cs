@@ -8,38 +8,71 @@ namespace TaskStreamer.BT
     [Serializable]
     public abstract class BehaviorNodeBase : NodeBase
     {
+        /// 이 변수는 현재 노드가 속한 BehaviorTree를 참조하며, 부모-자식 노드 구조 관리 및 실행 흐름을 담당합니다.
+        /// 내부적으로만 접근 및 설정 가능합니다.
         private BehaviorTree _tree;
 
+
+        /// 이 변수는 현재 BehaviorNode의 부모 노드를 참조하며, 노드 계층 구조를 관리하는 데 사용됩니다.
+        /// 외부에서 이 값을 설정할 수 없으며 내부적으로만 사용됩니다.
         [SerializeReference, DontCreateProperty, HideInInspector]
         private BehaviorNodeBase _parent;
 
+
+        /// BehaviorNodeBase 클래스에서 사용되는 비공개 변수로, 노드와 연관된 ServiceBase 객체 목록을 관리합니다.
+        [SerializeReference, HideInInspector]
+        private List<ServiceBase> _services = new List<ServiceBase>(1);
+
+
+        /// 자식 노드들을 저장하는 리스트로, 각 BehaviorNodeBase 객체가 하위 노드 구조를 관리하기 위해 사용됩니다.
         [SerializeReference, DontCreateProperty, HideInInspector]
         protected List<BehaviorNodeBase> _children = new List<BehaviorNodeBase>(1);
 
 
+
+        /// <summary>
+        /// 각 노드의 타입을 반환하는 속성으로, 현재 노드가 어떤 역할을 수행하는지 정의합니다.
+        /// (예: Root, Action, Composite, Decorator, SubGraph).
+        /// </summary>
         public abstract BehaviorNodeType nodeType
         {
             get;
         }
 
+        
+        /// <summary>
+        /// 노드 실행 상태를 나타내는 속성입니다. Success, Failure, Running 값 중 하나를 가질 수 있습니다.
+        /// </summary>
         public Status status
         {
             get;
             private set;
         }
 
+        
+        /// callStackID는 트리 노드의 호출 스택 ID로, 노드 실행 및 상태 관리에 사용됩니다.
+        /// 내부에서만 설정 가능하며 외부에서는 읽기만 가능합니다.
         public int callStackID
         {
             get;
             internal set;
         }
 
+        
+        /// <summary>
+        /// 해당 노드의 계층적 깊이를 나타내는 속성으로, 트리의 루트에서 해당 노드까지의 거리(깊이)를 나타냅니다.
+        /// 내부적으로 설정되며, 외부에서는 읽기만 가능합니다.
+        /// </summary>
         public int depth
         {
             get;
             internal set;
         }
 
+        
+        /// <summary>
+        /// 노드의 부모 노드를 가져오거나 설정합니다. 내부적으로만 설정 가능합니다.
+        /// </summary>
         public BehaviorNodeBase parent
         {
             get { return _parent; }
@@ -47,6 +80,11 @@ namespace TaskStreamer.BT
             internal set { _parent = value; }
         }
 
+        
+        /// <summary>
+        /// 이 속성은 현재 노드가 속한 BehaviorTree 객체를 참조합니다.
+        /// 노드와 트리를 연결하며, 내부적으로 설정되고 접근됩니다.
+        /// </summary>
         public BehaviorTree tree
         {
             get { return _tree; }
@@ -54,7 +92,19 @@ namespace TaskStreamer.BT
             internal set { _tree = value; }
         }
 
+        
+        /// <summary>
+        /// 노드의 서비스 목록을 읽기 전용으로 반환합니다. (서비스는 특정 기능을 실행 중인 노드에 부여하기 위한 추가적인 동작입니다.)
+        /// </summary>
+        public IReadOnlyList<ServiceBase> services
+        {
+            get { return _services; }
+        }
 
+
+        
+        /// 노드의 업데이트 로직을 실행하여 현재 상태를 반환합니다.
+        /// <return> 노드 실행 결과 상태를 반환합니다.
         internal Status UpdateNode()
         {
             this.callCount++;
@@ -66,6 +116,14 @@ namespace TaskStreamer.BT
 
             if (this.callState == NodeCallState.Updating)
             {
+                foreach (ServiceBase service in _services)
+                {
+                    if (service.enable)
+                    {
+                        service.OnUpdate();
+                    }
+                }
+                
                 this.status = this.OnUpdate();
 
                 if (this.status == Status.Running)
@@ -88,20 +146,42 @@ namespace TaskStreamer.BT
 
             return this.status;
         }
+        
+        
 
-
+        /// 노드가 실행을 시작할 때 호출되며, 호출 스택에 추가하고 서비스를 초기화합니다.
         internal override sealed void EnterNode()
         {
             this.tree.interrupter.PushInCallStack(callStackID, this);
+
+            foreach (ServiceBase service in _services)
+            {
+                if (service.enable)
+                {
+                    service.OnStart();
+                }
+            }
+            
             this.onNodeEnter?.Invoke();
             this.OnEnter();
             this.callState = NodeCallState.Updating;
         }
 
+        
 
+        /// 노드 실행 종료 시 호출되어 자원을 정리하고 상태를 초기화하는 메서드입니다.
         internal override sealed void ExitNode()
         {
             this.tree.interrupter.PopInCallStack(callStackID);
+            
+            foreach (ServiceBase service in _services)
+            {
+                if (service.enable)
+                {
+                    service.OnStop();
+                }
+            }
+            
             this.OnExit();
             this.onNodeExit?.Invoke();
             this.callState = NodeCallState.BeforeEnter;
@@ -110,111 +190,10 @@ namespace TaskStreamer.BT
             this.status = (this.status == Status.Running ? Status.Failure : this.status);
         }
 
+        
 
-        /// Core behavior update function that must be implemented by derived classes.
-        /// Returns the execution result of the node's behavior.
+        /// 노드의 핵심 동작을 업데이트하는 추상 메서드로, 파생 클래스에서 구현되어야 합니다.
+        /// <return> 노드 동작의 실행 결과를 반환합니다.
         protected abstract Status OnUpdate();
-
-
-
-        internal void AddChild(BehaviorNodeBase child)
-        {
-#if UNITY_EDITOR
-            if (Application.isPlaying == false)
-            {
-                UnityEditor.Undo.RecordObject(tree.graphAsset, "Behavior Tree (AddChild)");
-            }
-#endif
-            switch (this.nodeType)
-            {
-                case BehaviorNodeType.Root: ((RootNode)this).child = child; break;
-
-                case BehaviorNodeType.Decorator: ((DecoratorNode)this).child = child; break;
-
-                case BehaviorNodeType.Composite: ((CompositeNode)this).children.Add(child); break;
-            }
-
-#if UNITY_EDITOR
-            if (Application.isPlaying == false)
-            {
-                UnityEditor.EditorUtility.SetDirty(tree.graphAsset);
-            }
-#endif
-        }
-
-
-        internal void ChangeChild(BehaviorNodeBase originalChild, BehaviorNodeBase newChild)
-        {
-#if UNITY_EDITOR
-            if (Application.isPlaying == false)
-            {
-                UnityEditor.Undo.RecordObject(tree.graphAsset, "Behavior Tree (ChangeChild)");
-            }
-#endif
-            
-            switch (this.nodeType)
-            {
-                case BehaviorNodeType.Root:
-                {
-                    RootNode root = (RootNode)this;
-                    Debug.Assert(root != null, $"{newChild.name} cannot be converted");
-                    root.child = newChild;
-                    break;
-                }
-
-                case BehaviorNodeType.Decorator:
-                {
-                    DecoratorNode deco = (DecoratorNode)this;
-                    Debug.Assert(deco != null, $"{newChild.name} cannot be converted");
-                    deco.child = newChild;
-                    break;
-                }
-
-                case BehaviorNodeType.Composite:
-                {
-                    CompositeNode compo = (CompositeNode)this;
-                    int index = compo.children.IndexOf(originalChild);
-                    Debug.Assert(index != -1, $"{originalChild.name} not found");
-                    compo.children[index] = newChild; //replace in runtime
-                    break;
-                }
-            }
-            
-            newChild.parent = this;
-            
-#if UNITY_EDITOR
-            if (Application.isPlaying == false)
-            {
-                UnityEditor.EditorUtility.SetDirty(tree.graphAsset);
-            }
-#endif
-        }
-
-
-        internal void RemoveChild(BehaviorNodeBase child)
-        {
-#if UNITY_EDITOR
-            if (Application.isPlaying == false)
-            {
-                UnityEditor.Undo.RecordObject(tree.graphAsset, "Behavior Tree (RemoveChild)");
-            }
-#endif
-
-            switch (this.nodeType)
-            {
-                case BehaviorNodeType.Root: ((RootNode)this).child = null; break;
-
-                case BehaviorNodeType.Decorator: ((DecoratorNode)this).child = null; break;
-
-                case BehaviorNodeType.Composite: ((CompositeNode)this).children.Remove(child); break;
-            }
-
-#if UNITY_EDITOR
-            if (Application.isPlaying == false)
-            {
-                UnityEditor.EditorUtility.SetDirty(tree.graphAsset);
-            }
-#endif
-        }
     }
 }

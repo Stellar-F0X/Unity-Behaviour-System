@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
@@ -21,38 +20,12 @@ namespace TaskStreamer.Tool
         
         public Gradient nodeStatusGradient;
         public Gradient edgeStatusGradient;
-        
 
 
-#region UI Toolkit Templates
-        // UI Toolkit assets for the editor
-        public VisualTreeAsset editorXml;
-        public StyleSheet editorStyle;
-        
-        public VisualTreeAsset behaviorNodeXml;
-        public StyleSheet behaviorNodeStyle;
-        
-        public VisualTreeAsset stateNodeXml;
-        public StyleSheet stateNodeStyle;
-        
-        public VisualTreeAsset bbVariableXml;
-        public StyleSheet bbVariableStyle;
-        
-        public VisualTreeAsset editorSettingsXml;
-        public StyleSheet editorSettingsStyle;
-        
-        public StyleSheet EdgeStyle;
-
-        public VisualTreeAsset nodeInspectorXml;
-        public StyleSheet inspectorStyle;
-
-        public VisualTreeAsset bbVariableFieldXml;
-
-        public VisualTreeAsset bbBasedConditionFieldXml;
-        public StyleSheet bbBasedConditionFieldStyle;
-
-        public VisualTreeAsset bbBasedConditionListFieldXml;
-        public StyleSheet bbBasedConditionListStyle;
-#endregion 
+        private void Awake()
+        {
+            //프로젝트 뷰에선 숨기고, 빌드될땐, 이미 모든 노드에 값이 할당된 뒤일테니, 빌드에 포함하지 않음.
+            this.hideFlags = HideFlags.HideInInspector | HideFlags.DontSaveInBuild;
+        }
     }
 }

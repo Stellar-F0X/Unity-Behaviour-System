@@ -1,16 +1,20 @@
 	{
-	  "name": "com.stellarf0x.behaviorsystem",
+	  "name": "com.stellarf0x.taskstreamer",
 	  "version": "1.0.0",
-	  "displayName": "Behavior System",
-	  "description": "AI Behavior Editing System for Unity.",
-	  "unity": "6.0",
+	  "displayName": "Task Streamer",
+	  "description": "AI",
+	  "unity": "6.0.49",
 	  "author": {
 	    "name": "Stellar-F0X",
-	    "url": "https://github.com/Stellar-F0X/Unity-Behaviour-System"
+	    "url": "https://github.com/Stellar-F0X/TaskStreamer"
 	  },
 	  "keywords": [
+		"bt",
         "behavior tree",
 		"behaviour tree",
+		"fsm",
+		"state machine",
+		"finite state machine",
         "editor",
 	    "unity",
         "ai"
