@@ -106,7 +106,7 @@
     border-right-color: rgb(70, 70, 70);
     border-top-color: rgb(70, 70, 70);
     border-bottom-color: rgb(70, 70, 70);
-    cursor: url("project://database/Assets/TaskStreamer/Resource/UI/Images/Touch.png?fileID=2800000&guid=b3e981dcf6204ee40a74cea955848a81&type=3#Touch");
+    cursor: url("project://database/Assets/TaskStreamer/Editor/Resource/UI/Images/Touch.png?fileID=2800000&guid=b3e981dcf6204ee40a74cea955848a81&type=3#Touch");
 }
 
 #output > .port {
@@ -126,7 +126,7 @@
     border-right-color: rgb(70, 70, 70);
     border-top-color: rgb(70, 70, 70);
     border-bottom-color: rgb(70, 70, 70);
-    cursor: url("project://database/Assets/TaskStreamer/Resource/UI/Images/Touch.png?fileID=2800000&guid=b3e981dcf6204ee40a74cea955848a81&type=3#Touch");
+    cursor: url("project://database/Assets/TaskStreamer/Editor/Resource/UI/Images/Touch.png?fileID=2800000&guid=b3e981dcf6204ee40a74cea955848a81&type=3#Touch");
 }
 
 #input > .port > #connector {

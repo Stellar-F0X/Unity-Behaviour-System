@@ -94,7 +94,7 @@
     background-color: rgb(48, 48, 48);
     width: 100%;
     height: 100%;
-    cursor: url("project://database/Assets/TaskStreamer/Resource/UI/Images/Touch.png?fileID=2800000&guid=b3e981dcf6204ee40a74cea955848a81&type=3#Touch");
+    cursor: url("project://database/Assets/TaskStreamer/Editor/Resource/UI/Images/Touch.png?fileID=2800000&guid=b3e981dcf6204ee40a74cea955848a81&type=3#Touch");
 }
 
 #output > .port {
@@ -111,7 +111,7 @@
     background-image: none;
     width: 100%;
     height: 100%;
-    cursor: url("project://database/Assets/TaskStreamer/Resource/UI/Images/Touch.png?fileID=2800000&guid=b3e981dcf6204ee40a74cea955848a81&type=3#Touch");
+    cursor: url("project://database/Assets/TaskStreamer/Editor/Resource/UI/Images/Touch.png?fileID=2800000&guid=b3e981dcf6204ee40a74cea955848a81&type=3#Touch");
     padding-top: 6px;
     padding-bottom: 6px;
 }
