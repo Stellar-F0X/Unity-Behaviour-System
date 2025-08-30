@@ -94,6 +94,22 @@ namespace TaskStreamer
                 return variables.Where(v => v.guid != excluded).Select(v => v.key).ToArray();
             }
         }
+        
+        
+        /// <summary>지정된 키를 가진 변수가 존재하는지 확인합니다.</summary>
+        /// <param name="key">확인할 변수의 UGUID 키입니다.</param>
+        /// <returns>변수가 존재하면 true, 그렇지 않으면 false를 반환합니다.</returns>
+        public bool HasVariable(UGUID key)
+        {
+            if (this.FindVariable(key) is null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
 
 
 #if UNITY_EDITOR
@@ -129,22 +145,6 @@ namespace TaskStreamer
             else
             {
                 Debug.LogError("Failed to find the specified blackboard variable.");
-            }
-        }
-
-
-        /// <summary>지정된 키를 가진 변수가 존재하는지 확인합니다.</summary>
-        /// <param name="key">확인할 변수의 UGUID 키입니다.</param>
-        /// <returns>변수가 존재하면 true, 그렇지 않으면 false를 반환합니다.</returns>
-        public bool HasVariable(UGUID key)
-        {
-            if (this.FindVariable(key) is null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
             }
         }
 

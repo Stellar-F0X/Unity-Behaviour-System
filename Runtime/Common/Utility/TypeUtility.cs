@@ -5,7 +5,6 @@ using System.Reflection;
 using TaskStreamer.Injection;
 using Unity.Properties;
 using UnityEngine;
-using Object = UnityEngine.Object;
 using UTypeUtility = Unity.Properties.TypeUtility;
 
 namespace TaskStreamer.Utility

@@ -7,10 +7,69 @@ using UnityEngine;
 
 namespace TaskStreamer.Utility
 {
-#if UNITY_EDITOR
     /// <summary> 'T'ask 'S'treamer Object Factory </summary>
     internal static class ObjectFactory
     {
+         /// <summary> 새로운 BlackboardVariable 객체를 생성한다. </summary>
+        /// <param name="implementedType">생성할 BlackboardVariable의 타입</param>
+        /// <param name="name">BlackboardVariable의 이름 (기본값: 빈 문자열)</param>
+        /// <param name="defaultValue">BlackboardVariable의 기본 값 (기본값: null)</param>
+        /// <returns>생성된 BlackboardVariable 객체 또는 null</returns>
+        public static BlackboardVariable CreateBlackboardVariable(Type implementedType, string name = "", object defaultValue = null)
+        {
+            Debug.Assert(implementedType != null, $"{typeof(ObjectFactory)}: BlackboardVariableType is null");
+
+            BlackboardVariable createdValue = BlackboardVariable.Create(implementedType, false);
+
+            if (createdValue == null)
+            {
+                Debug.LogError($"{typeof(ObjectFactory)}: Failed to create BlackboardVariable of type {implementedType}");
+                return null;
+            }
+
+            createdValue.key = name.IsNotNullOrEmpty() ? name : BlackboardVariable.DEFAULT_VARIABLE_NAME;
+            createdValue.implementedType = implementedType;
+
+            if (defaultValue is not null)
+            {
+                createdValue.boxedValue = defaultValue;
+            }
+            
+            return createdValue;
+        }
+
+
+
+        /// <summary> 지정된 유형의 공유 BlackboardVariable 인스턴스를 생성한다. </summary>
+        /// <param name="implementedType">생성할 BlackboardVariable의 Type.</param>
+        /// <param name="reference">참조할 BlackboardAsset 객체.</param>
+        /// <param name="variableGuid">BlackboardVariable의 고유 ID.</param>
+        /// <returns>생성된 공유 BlackboardVariable 인스턴스. 실패 시 null 반환.</returns>
+        public static BlackboardVariable CreateSharedBlackboardVariable(Type implementedType, BlackboardAsset reference, UGUID variableGuid)
+        {
+            Debug.Assert(reference != null, "blackboard is null");
+
+            Debug.Assert(variableGuid.IsEmpty() == false, "variable guid is empty");
+            
+            Debug.Assert(implementedType != null, $"{typeof(ObjectFactory)}: BlackboardVariableType is null");
+
+            BlackboardVariable createdValue = BlackboardVariable.Create(implementedType, variableGuid, true);
+
+            if (createdValue is not ISharedBlackboardVariable variable)
+            {
+                Debug.LogError($"{typeof(ObjectFactory)}: Failed to create BlackboardVariable of type {implementedType}");
+                return null;
+            }
+            
+            createdValue.implementedType = implementedType;
+            
+            variable.SetBlackboardReference(reference);
+            return createdValue;
+        }
+        
+        
+        
+#if UNITY_EDITOR
         /// <summary> 지정된 유형의 노드를 생성한다. </summary>
         /// <param name="nodeType">생성할 노드의 Type.</param>
         /// <param name="position">생성된 노드의 초기 위치 (기본값: (0, 0)).</param>
@@ -75,65 +134,6 @@ namespace TaskStreamer.Utility
             }
 
             return new Transition(from, to);
-        }
-
-
-
-        /// <summary> 새로운 BlackboardVariable 객체를 생성한다. </summary>
-        /// <param name="implementedType">생성할 BlackboardVariable의 타입</param>
-        /// <param name="name">BlackboardVariable의 이름 (기본값: 빈 문자열)</param>
-        /// <param name="defaultValue">BlackboardVariable의 기본 값 (기본값: null)</param>
-        /// <returns>생성된 BlackboardVariable 객체 또는 null</returns>
-        public static BlackboardVariable CreateBlackboardVariable(Type implementedType, string name = "", object defaultValue = null)
-        {
-            Debug.Assert(implementedType != null, $"{typeof(ObjectFactory)}: BlackboardVariableType is null");
-
-            BlackboardVariable createdValue = BlackboardVariable.Create(implementedType, false);
-
-            if (createdValue == null)
-            {
-                Debug.LogError($"{typeof(ObjectFactory)}: Failed to create BlackboardVariable of type {implementedType}");
-                return null;
-            }
-
-            createdValue.key = name.IsNotNullOrEmpty() ? name : BlackboardVariable.DEFAULT_VARIABLE_NAME;
-            createdValue.implementedType = implementedType;
-
-            if (defaultValue is not null)
-            {
-                createdValue.boxedValue = defaultValue;
-            }
-            
-            return createdValue;
-        }
-
-
-
-        /// <summary> 지정된 유형의 공유 BlackboardVariable 인스턴스를 생성한다. </summary>
-        /// <param name="implementedType">생성할 BlackboardVariable의 Type.</param>
-        /// <param name="reference">참조할 BlackboardAsset 객체.</param>
-        /// <param name="variableGuid">BlackboardVariable의 고유 ID.</param>
-        /// <returns>생성된 공유 BlackboardVariable 인스턴스. 실패 시 null 반환.</returns>
-        public static BlackboardVariable CreateSharedBlackboardVariable(Type implementedType, BlackboardAsset reference, UGUID variableGuid)
-        {
-            Debug.Assert(reference != null, "blackboard is null");
-
-            Debug.Assert(variableGuid.IsEmpty() == false, "variable guid is empty");
-            
-            Debug.Assert(implementedType != null, $"{typeof(ObjectFactory)}: BlackboardVariableType is null");
-
-            BlackboardVariable createdValue = BlackboardVariable.Create(implementedType, variableGuid, true);
-
-            if (createdValue is not ISharedBlackboardVariable variable)
-            {
-                Debug.LogError($"{typeof(ObjectFactory)}: Failed to create BlackboardVariable of type {implementedType}");
-                return null;
-            }
-            
-            createdValue.implementedType = implementedType;
-            
-            variable.SetBlackboardReference(reference);
-            return createdValue;
         }
 
 
@@ -217,6 +217,6 @@ namespace TaskStreamer.Utility
 
             return module;
         }
-    }
 #endif
+    }
 }

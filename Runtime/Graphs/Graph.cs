@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using TaskStreamer.Utility;
 using Unity.Properties;
-using UnityEditor;
 using UnityEngine;
 using ObjectFactory = TaskStreamer.Utility.ObjectFactory;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace TaskStreamer
 {
@@ -17,7 +20,9 @@ namespace TaskStreamer
             this.name = graphName;
             this.guid = UGUID.Create();
             this.graphAsset = graphAsset;
+#if UNITY_EDITOr
             this._nodeGroup = new List<NodeGroup>();
+#endif
             this._nodeLookup = new NodeDictionary();
         }
 

@@ -161,8 +161,7 @@ namespace TaskStreamer
             }
         }
 
-
-#if UNITY_EDITOR
+        
         /// <summary>BlackboardVariable을 추가합니다.</summary>
         /// <param name="variable">추가할 BlackboardVariable 객체입니다.</param>
         internal void AddVariable(in BlackboardVariable variable)
@@ -232,7 +231,6 @@ namespace TaskStreamer
                 this._variablesByGuid.Clear();
             }
         }
-#endif
 
 
         /// <summary>Serialization 이전에 호출됩니다.</summary>

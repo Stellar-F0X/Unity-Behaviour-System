@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TaskStreamer.Utility;
 using Unity.Properties;
-using UnityEditor;
 using UnityEngine;
 using ObjectFactory = TaskStreamer.Utility.ObjectFactory;
 
@@ -205,11 +203,11 @@ namespace TaskStreamer.FSM
             }
 
             // GraphAsset과 from 노드 모두 기록
-            Undo.RecordObject(_graphAsset, "State Machine (Connect)");
+            UnityEditor.Undo.RecordObject(_graphAsset, "State Machine (Connect)");
 
             Transition newTransition = ObjectFactory.CreateTransition(from, to);
             from.AddTransition(newTransition);
-            EditorUtility.SetDirty(_graphAsset);
+            UnityEditor.EditorUtility.SetDirty(_graphAsset);
             return newTransition;
         }
 
@@ -222,11 +220,11 @@ namespace TaskStreamer.FSM
             }
 
             // GraphAsset과 from 노드 모두 기록
-            Undo.RecordObject(_graphAsset, "State Machine (Disconnect)");
+            UnityEditor.Undo.RecordObject(_graphAsset, "State Machine (Disconnect)");
             from.RemoveTransition(transition);
-            EditorUtility.SetDirty(_graphAsset);
+            UnityEditor.EditorUtility.SetDirty(_graphAsset);
             return transition;
         }
-    }
 #endif
+    }
 }

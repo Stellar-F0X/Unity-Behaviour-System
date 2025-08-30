@@ -1,7 +1,6 @@
 using System;
 using TaskStreamer.Injection;
 using TaskStreamer.Utility;
-using UnityEngine;
 
 namespace TaskStreamer
 {

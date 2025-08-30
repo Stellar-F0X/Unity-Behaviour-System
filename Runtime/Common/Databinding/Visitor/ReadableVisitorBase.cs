@@ -24,7 +24,9 @@ namespace TaskStreamer.Injection
         /// <summary> ReadableVisitorBase에서 방문 가능한 대상 타입들을 저장하는 정적 컬렉션입니다. </summary>
         private readonly static HashSet<ICustomAttributeProvider> _VisitAvailable = new HashSet<ICustomAttributeProvider>()
         {
+#if UNITY_EDITOR
             typeof(List<NodeGroup>),
+#endif
             typeof(List<Transition>),
             typeof(List<Condition>),
             typeof(KeyValuePair<UGUID, Graph>),

@@ -15,7 +15,10 @@ namespace TaskStreamer.FSM
             this._destinationNode = destinationNode;
             this._conditions = new BlackboardBasedCondition();
             base.name = $"{sourceNode.name} To {destinationNode.name}";
+
+#if UNITY_EDITOR
             base.canEditName = false;
+#endif
         }
 
         [SerializeField, CreateProperty]

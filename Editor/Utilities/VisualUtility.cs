@@ -1,6 +1,5 @@
 using System;
 using TaskStreamer.Injection;
-using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;

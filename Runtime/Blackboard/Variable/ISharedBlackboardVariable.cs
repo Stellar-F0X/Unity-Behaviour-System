@@ -1,5 +1,3 @@
-using TaskStreamer.Utility;
-
 namespace TaskStreamer
 {
     public interface ISharedBlackboardVariable

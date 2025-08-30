@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace TaskStreamer.Injection
 {
+#if UNITY_EDITOR
     /// <summary> GUID를 재할당하는 프로세서를 구현합니다. </summary>
     internal class GuidReassignmentVisitor : GraphVisitorBase, IVisitPropertyAdapter<NodeDictionary>
     {
@@ -25,7 +26,7 @@ namespace TaskStreamer.Injection
         }
 
 
-        
+
         /// <summary> NodeDictionary에 대한 GUID 재할당 처리를 진행합니다. </summary>
         /// <param name="context"> 방문 중인 컨텍스트 정보 </param>
         /// <param name="container"> 컨테이너 객체의 참조 </param>
@@ -79,7 +80,7 @@ namespace TaskStreamer.Injection
             return newDictionary;
         }
 
-        
+
 
         /// <summary> 노드 GUID를 재할당하는 처리를 수행합니다. </summary>
         /// <param name="originalDictionary">GUID 재할당이 필요한 노드 사전입니다.</param>
@@ -118,4 +119,5 @@ namespace TaskStreamer.Injection
             return newNodeDictionary;
         }
     }
+#endif
 }
