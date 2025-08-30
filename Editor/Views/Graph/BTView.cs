@@ -211,11 +211,21 @@ namespace TaskStreamer.Tool
         public override BindingWindow CreateGraphNodeCreationWindow(TaskGraphView graphView)
         {
             return BindingWindowBuilder.GetBuilder("Behavior Tree", reuse: true)
-                                       .AddFactoryModule(() => new NodeFactoryModule<ActionNode>(graphView, "Action"), () => new TypeTreeProvider(true))
-                                       .AddFactoryModule(() => new NodeFactoryModule<DecoratorNode>(graphView, "Decorator"), () => new TypeTreeProvider(true))
-                                       .AddFactoryModule(() => new NodeFactoryModule<CompositeNode>(graphView, "Composite"), () => new TypeTreeProvider(true))
-                                       .AddFactoryModule(() => new NodeFactoryModule<SubGraphNode>(graphView, "Graph"), () => new TypeTreeProvider(true))
-                                       .AddFactoryModule(() => new NodeGroupFactoryModule<NodeGroup>(graphView, "Utility"), () => new TypeTreeProvider(false))
+                                       .AddFactoryModule(
+                                           () => new NodeFactoryModule<ActionNode>(graphView, "Action"), 
+                                           () => new TypeTreeProvider(true))
+                                       .AddFactoryModule(
+                                           () => new NodeFactoryModule<DecoratorNode>(graphView, "Decorator"),
+                                           () => new TypeTreeProvider(true))
+                                       .AddFactoryModule(
+                                           () => new NodeFactoryModule<CompositeNode>(graphView, "Composite"), 
+                                           () => new TypeTreeProvider(true))
+                                       .AddFactoryModule(
+                                           () => new NodeFactoryModule<SubGraphNode>(graphView, "Graph"),
+                                           () => new TypeTreeProvider(true))
+                                       .AddFactoryModule(
+                                           () => new NodeGroupFactoryModule<NodeGroup>(graphView, "Utility"),
+                                           () => new TypeTreeProvider(false))
                                        .Build();
         }
 

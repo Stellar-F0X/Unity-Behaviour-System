@@ -213,11 +213,6 @@ namespace TaskStreamer
                 return;
             }
 
-            if (Application.isPlaying == false && Undo.isProcessing == false)
-            {
-                Undo.RecordObject(this, "Task Streamer (CleanUpVariablesOfField)");
-            }
-
             BlackboardSyncVisitor visitor = new BlackboardSyncVisitor(new GraphContext(this, blackboard));
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;

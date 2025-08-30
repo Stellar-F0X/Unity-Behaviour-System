@@ -90,12 +90,22 @@ namespace TaskStreamer.Tool
 
         public override void OnSelected()
         {
+            if (TaskStreamerEditor.isLoadingTreeToView)
+            {
+                return;
+            }
+            
             onNodeSelected?.Invoke(this);
         }
 
 
         public override void OnUnselected()
         {
+            if (TaskStreamerEditor.isLoadingTreeToView)
+            {
+                return;
+            }
+            
             onNodeUnselected?.Invoke(this);
         }
 

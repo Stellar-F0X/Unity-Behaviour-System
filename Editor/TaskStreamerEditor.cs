@@ -97,9 +97,9 @@ namespace TaskStreamer.Tool
             get;
             private set;
         }
-        
 
 
+#region Static Methods
         /// <summary>Behaviour Tree 에디터 창을 Unity 메뉴에서 엽니다.</summary>
         [MenuItem("Tools/Task Streamer")]
         public static void OpenWindow()
@@ -145,57 +145,69 @@ namespace TaskStreamer.Tool
                 Instance.ChangeGraph(graphAsset.main);
             }
         }
+#endregion
 
 
-        /// <summary>TaskStreamer 에디터를 초기 상태로 재설정합니다.</summary>
-        private void Initialize()
-        {
-            isLoadingTreeToView = false;
-            canEditGraph = false;
+#region Create GUIs
 
-            this.currentGraph = null;
-            this.graphAsset = null;
-
-            this.editorInspectorView?.Clear();
-            this.taskGraphView?.ClearEditorView();
-            this._blackboardView?.ClearBlackboardView();
-        }
-
-
-        /// <summary>에디터 창의 GUI 요소를 생성하고 각 구성 요소를 초기화합니다.</summary>
+        /// <summary>에디터 창의 GUI 요소를 생성하고 초기화합니다.</summary>
         private void CreateGUI()
         {
             Instance = this;
-
-            Debug.Assert(rootVisualElement is not null, "Root Visual Element is null.");
-            settings.editorXml.CloneTree(rootVisualElement);
-
-            Debug.Assert(settings.editorXml is not null, "EditorXml is null.");
-            rootVisualElement.styleSheets.Add(settings.editorStyle);
-
-            taskGraphView = rootVisualElement.Q<TaskGraphView>();
-            miniMapView = rootVisualElement.Q<MiniMapView>();
-            editorInspectorView = rootVisualElement.Q<EditorInspectorView>();
-            //_nodeSearchField = rootVisualElement.Q<NodeSearchFieldView>();
-            _blackboardView = rootVisualElement.Q<BlackboardView>();
-            _graphBreadcrumbs = rootVisualElement.Q<GraphBreadcrumbs>();
-
-            var elementAddButton = rootVisualElement.Q<Button>("element-add-button");
-            var minimapActivateButton = rootVisualElement.Q<ToolbarToggle>("active-minimap");
-            var blackboardBindField = rootVisualElement.Q<ObjectField>("blackboard-field");
-
-            _blackboardView.Setup(elementAddButton, blackboardBindField);
-            miniMapView.Setup(minimapActivateButton, taskGraphView);
-            //_nodeSearchField.Setup(_inspectorView, _graphView);
-
-            taskGraphView.onElementSelected -= editorInspectorView.UpdateSelection;
-            taskGraphView.onElementSelected += editorInspectorView.UpdateSelection;
-
-            taskGraphView.onElementUnselected = null;
-            taskGraphView.onElementUnselected += _ => editorInspectorView.ClearInspector();
-
+            
+            this.InitializeVisualTree();
+            this.InitializeViewComponents();
+            this.SetupViewInteractions();
+            this.BindGraphViewEvents();
             this.OnSelectionChange();
         }
+
+
+        /// <summary>에디터의 루트 VisualTree를 초기화하고 스타일 시트를 적용합니다.</summary>
+        private void InitializeVisualTree()
+        {
+            Debug.Assert(rootVisualElement is not null, "Root Visual Element is null.");
+            Debug.Assert(settings.editorXml is not null, "EditorXml is null.");
+    
+            settings.editorXml.CloneTree(rootVisualElement);
+            rootVisualElement.styleSheets.Add(settings.editorStyle);
+        }
+
+        
+        /// <summary>뷰 구성 요소를 초기화하고 에디터 창의 UI 요소를 설정합니다.</summary>
+        private void InitializeViewComponents()
+        {
+            this.taskGraphView = rootVisualElement.Q<TaskGraphView>();
+            this.miniMapView = rootVisualElement.Q<MiniMapView>();
+            this.editorInspectorView = rootVisualElement.Q<EditorInspectorView>();
+            this._blackboardView = rootVisualElement.Q<BlackboardView>();
+            this._graphBreadcrumbs = rootVisualElement.Q<GraphBreadcrumbs>();
+        }
+        
+
+        /// <summary>Task Streamer 에디터 UI 요소들 간의 상호작용을 설정합니다.</summary>
+        private void SetupViewInteractions()
+        {
+            ToolbarToggle minimapActivateButton = rootVisualElement.Q<ToolbarToggle>("active-minimap");
+            ObjectField blackboardBindField = rootVisualElement.Q<ObjectField>("blackboard-field");
+            Button elementAddButton = rootVisualElement.Q<Button>("element-add-button");
+
+            this._blackboardView.Setup(elementAddButton, blackboardBindField);
+            this.miniMapView.Setup(minimapActivateButton, taskGraphView);
+        }
+        
+
+        /// <summary>GraphView의 요소 선택 및 해제를 처리하는 이벤트를 바인딩합니다.</summary>
+        private void BindGraphViewEvents()
+        {
+            this.taskGraphView.onElementSelected -= editorInspectorView.UpdateSelection;
+            this.taskGraphView.onElementSelected += editorInspectorView.UpdateSelection;
+            
+            this.taskGraphView.onElementUnselected = null;
+            this.taskGraphView.onElementUnselected += _ => editorInspectorView.ClearInspector();
+        }
+
+#endregion
 
 
         /// <summary>에디터 창이 활성화될 때 이벤트 등록 및 초기 설정 작업을 수행합니다.</summary>
@@ -228,6 +240,22 @@ namespace TaskStreamer.Tool
             Undo.undoRedoPerformed -= this.BehaviourEditorUndoPerformed;
 
             EditorSceneManager.sceneClosed -= this.OnSceneClosed;
+        }
+        
+        
+        
+        /// <summary>TaskStreamer 에디터를 초기 상태로 재설정합니다.</summary>
+        private void Initialize()
+        {
+            isLoadingTreeToView = false;
+            canEditGraph = false;
+
+            this.currentGraph = null;
+            this.graphAsset = null;
+
+            this.editorInspectorView?.ClearInspector();
+            this.taskGraphView?.ClearEditorView();
+            this._blackboardView?.ClearBlackboardView();
         }
 
 
@@ -291,7 +319,6 @@ namespace TaskStreamer.Tool
 
             isLoadingTreeToView = true;
             taskGraphView?.TrySetupGraphEditorView(currentGraph);
-            editorInspectorView?.ClearInspector();
             _blackboardView?.RefreshItemsWhenUndoPerformed();
             isLoadingTreeToView = false;
         }
@@ -403,19 +430,21 @@ namespace TaskStreamer.Tool
         /// <param name="drawGraph">열고자 하는 그래프 객체를 지정합니다.</param>
         private void OpenGraph(Graph drawGraph)
         {
-            bool openedEditorWindow = EditorWindow.HasOpenInstances<TaskStreamerEditor>();
+            bool hasOpenInstances = EditorWindow.HasOpenInstances<TaskStreamerEditor>();
 
-            if ((graphAsset is not null && Application.isPlaying) || openedEditorWindow)
+            if ((graphAsset is null || Application.isPlaying == false) && hasOpenInstances == false)
             {
-                isLoadingTreeToView = true;
-                currentGraph = drawGraph;
-
-                editorInspectorView.ClearInspector();
-                taskGraphView.TrySetupGraphEditorView(drawGraph);
-                _blackboardView.TrySetupBlackboard(graphAsset?.blackboard);
-
-                isLoadingTreeToView = false;
+                return;
             }
+
+            isLoadingTreeToView = true;
+            currentGraph = drawGraph;
+
+            editorInspectorView.ClearInspector();
+            taskGraphView.TrySetupGraphEditorView(drawGraph);
+            _blackboardView.TryChangeBlackboard(graphAsset?.blackboard);
+
+            isLoadingTreeToView = false;
         }
     }
 }

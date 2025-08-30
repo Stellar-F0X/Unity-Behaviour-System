@@ -57,19 +57,19 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>FactoryModule과 ICategoryTreeProvider를 추가합니다.</summary>
-        /// <param name="module">추가할 FactoryModule 생성자 함수.</param>
-        /// <param name="provider">추가할 ICategoryTreeProvider 생성자 함수.</param>
+        /// <param name="factoryModule">추가할 FactoryModule 생성자 함수.</param>
+        /// <param name="treeProvider">추가할 ICategoryTreeProvider 생성자 함수.</param>
         /// <returns>자신의 인스턴스를 반환합니다.</returns>
-        public BindingWindowBuilder AddFactoryModule(Func<FactoryModule> module, Func<ICategoryTreeProvider> provider)
+        public BindingWindowBuilder AddFactoryModule(Func<FactoryModule> factoryModule, Func<ICategoryTreeProvider> treeProvider)
         {
-            Debug.Assert(module is not null, "module is null");
-            Debug.Assert(provider is not null, "categoryProvider is null");
+            Debug.Assert(factoryModule is not null, "module is null");
+            Debug.Assert(treeProvider is not null, "categoryProvider is null");
 
-            Debug.Assert(_modules.Contains(module) == false, "module is already added");
-            Debug.Assert(_providers.Contains(provider) == false, "categoryProvider is already added");
+            Debug.Assert(_modules.Contains(factoryModule) == false, "module is already added");
+            Debug.Assert(_providers.Contains(treeProvider) == false, "categoryProvider is already added");
             
-            _modules.Add(module);
-            _providers.Add(provider);
+            _modules.Add(factoryModule);
+            _providers.Add(treeProvider);
             return this;
         }
 

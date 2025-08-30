@@ -65,12 +65,10 @@ namespace TaskStreamer.Tool
         /// <param name="evt">사용자가 추가 버튼을 클릭했을 때 전달된 EventBase 객체입니다.</param>
         private void OnAddButtonClicked(EventBase evt)
         {
-            Func<FactoryModule> moduleProvider = () => new ConditionFactoryModule("Conditions", 0);
-            
-            Func<ICategoryTreeProvider> provider = () => new TypeTreeProvider(true);
-
             BindingWindow window = BindingWindowBuilder.GetBuilder("Conditions", false)
-                                                       .AddFactoryModule(moduleProvider, provider)
+                                                       .AddFactoryModule(
+                                                           () => new ConditionFactoryModule("Conditions", 0), 
+                                                           () => new TypeTreeProvider(true))
                                                        .Build();
 
             window.RegisterCreationCallbackOnce((Action<Condition>)this.AddItemToList);

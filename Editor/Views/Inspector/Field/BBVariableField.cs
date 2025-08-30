@@ -178,12 +178,10 @@ namespace TaskStreamer.Tool
         /// <param name="eventArgs"> 공유 변수 선택기에 전달되는 이벤트 매개변수입니다. </param>
         private void OnOpenSharedVariableSelector(EventBase eventArgs)
         {
-            Func<FactoryModule> moduleProvider = () => new SharedBlackboardVariableFactoryModule("Shared Variables", true, 0);
-
-            Func<ICategoryTreeProvider> categoryProvider = () => new SharedBBVariableProvider(_variableHandle.fieldType);
-
             BindingWindow window = BindingWindowBuilder.GetBuilder("Shared Variables", false)
-                                                       .AddFactoryModule(moduleProvider, categoryProvider)
+                                                       .AddFactoryModule(
+                                                           () => new SharedBlackboardVariableFactoryModule("Shared Variables", true, 0), 
+                                                           () => new SharedBBVariableProvider(_variableHandle.fieldType))
                                                        .TryUpdateModules()
                                                        .Build();
 

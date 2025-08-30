@@ -103,9 +103,15 @@ namespace TaskStreamer.Tool
         public override BindingWindow CreateGraphNodeCreationWindow(TaskGraphView graphView)
         {
             return BindingWindowBuilder.GetBuilder("State Machine", reuse: true)
-                                       .AddFactoryModule(() => new NodeFactoryModule<ActionState>(graphView, "Action"), () => new TypeTreeProvider(true))
-                                       .AddFactoryModule(() => new NodeFactoryModule<SubGraphState>(graphView, "Graph"), () => new TypeTreeProvider(true))
-                                       .AddFactoryModule(() => new NodeGroupFactoryModule<NodeGroup>(graphView, "Utility"), () => new TypeTreeProvider(false))
+                                       .AddFactoryModule(
+                                           () => new NodeFactoryModule<ActionState>(graphView, "Action"),
+                                           () => new TypeTreeProvider(true))
+                                       .AddFactoryModule(
+                                           () => new NodeFactoryModule<SubGraphState>(graphView, "Graph"), 
+                                           () => new TypeTreeProvider(true))
+                                       .AddFactoryModule(
+                                           () => new NodeGroupFactoryModule<NodeGroup>(graphView, "Utility"), 
+                                           () => new TypeTreeProvider(false))
                                        .Build();
         }
 
