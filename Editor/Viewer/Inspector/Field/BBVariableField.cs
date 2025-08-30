@@ -1,5 +1,5 @@
 using System;
-using TaskStreamer.Injection;
+using TaskStreamer;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -126,7 +126,7 @@ namespace TaskStreamer.Tool
         /// <param name="isSharedVariable"> 공유 변수 여부를 나타냅니다. </param>
         private void SelectVariableField(bool isSharedVariable)
         {
-            switch (_blackboardVariable.usage)
+            switch (_blackboardVariable.usage) 
             {
                 case VariableUsage.Field: this._variableNameLabel.style.display = DisplayStyle.Flex; break;
 

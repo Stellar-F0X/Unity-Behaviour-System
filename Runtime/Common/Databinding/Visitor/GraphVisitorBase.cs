@@ -5,7 +5,7 @@ using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer.Injection
+namespace TaskStreamer
 {
     internal abstract class GraphVisitorBase : ReadableVisitorBase, IVisitPropertyAdapter<KeyValuePair<UGUID, Graph>>, IVisitPropertyAdapter<GraphDictionary>
     {

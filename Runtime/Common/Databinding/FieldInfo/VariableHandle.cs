@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using TaskStreamer.Utility;
 
-namespace TaskStreamer.Injection
+namespace TaskStreamer
 {
     /// <summary>주어진 컨텍스트 및 값 정보를 포함하는 변수를 다루는 클래스입니다.</summary>
     public class VariableHandle

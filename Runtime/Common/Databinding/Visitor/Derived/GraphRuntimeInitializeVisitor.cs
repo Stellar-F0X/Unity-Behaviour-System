@@ -4,7 +4,7 @@ using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer.Injection
+namespace TaskStreamer
 {
     /// <summary> 런타임에서 그래프 탐색 및 처리를 활성화하는 클래스 </summary>
     internal class GraphRuntimeInitializeVisitor : GraphVisitorBase,

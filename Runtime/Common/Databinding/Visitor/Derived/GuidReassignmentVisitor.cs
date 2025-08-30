@@ -3,7 +3,7 @@ using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer.Injection
+namespace TaskStreamer
 {
 #if UNITY_EDITOR
     /// <summary> GUID를 재할당하는 프로세서를 구현합니다. </summary>

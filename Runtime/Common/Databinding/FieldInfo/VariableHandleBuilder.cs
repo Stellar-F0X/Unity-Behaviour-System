@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TaskStreamer.Injection
+namespace TaskStreamer
 {
     /// <summary> VariableHandleBuilder를 생성 및 초기화하기 위한 구조체 </summary>
     internal struct VariableHandleBuilder

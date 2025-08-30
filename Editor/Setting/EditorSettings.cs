@@ -4,7 +4,6 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    //TODO: 주석 달아야 됨.
     public class EditorSettings : ScriptableObject
     {
         public float highlightDuration = 0.5f;

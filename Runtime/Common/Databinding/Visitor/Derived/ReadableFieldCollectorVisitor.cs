@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer.Injection
+namespace TaskStreamer
 {
     /// <summary> ReadableFieldCollectorVisitor 클래스는 DefaultVisitProcessor를 기반으로, 필드 정보를 수집하여 지정된 컨테이너에 저장하는 역할을 수행합니다. </summary>
     public class ReadableFieldCollectorVisitor : ReadableVisitorBase

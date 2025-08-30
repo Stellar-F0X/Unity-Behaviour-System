@@ -1,5 +1,5 @@
 using System;
-using TaskStreamer.Injection;
+using TaskStreamer;
 using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEngine;

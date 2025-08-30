@@ -5,7 +5,7 @@ using Unity.Properties;
 using UnityEngine;
 using BBCondition = TaskStreamer.BlackboardBasedCondition;
 
-namespace TaskStreamer.Injection
+namespace TaskStreamer
 {
     /// <summary> Blackboard 교체될 때, 이미 등록되어 있는 BlackboardVariable을 해제하는 용도로 사용되는 객체. </summary>
     internal class BlackboardSyncVisitor : GraphVisitorBase,

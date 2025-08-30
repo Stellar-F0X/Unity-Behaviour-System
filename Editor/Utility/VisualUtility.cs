@@ -1,5 +1,5 @@
 using System;
-using TaskStreamer.Injection;
+using TaskStreamer;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
@@ -58,7 +58,7 @@ namespace TaskStreamer.Tool
         {
             Type type = context.GetValue<BlackboardVariable>()?.valueType;
 
-            if (type == null)
+            if (type == null) 
             {
                 return new UnsupportedTypeField(context.context);
             }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TaskStreamer.Injection;
+using TaskStreamer;
 using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEditor.UIElements;
@@ -136,12 +136,11 @@ namespace TaskStreamer.Tool
             {
                 switch (property.value)
                 {
-                    case BlackboardVariable: _fieldContainer.Add(VisualUtility.GetFieldByValueType(property)); break;
+                    case BlackboardVariable: _fieldContainer.Add(VisualUtility.GetFieldByValueType(property)); break; 
 
-                    case BlackboardBasedCondition: _fieldContainer.Add(new BlackboaradBasedConditionListField(property)); break;
+                    case BlackboardBasedCondition: _fieldContainer.Add(new BlackboaradBasedConditionListField(property)); break; 
                 }
             }
-
         }
 
         

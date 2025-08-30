@@ -1,4 +1,4 @@
-namespace TaskStreamer.Injection
+namespace TaskStreamer
 {
     public class GraphContext
     {
