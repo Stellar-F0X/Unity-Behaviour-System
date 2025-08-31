@@ -8,9 +8,9 @@ namespace TaskStreamer
     public class VariableHandle
     {
         /// <summary> 특정 변수의 핸들링을 담당하는 객체 </summary>
-        public VariableHandle(string context, object value, object container, Type fieldType, IEnumerable<Attribute> attributes, Delegate getValue, Delegate setValue)
+        public VariableHandle(string context, object initialValue, object container, Type fieldType, IEnumerable<Attribute> attributes, Delegate getValue, Delegate setValue)
         {
-            this.value = value;
+            this.initialValue = initialValue;
             this.context = context;
             this._container = container;
             this.fieldType = fieldType;
@@ -27,9 +27,9 @@ namespace TaskStreamer
         /// <summary> 필드 타입을 나타내는 타입 객체입니다. </summary>
         public readonly Type fieldType;
 
-        
-        /// <summary> 실제 저장된 값을 나타냅니다. </summary>
-        public readonly object value;
+
+        /// <summary> 초기에 저장된 변수 값입니다. </summary>
+        public readonly object initialValue;
 
         
         /// <summary>_container를 저장하는 변수입니다.</summary>
@@ -51,7 +51,7 @@ namespace TaskStreamer
 
         public bool IsValid()
         {
-            return context.IsNotNullOrEmpty() && fieldType != null && _container != null && value != null;
+            return context.IsNotNullOrEmpty() && fieldType != null && _container != null && initialValue != null;
         }
         
         
@@ -74,7 +74,7 @@ namespace TaskStreamer
 
         
 
-        /// <summary>컨테이너에서 값을 가져옵니다.</summary>
+        /// <summary>컨테이너에서 현재 객체의 값을 가져옵니다.</summary>
         /// <return>가져온 값(오브젝트 타입)</return>
         public object GetValue()
         {

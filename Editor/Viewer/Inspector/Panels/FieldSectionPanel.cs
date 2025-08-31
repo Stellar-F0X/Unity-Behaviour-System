@@ -6,21 +6,21 @@ namespace TaskStreamer.Tool
 {
     public class FieldSectionPanel : VisualElement, IRefreshablePanel
     {
-        public FieldSectionPanel(List<VariableHandle> fieldProperties)
+        public FieldSectionPanel(List<VariableHandle> variableHandles)
         {
-            TaskStreamerResourcesLoader.FieldPanel.CloneTree(this);
+            TaskStreamerResourcesLoader.FieldSectionPanel.CloneTree(this);
 
             headerLabel = this.Q<Label>("main-header");
             _fieldListView = this.Q<ListView>("field-list");
 
-            _fieldProperties = fieldProperties;
-            _fieldListView.itemsSource = _fieldProperties;
+            _variableHandles = variableHandles;
+            _fieldListView.itemsSource = _variableHandles;
             _fieldListView.makeItem += () => new VisualElement();
             _fieldListView.bindItem += this.BindItem;
         }
 
 
-        private readonly List<VariableHandle> _fieldProperties;
+        private readonly List<VariableHandle> _variableHandles;
 
         private readonly ListView _fieldListView;
 
@@ -45,7 +45,7 @@ namespace TaskStreamer.Tool
 
         private void BindItem(VisualElement element, int index)
         {
-            VariableHandle handle = _fieldProperties[index];
+            VariableHandle handle = _variableHandles[index];
 
             if (element.childCount == 0)
             {
@@ -61,13 +61,13 @@ namespace TaskStreamer.Tool
         
         private VisualElement CreateFieldElement(VariableHandle handle)
         {
-            switch (handle.value)
+            switch (handle.initialValue)
             {
                 case BlackboardVariable: return VisualUtility.GetFieldByValueType(handle);
 
                 case BlackboardBasedCondition: return new BlackboardBasedConditionListField(handle);
 
-                default: throw new System.ArgumentException($"Unsupported handle value type: {handle.value?.GetType()}");
+                default: throw new System.ArgumentException($"Unsupported handle value type: {handle.initialValue?.GetType()}");
             }
         }
     }

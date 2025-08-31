@@ -61,7 +61,7 @@ namespace TaskStreamer.Tool
             Type serviceType = service.GetType();
 
             string serviceName = StringUtility.ToNicifyName(serviceType.Name);
-            List<VariableHandle> fields = TypeUtility.TryGetFieldProperties(serviceType, service);
+            List<VariableHandle> fields = TypeUtility.TryGetFieldHandles(serviceType, service);
             
             fieldPanel.Setup(serviceName, service, fields);
             

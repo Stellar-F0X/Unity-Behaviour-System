@@ -80,7 +80,7 @@ namespace TaskStreamer.Tool
 
         /// 특정 노드 또는 엣지의 필드 속성 정보를 저장하는 읽기 전용 List 객체입니다.
         /// TypeUtility를 통해 초기화되며, 필드 속성 관리를 위한 데이터로 활용됩니다.
-        internal List<VariableHandle> fieldProperties
+        internal List<VariableHandle> variableHandles
         {
             get;
             private set;
@@ -127,9 +127,9 @@ namespace TaskStreamer.Tool
         {
             this.onRenamingNode = this.ChangeNodeViewName;
             
-            this.fieldProperties = TypeUtility.TryGetFieldProperties(targetNode.GetType(), this.targetNode);
+            this.variableHandles = TypeUtility.TryGetFieldHandles(targetNode.GetType(), this.targetNode);
             
-            Debug.Assert(this.fieldProperties != null, $"Properties is null. Type: {targetNode.GetType().FullName}");
+            Debug.Assert(this.variableHandles != null, $"Properties is null. Type: {targetNode.GetType().FullName}");
         }
 
 

@@ -32,7 +32,8 @@ namespace TaskStreamer.Tool
         
         public event Action<ServiceSectionPanel> OnDeleteRequested;
         
-        private List<VariableHandle> _fieldProperties;
+        private List<VariableHandle> _variableHandles;
+        
         private ServiceBase _service;
 
         
@@ -63,21 +64,21 @@ namespace TaskStreamer.Tool
 
         
         
-        public void Setup(string newName, ServiceBase newService, List<VariableHandle> fieldProperties)
+        public void Setup(string newName, ServiceBase newService, List<VariableHandle> variableHandles)
         {
             _service = newService;
             _headerFoldout.text = newName;
-            _fieldProperties = fieldProperties;
+            _variableHandles = variableHandles;
             _enableToggle.value = newService.enable;
             _headerFoldout.value = newService.isExpanded;
-            _fieldListView.itemsSource = _fieldProperties;
+            _fieldListView.itemsSource = _variableHandles;
         }
 
         
         
         private void BindItem(VisualElement element, int index)
         {
-            VariableHandle handle = _fieldProperties[index];
+            VariableHandle handle = _variableHandles[index];
 
             if (element.childCount == 0)
             {
@@ -94,7 +95,7 @@ namespace TaskStreamer.Tool
         
         private VisualElement CreateFieldElement(VariableHandle handle)
         {
-            switch (handle.value)
+            switch (handle.initialValue)
             {
                 case BlackboardVariable: return VisualUtility.GetFieldByValueType(handle);
 

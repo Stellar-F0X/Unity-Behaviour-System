@@ -61,38 +61,26 @@ namespace TaskStreamer.Tool
         {
             switch (graphElement)
             {
-                case NodeViewBase nodeView:
+                case BehaviorNodeView bNodeView: //behavior node view
                 {
-                    this.Add(new BasicSectionPanel(nodeView.targetNode, nodeView.onRenamingNode));
-                    this.CreateInspectorByNodeType(nodeView);
-                    return;
+                    this.Add(new BasicSectionPanel(bNodeView.targetNode, bNodeView.onRenamingNode));
+                    this.Add(new FieldSectionPanel(bNodeView.variableHandles.Where(f => f.initialValue is not List<ServiceBase>).ToList()));
+                    this.Add(new ServiceContainerPanel(bNodeView.variableHandles.FirstOrDefault(f => f.initialValue is List<ServiceBase>)));
+                    break;
+                }
+
+                case StateNodeView sNodeView: //state node view
+                {
+                    this.Add(new BasicSectionPanel(sNodeView.targetNode, sNodeView.onRenamingNode));
+                    this.Add(new FieldSectionPanel(sNodeView.variableHandles.Where(f => f.initialValue is not List<Transition>).ToList()));
+                    break;
                 }
 
                 case ArrowEdge edgeView:
                 {
                     this.Add(new BasicSectionPanel(edgeView.targetTransition, null));
-                    this.Add(new FieldSectionPanel(edgeView.fieldProperties));
+                    this.Add(new FieldSectionPanel(edgeView.variableHandles));
                     return;
-                }
-            }
-        }
-
-
-        private void CreateInspectorByNodeType(NodeViewBase nodeView)
-        {
-            switch (nodeView.targetNode)
-            {
-                case BehaviorNodeBase:
-                {
-                    this.Add(new FieldSectionPanel(nodeView.fieldProperties.Where(f => f.value is not List<ServiceBase>).ToList()));
-                    this.Add(new ServiceContainerPanel(nodeView.fieldProperties.FirstOrDefault(f => f.value is List<ServiceBase>)));
-                    break;
-                }
-
-                case StateBase:
-                {
-                    this.Add(new FieldSectionPanel(nodeView.fieldProperties.Where(f => f.value is not List<Transition>).ToList()));
-                    break;
                 }
             }
         }

@@ -46,34 +46,34 @@ namespace TaskStreamer.Tool
             get
             {
 #if USE_ASSETS_PATH
-                return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/TaskStreamer/Editor/Resource/UI/Layouts/EditorSettings.uxml");
+                return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/TaskStreamer/Editor/Resource/UI/Layouts/TaskStreamerSettings.uxml");
 #else
-                return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Layouts/EditorSettings.uxml");
+                return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Layouts/TaskStreamerSettings.uxml");
 #endif
             }
         }
 
-        public static VisualTreeAsset BasicPanel
+        public static VisualTreeAsset BasicSectionPanel
         {
             get
             {
 #if USE_ASSETS_PATH
-                return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/TaskStreamer/Editor/Resource/UI/Layouts/BasicPanel.uxml");
+                return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/TaskStreamer/Editor/Resource/UI/Layouts/BasicSectionPanel.uxml");
 #else
-                return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Layouts/BasicPanel.uxml");
+                return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Layouts/BasicSectionPanel.uxml");
 #endif
             }
         }
         
         
-        public static VisualTreeAsset FieldPanel
+        public static VisualTreeAsset FieldSectionPanel
         {
             get
             {
 #if USE_ASSETS_PATH
-                return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/TaskStreamer/Editor/Resource/UI/Layouts/FieldPanel.uxml");
+                return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/TaskStreamer/Editor/Resource/UI/Layouts/FieldSectionPanel.uxml");
 #else
-                return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Layouts/FieldPanel.uxml");
+                return AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Layouts/FieldSectionPanel.uxml");
 #endif
             }
         }

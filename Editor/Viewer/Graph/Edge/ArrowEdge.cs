@@ -65,7 +65,7 @@ namespace TaskStreamer.Tool
         }
 
         /// <summary> 필드 속성 리스트를 관리하는 내부 프로퍼티 </summary>
-        internal List<VariableHandle> fieldProperties
+        internal List<VariableHandle> variableHandles
         {
             get;
             private set;
@@ -94,7 +94,7 @@ namespace TaskStreamer.Tool
             Type type = newTransition.GetType();
 
             this.targetTransition = newTransition;
-            this.fieldProperties = TypeUtility.TryGetFieldProperties(type, newTransition);
+            this.variableHandles = TypeUtility.TryGetFieldHandles(type, newTransition);
         }
 
 

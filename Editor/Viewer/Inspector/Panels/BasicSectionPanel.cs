@@ -16,7 +16,7 @@ namespace TaskStreamer.Tool
         /// <summary> 작업(Task)의 기본 속성을 표시하고 편집할 수 있는 UI 패널입니다. </summary>
         public BasicSectionPanel(Task targetTask, Action<string> renamingCallback)
         {
-            TaskStreamerResourcesLoader.BasicPanel.CloneTree(this);
+            TaskStreamerResourcesLoader.BasicSectionPanel.CloneTree(this);
 
             _nameField = this.Q<TextField>("name-field");
             _monoScriptField = this.Q<ObjectField>("script-field");
