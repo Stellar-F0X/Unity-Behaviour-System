@@ -1,39 +1,71 @@
 using System;
-using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    /// <summary> 인스펙터 요소를 확장하여 사용자 정의 인스펙터 인터페이스를 제공하는 클래스 </summary>
+    /// <summary> 선택된 그래프 요소의 세부 정보를 표시하고 관리하는 플로팅 인스펙터 뷰 클래스 </summary>
     [UxmlElement]
     public partial class FloatingInspectorView : VisualElement
     {
         public FloatingInspectorView()
         {
-            schedule.Execute(_ => DelayedInitialize()).StartingIn(0);
+            schedule.Execute(_ => this.DelayedInitialize()).StartingIn(0);
         }
 
 
+        /// <summary>
+        /// 마우스 왼쪽 버튼을 나타내는 상수. 클릭 이벤트 식별에 사용됩니다.
+        /// </summary>
         private const int _LEFT_MOUSE_BUTTON = 0;
 
         // 리사이저 관련 변수들
+        /// <summary>
+        /// 리사이징 상태를 나타내는 변수로, 사용자가 리사이저를 드래그하여 크기 조정 중인지 여부를 나타냅니다.
+        /// </summary>
         private bool _isResizing;
+
+        /// <summary>
+        /// 사용자가 타이틀 바를 드래그하고 있는지 여부를 나타내는 플래그 변수입니다.
+        /// </summary>
         private bool _isDragging;
-        
+
+        /// <summary>
+        /// 마우스 클릭 위치를 기준으로 리사이즈 시작 지점을 저장하는 변수입니다.
+        /// </summary>
         private Vector2 _resizeStartPosition;
+
+        /// <summary>
+        /// 크기 조정 시작 시점의 크기를 저장하는 변수입니다.
+        /// 초기 크기를 기준으로 UI 요소의 크기 변화를 계산하는 데 사용됩니다.
+        /// </summary>
         private Vector2 _resizeStartSize;
+
+        /// <summary>
+        /// 드래그 시작 위치를 저장하는 데 사용되는 변수입니다.
+        /// 타이틀바 드래그 동작의 계산에 사용됩니다.
+        /// </summary>
         private Vector2 _dragOffset;
-        
+
+        /// <summary>
+        /// 사용자 인터페이스 크기 조정을 위한 VisualElement를 나타냅니다.
+        /// </summary>
         private VisualElement _resizer;
-        
+
+        /// <summary>
+        /// 드래그와 위치 조정을 위해 사용되는 타이틀 바 UI 요소를 나타냅니다.
+        /// </summary>
         private VisualElement _titleBar;
-        
+
+        /// <summary>
+        /// 인스펙터 뷰의 스크롤 가능한 콘텐츠 영역을 나타내는 변수.
+        /// </summary>
         private ScrollView _contentContainer;
 
 
 
+        /// <summary> UI 구성 요소 초기화 및 이벤트 리스너 연결을 처리 </summary>
         private void DelayedInitialize()
         {
             _contentContainer = this.Q<ScrollView>("content-container");
@@ -53,8 +85,9 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 선택된 그래프 요소 정보를 기반으로 인스펙터 뷰를 업데이트 </summary>
-        /// <param name="selectedElement">선택된 그래프 요소</param>
+#region Inspector Logic
+        /// <summary> 선택된 그래프 요소의 데이터를 기반으로 인스펙터 뷰를 갱신합니다. </summary>
+        /// <param name="selectedElement"> 선택된 그래프 요소 </param>
         public void UpdateSelection(GraphElement selectedElement)
         {
             this.ClearInspector();
@@ -70,6 +103,7 @@ namespace TaskStreamer.Tool
         }
 
 
+        /// <summary> 인스펙터 뷰 내용을 초기화합니다. (Obsolete: ClearInspector를 대신 사용하세요.) </summary>
         [Obsolete("Please use ClearInspector method")]
         public new void Clear()
         {
@@ -77,36 +111,68 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 인스펙터 뷰의 내용을 초기화 및 정리 </summary>
+        /// <summary> 인스펙터 뷰의 내용을 초기화 및 모든 기존 데이터를 정리 </summary>
         public void ClearInspector()
         {
             _contentContainer?.Clear();
         }
 
 
-        /// <summary> 인스펙터 뷰의 내용을 새로고침 </summary>
+        /// <summary> 인스펙터 뷰의 내용을 새로고침하고 필요한 경우 패널을 갱신 </summary>
         public void RefreshInspector()
         {
-            if (_contentContainer?.enabledSelf == false)
+            if (_contentContainer is null || _contentContainer.enabledSelf == false)
             {
                 Debug.LogWarning("Failed to refresh inspector: Content container is disabled");
                 return;
             }
 
-            if (_contentContainer != null)
+            foreach (VisualElement child in _contentContainer.Children())
             {
-                foreach (VisualElement child in _contentContainer.Children())
+                if (child is IRefreshablePanel refreshablePanel)
                 {
-                    if (child is IRefreshablePanel refreshablePanel)
-                    {
-                        refreshablePanel.RefreshPanel();
-                    }
+                    refreshablePanel.RefreshPanel();
                 }
             }
         }
 
 
-        /// <summary> 타이틀바 마우스 다운 이벤트 처리 </summary>
+        /// <summary> 그래프 요소에 따라 적절한 인스펙터 콘텐츠를 생성 및 추가 </summary>
+        /// <param name="graphElement"> 인스펙터 콘텐츠를 생성할 대상 그래프 요소 </param>
+        private void CreateInspectorContent(GraphElement graphElement)
+        {
+            switch (graphElement)
+            {
+                case BehaviorNodeView bNodeView:
+                {
+                    _contentContainer.Add(new BasicSectionPanel(bNodeView.targetNode, bNodeView.onRenamingNode));
+                    _contentContainer.Add(new FieldSectionPanel(bNodeView.variableHandles.GetRange(1, bNodeView.variableHandles.Count - 1)));
+                    _contentContainer.Add(new ServiceContainerPanel(bNodeView.variableHandles[0]));
+                    break;
+                }
+
+                case StateNodeView sNodeView:
+                {
+                    _contentContainer.Add(new BasicSectionPanel(sNodeView.targetNode, sNodeView.onRenamingNode));
+                    _contentContainer.Add(new FieldSectionPanel(sNodeView.variableHandles.GetRange(1, sNodeView.variableHandles.Count - 1)));
+                    break;
+                }
+
+                case ArrowEdge edgeView:
+                {
+                    _contentContainer.Add(new BasicSectionPanel(edgeView.targetTransition, null));
+                    _contentContainer.Add(new FieldSectionPanel(edgeView.variableHandles));
+                    break;
+                }
+            }
+        }
+#endregion
+
+
+
+#region Mouse Event And Calculate Position Logic
+        /// <summary> 타이틀바 마우스 다운 이벤트를 처리하여 드래그 상태를 활성화 </summary>
+        /// <param name="evt">마우스 다운 이벤트 데이터</param>
         private void OnTitleBarMouseDown(MouseDownEvent evt)
         {
             if (evt.button != _LEFT_MOUSE_BUTTON)
@@ -122,7 +188,8 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 타이틀바 마우스 이동 이벤트 처리 </summary>
+        /// <summary> 타이틀바에서 마우스를 이동할 때 인스펙터 뷰 위치를 업데이트 </summary>
+        /// <param name="evt">마우스 이동 이벤트 데이터</param>
         private void OnTitleBarMouseMove(MouseMoveEvent evt)
         {
             if (_isDragging == false || _titleBar.HasMouseCapture() == false)
@@ -140,7 +207,9 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 위치를 부모 영역 내로 제한 </summary>
+        /// <summary> 부모 영역 안으로 자식 요소의 위치를 제한 </summary>
+        /// <param name="position">자식 요소의 현재 위치</param>
+        /// <return>제한된 위치 값</return>
         private Vector2 ConstrainPositionToParent(Vector2 position)
         {
             if (this.parent != null)
@@ -156,7 +225,8 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 타이틀바 마우스 업 이벤트 처리 </summary>
+        /// <summary> 타이틀바 마우스 업 이벤트를 처리하여 드래그 상태를 종료 </summary>
+        /// <param name="evt">마우스 업 이벤트 데이터</param>
         private void OnTitleBarMouseUp(MouseUpEvent evt)
         {
             if (_isDragging == false)
@@ -171,7 +241,8 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 리사이저 마우스 다운 이벤트 처리 </summary>
+        /// <summary> 리사이저 마우스 다운 이벤트를 처리하여 드래그 시작 상태를 설정 </summary>
+        /// <param name="evt">마우스 다운 이벤트 데이터</param>
         private void OnResizerMouseDown(MouseDownEvent evt)
         {
             if (evt.button != _LEFT_MOUSE_BUTTON)
@@ -189,6 +260,7 @@ namespace TaskStreamer.Tool
 
 
         /// <summary> 리사이저 마우스 이동 이벤트 처리 </summary>
+        /// <param name="evt">마우스 이동 이벤트 데이터</param>
         private void OnResizerMouseMove(MouseMoveEvent evt)
         {
             if (_isResizing == false || _resizer.HasMouseCapture() == false)
@@ -223,7 +295,8 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 리사이저 마우스 업 이벤트 처리 </summary>
+        /// <summary> 리사이저 마우스 업 이벤트 처리 및 리사이징 동작 종료 </summary>
+        /// <param name="evt">마우스 업 이벤트 데이터</param>
         private void OnResizerMouseUp(MouseUpEvent evt)
         {
             if (_isResizing == false)
@@ -236,36 +309,6 @@ namespace TaskStreamer.Tool
 
             evt.StopPropagation();
         }
-
-
-        /// <summary> 그래프 요소에 적합한 인스펙터 콘텐츠를 생성 </summary>
-        /// <param name="graphElement"> 인스펙터 콘텐츠를 생성할 대상 그래프 요소 </param>
-        private void CreateInspectorContent(GraphElement graphElement)
-        {
-            switch (graphElement)
-            {
-                case BehaviorNodeView bNodeView:
-                {
-                    _contentContainer.Add(new BasicSectionPanel(bNodeView.targetNode, bNodeView.onRenamingNode));
-                    _contentContainer.Add(new FieldSectionPanel(bNodeView.variableHandles.GetRange(1, bNodeView.variableHandles.Count - 1)));
-                    _contentContainer.Add(new ServiceContainerPanel(bNodeView.variableHandles[0]));
-                    break;
-                }
-
-                case StateNodeView sNodeView:
-                {
-                    _contentContainer.Add(new BasicSectionPanel(sNodeView.targetNode, sNodeView.onRenamingNode));
-                    _contentContainer.Add(new FieldSectionPanel(sNodeView.variableHandles.GetRange(1, sNodeView.variableHandles.Count - 1)));
-                    break;
-                }
-
-                case ArrowEdge edgeView:
-                {
-                    _contentContainer.Add(new BasicSectionPanel(edgeView.targetTransition, null));
-                    _contentContainer.Add(new FieldSectionPanel(edgeView.variableHandles));
-                    break;
-                }
-            }
-        }
+#endregion
     }
 }
