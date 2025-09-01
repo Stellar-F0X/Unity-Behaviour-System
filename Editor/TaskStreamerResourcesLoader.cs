@@ -12,36 +12,24 @@ namespace TaskStreamer.Tool
     {
         // 캐시 변수들
         private static VisualTreeAsset _window;
-
         private static VisualTreeAsset _behaviorNode;
-
         private static VisualTreeAsset _stateNode;
-
         private static VisualTreeAsset _settings;
-
         private static VisualTreeAsset _basicSectionPanel;
-
         private static VisualTreeAsset _fieldSectionPanel;
-
         private static VisualTreeAsset _serviceSectionPanel;
-
         private static VisualTreeAsset _serviceContainerPanel;
-
         private static VisualTreeAsset _bbVariableItem;
-
         private static VisualTreeAsset _bbVariableField;
-
         private static VisualTreeAsset _bbbConditionField;
-
         private static VisualTreeAsset _bbbConditionListField;
+        private static VisualTreeAsset _floatingInspectorView;
+        
 
         private static StyleSheet _editorSettingsStyle;
-
+        private static StyleSheet _blackboardStyle;
         private static StyleSheet _windowStyle;
-
         private static StyleSheet _edgeStyle;
-
-        private static StyleSheet _inspectorStyle;
 
 
         /// <summary>
@@ -243,6 +231,29 @@ namespace TaskStreamer.Tool
             }
         }
 
+
+        public static VisualTreeAsset FloatingInspectorView
+        {
+            get
+            {
+                if (_floatingInspectorView == null)
+                {
+#if USE_ASSETS_PATH
+                    _floatingInspectorView = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/TaskStreamer/Editor/Resource/UI/Layouts/FloatingInspectorView.uxml");
+#else
+                    _floatingInspectorView = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Layouts/FloatingInspectorView.uxml");
+#endif
+                    if (_floatingInspectorView == null)
+                    {
+                        Debug.LogError("FloatingInspectorView.uxml 파일을 찾을 수 없습니다.");
+                    }
+                }
+
+                return _floatingInspectorView;
+            }
+        }
+        
+
         /// <summary>
         /// BBVariableItem은 UI 엘리먼트의 레이아웃을 정의하는 UXML 리소스를 나타냅니다.
         /// TaskStreamer 툴에서 변수 항목 레이아웃을 로드하는 데 사용됩니다.
@@ -343,16 +354,16 @@ namespace TaskStreamer.Tool
         /// <summary>
         /// EditorSettingsStyle 속성은 TaskStreamer 에디터의 설정 인터페이스에 적용되는 스타일시트를 반환합니다.
         /// </summary>
-        public static StyleSheet EditorSettingsStyle
+        public static StyleSheet SettingsStyle
         {
             get
             {
                 if (_editorSettingsStyle == null)
                 {
 #if USE_ASSETS_PATH
-                    _editorSettingsStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/TaskStreamer/Editor/Resource/UI/Styles/EditorSettingsStyle.uss");
+                    _editorSettingsStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/TaskStreamer/Editor/Resource/UI/Styles/TaskStreamerSettingsStyle.uss");
 #else
-                    _editorSettingsStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Styles/EditorSettingsStyle.uss");
+                    _editorSettingsStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Styles/TaskStreamerSettingsStyle.uss");
 #endif
                     if (_editorSettingsStyle == null)
                     {
@@ -412,29 +423,26 @@ namespace TaskStreamer.Tool
                 return _edgeStyle;
             }
         }
-
-        /// <summary>
-        /// InspectorStyle 속성은 유니티 에디터 내 검사기 패널의 스타일을 정의하는 StyleSheet 파일을 로드하는 데 사용됩니다.
-        /// 경로 설정에 따라 적절한 스타일시트를 불러옵니다.
-        /// </summary>
-        public static StyleSheet InspectorStyle
+        
+        
+        public static StyleSheet BlackboardStyle
         {
             get
             {
-                if (_inspectorStyle == null)
+                if (_blackboardStyle == null)
                 {
 #if USE_ASSETS_PATH
-                    _inspectorStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/TaskStreamer/Editor/Resource/UI/Styles/PanelStyle.uss");
+                    _blackboardStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/TaskStreamer/Editor/Resource/UI/Styles/TaskStreamerBlackboardStyle.uss");
 #else
-                    _inspectorStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Styles/PanelStyle.uss");
+                    _blackboardStyle = AssetDatabase.LoadAssetAtPath<StyleSheet>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Styles/TaskStreamerBlackboardStyle.uss");
 #endif
-                    if (_inspectorStyle == null)
+                    if (_blackboardStyle == null)
                     {
-                        Debug.LogError("PanelStyle.uss 파일을 찾을 수 없습니다.");
+                        Debug.LogError("TaskStreamerBlackboardStyle.uss 파일을 찾을 수 없습니다.");
                     }
                 }
 
-                return _inspectorStyle;
+                return _blackboardStyle;
             }
         }
     }

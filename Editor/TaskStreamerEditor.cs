@@ -16,9 +16,6 @@ namespace TaskStreamer.Tool
 
         //private NodeSearchFieldView _nodeSearchField;
 
-        /// <summary>Behavior Tree 편집기에서 사용되는 Blackboard 뷰를 나타냅니다.</summary>
-        private BlackboardView _blackboardView;
-
         /// <summary>그래프 탐색 시 그래프 계층 구조를 표시하고 관리하는 UI 요소입니다.</summary>
         private GraphBreadcrumbs _graphBreadcrumbs;
 
@@ -85,7 +82,7 @@ namespace TaskStreamer.Tool
         }
 
         /// <summary>InspectorView 객체를 참조하여 그래프 요소의 상세 정보를 표시하거나 갱신합니다.</summary>
-        public InspectorView inspectorView
+        public FloatingInspectorView inspectorView
         {
             get;
             private set;
@@ -98,6 +95,13 @@ namespace TaskStreamer.Tool
             private set;
         }
 
+        /// <summary>Behavior Tree 편집기에서 사용되는 Blackboard 뷰를 나타냅니다.</summary>
+        public BlackboardView blackboardView
+        {
+            get;
+            private set;
+        }
+        
 
 #region Static Methods
         /// <summary>Behaviour Tree 에디터 창을 Unity 메뉴에서 엽니다.</summary>
@@ -157,7 +161,6 @@ namespace TaskStreamer.Tool
             
             this.InitializeVisualTree();
             this.InitializeViewComponents();
-            this.SetupViewInteractions();
             this.BindGraphViewEvents();
             this.OnSelectionChange();
         }
@@ -176,23 +179,16 @@ namespace TaskStreamer.Tool
         /// <summary>뷰 구성 요소를 초기화하고 에디터 창의 UI 요소를 설정합니다.</summary>
         private void InitializeViewComponents()
         {
-            this.taskGraphView = rootVisualElement.Q<TaskGraphView>();
-            this.miniMapView = rootVisualElement.Q<MiniMapView>();
-            this.inspectorView = rootVisualElement.Q<InspectorView>();
-            this._blackboardView = rootVisualElement.Q<BlackboardView>();
+            this.taskGraphView = rootVisualElement.Q<TaskGraphView>(); 
             this._graphBreadcrumbs = rootVisualElement.Q<GraphBreadcrumbs>();
-        }
-        
 
-        /// <summary>Task Streamer 에디터 UI 요소들 간의 상호작용을 설정합니다.</summary>
-        private void SetupViewInteractions()
-        {
-            ToolbarToggle minimapActivateButton = rootVisualElement.Q<ToolbarToggle>("active-minimap");
-            ObjectField blackboardBindField = rootVisualElement.Q<ObjectField>("blackboard-field");
-            Button elementAddButton = rootVisualElement.Q<Button>("element-add-button");
-
-            this._blackboardView.Setup(elementAddButton, blackboardBindField);
-            this.miniMapView.Setup(minimapActivateButton, taskGraphView);
+            this.inspectorView = TaskStreamerResourcesLoader.FloatingInspectorView.Instantiate().Q<FloatingInspectorView>();
+            this.miniMapView = new MiniMapView(rootVisualElement, taskGraphView);
+            this.blackboardView = new BlackboardView();
+            
+            this.taskGraphView.Add(this.miniMapView);
+            this.taskGraphView.Add(this.blackboardView);
+            this.taskGraphView.Add(this.inspectorView);
         }
         
 
@@ -254,7 +250,7 @@ namespace TaskStreamer.Tool
 
             this.inspectorView?.ClearInspector();
             this.taskGraphView?.ClearEditorView();
-            this._blackboardView?.ClearBlackboardView();
+            this.blackboardView?.ClearView();
         }
 
 
@@ -318,7 +314,7 @@ namespace TaskStreamer.Tool
 
             isLoadingTreeToView = true;
             taskGraphView?.TrySetupGraphEditorView(currentGraph);
-            _blackboardView?.RefreshItemsWhenUndoPerformed();
+            blackboardView?.OnUndoPerformed();
             isLoadingTreeToView = false;
         }
 
@@ -441,7 +437,7 @@ namespace TaskStreamer.Tool
 
             inspectorView?.ClearInspector();
             taskGraphView?.TrySetupGraphEditorView(drawGraph);
-            _blackboardView?.TryChangeBlackboard(graphAsset?.blackboard);
+            blackboardView?.TryChangeBlackboard(graphAsset?.blackboard);
 
             isLoadingTreeToView = false;
         }

@@ -102,6 +102,9 @@ namespace TaskStreamer.Tool
         {
             BlackboardVariable variable = handle.GetValue<BlackboardVariable>();
             Debug.Assert(variable is not null, "variable is null");
+            
+            this._blackboardVariable = variable;
+            
             this.CreateVariableFieldByType(variable.isShared);
         }
 
@@ -151,12 +154,18 @@ namespace TaskStreamer.Tool
                 this._localVariableInputField.style.display = DisplayStyle.Flex;
                 this._valueFieldContainer.Add(this.CreateLocalVariableDisplayField());
             }
-
             
+            this.SetInputFieldAccessibility();
+        }
+
+        
+        
+        private void SetInputFieldAccessibility()
+        {
             ReadOnlyAttribute readOnly = this._variableHandle.GetAttribute<ReadOnlyAttribute>();
 
             //여기서 결정해도 InitializeBlackboardVariableField 함수에서 런타임 중인지 아닌지에 따라 활성화가 다시 결정된다.
-            if (readOnly is not null)
+            if (readOnly is not null || TaskStreamerEditor.canEditGraph == false)
             {
                 this._localVariableInputField.enabledSelf = false;
                 this._linkToSharedButton.enabledSelf = false;
@@ -165,12 +174,6 @@ namespace TaskStreamer.Tool
             {
                 this._localVariableInputField.enabledSelf = true;
                 this._linkToSharedButton.enabledSelf = true;
-            }
-            
-            if (TaskStreamerEditor.canEditGraph == false)
-            {
-                _unlinkButton.enabledSelf = false;
-                _linkToSharedButton.enabledSelf = false;
             }
         }
 
@@ -230,7 +233,7 @@ namespace TaskStreamer.Tool
             _unlinkButton.style.display = DisplayStyle.Flex;
 
             schedule.Execute(() => displayContentLabel.text = _blackboardVariable.key)
-                    .Until(() => _blackboardVariable is null || this.enabledInHierarchy == false)
+                    .Until(() => _blackboardVariable != null && _blackboardVariable.isShared && this.enabledInHierarchy)
                     .Every(_NAME_UPDATE_INTERVAL);
 
             return displayContentLabel;

@@ -36,6 +36,8 @@ namespace TaskStreamer.Tool
             _desContentField.RegisterValueChangedCallback(evt => targetTask.description = evt.newValue);
         }
 
+        
+        
         /// <summary>작업의 태그를 선택하는 DropdownField UI 요소입니다.</summary>
         private readonly DropdownField _tagSelectionField;
 

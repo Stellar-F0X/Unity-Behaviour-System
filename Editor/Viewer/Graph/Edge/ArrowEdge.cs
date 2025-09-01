@@ -31,6 +31,7 @@ namespace TaskStreamer.Tool
         public ArrowEdge(Transition transition) : this()
         {
             this.CollectTransitionFields(transition);
+            this.viewDataKey = transition.guid.ToString();
         }
 
         

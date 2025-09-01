@@ -15,10 +15,10 @@ namespace TaskStreamer.Tool
         private readonly ListView _nodeListView = new ListView();
 
         private TaskGraphView _treeView;
-        private InspectorView _inspectorView;
+        private FloatingInspectorView _inspectorView;
 
 
-        public void Setup(InspectorView inspectorView, TaskGraphView treeView)
+        public void Setup(FloatingInspectorView inspectorView, TaskGraphView treeView)
         {
             this.UnregisterValueChangedCallback(this.OnSearchingNodesCallback);
             this.RegisterValueChangedCallback(this.OnSearchingNodesCallback);

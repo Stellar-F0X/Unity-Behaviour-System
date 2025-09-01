@@ -42,3 +42,6 @@ InspectorView > .unity-imgui-container {
 .graphView > .graphElement > .unity-label {
     color: rgb(255, 241, 97);
 }
+
+.unity-two-pane-split-view > #right-panel > .graphView > .blackboard > .mainContainer > #content > #header > #labelContainer > #titleLabel {
+}

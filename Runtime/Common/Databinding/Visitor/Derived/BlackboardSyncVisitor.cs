@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using TaskStreamer.BT;
 using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
@@ -10,7 +12,8 @@ namespace TaskStreamer
     /// <summary> Blackboard 교체될 때, 이미 등록되어 있는 BlackboardVariable을 해제하는 용도로 사용되는 객체. </summary>
     internal class BlackboardSyncVisitor : GraphVisitorBase,
                                            IVisitPropertyAdapter<NodeDictionary>,
-                                           IVisitPropertyAdapter<BBCondition>,
+                                           IVisitPropertyAdapter<BBCondition>, 
+                                           IVisitPropertyAdapter<List<ServiceBase>>,
                                            IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
         public BlackboardSyncVisitor(GraphContext context) : base(context)
@@ -107,6 +110,26 @@ namespace TaskStreamer
             }
         }
 
+        
+        
+        public void Visit<TContainer>(in VisitContext<TContainer, List<ServiceBase>> context, ref TContainer container, ref List<ServiceBase> serviceList)
+        {
+            foreach (ServiceBase service in serviceList)
+            {
+                IPropertyBag bag = PropertyBag.GetPropertyBag(service.GetType());
+
+                if (bag is null)
+                {
+                    Debug.LogError($"Property bag not found for {context.Property.Name}");
+                    continue;
+                }
+                
+                object reference = service;
+                bag.Accept(this, ref reference);
+            }
+        }
+        
+        
 
         /// <summary> 전달된 BlackboardVariable이 해당 블랙보드에 유효한지 검사한다. </summary>
         /// <param name="variable">유효성을 검사할 BlackboardVariable.</param>

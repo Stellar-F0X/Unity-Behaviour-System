@@ -146,19 +146,19 @@ namespace TaskStreamer
         }
 
         
-        public void Visit<TContainer>(in VisitContext<TContainer, List<ServiceBase>> context, ref TContainer container, ref List<ServiceBase> value)
+        
+        public void Visit<TContainer>(in VisitContext<TContainer, List<ServiceBase>> context, ref TContainer container, ref List<ServiceBase> serviceList)
         {
-            foreach (ServiceBase service in value)
+            foreach (ServiceBase service in serviceList)
             {
-                Type serviceType = service.GetType();
+                IPropertyBag bag = PropertyBag.GetPropertyBag(service.GetType());
 
-                if (PropertyBag.Exists(serviceType) == false)
+                if (bag is null)
                 {
                     Debug.LogError($"Property bag not found for {context.Property.Name}");
                     continue;
                 }
                 
-                IPropertyBag bag = PropertyBag.GetPropertyBag(serviceType);
                 object reference = service;
                 bag.Accept(this, ref reference);
             }

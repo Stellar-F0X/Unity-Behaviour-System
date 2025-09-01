@@ -5,22 +5,25 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    [UxmlElement]
-    public partial class MiniMapView : MiniMap
+    public class MiniMapView : MiniMap
     {
-        private bool _activated;
-
-        public void Setup(ToolbarToggle minimapActivateButton, TaskGraphView btView)
+        public MiniMapView(VisualElement root, TaskGraphView graphView)
         {
-            this.anchored = true;
             this.style.backgroundColor = TaskStreamerEditor.settings.minimapColor;
+            this._activated = false;
+            this.visible = false;
+            this.anchored = true;
 
+            ToolbarToggle minimapActivateButton = root.Q<ToolbarToggle>("active-minimap");
             minimapActivateButton.UnregisterValueChangedCallback(this.ActiveMinimap);
             minimapActivateButton.RegisterValueChangedCallback(this.ActiveMinimap);
 
-            btView.UnregisterCallback<GeometryChangedEvent>(this.UpdatePosition);
-            btView.RegisterCallback<GeometryChangedEvent>(this.UpdatePosition);
+            graphView.UnregisterCallback<GeometryChangedEvent>(this.UpdatePosition);
+            graphView.RegisterCallback<GeometryChangedEvent>(this.UpdatePosition);
         }
+        
+        
+        private bool _activated;
 
 
         private void ActiveMinimap(ChangeEvent<bool> activeEvent)
