@@ -2,6 +2,7 @@ using System;
 using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
@@ -12,13 +13,16 @@ namespace TaskStreamer.Tool
     /// BlackboardView 클래스는 Unity에서 그래프 기반 인터페이스의 블랙보드 관리 기능을 제공하며,
     /// 변수 관리, UI 갱신, 블랙보드 객체 변경 등을 처리합니다.
     /// </summary>
-    public class BlackboardView : BlackboardBase
+    public class FloatingBlackboardView : BlackboardViewBase
     {
-        public BlackboardView()
+        public FloatingBlackboardView(ToolbarToggle toggleBlackboard, TaskGraphView taskGraphView)
         {
             base.title = "Blackboard";
             this.style.left = 15;
             this.style.top = 15;
+            this.graphView = taskGraphView;
+            
+            toggleBlackboard.RegisterValueChangedCallback(evt => this.style.display = evt.newValue ? DisplayStyle.Flex : DisplayStyle.None);
             
             this.addItemRequested += this.OpenContextualMenuWindow;
             this.editTextRequested += this.OnEditElementTitleText;

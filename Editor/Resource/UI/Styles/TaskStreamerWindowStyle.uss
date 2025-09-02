@@ -35,8 +35,12 @@ InspectorView > .unity-imgui-container {
     height: 18px;
 }
 
-#active-minimap > .unity-toggle__label {
+.unity-toolbar-toggle > .unity-toggle__label {
     min-width: 50px;
+    margin-right: 2px;
+    padding-right: 3px;
+    margin-left: 2px;
+    padding-left: 3px;
 }
 
 .graphView > .graphElement > .unity-label {

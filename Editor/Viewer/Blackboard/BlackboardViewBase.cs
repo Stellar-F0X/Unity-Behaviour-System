@@ -7,11 +7,11 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    public class BlackboardBase : Blackboard
+    public class BlackboardViewBase : Blackboard
     {
         public event Action<Blackboard, BlackboardField> removeItemRequest; // 삭제된 항목 알림
 
-        public BlackboardBase()
+        public BlackboardViewBase()
         {
             //여기서 Delete 키 가로챔.
             this.RegisterCallback<KeyDownEvent>(this.OnDeleteKeyDown, TrickleDown.TrickleDown);

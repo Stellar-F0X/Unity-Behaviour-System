@@ -7,17 +7,17 @@ namespace TaskStreamer.Tool
 {
     public class MiniMapView : MiniMap
     {
-        public MiniMapView(VisualElement root, TaskGraphView graphView)
+        public MiniMapView(ToolbarToggle toggleMinimap, TaskGraphView graphView)
         {
             this.style.backgroundColor = TaskStreamerEditor.settings.minimapColor;
             this._activated = false;
             this.visible = false;
             this.anchored = true;
-
-            ToolbarToggle minimapActivateButton = root.Q<ToolbarToggle>("active-minimap");
-            minimapActivateButton.UnregisterValueChangedCallback(this.ActiveMinimap);
-            minimapActivateButton.RegisterValueChangedCallback(this.ActiveMinimap);
-
+            this.graphView = graphView;
+            
+            toggleMinimap.UnregisterValueChangedCallback(this.ActiveMinimap);
+            toggleMinimap.RegisterValueChangedCallback(this.ActiveMinimap);
+            
             graphView.UnregisterCallback<GeometryChangedEvent>(this.UpdatePosition);
             graphView.RegisterCallback<GeometryChangedEvent>(this.UpdatePosition);
         }

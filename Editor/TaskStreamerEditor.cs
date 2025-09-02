@@ -98,7 +98,7 @@ namespace TaskStreamer.Tool
         }
 
         /// <summary>Behavior Tree 편집기에서 사용되는 Blackboard 뷰를 나타냅니다.</summary>
-        public BlackboardView blackboardView
+        public FloatingBlackboardView blackboardView
         {
             get;
             private set;
@@ -168,12 +168,13 @@ namespace TaskStreamer.Tool
             this.taskGraphView = rootVisualElement.Q<TaskGraphView>(); 
             this._graphBreadcrumbs = rootVisualElement.Q<GraphBreadcrumbs>();
             this._blackboardField = rootVisualElement.Q<ObjectField>("blackboard-field");
+            
             this._blackboardField.RegisterValueChangedCallback(this.OnChangeBlackboard);
             this._blackboardField.enabledSelf = ! EditorApplication.isPlayingOrWillChangePlaymode;
-
+            
             this.inspectorView = TaskStreamerResourcesLoader.FloatingInspectorView.Instantiate()[0] as FloatingInspectorView;
-            this.miniMapView = new MiniMapView(rootVisualElement, taskGraphView);
-            this.blackboardView = new BlackboardView();
+            this.blackboardView = new FloatingBlackboardView(rootVisualElement.Q<ToolbarToggle>("toggle-blackboard"), taskGraphView);
+            this.miniMapView = new MiniMapView(rootVisualElement.Q<ToolbarToggle>("toggle-minimap"), taskGraphView);
             
             this.taskGraphView.Add(this.miniMapView);
             this.taskGraphView.Add(this.blackboardView);
