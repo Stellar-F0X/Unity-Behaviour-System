@@ -42,8 +42,8 @@
     border-right-width: 1px;
     border-bottom-width: 1px;
     border-left-width: 1px;
-    border-left-color: rgb(132, 132, 132);
-    border-right-color: rgb(132, 132, 132);
-    border-top-color: rgb(132, 132, 132);
-    border-bottom-color: rgb(132, 132, 132)
+    border-left-color: rgb(44, 44, 44);
+    border-right-color: rgb(44, 44, 44);
+    border-top-color: rgb(44, 44, 44);
+    border-bottom-color: rgb(44, 44, 44);
 }

@@ -18,8 +18,7 @@ namespace TaskStreamer.Tool
             this.title = "Blackboard";
             this.subTitle = string.Empty;
             
-            this._blackboardField = new ObjectField();
-            this._blackboardField.objectType = typeof(BlackboardAsset);
+            this._blackboardField = new ObjectField { objectType = typeof(BlackboardAsset) };
             this._blackboardField.RegisterValueChangedCallback(this.OnChangeBlackboard);
             this.Add(_blackboardField);
             
@@ -50,7 +49,7 @@ namespace TaskStreamer.Tool
                     return null;
                 }
             }
-
+            
             set
             {
                 if (TaskStreamerEditor.Instance.graphAsset is null)
