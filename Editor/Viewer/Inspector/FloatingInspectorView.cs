@@ -72,8 +72,8 @@ namespace TaskStreamer.Tool
             _titleBar = this.Q<VisualElement>("title-bar");
             _resizer = this.Q<VisualElement>("resizer");
 
-            this.style.left = parent.contentRect.width - this.contentRect.width - 5;
-            this.style.top = 5;
+            this.style.left = parent.contentRect.width - this.contentRect.width - 15;
+            this.style.top = 15;
 
             _titleBar.RegisterCallback<MouseDownEvent>(this.OnTitleBarMouseDown);
             _titleBar.RegisterCallback<MouseMoveEvent>(this.OnTitleBarMouseMove);

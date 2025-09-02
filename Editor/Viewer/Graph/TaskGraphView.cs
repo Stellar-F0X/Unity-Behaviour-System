@@ -82,7 +82,7 @@ namespace TaskStreamer.Tool
             this.deleteSelection += this.OnDeleteSelectionElements;
 
             this._graphView.CreateAndConnectNodes(this, this.focusGraph);
-            this.focusGraph.nodeGroup.ForEach(this.RecreateNodeGroupViewOnLoad);
+            this.focusGraph.nodeGroup?.ForEach(this.RecreateNodeGroupViewOnLoad);
         }
 
 

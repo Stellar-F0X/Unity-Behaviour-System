@@ -45,3 +45,11 @@ InspectorView > .unity-imgui-container {
 
 .unity-two-pane-split-view > #right-panel > .graphView > .blackboard > .mainContainer > #content > #header > #labelContainer > #titleLabel {
 }
+
+#container > #main-toolbar > #blackboard-field > .unity-object-field__input > .unity-object-field__object > .unity-object-field-display__label--value-null {
+    -unity-text-align: middle-left;
+    border-bottom-width: 1px;
+    border-top-width: 1px;
+    padding-bottom: 1px;
+    padding-top: 1px;
+}

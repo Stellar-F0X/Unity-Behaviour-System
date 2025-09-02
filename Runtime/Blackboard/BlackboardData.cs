@@ -107,6 +107,7 @@ namespace TaskStreamer
                 return null;
             }
 
+            //런타임이 아니라면 리스트 탐색으로 찾는다.
             if (_initialized == false)
             {
                 int hash = StringUtility.StringToHash(variableKey);

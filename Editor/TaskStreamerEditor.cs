@@ -17,7 +17,9 @@ namespace TaskStreamer.Tool
         //private NodeSearchFieldView _nodeSearchField;
 
         /// <summary>그래프 탐색 시 그래프 계층 구조를 표시하고 관리하는 UI 요소입니다.</summary>
-        private GraphBreadcrumbs _graphBreadcrumbs;
+        private GraphBreadcrumbs _graphBreadcrumbs; 
+        
+        private ObjectField _blackboardField;
 
 
         /// <summary>TaskStreamerEditor 설정 정보를 가져옵니다.</summary>
@@ -157,38 +159,26 @@ namespace TaskStreamer.Tool
         /// <summary>에디터 창의 GUI 요소를 생성하고 초기화합니다.</summary>
         private void CreateGUI()
         {
-            Instance = this;
+            TaskStreamerEditor.Instance = this;
             
-            this.InitializeVisualTree();
-            this.InitializeViewComponents();
-            this.BindGraphViewEvents();
-            this.OnSelectionChange();
-        }
-
-
-        /// <summary>에디터의 루트 VisualTree를 초기화하고 스타일 시트를 적용합니다.</summary>
-        private void InitializeVisualTree()
-        {
-            Debug.Assert(rootVisualElement is not null, "Root Visual Element is null.");
-    
             TaskStreamerResourcesLoader.Window.CloneTree(rootVisualElement);
             rootVisualElement.styleSheets.Add(TaskStreamerResourcesLoader.WindowStyle);
-        }
-
-        
-        /// <summary>뷰 구성 요소를 초기화하고 에디터 창의 UI 요소를 설정합니다.</summary>
-        private void InitializeViewComponents()
-        {
+            
             this.taskGraphView = rootVisualElement.Q<TaskGraphView>(); 
             this._graphBreadcrumbs = rootVisualElement.Q<GraphBreadcrumbs>();
+            this._blackboardField = rootVisualElement.Q<ObjectField>("blackboard-field");
+            this._blackboardField.RegisterValueChangedCallback(this.OnChangeBlackboard);
 
-            this.inspectorView = TaskStreamerResourcesLoader.FloatingInspectorView.Instantiate().Q<FloatingInspectorView>();
+            this.inspectorView = TaskStreamerResourcesLoader.FloatingInspectorView.Instantiate()[0] as FloatingInspectorView;
             this.miniMapView = new MiniMapView(rootVisualElement, taskGraphView);
             this.blackboardView = new BlackboardView();
             
             this.taskGraphView.Add(this.miniMapView);
             this.taskGraphView.Add(this.blackboardView);
             this.taskGraphView.Add(this.inspectorView);
+            
+            this.BindGraphViewEvents();
+            this.OnSelectionChange();
         }
         
 
@@ -208,11 +198,11 @@ namespace TaskStreamer.Tool
         /// <summary>에디터 창이 활성화될 때 이벤트 등록 및 초기 설정 작업을 수행합니다.</summary>
         private void OnEnable()
         {
-            EditorApplication.playModeStateChanged -= this.OnPlayNodeStateChanged;
-            EditorApplication.playModeStateChanged += this.OnPlayNodeStateChanged;
+            EditorApplication.playModeStateChanged -= this.OnEditorStateChanged;
+            EditorApplication.playModeStateChanged += this.OnEditorStateChanged;
 
-            Undo.undoRedoPerformed -= this.BehaviourEditorUndoPerformed;
-            Undo.undoRedoPerformed += this.BehaviourEditorUndoPerformed;
+            Undo.undoRedoPerformed -= this.OnEditorUndoPerformed;
+            Undo.undoRedoPerformed += this.OnEditorUndoPerformed;
 
             EditorSceneManager.sceneClosed -= this.OnSceneClosed;
             EditorSceneManager.sceneClosed += this.OnSceneClosed;
@@ -228,11 +218,11 @@ namespace TaskStreamer.Tool
         /// <summary>에디터가 비활성화될 때 이벤트 핸들러 및 업데이트 작업을 해제합니다.</summary>
         private void OnDisable()
         {
-            EditorApplication.playModeStateChanged -= this.OnPlayNodeStateChanged;
+            EditorApplication.playModeStateChanged -= this.OnEditorStateChanged;
             EditorApplication.delayCall -= this.OnSelectionChange;
             EditorApplication.update -= this.RuntimeUpdate;
 
-            Undo.undoRedoPerformed -= this.BehaviourEditorUndoPerformed;
+            Undo.undoRedoPerformed -= this.OnEditorUndoPerformed;
 
             EditorSceneManager.sceneClosed -= this.OnSceneClosed;
         }
@@ -305,7 +295,7 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>언두/리두 작업 실행 시 그래프와 관련된 에디터 뷰를 갱신합니다.</summary>
-        private void BehaviourEditorUndoPerformed()
+        private void OnEditorUndoPerformed()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
             {
@@ -314,6 +304,7 @@ namespace TaskStreamer.Tool
 
             isLoadingTreeToView = true;
             taskGraphView?.TrySetupGraphEditorView(currentGraph);
+            _blackboardField.SetValueWithoutNotify(graphAsset?.blackboard);
             blackboardView?.OnUndoPerformed();
             isLoadingTreeToView = false;
         }
@@ -321,7 +312,7 @@ namespace TaskStreamer.Tool
 
         /// <summary>플레이 모드 상태 변경 시 호출되어 상태에 따른 작업을 수행합니다.</summary>
         /// <param name="state">현재 플레이 모드 상태를 나타내는 PlayModeStateChange 값입니다.</param>
-        private void OnPlayNodeStateChanged(PlayModeStateChange state)
+        private void OnEditorStateChanged(PlayModeStateChange state)
         {
             switch (state)
             {
@@ -359,6 +350,7 @@ namespace TaskStreamer.Tool
             if (this.TryGetGraphAsset())
             {
                 this.ChangeGraph(graphAsset.main);
+                this._blackboardField.value = graphAsset.blackboard;
             }
         }
 
@@ -404,19 +396,15 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            canEditGraph = !Application.isPlaying;
+            TaskStreamerEditor.canEditGraph = !Application.isPlaying;
 
             if (isSubGraph == false)
             {
-                _graphBreadcrumbs?.Clear();
+                this._graphBreadcrumbs.Clear();
             }
 
-            _graphBreadcrumbs?.PushItem(graph, () =>
-            {
-                _graphBreadcrumbs.PopToClickItems(graph.guid);
-                this.OpenGraph(graph);
-            });
-
+            this._graphBreadcrumbs.PushItem(graph, () => this.OpenGraph(graph));
+            
             this.OpenGraph(graph);
         }
 
@@ -425,7 +413,7 @@ namespace TaskStreamer.Tool
         /// <param name="drawGraph">열고자 하는 그래프 객체를 지정합니다.</param>
         private void OpenGraph(Graph drawGraph)
         {
-            bool hasOpenInstances = EditorWindow.HasOpenInstances<TaskStreamerEditor>();
+            bool hasOpenInstances = HasOpenInstances<TaskStreamerEditor>();
 
             if ((graphAsset is null || Application.isPlaying == false) && hasOpenInstances == false)
             {
@@ -440,6 +428,30 @@ namespace TaskStreamer.Tool
             blackboardView?.TryChangeBlackboard(graphAsset?.blackboard);
 
             isLoadingTreeToView = false;
+        }
+        
+        
+        
+        /// <summary>블랙보드 변경을 처리하여 관련 데이터와 UI를 동기화합니다.</summary>
+        /// <param name="evt">오브젝트 변경 이벤트를 나타내는 ChangeEvent 객체입니다.</param>
+        private void OnChangeBlackboard(ChangeEvent<Object> evt)
+        {
+            if (canEditGraph == false)
+            {
+                return;
+            }
+
+            if (Undo.isProcessing == false)
+            {
+                Undo.RecordObject(graphAsset, "TaskStreamer(SetBlackboard)");
+            }
+
+            if (blackboardView.TryChangeBlackboard(evt.newValue as BlackboardAsset))
+            {
+                //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
+                this.graphAsset.TrySynchronizeVariablesOfNodes();
+                this.inspectorView.ClearInspector();
+            }
         }
     }
 }
