@@ -11,7 +11,7 @@ namespace TaskStreamer.Tool
 {
     public class BehaviorNodeView : NodeViewBase
     {
-        public BehaviorNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
+        private BehaviorNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
         {
             string nodeName = StringUtility.ToNicifyName(targetNode.name, "Node");
             base._nodeTypeLabel.text = nodeName;
@@ -23,11 +23,8 @@ namespace TaskStreamer.Tool
 
             this.Indicator = new BehaviorIndicator(this, TaskStreamerEditor.settings);
             _variableHandlesDic = new ObservableDictionary<ServiceBase, List<VariableHandle>>();
-            this.Indicator.ApplyBorderColorByState();
-
-            this.GetServiceVariableHandleList();
         }
-
+        
 
         private readonly ObservableDictionary<ServiceBase, List<VariableHandle>> _variableHandlesDic;
 
@@ -37,17 +34,41 @@ namespace TaskStreamer.Tool
 
 
 
+
+        //serviceBase 객체의 필드를 variableHandle로 미리 캐싱해둠. 
         internal ObservableDictionary<ServiceBase, List<VariableHandle>> variableHandlesDic
         {
             get { return _variableHandlesDic; }
         }
-
-
-
-        private void GetServiceVariableHandleList()
+        
+        
+        internal List<ServiceBase> serviceList
         {
-            VariableHandle handle = base.variableHandles.Find(v => v.initialValue is List<ServiceBase>);
+            get { return _serviceList; }
+        }
+        
+
+
+        //TODO: Unity가 C# 11을 지원하면 Static Abstract Interface로 StateNodeView와 함께 팩토리 함수를 묶자.
+        public static BehaviorNodeView Create(NodeBase node, VisualTreeAsset nodeXml)
+        {
+            BehaviorNodeView nodeView = new BehaviorNodeView(node, nodeXml);
+            Debug.Assert(nodeView is not null, "nodeView is null");
+            
+            nodeView.OnInitialize();
+            nodeView.CreatePorts();
+            return nodeView;
+        }
+        
+        
+        
+        protected override void OnInitialize()
+        {
+            base.OnInitialize();
+            
+            VariableHandle handle = base.variableHandles[0];
             Debug.Assert(handle is not null, $"{typeof(BehaviorNodeView)}: Failed to find service handle in variable handles");
+            variableHandles.RemoveAt(0);
             
             
             this._serviceList = handle.GetValue<List<ServiceBase>>();
@@ -73,23 +94,23 @@ namespace TaskStreamer.Tool
             {
                 case NotifyCollectionChangedAction.Reset:
                 {
-                    _serviceContainer.Clear();
-                    _serviceList.Clear();
+                    this._serviceContainer.Clear();
+                    this._serviceList.Clear();
                     break;
                 }
                 
                 case NotifyCollectionChangedAction.Add:
                 {
-                    _serviceContainer.Add(new ServiceView(service));
-                    _serviceList.Add(service);
+                    this._serviceContainer.Add(new ServiceView(service));
+                    this._serviceList.Add(service);
                     break;
                 } 
 
                 case NotifyCollectionChangedAction.Remove:
                 {
                     int index = _serviceList.IndexOf(service);
-                    _serviceContainer.RemoveAt(index);
-                    _serviceList.RemoveAt(index);
+                    this._serviceContainer.RemoveAt(index);
+                    this._serviceList.RemoveAt(index);
                     break;
                 } 
             }
@@ -117,7 +138,7 @@ namespace TaskStreamer.Tool
             return new PortView(GraphType.BT, direction, capacity);
         }
 
-
+        
 
         protected override void CreatePorts()
         {

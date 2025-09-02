@@ -45,7 +45,7 @@ namespace TaskStreamer.BT
                 case GraphIteratorType.BFS: return new BehaviorTree.BFSIterator(this);
             }
 
-            throw new NotImplementedException("BreadthFirstSearch iterator is not implemented for BehaviorTree.");
+            throw new ArgumentException("BreadthFirstSearch iterator is not implemented for BehaviorTree.");
         }
 
 
@@ -119,8 +119,7 @@ namespace TaskStreamer.BT
             }
         }
 
-
-        //TODO: 이 함수보다 그냥 일반 To / From 등으로 부모, 자식을 리스트를 나누는게 좋아보임. 
+        
         public void ConnectNodes(BehaviorNodeBase parent, BehaviorNodeBase child)
         {
             if (Application.isPlaying == false)
@@ -151,7 +150,6 @@ namespace TaskStreamer.BT
                     break;
                 }
             }
-
 
             if (Application.isPlaying == false)
             {

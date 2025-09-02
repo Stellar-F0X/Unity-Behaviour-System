@@ -54,24 +54,6 @@ namespace TaskStreamer.Tool
         }
 
 
-        public static void RemoveOnceByCondition(this VisualElement visual, Func<VisualElement, bool> condition)
-        {
-            if (condition is null)
-            {
-                return;
-            }
-
-            foreach (VisualElement child in visual.Children())
-            {
-                if (condition.Invoke(child))
-                {
-                    child.RemoveFromHierarchy();
-                    return;
-                }
-            }
-        }
-
-
         public static VisualElement GetFieldByValueType(VariableHandle context)
         {
             Type type = context.GetValue<BlackboardVariable>()?.valueType;

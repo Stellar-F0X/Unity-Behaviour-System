@@ -5,7 +5,10 @@ namespace TaskStreamer.Tool
 {
     public class BehaviorIndicator : NodeIndicatorBase
     {
-        public BehaviorIndicator(NodeViewBase nodeView, EditorSettings settings) : base(nodeView, settings) { }
+        public BehaviorIndicator(NodeViewBase nodeView, EditorSettings settings) : base(nodeView, settings)
+        {
+            this.ApplyBorderColorByState();
+        }
 
 
         protected override void OnHighlightStart()
@@ -34,7 +37,7 @@ namespace TaskStreamer.Tool
         }
 
 
-        public override void ApplyBorderColorByState()
+        public override sealed void ApplyBorderColorByState()
         {
             base.ApplyBorderColorByState();
             

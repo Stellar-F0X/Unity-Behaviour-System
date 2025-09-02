@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using TaskStreamer.BT;
+using TaskStreamer.FSM;
 using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
@@ -12,7 +14,7 @@ namespace TaskStreamer.Tool
     /// Node 클래스에서 확장된 추상 베이스 클래스이며, 노드의 시각적 표현과 데이터 동기화를 관리합니다.
     public abstract class NodeViewBase : Node
     {
-        public NodeViewBase(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(AssetDatabase.GetAssetPath(nodeUxml))
+        protected NodeViewBase(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(AssetDatabase.GetAssetPath(nodeUxml))
         {
             this._elementGroup = this.Q<VisualElement>("contents");
             this._nodeBorder = this.Q<VisualElement>("node-border");
@@ -24,9 +26,6 @@ namespace TaskStreamer.Tool
             this.tooltip = targetNode.tooltip;
             this.style.left = targetNode.position.x;
             this.style.top = targetNode.position.y;
-            
-            this.Initialize();
-            this.CreatePorts();
         }
 
         
@@ -79,6 +78,7 @@ namespace TaskStreamer.Tool
         {
             get { return _connectionEdges; }
         }
+        
 
         /// 특정 노드 또는 엣지의 필드 속성 정보를 저장하는 읽기 전용 List 객체입니다.
         /// TypeUtility를 통해 초기화되며, 필드 속성 관리를 위한 데이터로 활용됩니다.
@@ -88,6 +88,7 @@ namespace TaskStreamer.Tool
             private set;
         }
 
+        
         /// <summary>
         /// 노드 이름 변경 시 실행되는 콜백 이벤트입니다.
         /// 콜백 함수에 새 이름을 전달하여 노드의 이름을 업데이트합니다.
@@ -98,12 +99,14 @@ namespace TaskStreamer.Tool
             private set;
         }
 
+        
         /// 노드의 테두리를 나타내는 UI 요소를 반환하는 속성입니다.
         /// 노드 스타일 및 상태에 따라 동적으로 테두리 색상이 변경됩니다.
         public VisualElement nodeBorder
         {
             get { return _nodeBorder; }
         }
+        
 
         /// 연결된 데이터를 나타내는 NodeBase의 인스턴스를 반환합니다.
         /// 노드의 로직 또는 정보를 참조 및 수정하는 데 사용됩니다.
@@ -111,6 +114,7 @@ namespace TaskStreamer.Tool
         {
             get { return _targetNode; }
         }
+        
 
         /// <summary>
         /// NodeViewBase 클래스에서 노드 상태를 기반으로 하이라이트 효과와 테두리 색상을 관리하는 NodeIndicatorBase 타입의 Indicator 속성입니다.
@@ -119,13 +123,11 @@ namespace TaskStreamer.Tool
         {
             get { return Indicator; }
         }
+        
 
 
-
-        /// <summary>
-        /// NodeView 를 초기화하고, 관련 속성 및 필드 정보를 설정합니다.
-        /// </summary>
-        protected virtual void Initialize()
+        /// <summary> NodeView 를 초기화하고, 관련 속성 및 필드 정보를 설정합니다. </summary>
+        protected virtual void OnInitialize()
         {
             this.onRenamingNode = this.ChangeNodeViewName;
             
@@ -135,6 +137,7 @@ namespace TaskStreamer.Tool
         }
 
 
+        
         /// 노드가 선택되었을 때 호출되는 메서드입니다.
         /// 노드 선택 이벤트를 트리거하며, 데이터 로딩 중에는 동작하지 않습니다.
         public override void OnSelected()
@@ -147,6 +150,7 @@ namespace TaskStreamer.Tool
             onNodeSelected?.Invoke(this);
         }
 
+        
 
         /// 노드가 선택 해제될 때 호출되며, 선택 해제 이벤트를 트리거합니다.
         /// TaskStreamerEditor에서 로드 중에는 실행되지 않습니다.
@@ -161,11 +165,8 @@ namespace TaskStreamer.Tool
         }
 
 
-        //NodeBase CustomEditor에서 그려지는 NodeBase의 Name Field를 수정시, 에디터에서 값 변경을 확인 후, 알림이 전달.
-        //등록된 TrackPropertyValue에 등록된 람다가 호출되고 변경된 이름이 property.stringValue로 전돨되며 NodeView의 Title도 변경됨.
-        /// <summary>
-        /// NodeBase의 Name 변경 이벤트 호출 시, 해당 NodeView의 제목을 수정하고 관련 SubGraph의 이름도 업데이트합니다.
-        /// </summary>
+        
+        /// <summary> NodeBase의 Name 변경 이벤트 호출 시, 해당 NodeView의 제목을 수정하고 관련 SubGraph의 이름도 업데이트합니다. </summary>
         /// <param name="newName">변경할 새로운 노드 이름</param>
         private void ChangeNodeViewName(string newName)
         {
@@ -180,10 +181,9 @@ namespace TaskStreamer.Tool
             this.targetNode.name = newName;
         }
 
+        
 
-        /// <summary>
-        /// 노드의 위치를 설정합니다.
-        /// </summary>
+        /// <summary> 노드의 위치를 설정합니다. </summary>
         /// <param name="newPos">노드의 새 위치를 나타내는 Rect 객체입니다.</param>
         public override void SetPosition(Rect newPos)
         {
@@ -198,9 +198,8 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>
-        /// 지정된 Port를 설정하고, 방향과 이름을 할당한 후, 컨테이너에 추가합니다.
-        /// </summary>
+        
+        /// <summary> 지정된 Port를 설정하고, 방향과 이름을 할당한 후, 컨테이너에 추가합니다. </summary>
         /// <param name="port">설정할 Port 객체입니다.</param>
         /// <param name="portName">포트에 설정할 이름입니다.</param>
         /// <param name="direction">Port의 Flex Direction 설정입니다.</param>
@@ -217,7 +216,8 @@ namespace TaskStreamer.Tool
             port.portName = portName;
             container.Add(port);
         }
-
+        
+        
 
         //NodeView에 포트를 생성합니다.
         /// NodeView에 필요한 입력 및 출력 포트를 생성하는 메서드입니다.
@@ -225,6 +225,7 @@ namespace TaskStreamer.Tool
         protected abstract void CreatePorts();
 
 
+        
         //상속받은 상위 클래스에서 Disconnect All이라는 ContextualMenu 생성을 방지하기 위해서 오버라이드
         /// <param name="evt">컨텍스트 메뉴를 초기화하고 적용하는 이벤트입니다.</param>
         public override void BuildContextualMenu(ContextualMenuPopulateEvent evt) { }

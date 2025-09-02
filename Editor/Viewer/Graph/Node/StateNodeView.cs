@@ -1,14 +1,16 @@
 using System;
+using System.Collections.Generic;
 using TaskStreamer.FSM;
 using TaskStreamer.Utility;
 using UnityEditor.Experimental.GraphView;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
     public class StateNodeView : NodeViewBase
     {
-        public StateNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
+        private StateNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
         {
             string nodeName = StringUtility.ToNicifyName(targetNode.name, "State");
             base._nodeTypeLabel.text = nodeName;
@@ -20,6 +22,30 @@ namespace TaskStreamer.Tool
             this.Indicator.ApplyBorderColorByState();
         }
 
+        
+        
+        
+        public static StateNodeView Create(NodeBase node, VisualTreeAsset nodeXml)
+        {
+            StateNodeView nodeView = new StateNodeView(node, nodeXml);
+            Debug.Assert(nodeView is not null, "nodeView is null");
+            
+            nodeView.OnInitialize();
+            nodeView.CreatePorts();
+            return nodeView;
+        }
+
+
+
+
+        protected override void OnInitialize()
+        {
+            base.OnInitialize();
+            variableHandles.RemoveAt(0);
+        }
+
+
+
 
         public override Port InstantiatePort(Orientation orientation, Direction direction, Port.Capacity capacity, Type type)
         {
@@ -27,6 +53,7 @@ namespace TaskStreamer.Tool
         }
 
 
+        
         protected override void CreatePorts()
         {
             switch (((StateBase)targetNode).nodeType)

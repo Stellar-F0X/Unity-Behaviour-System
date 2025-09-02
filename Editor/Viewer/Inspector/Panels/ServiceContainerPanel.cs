@@ -14,7 +14,7 @@ namespace TaskStreamer.Tool
     public class ServiceContainerPanel : VisualElement, IRefreshablePanel
     {
         /// <summary> 서비스 목록 패널을 나타내며, 서비스 항목을 추가 및 관리하는 UI 요소입니다. </summary>
-        public ServiceContainerPanel(VariableHandle servicesHandle, ObservableDictionary<ServiceBase, List<VariableHandle>> variableHandlesDic)
+        public ServiceContainerPanel(List<ServiceBase> servicesHandle, ObservableDictionary<ServiceBase, List<VariableHandle>> variableHandlesDic)
         {
             TaskStreamerResourcesLoader.ServiceContainerPanel.CloneTree(this);
 
@@ -26,9 +26,9 @@ namespace TaskStreamer.Tool
             
             _addServiceButton.enabledSelf = TaskStreamerEditor.canEditGraph;
             _addServiceButton.clickable.clickedWithEventInfo += this.OnAddServiceButtonClicked;
-            _serviceListView.itemsSource = servicesHandle.GetValue<List<ServiceBase>>();
-            _serviceListView.bindItem += BindServiceItem;
+            _serviceListView.itemsSource = servicesHandle;
             _serviceListView.makeItem += () => new ServiceSectionPanel();
+            _serviceListView.bindItem += BindServiceItem;
 
             this.RefreshPanel();
         }
@@ -86,12 +86,11 @@ namespace TaskStreamer.Tool
             }
 
             ServiceBase service = (ServiceBase)_serviceListView.itemsSource[index];
-            string serviceName = StringUtility.ToNicifyName(service.GetType().Name);
 
             servicePanel.OnDeleteRequested -= this.OnServiceDeletionRequested;
             servicePanel.OnDeleteRequested += this.OnServiceDeletionRequested;
 
-            servicePanel.Setup(serviceName, service, _variableHandles[service]);
+            servicePanel.Initialize(service, _variableHandles[service]);
         }
 
 

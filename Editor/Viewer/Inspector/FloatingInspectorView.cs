@@ -146,15 +146,15 @@ namespace TaskStreamer.Tool
                 case BehaviorNodeView bNodeView:
                 {
                     _contentContainer.Add(new BasicSectionPanel(bNodeView.targetNode, bNodeView.onRenamingNode));
-                    _contentContainer.Add(new FieldSectionPanel(bNodeView.variableHandles.GetRange(1, bNodeView.variableHandles.Count - 1)));
-                    _contentContainer.Add(new ServiceContainerPanel(bNodeView.variableHandles[0], bNodeView.variableHandlesDic));
+                    _contentContainer.Add(new FieldSectionPanel(bNodeView.variableHandles));
+                    _contentContainer.Add(new ServiceContainerPanel(bNodeView.serviceList, bNodeView.variableHandlesDic));
                     break;
                 }
 
                 case StateNodeView sNodeView:
                 {
                     _contentContainer.Add(new BasicSectionPanel(sNodeView.targetNode, sNodeView.onRenamingNode));
-                    _contentContainer.Add(new FieldSectionPanel(sNodeView.variableHandles.GetRange(1, sNodeView.variableHandles.Count - 1)));
+                    _contentContainer.Add(new FieldSectionPanel(sNodeView.variableHandles));
                     break;
                 }
 

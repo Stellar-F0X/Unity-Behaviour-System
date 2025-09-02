@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TaskStreamer.BT;
+using TaskStreamer.Utility;
 using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
@@ -95,14 +96,13 @@ namespace TaskStreamer.Tool
 
         
         
-        /// <summary> 주어진 이름, 서비스 객체 및 변수 핸들 목록으로 서비스 섹션 패널을 설정합니다. </summary>
-        /// <param name="newName">서비스 섹션의 새 이름입니다.</param>
-        /// <param name="newService">설정할 서비스 객체입니다.</param>
-        /// <param name="variableHandles">서비스 관련 변수 핸들의 목록입니다.</param>
-        public void Setup(string newName, ServiceBase newService, List<VariableHandle> variableHandles)
+        /// <summary> 서비스 섹션 패널의 UI 요소들을 주어진 서비스와 연결하고 초기화합니다. </summary>
+        /// <param name="newService">UI에 연결할 새로운 서비스 객체입니다.</param>
+        /// <param name="variableHandles">서비스의 변수들에 대한 참조를 담은 핸들 목록입니다.</param>
+        public void Initialize(ServiceBase newService, List<VariableHandle> variableHandles)
         {
             _service = newService;
-            _headerFoldout.text = newName;
+            _headerFoldout.text = StringUtility.ToNicifyName(newService.name);
             _variableHandles = variableHandles;
             _enableToggle.value = newService.enable;
             _headerFoldout.value = newService.isExpanded;
