@@ -13,14 +13,15 @@ namespace TaskStreamer.Tool
         {
             TaskStreamerResourcesLoader.ServiceSectionPanel.CloneTree(this);
 
-            _headerFoldout = this.Q<Foldout>("main-header");
-            _fieldListView = this.Q<ListView>("field-list");
-            _enableToggle = this.Q<Toggle>("enable-toggle");
-            _deleteButton = this.Q<Button>("delete-button");
+            _headerFoldout = this.Q<Foldout>("main-header"); 
+            _fieldListView = this.Q<ListView>("field-list"); 
+            _enableToggle = this.Q<Toggle>("enable-toggle"); 
+            _deleteButton = this.Q<Button>("delete-button"); 
 
             _fieldListView.makeItem += () => new VisualElement();
-            _fieldListView.bindItem += BindItem;
-            _deleteButton.clicked += OnDeleteButtonClicked;
+            _fieldListView.bindItem += this.BindItem;
+            _deleteButton.clicked += this.OnDeleteButtonClicked;
+            _deleteButton.enabledSelf = TaskStreamerEditor.canEditGraph;
 
             _enableToggle.RegisterValueChangedCallback(evt => service.enable = evt.newValue); 
             _headerFoldout.RegisterValueChangedCallback(evt => service.isExpanded = evt.newValue); 

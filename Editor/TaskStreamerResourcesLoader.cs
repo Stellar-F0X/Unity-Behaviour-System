@@ -10,6 +10,7 @@ namespace TaskStreamer.Tool
     /// </summary>
     public class TaskStreamerResourcesLoader
     {
+
         // 캐시 변수들
         private static VisualTreeAsset _window;
         private static VisualTreeAsset _behaviorNode;
@@ -24,6 +25,7 @@ namespace TaskStreamer.Tool
         private static VisualTreeAsset _bbbConditionField;
         private static VisualTreeAsset _bbbConditionListField;
         private static VisualTreeAsset _floatingInspectorView;
+        private static VisualTreeAsset _serviceView;
         
 
         private static StyleSheet _editorSettingsStyle;
@@ -44,8 +46,7 @@ namespace TaskStreamer.Tool
 #if USE_ASSETS_PATH
                     _window = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/TaskStreamer/Editor/Resource/UI/Layouts/TaskStreamerWindow.uxml");
 #else
-                    _window =
- AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Layouts/TaskStreamerWindow.uxml");
+                    _window = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Layouts/TaskStreamerWindow.uxml");
 #endif
                     if (_window == null)
                     {
@@ -70,8 +71,7 @@ namespace TaskStreamer.Tool
 #if USE_ASSETS_PATH
                     _behaviorNode = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/TaskStreamer/Editor/Resource/UI/Layouts/BehaviorNode.uxml");
 #else
-                    _behaviorNode =
- AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Layouts/BehaviorNode.uxml");
+                    _behaviorNode = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Layouts/BehaviorNode.uxml");
 #endif
                     if (_behaviorNode == null)
                     {
@@ -95,8 +95,7 @@ namespace TaskStreamer.Tool
 #if USE_ASSETS_PATH
                     _stateNode = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/TaskStreamer/Editor/Resource/UI/Layouts/StateNode.uxml");
 #else
-                    _stateNode =
- AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Layouts/StateNode.uxml");
+                    _stateNode = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Layouts/StateNode.uxml");
 #endif
                     if (_stateNode == null)
                     {
@@ -350,6 +349,29 @@ namespace TaskStreamer.Tool
                 return _bbbConditionListField;
             }
         }
+
+
+        public static VisualTreeAsset ServiceView
+        {
+            get
+            {
+                if (_serviceView == null)
+                {
+#if USE_ASSETS_PATH
+                    _serviceView = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/TaskStreamer/Editor/Resource/UI/Layouts/ServiceView.uxml");
+#else
+                    _serviceView = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/Layouts/ServiceView.uxml");
+#endif
+                    if (_serviceView == null)
+                    {
+                        Debug.LogError("BBBasedConditionFieldList.uxml 파일을 찾을 수 없습니다.");
+                    }
+                }
+
+                return _serviceView;
+            }
+        }
+        
 
         /// <summary>
         /// EditorSettingsStyle 속성은 TaskStreamer 에디터의 설정 인터페이스에 적용되는 스타일시트를 반환합니다.

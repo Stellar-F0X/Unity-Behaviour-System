@@ -38,20 +38,26 @@
 
 #title-label {
     margin-top: 0;
-    margin-right: 0;
+    margin-right: 5px;
     margin-bottom: 0;
-    margin-left: 0;
+    margin-left: 5px;
     align-self: stretch;
     justify-content: center;
     align-items: center;
     -unity-text-align: middle-center;
     white-space: normal;
-    font-size: 14px;
+    font-size: 15px;
     height: auto;
     position: relative;
     -unity-font-style: bold;
     transform-origin: center;
     color: rgb(194, 194, 194);
+    text-shadow: 0 5px 0 rgb(0, 0, 0);
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 4px;
+    padding-top: 4px;
+    min-width: 120px;
 }
 
 #selection-border {
@@ -61,9 +67,9 @@
     margin-left: 2px;
     position: absolute;
     left: 0;
-    top: 0;
+    top: 11px;
     right: 0;
-    bottom: 0;
+    bottom: 10px;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     border-bottom-right-radius: 10px;
@@ -78,6 +84,35 @@
     flex-wrap: nowrap;
 }
 
+#type-label {
+    align-self: center;
+    align-content: auto;
+    margin-top: 2px;
+    padding-top: 1px;
+    padding-bottom: 1px;
+    margin-bottom: 2px;
+    padding-left: 3px;
+    padding-right: 3px;
+    margin-left: 7px;
+    margin-right: 7px;
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-left-color: rgb(150, 150, 150);
+    border-right-color: rgb(150, 150, 150);
+    border-top-color: rgb(150, 150, 150);
+    border-bottom-color: rgb(150, 150, 150);
+    font-size: 10px;
+    color: rgb(170, 170, 170);
+    background-color: rgb(45, 45, 45);
+    -unity-text-align: middle-center;
+}
+
 :selected > #selection-border {
     border-top-width: 2px;
     border-right-width: 2px;
@@ -90,7 +125,57 @@
     height: 10px;
 }
 
-#input > .port {
+.state-node > #input > .port {
+    background-color: rgb(30, 30, 30);
+    width: 100%;
+    height: 100%;
+    cursor: url("project://database/Assets/TaskStreamer/Editor/Resource/UI/Images/Touch.png?fileID=2800000&guid=b3e981dcf6204ee40a74cea955848a81&type=3#Touch");
+}
+
+.state-node > #output > .port {
+    min-width: auto;
+    background-color: rgb(30, 30, 30);
+    align-self: center;
+    align-items: auto;
+    flex-wrap: wrap-reverse;
+    justify-content: flex-end;
+    flex-grow: 0;
+    visibility: visible;
+    position: relative;
+    bottom: 0;
+    background-image: none;
+    width: 100%;
+    height: 100%;
+    cursor: url("project://database/Assets/TaskStreamer/Editor/Resource/UI/Images/Touch.png?fileID=2800000&guid=b3e981dcf6204ee40a74cea955848a81&type=3#Touch");
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.state-node > #input > .port > #connector {
+    align-self: center;
+    display: flex;
+    visibility: hidden;
+    position: absolute;
+    justify-content: center;
+    align-content: auto;
+    align-items: center;
+    flex-grow: 1;
+    width: 100%;
+    height: 100%;
+}
+
+.state-node > #output > .port > #connector {
+    align-self: center;
+    display: flex;
+    visibility: hidden;
+    flex-wrap: nowrap;
+    left: auto;
+    right: auto;
+    position: absolute;
+    flex-grow: 1;
+}
+
+.behavior-node > #input > .port {
     min-width: 60%;
     background-color: rgb(25, 25, 25);
     border-bottom-right-radius: 7px;
@@ -109,7 +194,7 @@
     cursor: url("project://database/Assets/TaskStreamer/Editor/Resource/UI/Images/Touch.png?fileID=2800000&guid=b3e981dcf6204ee40a74cea955848a81&type=3#Touch");
 }
 
-#output > .port {
+.behavior-node > #output > .port {
     min-width: 60%;
     background-color: rgb(25, 25, 25);
     border-top-left-radius: 7px;
@@ -129,7 +214,7 @@
     cursor: url("project://database/Assets/TaskStreamer/Editor/Resource/UI/Images/Touch.png?fileID=2800000&guid=b3e981dcf6204ee40a74cea955848a81&type=3#Touch");
 }
 
-#input > .port > #connector {
+.behavior-node > #input > .port > #connector {
     align-self: center;
     display: flex;
     visibility: hidden;
@@ -137,7 +222,7 @@
     position: absolute;
 }
 
-#output > .port > #connector {
+.behavior-node > #output > .port > #connector {
     align-self: center;
     display: flex;
     visibility: hidden;
@@ -145,26 +230,4 @@
     left: auto;
     right: auto;
     position: absolute;
-}
-
-.behaviour-node-Action {
-    background-color: rgb(108, 0, 221);
-    -unity-background-image-tint-color: rgb(255, 255, 255);
-    background-repeat: no-repeat no-repeat;
-}
-
-.behaviour-node-Composite {
-    background-color: rgb(255, 118, 0);
-}
-
-.behaviour-node-Decorator {
-    background-color: rgb(0, 119, 255);
-}
-
-.behaviour-node-Root {
-    background-color: rgb(0, 192, 90);
-}
-
-.behaviour-node-SubGraph {
-    background-color: rgb(212, 0, 153);
 }

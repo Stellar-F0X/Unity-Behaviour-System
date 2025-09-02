@@ -155,26 +155,11 @@ namespace TaskStreamer.Tool
                 this._valueFieldContainer.Add(this.CreateLocalVariableDisplayField());
             }
             
-            this.SetInputFieldAccessibility();
-        }
-
-        
-        
-        private void SetInputFieldAccessibility()
-        {
             ReadOnlyAttribute readOnly = this._variableHandle.GetAttribute<ReadOnlyAttribute>();
 
             //여기서 결정해도 InitializeBlackboardVariableField 함수에서 런타임 중인지 아닌지에 따라 활성화가 다시 결정된다.
-            if (readOnly is not null || TaskStreamerEditor.canEditGraph == false)
-            {
-                this._localVariableInputField.enabledSelf = false;
-                this._linkToSharedButton.enabledSelf = false;
-            }
-            else
-            {
-                this._localVariableInputField.enabledSelf = true;
-                this._linkToSharedButton.enabledSelf = true;
-            }
+            this._localVariableInputField.enabledSelf = readOnly is null;
+            this._linkToSharedButton.enabledSelf = readOnly is null || !TaskStreamerEditor.canEditGraph;
         }
 
 

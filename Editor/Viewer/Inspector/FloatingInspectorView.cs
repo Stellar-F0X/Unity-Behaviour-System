@@ -147,7 +147,7 @@ namespace TaskStreamer.Tool
                 {
                     _contentContainer.Add(new BasicSectionPanel(bNodeView.targetNode, bNodeView.onRenamingNode));
                     _contentContainer.Add(new FieldSectionPanel(bNodeView.variableHandles.GetRange(1, bNodeView.variableHandles.Count - 1)));
-                    _contentContainer.Add(new ServiceContainerPanel(bNodeView.variableHandles[0]));
+                    _contentContainer.Add(new ServiceContainerPanel(bNodeView.variableHandles[0], bNodeView.variableHandlesDic));
                     break;
                 }
 

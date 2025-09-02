@@ -14,9 +14,9 @@ namespace TaskStreamer.Tool
     {
         public NodeViewBase(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(AssetDatabase.GetAssetPath(nodeUxml))
         {
-            this._elementGroup = this.Q<VisualElement>("group");
+            this._elementGroup = this.Q<VisualElement>("contents");
             this._nodeBorder = this.Q<VisualElement>("node-border");
-            this._nodeTypeLabel = this.Q<TextElement>("node-type-label");
+            this._nodeTypeLabel = this.Q<TextElement>("type-label");
             
             //title은 sub class에서 처리.
             this.viewDataKey = targetNode.guid.ToString();
@@ -29,6 +29,8 @@ namespace TaskStreamer.Tool
             this.CreatePorts();
         }
 
+        
+        
         /// 사용자가 Node를 선택했을 때 발생하는 이벤트로, 선택된 Node 정보를 전달합니다.
         public event Action<GraphElement> onNodeSelected;
 

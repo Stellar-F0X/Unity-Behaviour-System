@@ -104,6 +104,7 @@ namespace TaskStreamer.Tool
             private set;
         }
         
+        
 
 #region Static Methods
         /// <summary>Behaviour Tree 에디터 창을 Unity 메뉴에서 엽니다.</summary>
@@ -168,6 +169,7 @@ namespace TaskStreamer.Tool
             this._graphBreadcrumbs = rootVisualElement.Q<GraphBreadcrumbs>();
             this._blackboardField = rootVisualElement.Q<ObjectField>("blackboard-field");
             this._blackboardField.RegisterValueChangedCallback(this.OnChangeBlackboard);
+            this._blackboardField.enabledSelf = ! EditorApplication.isPlayingOrWillChangePlaymode;
 
             this.inspectorView = TaskStreamerResourcesLoader.FloatingInspectorView.Instantiate()[0] as FloatingInspectorView;
             this.miniMapView = new MiniMapView(rootVisualElement, taskGraphView);
@@ -194,6 +196,7 @@ namespace TaskStreamer.Tool
 
 #endregion
 
+        
 
         /// <summary>에디터 창이 활성화될 때 이벤트 등록 및 초기 설정 작업을 수행합니다.</summary>
         private void OnEnable()
@@ -232,8 +235,8 @@ namespace TaskStreamer.Tool
         /// <summary>TaskStreamer 에디터를 초기 상태로 재설정합니다.</summary>
         private void Initialize()
         {
-            isLoadingTreeToView = false;
-            canEditGraph = false;
+            TaskStreamerEditor.isLoadingTreeToView = false;
+            TaskStreamerEditor.canEditGraph = false;
 
             this.currentGraph = null;
             this.graphAsset = null;
@@ -243,6 +246,7 @@ namespace TaskStreamer.Tool
             this.blackboardView?.ClearView();
         }
 
+        
 
         /// <summary>하이어라키 창에서 변경 사항이 발생하면 graphAsset의 삭제 여부를 확인하고, 필요 시 에디터를 초기화합니다.</summary>
         private void OnHierarchyChange()
@@ -256,6 +260,7 @@ namespace TaskStreamer.Tool
             this.Initialize();
         }
 
+        
 
         /// <summary>프로젝트 변경 시, 사용 중인 Graph Asset이 여전히 유효한지 확인하고, 유효하지 않으면 에디터를 초기화합니다.</summary>
         private void OnProjectChange()
@@ -269,6 +274,7 @@ namespace TaskStreamer.Tool
         }
 
 
+        
         /// <summary>씬이 닫힐 때 에디터를 초기화합니다.</summary>
         /// <param name="_">닫힌 씬의 정보를 나타내는 Scene 타입의 매개변수입니다.</param>
         private void OnSceneClosed(Scene _)
@@ -277,6 +283,7 @@ namespace TaskStreamer.Tool
         }
 
 
+        
         /// <summary>플레이 모드에서 그래프 노드 뷰를 최신 상태로 갱신합니다.</summary>
         private void RuntimeUpdate()
         {
@@ -293,6 +300,7 @@ namespace TaskStreamer.Tool
             taskGraphView.UpdateNodeView();
         }
 
+        
 
         /// <summary>언두/리두 작업 실행 시 그래프와 관련된 에디터 뷰를 갱신합니다.</summary>
         private void OnEditorUndoPerformed()
@@ -310,6 +318,7 @@ namespace TaskStreamer.Tool
         }
 
 
+        
         /// <summary>플레이 모드 상태 변경 시 호출되어 상태에 따른 작업을 수행합니다.</summary>
         /// <param name="state">현재 플레이 모드 상태를 나타내는 PlayModeStateChange 값입니다.</param>
         private void OnEditorStateChanged(PlayModeStateChange state)
@@ -338,6 +347,7 @@ namespace TaskStreamer.Tool
         }
 
 
+        
         /// <summary>에디터에서 선택된 객체가 변경될 때 호출되며, 그래프 에셋을 확인하고 적절한 그래프를 로드합니다.</summary>
         private void OnSelectionChange()
         {
@@ -355,6 +365,7 @@ namespace TaskStreamer.Tool
         }
 
 
+        
         /// <summary>현재 선택된 게임오브젝트에서 TaskStreamer 컴포넌트를 검색하여 Behaviour Tree 정보를 가져옵니다.</summary>
         /// <param name="newTaskStreamer">찾은 TaskStreamer 컴포넌트를 반환합니다.</param>
         /// <returns>TaskStreamer를 성공적으로 찾으면 true를 반환합니다. 그렇지 않으면 false를 반환합니다.</returns>
@@ -385,6 +396,7 @@ namespace TaskStreamer.Tool
             return false;
         }
 
+        
 
         /// <summary>에디터에서 편집할 그래프를 변경하고 관련 설정을 초기화합니다.</summary>
         /// <param name="graph">변경하려는 그래프 인스턴스입니다.</param>
@@ -408,6 +420,7 @@ namespace TaskStreamer.Tool
             this.OpenGraph(graph);
         }
 
+        
 
         /// <summary>그래프를 열어 에디터 뷰와 관련된 설정을 초기화합니다.</summary>
         /// <param name="drawGraph">열고자 하는 그래프 객체를 지정합니다.</param>
