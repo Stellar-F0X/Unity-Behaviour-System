@@ -71,34 +71,5 @@ namespace TaskStreamer.Tool
 
             throw new FileNotFoundException($"Asset not found at filter: {searchFilter}");
         }
-        
-        
-        public static bool IsDuplicated(GraphAsset currentAsset)
-        {
-            string[] guids = AssetDatabase.FindAssets("t:GraphAsset");
-
-            int count = 0;
-
-            foreach (string guid in guids)
-            {
-                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
-                
-                GraphAsset asset = AssetDatabase.LoadAssetAtPath<GraphAsset>(assetPath);
-
-                if (asset == null || asset.graphGuid != currentAsset.graphGuid)
-                {
-                    continue;
-                }
-
-                count++;
-
-                if (count > 1) // 자기 자신 포함해서 2개 이상이면 중복 
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
     }
 }

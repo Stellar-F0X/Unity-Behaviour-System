@@ -1,3 +1,4 @@
+using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.SceneManagement;
@@ -8,108 +9,107 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    /// <summary> 유니티 에디터에서 Task Streamer 작업을 수행하기 위한 커스텀 에디터 창입니다. </summary>
+    /// <summary> Task Streamer 작업을 수행하기 위한 유니티 에디터 커스텀 창 클래스입니다. </summary>
     internal class TaskStreamerEditor : EditorWindow
     {
-        /// <summary>Task Streamer 에디터의 설정 정보를 참조합니다.</summary>
+        /// <summary>Task Streamer 에디터의 설정 정보를 위한 정적 참조입니다.</summary>
         private static EditorSettings _settings;
 
-        
-        /// <summary>그래프 탐색 시 그래프 계층 구조를 표시하고 관리하는 UI 요소입니다.</summary>
+
+        /// <summary>그래프 탐색 시 그래프 계층 구조를 표시하고 관리하는 ToolbarBreadcrumbs를 나타냅니다.</summary>
         private GraphBreadcrumbs _graphBreadcrumbs;
 
-        
-        /// <summary>Graph의 블랙보드를 연결하고 관리하는 UI 필드를 나타냅니다.</summary>
+
+        /// <summary>Graph 블랙보드를 연결하고 변경 사항을 처리하는 ObjectField 필드를 나타냅니다.</summary>
         private ObjectField _blackboardField;
 
-        
 
-        /// <summary>TaskStreamerEditor 설정 정보를 가져옵니다.</summary>
+        /// <summary>Behavior Tree 편집기에서 사용되는 Blackboard 뷰를 나타냅니다.</summary>
+        private FloatingBlackboardView _blackboardView;
+
+
+
+        /// <summary>Task Streamer 에디터의 설정 정보를 제공하는 정적 속성입니다.</summary>
         public static EditorSettings settings
         {
             get
             {
                 _settings ??= EditorUtility.FindAssetByName<EditorSettings>($"t:{nameof(EditorSettings)}");
-                
+
                 Debug.Assert(_settings != null, $"{nameof(TaskStreamerEditor)}: EditorSettings asset not found.");
-                
+
                 return _settings;
             }
         }
 
 
-        /// <summary>TaskStreamerEditor의 단일 인스턴스를 가져옵니다.</summary>
+        /// <summary>Task Streamer 에디터의 싱글톤 인스턴스를 참조합니다.</summary>
         public static TaskStreamerEditor Instance
         {
             get;
             private set;
         }
 
-        /// <summary>그래프를 수정할 수 있는지 여부를 나타냅니다.</summary>
+        /// <summary>그래프를 편집할 수 있는지 여부를 나타냅니다.</summary>
         public static bool canEditGraph
         {
             get;
             private set;
         }
 
-        /// <summary>그래프 편집기에서 트리 로딩 상태를 나타냅니다.</summary>
+        /// <summary>작업 트리 데이터를 뷰에 로드 중인지 여부를 나타냅니다.</summary>
         public static bool isLoadingTreeToView
         {
             get;
             private set;
         }
 
+        /// <summary>현재 에디터 인스턴스가 존재하며, 블랙보드 데이터가 유효한지 여부를 반환합니다.</summary>
         public static bool hasBlackboard
         {
             get { return Instance != null && Instance.graphAsset?.blackboard != null; }
         }
 
-        /// <summary>현재 Task Streamer 에디터에서 사용 중인 그래프 데이터를 참조합니다.</summary>
+        /// <summary>작업 스트리머 에디터에 로드된 그래프 에셋을 참조합니다.</summary>
         public GraphAsset graphAsset
         {
             get;
             private set;
         }
 
-        /// <summary>현재 선택된 그래프를 나타냅니다.</summary>
+        /// <summary>Task Streamer 에디터에서 현재 작업 중인 그래프를 나타냅니다.</summary>
         public Graph currentGraph
         {
             get;
             private set;
         }
 
-        /// <summary>그래프의 미니맵 UI를 제어하기 위한 뷰입니다.</summary>
+        /// <summary>미니 맵 뷰를 관리하며 TaskGraphView에 추가되는 UI 요소입니다.</summary>
         public MiniMapView miniMapView
         {
             get;
             private set;
         }
 
-        /// <summary>InspectorView 객체를 참조하여 그래프 요소의 상세 정보를 표시하거나 갱신합니다.</summary>
+        /// <summary>Task Streamer 에디터의 Floating Inspector View를 관리합니다.</summary>
         public FloatingInspectorView inspectorView
         {
             get;
             private set;
         }
 
-        /// <summary>Task 그래프 편집을 위한 사용자 인터페이스를 관리합니다.</summary>
+        /// <summary>Task Streamer 에디터에서 그래프를 표시 및 조작할 수 있는 뷰를 참조합니다.</summary>
         public TaskGraphView taskGraphView
         {
             get;
             private set;
         }
 
-        /// <summary>Behavior Tree 편집기에서 사용되는 Blackboard 뷰를 나타냅니다.</summary>
-        public FloatingBlackboardView blackboardView
-        {
-            get;
-            private set;
-        }
-        
-        
+
 
 #region Static Methods
-        /// <summary>Behaviour Tree 에디터 창을 Unity 메뉴에서 엽니다.</summary>
+
+        /// <summary>Task Streamer 편집기 창을 Unity 메뉴에서 엽니다.</summary>
         [MenuItem("Tools/Task Streamer")]
         public static void OpenWindow()
         {
@@ -136,8 +136,8 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>주어진 GraphAsset을 기반으로 TaskStreamer 에디터 창을 엽니다.</summary>
-        /// <param name="graphAsset">열려야 할 GraphAsset 인스턴스입니다.</param>
+        /// <summary>Task Streamer 에디터 창을 엽니다.</summary>
+        /// <param name="graphAsset">로딩해야 할 GraphAsset 인스턴스입니다.</param>
         public static void OpenWindow(GraphAsset graphAsset)
         {
             if (Instance != null)
@@ -154,54 +154,47 @@ namespace TaskStreamer.Tool
                 Instance.ChangeGraph(graphAsset.main);
             }
         }
+
 #endregion
 
 
 #region Create GUIs
 
-        /// <summary>에디터 창의 GUI 요소를 생성하고 초기화합니다.</summary>
+        /// <summary>에디터 창의 GUI를 생성하고 필요한 UI 요소를 초기화합니다.</summary>
         private void CreateGUI()
         {
             TaskStreamerEditor.Instance = this;
-            
+
             TaskStreamerResourcesLoader.Window.CloneTree(rootVisualElement);
             rootVisualElement.styleSheets.Add(TaskStreamerResourcesLoader.WindowStyle);
-            
-            this.taskGraphView = rootVisualElement.Q<TaskGraphView>(); 
+
+            this.taskGraphView = rootVisualElement.Q<TaskGraphView>();
             this._graphBreadcrumbs = rootVisualElement.Q<GraphBreadcrumbs>();
             this._blackboardField = rootVisualElement.Q<ObjectField>("blackboard-field");
-            
-            this._blackboardField.RegisterValueChangedCallback(this.OnChangeBlackboard);
-            this._blackboardField.enabledSelf = ! EditorApplication.isPlayingOrWillChangePlaymode;
-            
+
+            this._blackboardField.RegisterValueChangedCallback(this.OnChangeBlackboardAsset);
+            this._blackboardField.enabledSelf = !EditorApplication.isPlayingOrWillChangePlaymode;
+
             this.inspectorView = TaskStreamerResourcesLoader.FloatingInspectorView.Instantiate()[0] as FloatingInspectorView;
-            this.blackboardView = new FloatingBlackboardView(rootVisualElement.Q<ToolbarToggle>("toggle-blackboard"), taskGraphView);
+            this._blackboardView = new FloatingBlackboardView(rootVisualElement.Q<ToolbarToggle>("toggle-blackboard"), taskGraphView);
             this.miniMapView = new MiniMapView(rootVisualElement.Q<ToolbarToggle>("toggle-minimap"), taskGraphView);
-            
+
             this.taskGraphView.Add(this.miniMapView);
-            this.taskGraphView.Add(this.blackboardView);
+            this.taskGraphView.Add(this._blackboardView);
             this.taskGraphView.Add(this.inspectorView);
             
-            this.BindGraphViewEvents();
+            this.taskGraphView.onElementSelected += inspectorView.UpdateSelection;
+            this.taskGraphView.onElementUnselected += _ => inspectorView.ClearInspector();
+            
             this.OnSelectionChange();
         }
-        
 
-        /// <summary>GraphView의 요소 선택 및 해제를 처리하는 이벤트를 바인딩합니다.</summary>
-        private void BindGraphViewEvents()
-        {
-            this.taskGraphView.onElementSelected -= inspectorView.UpdateSelection;
-            this.taskGraphView.onElementSelected += inspectorView.UpdateSelection;
-            
-            this.taskGraphView.onElementUnselected = null;
-            this.taskGraphView.onElementUnselected += _ => inspectorView.ClearInspector();
-        }
 
 #endregion
 
-        
 
-        /// <summary>에디터 창이 활성화될 때 이벤트 등록 및 초기 설정 작업을 수행합니다.</summary>
+
+        /// <summary>에디터 창이 활성화될 때 필요한 이벤트를 등록하고 초기화 작업을 수행합니다.</summary>
         private void OnEnable()
         {
             EditorApplication.playModeStateChanged -= this.OnEditorStateChanged;
@@ -221,7 +214,7 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>에디터가 비활성화될 때 이벤트 핸들러 및 업데이트 작업을 해제합니다.</summary>
+        /// <summary>에디터 창이 비활성화될 때 등록된 이벤트와 업데이트 핸들러를 해제합니다.</summary>
         private void OnDisable()
         {
             EditorApplication.playModeStateChanged -= this.OnEditorStateChanged;
@@ -232,10 +225,10 @@ namespace TaskStreamer.Tool
 
             EditorSceneManager.sceneClosed -= this.OnSceneClosed;
         }
-        
-        
-        
-        /// <summary>TaskStreamer 에디터를 초기 상태로 재설정합니다.</summary>
+
+
+
+        /// <summary>TaskStreamer 에디터의 상태를 초기화합니다.</summary>
         private void Initialize()
         {
             TaskStreamerEditor.isLoadingTreeToView = false;
@@ -246,12 +239,12 @@ namespace TaskStreamer.Tool
 
             this.inspectorView?.ClearInspector();
             this.taskGraphView?.ClearEditorView();
-            this.blackboardView?.ClearView();
+            this._blackboardView?.ClearView();
         }
 
-        
 
-        /// <summary>하이어라키 창에서 변경 사항이 발생하면 graphAsset의 삭제 여부를 확인하고, 필요 시 에디터를 초기화합니다.</summary>
+
+        /// <summary>하이어라키 창에서 변경이 발생하면 현재 graphAsset의 유효성을 확인하고, 필요시 에디터 상태를 초기화합니다.</summary>
         private void OnHierarchyChange()
         {
             //유니티의 Object 타입에 구현된 Equals 함수를 사용하여 Fake null을 검사.
@@ -263,31 +256,32 @@ namespace TaskStreamer.Tool
             this.Initialize();
         }
 
-        
 
-        /// <summary>프로젝트 변경 시, 사용 중인 Graph Asset이 여전히 유효한지 확인하고, 유효하지 않으면 에디터를 초기화합니다.</summary>
+
+        /// <summary>프로젝트 변경 시, 에디터 내 활성 상태의 그래프 에셋을 재검증하고 필요에 따라 초기화합니다.</summary>
         private void OnProjectChange()
         {
-            if (graphAsset != null)
+            if (graphAsset == null)
             {
+                this.Initialize();
                 return;
             }
 
-            this.Initialize();
+            this.OnSelectionChange();
         }
 
 
-        
-        /// <summary>씬이 닫힐 때 에디터를 초기화합니다.</summary>
-        /// <param name="_">닫힌 씬의 정보를 나타내는 Scene 타입의 매개변수입니다.</param>
+
+        /// <summary>씬이 닫힐 때 TaskStreamer 에디터를 초기화합니다.</summary>
+        /// <param name="_">닫힌 씬 정보를 나타내는 Scene 타입 매개변수입니다.</param>
         private void OnSceneClosed(Scene _)
         {
             this.Initialize();
         }
 
 
-        
-        /// <summary>플레이 모드에서 그래프 노드 뷰를 최신 상태로 갱신합니다.</summary>
+
+        /// <summary>플레이 모드에서 Task Graph의 노드 뷰를 정기적으로 갱신합니다.</summary>
         private void RuntimeUpdate()
         {
             if (Application.isPlaying == false)
@@ -303,9 +297,9 @@ namespace TaskStreamer.Tool
             taskGraphView.UpdateNodeView();
         }
 
-        
 
-        /// <summary>언두/리두 작업 실행 시 그래프와 관련된 에디터 뷰를 갱신합니다.</summary>
+
+        /// <summary>언두/리두 작업 시 그래프 에디터 뷰와 블랙보드 뷰를 갱신합니다.</summary>
         private void OnEditorUndoPerformed()
         {
             if (EditorApplication.isPlayingOrWillChangePlaymode)
@@ -316,12 +310,12 @@ namespace TaskStreamer.Tool
             isLoadingTreeToView = true;
             taskGraphView?.TrySetupGraphEditorView(currentGraph);
             _blackboardField.SetValueWithoutNotify(graphAsset?.blackboard);
-            blackboardView?.OnUndoPerformed();
+            _blackboardView?.OnUndoPerformed();
             isLoadingTreeToView = false;
         }
 
 
-        
+
         /// <summary>플레이 모드 상태 변경 시 호출되어 상태에 따른 작업을 수행합니다.</summary>
         /// <param name="state">현재 플레이 모드 상태를 나타내는 PlayModeStateChange 값입니다.</param>
         private void OnEditorStateChanged(PlayModeStateChange state)
@@ -331,12 +325,12 @@ namespace TaskStreamer.Tool
                 case PlayModeStateChange.EnteredEditMode:
                 {
                     EditorApplication.update -= this.RuntimeUpdate;
-                    
+
                     if (this.TryGetGraphAsset())
                     {
                         this.ChangeGraph(graphAsset.main);
                     }
-                    
+
                     return;
                 }
 
@@ -350,8 +344,8 @@ namespace TaskStreamer.Tool
         }
 
 
-        
-        /// <summary>에디터에서 선택된 객체가 변경될 때 호출되며, 그래프 에셋을 확인하고 적절한 그래프를 로드합니다.</summary>
+
+        /// <summary>에디터에서 선택된 객체 변경 시 그래프 에셋을 확인하고 관련 작업을 수행합니다.</summary>
         private void OnSelectionChange()
         {
             if (Instance == null || taskGraphView == null || inspectorView == null)
@@ -360,18 +354,23 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            if (this.TryGetGraphAsset())
+            if (this.TryGetGraphAsset() == false)
             {
-                this.ChangeGraph(graphAsset.main);
-                this._blackboardField.value = graphAsset.blackboard;
+                return;
+            }
+
+            this.ChangeGraph(graphAsset.main);
+
+            if (graphAsset.blackboard != null)
+            {
+                this._blackboardField.SetValueWithoutNotify(graphAsset.blackboard);
             }
         }
 
 
-        
-        /// <summary>현재 선택된 게임오브젝트에서 TaskStreamer 컴포넌트를 검색하여 Behaviour Tree 정보를 가져옵니다.</summary>
-        /// <param name="newTaskStreamer">찾은 TaskStreamer 컴포넌트를 반환합니다.</param>
-        /// <returns>TaskStreamer를 성공적으로 찾으면 true를 반환합니다. 그렇지 않으면 false를 반환합니다.</returns>
+
+        /// <summary>선택된 객체에서 TaskStreamer 또는 GraphAsset을 검색하고 이에 따라 graphAsset을 설정합니다.</summary>
+        /// <returns>성공적으로 graphAsset을 설정하면 true, 설정에 실패하면 false를 반환합니다.</returns>
         private bool TryGetGraphAsset()
         {
             GameObject gameObject = Selection.activeGameObject;
@@ -399,7 +398,7 @@ namespace TaskStreamer.Tool
             return false;
         }
 
-        
+
 
         /// <summary>에디터에서 편집할 그래프를 변경하고 관련 설정을 초기화합니다.</summary>
         /// <param name="graph">변경하려는 그래프 인스턴스입니다.</param>
@@ -419,14 +418,14 @@ namespace TaskStreamer.Tool
             }
 
             this._graphBreadcrumbs.PushItem(graph, () => this.OpenGraph(graph));
-            
+
             this.OpenGraph(graph);
         }
 
-        
 
-        /// <summary>그래프를 열어 에디터 뷰와 관련된 설정을 초기화합니다.</summary>
-        /// <param name="drawGraph">열고자 하는 그래프 객체를 지정합니다.</param>
+
+        /// <summary>그래프를 열고 관련된 에디터 뷰 설정을 초기화합니다.</summary>
+        /// <param name="drawGraph">열려는 그래프 객체입니다.</param>
         private void OpenGraph(Graph drawGraph)
         {
             bool hasOpenInstances = HasOpenInstances<TaskStreamerEditor>();
@@ -441,19 +440,26 @@ namespace TaskStreamer.Tool
 
             inspectorView?.ClearInspector();
             taskGraphView?.TrySetupGraphEditorView(drawGraph);
-            blackboardView?.TryChangeBlackboard(graphAsset?.blackboard);
+            _blackboardView?.ChangeBlackboard(graphAsset?.blackboard);
 
             isLoadingTreeToView = false;
         }
-        
-        
-        
-        /// <summary>블랙보드 변경을 처리하여 관련 데이터와 UI를 동기화합니다.</summary>
-        /// <param name="evt">오브젝트 변경 이벤트를 나타내는 ChangeEvent 객체입니다.</param>
-        private void OnChangeBlackboard(ChangeEvent<Object> evt)
+
+
+
+        /// <summary>블랙보드 에셋이 변경되었을 때, 새 블랙보드와 그래프 및 UI를 동기화합니다.</summary>
+        /// <param name="evt">변경된 블랙보드 자산 값을 포함하는 ChangeEvent 객체입니다.</param>
+        private void OnChangeBlackboardAsset(ChangeEvent<Object> evt)
         {
             if (canEditGraph == false)
             {
+                return;
+            }
+
+            if (evt.newValue is null)
+            {
+                this._blackboardField.SetValueWithoutNotify(graphAsset.blackboard);
+                ShowNotification(new GUIContent("Blackboard cannot be empty."));
                 return;
             }
 
@@ -462,12 +468,24 @@ namespace TaskStreamer.Tool
                 Undo.RecordObject(graphAsset, "TaskStreamer(SetBlackboard)");
             }
 
-            if (blackboardView.TryChangeBlackboard(evt.newValue as BlackboardAsset))
-            {
-                //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
-                this.graphAsset.TrySynchronizeVariablesOfNodes();
-                this.inspectorView.ClearInspector();
-            }
+            BlackboardAsset original = graphAsset.blackboard;
+            BlackboardAsset fresh = Instantiate(evt.newValue as BlackboardAsset);
+            AssetDatabase.RemoveObjectFromAsset(original);
+            AssetDatabase.AddObjectToAsset(fresh, graphAsset);
+
+            fresh.name = fresh.name.Replace("(Clone)", "");
+            
+            this.graphAsset.blackboard = fresh;
+            this._blackboardView.ChangeBlackboard(fresh);
+            this._blackboardField.SetValueWithoutNotify(fresh);
+
+            //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
+            this.graphAsset.TrySynchronizeVariablesOfNodes();
+            this.inspectorView.ClearInspector();
+
+            UnityEditor.EditorUtility.SetDirty(graphAsset);
+            UnityEditor.EditorUtility.SetDirty(fresh);
+            AssetDatabase.SaveAssets();
         }
     }
 }

@@ -113,11 +113,11 @@ namespace TaskStreamer.Tool
         /// <summary>새로운 블랙보드 자산을 설정하고 뷰를 업데이트합니다.</summary>
         /// <param name="newBlackboard">설정할 새로운 블랙보드 자산입니다.</param>
         /// <returns>블랙보드 변경 여부를 나타내는 값입니다.</returns>
-        public bool TryChangeBlackboard(BlackboardAsset newBlackboard)
+        public void ChangeBlackboard(BlackboardAsset newBlackboard)
         {
             this.blackboard?.UpdateAppliedVersion();
             this.blackboard = newBlackboard;
-
+            
             if (newBlackboard is null)
             {
                 this.ClearView();
@@ -126,8 +126,6 @@ namespace TaskStreamer.Tool
             {
                 this.UpdateView(newBlackboard);
             }
-
-            return true;
         }
 
 
@@ -147,8 +145,6 @@ namespace TaskStreamer.Tool
             {
                 this.Add(CreateBlackboardField(variable));
             }
-
-            this.blackboard = newBlackboard;
 
             // UI 요소 활성화 설정
             this._addElementButton.enabledSelf = !Application.isPlaying;

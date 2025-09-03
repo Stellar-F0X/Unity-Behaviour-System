@@ -11,19 +11,17 @@ using UnityEditor;
 namespace TaskStreamer
 {
     /// <summary> 블랙보드 데이터를 저장하는 ScriptableObject </summary>
-    [Serializable]
     public sealed class BlackboardAsset : ScriptableObject
     {
         [SerializeField]
-        private BlackboardData _blackboardData;
-
-
-        internal BlackboardData data
-        {
-            get { return _blackboardData; }
-        }
+        private BlackboardData _blackboardData = new BlackboardData();
         
         
+        /// <summary>
+        /// Runtime 블랙보드와의 동기화를 위한 버전 관리 용도.
+        /// 블랙보드 변수가 변경 또는 수정될 때마다 버전이 갱신되며, 
+        /// 연결된 TS의 Runtime 블랙보드는 버전이 다를 경우에만 동기화를 수행한다. 
+        /// </summary>
         internal UGUID appliedVersion
         {
             get { return _blackboardData.appliedVersion; }
@@ -42,9 +40,9 @@ namespace TaskStreamer
         {
             get { return variables is null ? 0 : variables.Count; }
         }
-
-
         
+
+
         internal void ChangeBlackboardData(BlackboardData newData)
         {
             Debug.Assert(newData is not null, "newData is null");
@@ -60,8 +58,8 @@ namespace TaskStreamer
         }
 
 
-        /// <summary> 지정된 UGUID 키에 해당하는 BlackboardVariable을 반환합니다. </summary>
-        /// <param name="key">찾고자 하는 변수의 고유 식별자(UGUID).</param>
+        /// <summary> 지정된 GUID 키에 해당하는 BlackboardVariable을 반환합니다. </summary>
+        /// <param name="key">찾고자 하는 변수의 고유 식별자(GUID).</param>
         /// <returns>해당 키에 매칭되는 BlackboardVariable 객체. 없으면 null 반환.</returns>
         public BlackboardVariable FindVariable(in UGUID key)
         {
@@ -80,10 +78,10 @@ namespace TaskStreamer
         }
 
 
-        /// <summary> 특정 UGUID를 제외하거나 전체 변수 이름을 배열로 반환합니다. </summary>
-        /// <param name="excluded"> 제외할 UGUID 값 (기본값은 default) </param>
+        /// <summary> 특정 GUID를 제외하거나 전체 변수 이름을 배열로 반환합니다. </summary>
+        /// <param name="excluded"> 제외할 GUID 값 (기본값은 default) </param>
         /// <returns> 변수 이름 배열 </returns>
-        public string[] VariableNames(UGUID excluded = default)
+        private string[] VariableNames(UGUID excluded = default)
         {
             if (excluded.IsEmpty())
             {
@@ -97,7 +95,7 @@ namespace TaskStreamer
         
         
         /// <summary>지정된 키를 가진 변수가 존재하는지 확인합니다.</summary>
-        /// <param name="key">확인할 변수의 UGUID 키입니다.</param>
+        /// <param name="key">확인할 변수의 GUID 키입니다.</param>
         /// <returns>변수가 존재하면 true, 그렇지 않으면 false를 반환합니다.</returns>
         public bool HasVariable(UGUID key)
         {
