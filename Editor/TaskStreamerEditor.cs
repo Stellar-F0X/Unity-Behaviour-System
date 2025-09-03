@@ -14,13 +14,15 @@ namespace TaskStreamer.Tool
         /// <summary>Task Streamer 에디터의 설정 정보를 참조합니다.</summary>
         private static EditorSettings _settings;
 
-        //private NodeSearchFieldView _nodeSearchField;
-
-        /// <summary>그래프 탐색 시 그래프 계층 구조를 표시하고 관리하는 UI 요소입니다.</summary>
-        private GraphBreadcrumbs _graphBreadcrumbs; 
         
+        /// <summary>그래프 탐색 시 그래프 계층 구조를 표시하고 관리하는 UI 요소입니다.</summary>
+        private GraphBreadcrumbs _graphBreadcrumbs;
+
+        
+        /// <summary>Graph의 블랙보드를 연결하고 관리하는 UI 필드를 나타냅니다.</summary>
         private ObjectField _blackboardField;
 
+        
 
         /// <summary>TaskStreamerEditor 설정 정보를 가져옵니다.</summary>
         public static EditorSettings settings
