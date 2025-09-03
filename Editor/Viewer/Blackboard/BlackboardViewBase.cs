@@ -40,6 +40,11 @@ namespace TaskStreamer.Tool
         
         private void BuildMyContextMenu(ContextualMenuPopulateEvent evt)
         {
+            if (TaskStreamerEditor.canEditGraph == false)
+            {
+                return;
+            }
+            
             evt.menu.AppendAction("Delete", this.DeleteSelectedBlackboardItems);
             
             evt.StopImmediatePropagation(); //기본 메뉴 빌드 방지

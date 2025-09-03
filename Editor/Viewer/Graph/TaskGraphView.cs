@@ -160,7 +160,7 @@ namespace TaskStreamer.Tool
         /// <param name="onNodeCreated">노드 생성 후 실행할 콜백입니다.</param>
         public void OpenContextualMenuWindow(Vector2 mousePosition, Action<NodeViewBase> onNodeCreated = null)
         {
-            if (TaskStreamerEditor.canEditGraph == false)
+            if (TaskStreamerEditor.canEditGraph == false || this._graphView is null)
             {
                 return;
             }

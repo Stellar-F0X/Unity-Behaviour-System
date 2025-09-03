@@ -57,3 +57,7 @@ InspectorView > .unity-imgui-container {
     padding-bottom: 1px;
     padding-top: 1px;
 }
+
+#container > .graphView > VisualElement > #contentViewContainer {
+    position: absolute;
+}

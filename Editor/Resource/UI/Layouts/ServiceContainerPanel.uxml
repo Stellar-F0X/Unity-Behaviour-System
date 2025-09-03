@@ -2,6 +2,6 @@
     <Style src="project://database/Assets/TaskStreamer/Editor/Resource/UI/Styles/PanelStyle.uss?fileID=7433441132597879392&amp;guid=a285340815d834a45b02dc7a0303c3eb&amp;type=3#PanelStyle" />
     <ui:VisualElement name="container">
         <ui:ListView allow-add="false" allow-remove="false" show-bound-collection-size="false" virtualization-method="DynamicHeight" name="service-list" selection-type="None" focusable="true" />
+        <ui:Button text="Add Service" name="add-button" style="width: 200px; align-self: center; margin-top: 5px; margin-bottom: 5px;" />
     </ui:VisualElement>
-    <ui:Button text="Add Service" name="add-button" style="width: 200px; align-self: center; margin-top: 5px; margin-bottom: 5px;" />
 </ui:UXML>
