@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TaskStreamer.Tool
 {
-    public class NodeFactoryModule<T> : FactoryModule<NodeViewBase>
+    internal class NodeFactoryModule<T> : FactoryModule<NodeViewBase>
     {
         public NodeFactoryModule(TaskGraphView view, string title, int layer = 1) : base(typeof(T), title, true, layer)
         {

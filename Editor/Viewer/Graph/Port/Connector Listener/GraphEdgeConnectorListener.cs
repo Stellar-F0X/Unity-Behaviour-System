@@ -9,7 +9,7 @@ namespace TaskStreamer.Tool
     /// <summary>
     /// 그래프 노드 간 연결 동작을 관리하기 위해 IEdgeConnectorListener 인터페이스를 구현하는 TaskStreamer 편집기용 기본 클래스.
     /// </summary>
-    public abstract class GraphEdgeConnectorListener : IEdgeConnectorListener
+    internal abstract class GraphEdgeConnectorListener : IEdgeConnectorListener
     {
         /// 그래프 뷰에서 엣지 연결 이벤트를 처리하는 리스너를 나타내는 추상 클래스.
         /// 엣지 생성 및 노드 간 연결 관리, 그래프 편집 중의 변경 사항 처리를 담당합니다.

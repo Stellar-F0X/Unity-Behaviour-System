@@ -11,7 +11,7 @@ namespace TaskStreamer.Tool
     /// FSMView 및 StateMachine 클래스를 활용하여 상태 연결 구조를 구성하고,
     /// 입력된 규칙 기반의 처리 흐름을 보장합니다.
     /// </remarks>
-    public class FSMEdgeConnectorListener : GraphEdgeConnectorListener
+    internal class FSMEdgeConnectorListener : GraphEdgeConnectorListener
     {
         /// <summary>
         /// 소스 노드를 기존 연결에서 분리하고 새로 생성된 노드와 연결한 뒤, 그래프 엣지를 통해 연결을 설정합니다.

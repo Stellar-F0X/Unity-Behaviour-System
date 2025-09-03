@@ -9,7 +9,7 @@ namespace TaskStreamer.Tool
 {
     /// <summary> 그래프의 계층적 탐색을 돕는 UI 컴포넌트로, ToolbarBreadcrumbs를 상속받아 그래프 탐색 단계와 아이템 클릭에 따른 동작을 처리합니다. </summary>
     [UxmlElement]
-    public partial class GraphBreadcrumbs : ToolbarBreadcrumbs
+    internal partial class GraphBreadcrumbs : ToolbarBreadcrumbs
     {
         public GraphBreadcrumbs() : base()
         {

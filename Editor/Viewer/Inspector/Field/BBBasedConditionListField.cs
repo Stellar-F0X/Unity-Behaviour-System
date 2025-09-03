@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 namespace TaskStreamer.Tool
 {
     /// BlackboardBasedCondition의 조건 목록을 UI로 표시하는 VisualElement 클래스.
-    public class BlackboardBasedConditionListField : VisualElement, IRefreshableField
+    internal class BlackboardBasedConditionListField : VisualElement, IRefreshableField
     {
         /// BlackboardBasedCondition의 조건 목록을 UI로 표시하는 VisualElement 클래스입니다.
         public BlackboardBasedConditionListField(VariableHandle fieldInfo)

@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    public class StateNodeView : NodeViewBase
+    internal class StateNodeView : NodeViewBase
     {
         private StateNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
         {
@@ -41,6 +41,7 @@ namespace TaskStreamer.Tool
         protected override void OnInitialize()
         {
             base.OnInitialize();
+            //remove 'List<Transition>' variable handle
             variableHandles.RemoveAt(0);
         }
 

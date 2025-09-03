@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 namespace TaskStreamer.Tool
 {
     /// <summary> ServiceSectionPanel 클래스는 Unity UIElements의 VisualElement를 확장하여 서비스 항목을 표시, 설정, 삭제 등의 UI 기능을 제공하는 패널입니다. </summary>
-    public class ServiceSectionPanel : VisualElement, IRefreshablePanel
+    internal class ServiceSectionPanel : VisualElement, IRefreshablePanel
     {
         public ServiceSectionPanel()
         {

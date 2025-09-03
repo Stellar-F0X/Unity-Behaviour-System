@@ -14,7 +14,7 @@ namespace TaskStreamer.Tool
     /// for FSM-related graph operations, such as node connection, disconnection, node recreation,
     /// and specialized graph behavior for finite state machine systems.
     /// </remarks>
-    public class FSMView : GraphViewBase
+    internal class FSMView : GraphViewBase
     {
         /// <summary>
         /// Represents the base class for the Finite State Machine (FSM) graph view.

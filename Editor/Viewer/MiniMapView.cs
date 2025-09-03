@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    public class MiniMapView : MiniMap
+    internal class MiniMapView : MiniMap
     {
         public MiniMapView(ToolbarToggle toggleMinimap, TaskGraphView graphView)
         {

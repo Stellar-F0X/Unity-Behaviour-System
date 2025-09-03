@@ -3,9 +3,9 @@ using TaskStreamer.Utility;
 
 namespace TaskStreamer.Tool
 {
-    public class BehaviorIndicator : NodeIndicatorBase
+    internal class BehaviorIndicator : NodeIndicatorBase
     {
-        public BehaviorIndicator(NodeViewBase nodeView, EditorSettings settings) : base(nodeView, settings)
+        internal BehaviorIndicator(NodeViewBase nodeView, EditorSettings settings) : base(nodeView, settings)
         {
             this.ApplyBorderColorByState();
         }

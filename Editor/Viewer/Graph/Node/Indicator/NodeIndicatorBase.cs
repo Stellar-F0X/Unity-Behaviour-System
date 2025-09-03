@@ -3,9 +3,9 @@ namespace TaskStreamer.Tool
     /// <summary>
     /// NodeIndicatorBase 클래스는 NodeView에서 하이라이트 효과 및 상태에 기반한 테두리 색상을 관리하기 위한 추상 클래스입니다.
     /// </summary>
-    public abstract class NodeIndicatorBase
+    internal abstract class NodeIndicatorBase
     {
-        public NodeIndicatorBase(NodeViewBase nodeView, EditorSettings settings)
+        internal NodeIndicatorBase(NodeViewBase nodeView, EditorSettings settings)
         {
             this._settings = settings;
             this._nodeView = nodeView;

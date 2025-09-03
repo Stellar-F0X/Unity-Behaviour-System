@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    public class FieldSectionPanel : VisualElement, IRefreshablePanel
+    internal class FieldSectionPanel : VisualElement, IRefreshablePanel
     {
         public FieldSectionPanel(List<VariableHandle> variableHandles)
         {

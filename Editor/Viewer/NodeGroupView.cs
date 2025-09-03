@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TaskStreamer.Tool
 {
-    public class NodeGroupView : Group
+    internal class NodeGroupView : Group
     {
         public NodeGroupView(NodeGroup groupDataContainer, Color backgroundColor) : base()
         {

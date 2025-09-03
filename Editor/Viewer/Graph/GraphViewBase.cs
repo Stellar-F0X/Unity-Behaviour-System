@@ -10,7 +10,7 @@ namespace TaskStreamer.Tool
     /// 그래프 뷰를 제어하는 추상 기본 클래스
     /// Behavior Tree(BT)와 Finite State Machine(FSM) 그래프 타입을 처리합니다.
     /// </summary>
-    public abstract class GraphViewBase
+    internal abstract class GraphViewBase
     {
         /// <summary>
         /// 그래프 타입별 프로세서 인스턴스 배열 (BT: 0, FSM: 1)

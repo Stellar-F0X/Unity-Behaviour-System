@@ -12,7 +12,7 @@ namespace TaskStreamer.Tool
     /// Represents a custom behavior tree view derived from the base class <see cref="GraphViewBase"/>.
     /// Provides functionality for node management, connection, and other specialized tasks related to behavior trees.
     /// </summary>
-    public class BTView : GraphViewBase
+    internal class BTView : GraphViewBase
     {
         /// <summary>
         /// Represents a specialized graph view for managing Behavior Tree (BT) structures, providing node-based manipulation functionalities.

@@ -9,7 +9,7 @@ namespace TaskStreamer.Tool
 {
     //BlackboardVariable 형태.
     /// <summary>Blackboard 변수의 필드를 UI로 나타내기 위한 클래스. TValue는 값의 타입, TBindableField는 값 바인딩에 사용하는 VisualElement 타입을 나타냅니다.</summary>
-    public class BlackboardVariableField<TValue, TBindableField> : VisualElement, INotifyValueChanged<TValue>, IRefreshableField where TBindableField : BindableElement, INotifyValueChanged<TValue>, new()
+    internal class BlackboardVariableField<TValue, TBindableField> : VisualElement, INotifyValueChanged<TValue>, IRefreshableField where TBindableField : BindableElement, INotifyValueChanged<TValue>, new()
     {
         public BlackboardVariableField(VariableHandle variableHandle)
         {

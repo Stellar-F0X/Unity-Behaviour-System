@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    public class BehaviorNodeView : NodeViewBase
+    internal class BehaviorNodeView : NodeViewBase
     {
         private BehaviorNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
         {
@@ -29,13 +29,11 @@ namespace TaskStreamer.Tool
         private readonly ObservableDictionary<ServiceBase, List<VariableHandle>> _variableHandlesDic;
 
         private readonly VisualElement _serviceContainer;
-        
-        private List<ServiceBase> _serviceList;
 
 
 
 
-        //serviceBase 객체의 필드를 variableHandle로 미리 캐싱해둠. 
+        //nodeView가 생성될때 serviceBase 객체의 필드를 variableHandle로 미리 캐싱해둠. 
         internal ObservableDictionary<ServiceBase, List<VariableHandle>> variableHandlesDic
         {
             get { return _variableHandlesDic; }
@@ -44,7 +42,7 @@ namespace TaskStreamer.Tool
         
         internal List<ServiceBase> serviceList
         {
-            get { return _serviceList; }
+            get { return ((BehaviorNodeBase)targetNode).services; }
         }
         
 
@@ -65,19 +63,12 @@ namespace TaskStreamer.Tool
         protected override void OnInitialize()
         {
             base.OnInitialize();
-            
-            VariableHandle handle = base.variableHandles[0];
-            Debug.Assert(handle is not null, $"{typeof(BehaviorNodeView)}: Failed to find service handle in variable handles");
+            //remove 'List<serviceBase>' variable handle
             variableHandles.RemoveAt(0);
-            
-            
-            this._serviceList = handle.GetValue<List<ServiceBase>>();
-            Debug.Assert(this._serviceList is not null, $"{typeof(BehaviorNodeView)}: Service list is null in variable handle");
-
             
             this._variableHandlesDic.onCollectionItemChanged -= this.OnServiceViewListChanged;
             
-            foreach (ServiceBase service in _serviceList)
+            foreach (ServiceBase service in serviceList)
             {
                 this._variableHandlesDic.Add(service, TypeUtility.TryGetFieldHandles(service.GetType(), service));
                 this._serviceContainer.Add(new ServiceView(service));
@@ -95,22 +86,22 @@ namespace TaskStreamer.Tool
                 case NotifyCollectionChangedAction.Reset:
                 {
                     this._serviceContainer.Clear();
-                    this._serviceList.Clear();
+                    this.serviceList.Clear();
                     break;
                 }
                 
                 case NotifyCollectionChangedAction.Add:
                 {
                     this._serviceContainer.Add(new ServiceView(service));
-                    this._serviceList.Add(service);
+                    this.serviceList.Add(service);
                     break;
                 } 
 
                 case NotifyCollectionChangedAction.Remove:
                 {
-                    int index = _serviceList.IndexOf(service);
+                    int index = serviceList.IndexOf(service);
                     this._serviceContainer.RemoveAt(index);
-                    this._serviceList.RemoveAt(index);
+                    this.serviceList.RemoveAt(index);
                     break;
                 } 
             }

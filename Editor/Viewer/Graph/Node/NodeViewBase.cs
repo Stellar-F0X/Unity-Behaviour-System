@@ -12,7 +12,7 @@ using TypeUtility = TaskStreamer.Utility.TypeUtility;
 namespace TaskStreamer.Tool
 {
     /// Node 클래스에서 확장된 추상 베이스 클래스이며, 노드의 시각적 표현과 데이터 동기화를 관리합니다.
-    public abstract class NodeViewBase : Node
+    internal abstract class NodeViewBase : Node
     {
         protected NodeViewBase(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(AssetDatabase.GetAssetPath(nodeUxml))
         {

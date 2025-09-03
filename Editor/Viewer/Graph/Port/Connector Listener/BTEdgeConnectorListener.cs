@@ -9,7 +9,7 @@ namespace TaskStreamer.Tool
     /// Provides functionality for creating and linking nodes during edge interactions
     /// and ensures the correct parent-child relationships within the behavior tree structure.
     /// </summary>
-    public class BTEdgeConnectorListener : GraphEdgeConnectorListener
+    internal class BTEdgeConnectorListener : GraphEdgeConnectorListener
     {
         /// <summary>
         /// Creates a new node, establishes a connection from the original node to the newly created node,

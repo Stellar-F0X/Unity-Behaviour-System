@@ -9,7 +9,7 @@ namespace TaskStreamer.Tool
 {
     //TODO: 추후 별도의 SearchFieldWindow으로 분리 예정 (Unity의 Search 창 같은 느낌으로).
     [UxmlElement, Obsolete("추후 별도의 SearchFieldWindow으로 분리 예정입니다.")]
-    public partial class NodeSearchFieldView : ToolbarSearchField
+    internal partial class NodeSearchFieldView : ToolbarSearchField
     {
         private readonly List<NodeViewBase> _itemSource = new List<NodeViewBase>();
         private readonly ListView _nodeListView = new ListView();

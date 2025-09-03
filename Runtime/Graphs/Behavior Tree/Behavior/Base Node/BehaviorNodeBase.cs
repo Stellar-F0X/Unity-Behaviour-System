@@ -93,10 +93,8 @@ namespace TaskStreamer.BT
         }
 
         
-        /// <summary>
-        /// 노드의 서비스 목록을 읽기 전용으로 반환합니다. (서비스는 특정 기능을 실행 중인 노드에 부여하기 위한 추가적인 동작입니다.)
-        /// </summary>
-        public IReadOnlyList<ServiceBase> services
+        /// <summary> 노드의 서비스 목록을 읽기 전용으로 반환합니다. </summary>
+        internal List<ServiceBase> services
         {
             get { return _services; }
         }

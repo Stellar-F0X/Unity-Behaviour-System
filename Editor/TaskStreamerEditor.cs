@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 namespace TaskStreamer.Tool
 {
     /// <summary> 유니티 에디터에서 Task Streamer 작업을 수행하기 위한 커스텀 에디터 창입니다. </summary>
-    public class TaskStreamerEditor : EditorWindow
+    internal class TaskStreamerEditor : EditorWindow
     {
         /// <summary>Task Streamer 에디터의 설정 정보를 참조합니다.</summary>
         private static EditorSettings _settings;

@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    public class PortView : Port
+    internal class PortView : Port
     {
         public PortView(GraphType graphType, Direction direction, Capacity capacity) : base(Orientation.Vertical, direction, capacity, typeof(bool))
         {

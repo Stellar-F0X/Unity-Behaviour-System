@@ -13,7 +13,7 @@ namespace TaskStreamer.Tool
     /// BlackboardView 클래스는 Unity에서 그래프 기반 인터페이스의 블랙보드 관리 기능을 제공하며,
     /// 변수 관리, UI 갱신, 블랙보드 객체 변경 등을 처리합니다.
     /// </summary>
-    public class FloatingBlackboardView : BlackboardViewBase
+    internal class FloatingBlackboardView : BlackboardViewBase
     {
         public FloatingBlackboardView(ToolbarToggle toggleBlackboard, TaskGraphView taskGraphView)
         {

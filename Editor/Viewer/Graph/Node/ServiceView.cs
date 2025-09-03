@@ -6,7 +6,7 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    public class ServiceView : VisualElement
+    internal class ServiceView : VisualElement
     {
         public ServiceView(ServiceBase service)
         {

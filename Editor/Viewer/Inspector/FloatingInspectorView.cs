@@ -7,7 +7,7 @@ namespace TaskStreamer.Tool
 {
     /// <summary> 선택된 그래프 요소의 세부 정보를 표시하고 관리하는 플로팅 인스펙터 뷰 클래스 </summary>
     [UxmlElement]
-    public partial class FloatingInspectorView : VisualElement
+    internal partial class FloatingInspectorView : VisualElement
     {
         public FloatingInspectorView()
         {

@@ -8,7 +8,7 @@ namespace TaskStreamer.Tool
     /// <summary>
     /// BBBasedConditionField는 시각적 요소로, 조건 필드에 관련된 UI를 정의합니다.
     /// </summary>
-    public class BlackBoardBasedConditionField : VisualElement
+    internal class BlackBoardBasedConditionField : VisualElement
     {
         public BlackBoardBasedConditionField()
         {

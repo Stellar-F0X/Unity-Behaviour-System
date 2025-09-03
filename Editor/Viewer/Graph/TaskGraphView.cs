@@ -9,7 +9,7 @@ namespace TaskStreamer.Tool
 {
     /// <summary>TaskGraphView 클래스를 정의하고 그래프 작업을 위한 뷰를 제공합니다.</summary>
     [UxmlElement]
-    public partial class TaskGraphView : GraphView
+    internal partial class TaskGraphView : GraphView
     {
         /// <summary>Task 그래프를 표시하고 편집할 수 있는 그래프 뷰를 제공합니다.</summary>
         public TaskGraphView()

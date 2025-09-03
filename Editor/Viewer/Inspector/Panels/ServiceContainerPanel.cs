@@ -11,7 +11,7 @@ namespace TaskStreamer.Tool
     /// ServiceContainerPanel 클래스는 VisualElement를 상속받아 서비스 리스트를 UI로 관리하며,
     /// IRefreshablePanel 인터페이스를 구현하여 동적 갱신 기능을 제공합니다.
     /// </summary>
-    public class ServiceContainerPanel : VisualElement, IRefreshablePanel
+    internal class ServiceContainerPanel : VisualElement, IRefreshablePanel
     {
         /// <summary> 서비스 목록 패널을 나타내며, 서비스 항목을 추가 및 관리하는 UI 요소입니다. </summary>
         public ServiceContainerPanel(List<ServiceBase> servicesHandle, ObservableDictionary<ServiceBase, List<VariableHandle>> variableHandlesDic)
