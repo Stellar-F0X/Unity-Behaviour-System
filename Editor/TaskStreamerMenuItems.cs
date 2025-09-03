@@ -77,13 +77,5 @@ namespace TaskStreamer.Tool
             asset.mainGraphType = GraphType.BT;
             ProjectWindowUtil.CreateAsset(asset, "New BT Graph.asset");
         }
-
-
-        [MenuItem("Assets/Create/Task Streamer/Blackboard")]
-        public static void CreateBlackboard()
-        {
-            BlackboardAsset asset = ScriptableObject.CreateInstance<BlackboardAsset>();
-            ProjectWindowUtil.CreateAsset(asset, "New Blackboard Asset.asset");
-        }
     }
 }

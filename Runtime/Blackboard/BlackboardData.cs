@@ -18,7 +18,11 @@ namespace TaskStreamer
         private bool _initialized = false;
 
         
-        /// <summary>BlackboardAsset의 현재 적용된 버전을 나타냅니다.</summary>
+        /// <summary>
+        /// Runtime 블랙보드와의 동기화를 위한 버전 관리 용도.
+        /// 블랙보드 변수가 변경 또는 수정될 때마다 버전이 갱신되며, 
+        /// 연결된 TS의 Runtime 블랙보드는 버전이 다를 경우에만 동기화를 수행한다. 
+        /// </summary>
         [SerializeField]
         private UGUID _appliedVersion;
 
@@ -31,25 +35,26 @@ namespace TaskStreamer
         /// <summary>키를 기준으로 BlackboardVariable 객체를 매핑하는 Dictionary입니다.</summary>
         private Dictionary<string, BlackboardVariable> _variableByKey;
 
-
-
-
-
-        /// <summary>Blackboard에 있는 변수 리스트를 나타냅니다.</summary>
+        
+        
         public List<BlackboardVariable> variables
         {
             get { return this._variables; }
         }
 
-
-        /// <summary>변수의 총 개수를 나타냅니다.</summary>
+        
         public int count
         {
             get { return this._variables?.Count ?? 0; }
         }
 
 
-        /// <summary>BlackboardAsset의 적용 버전을 나타냅니다.</summary>
+
+        /// <summary>
+        /// Runtime 블랙보드와의 동기화를 위한 버전 관리 용도.
+        /// 블랙보드 변수가 변경 또는 수정될 때마다 버전이 갱신되며, 
+        /// 연결된 TS의 Runtime 블랙보드는 버전이 다를 경우에만 동기화를 수행한다. 
+        /// </summary>
         internal UGUID appliedVersion
         {
             get { return this._appliedVersion; }
