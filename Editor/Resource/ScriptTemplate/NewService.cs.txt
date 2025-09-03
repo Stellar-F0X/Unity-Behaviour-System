@@ -1,0 +1,25 @@
+using System;
+using TaskStreamer;
+using TaskStreamer.BT;
+using Unity.Properties;
+
+    #ROOTNAMESPACEBEGIN#
+[Serializable, GeneratePropertyBag, Readable]
+public class #SCRIPTNAME# : ServiceBase
+{
+    public override void OnStart()
+    {
+    #NOTRIM#
+    }
+
+    public override void OnUpdate()
+    {
+    #NOTRIM#
+    }
+
+    public override void OnStop()
+    {
+    #NOTRIM#
+    }
+}
+#ROOTNAMESPACEEND#
