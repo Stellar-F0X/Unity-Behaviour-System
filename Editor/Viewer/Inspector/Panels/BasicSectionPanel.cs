@@ -14,18 +14,18 @@ namespace TaskStreamer.Tool
         /// <summary> 작업(Task)의 기본 속성을 표시하고 편집할 수 있는 UI 패널입니다. </summary>
         public BasicSectionPanel(Task targetTask, Action<string> renamingCallback)
         {
-            TaskStreamerResourcesLoader.BasicSectionPanel.CloneTree(this);
+            TaskStreamerResourceLoader.BasicSectionPanel.CloneTree(this);
+            ObjectField monoScriptField = this.Q<ObjectField>("script-field");
 
             _nameField = this.Q<TextField>("name-field");
-            _monoScriptField = this.Q<ObjectField>("script-field");
             _tagSelectionField = this.Q<DropdownField>("tag-field");
             _desContentField = this.Q<TextField>("description-content");
             _baseTitleHeader = this.Q<Label>("base-title-header");
 
             _targetTask = targetTask;
             _nodeType = targetTask.GetType();
-            _monoScriptField.value = EditorUtility.GetMonoScriptFromPoco(_nodeType);
             _renamingCallback = renamingCallback;
+            monoScriptField.value = targetTask.script;
 
             this.InitializeFields(targetTask);
 
@@ -62,10 +62,6 @@ namespace TaskStreamer.Tool
 
         /// <summary>Task의 설명 내용을 입력하거나 수정하는 데 사용되는 텍스트 필드입니다.</summary>
         private readonly TextField _desContentField;
-
-        
-        /// <summary>Task의 관련 MonoScript를 표시하고 설정하기 위해 사용하는 ObjectField UI 요소입니다.</summary>
-        private readonly ObjectField _monoScriptField;
 
 
 

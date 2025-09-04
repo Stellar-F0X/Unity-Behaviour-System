@@ -1,5 +1,4 @@
 using UnityEditor.Experimental.GraphView;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -7,17 +6,13 @@ namespace TaskStreamer.Tool
 {
     internal class MiniMapView : MiniMap
     {
-        public MiniMapView(ToolbarToggle toggleMinimap, TaskGraphView graphView)
+        public MiniMapView(TaskGraphView graphView)
         {
             this.style.backgroundColor = TaskStreamerEditor.settings.minimapColor;
             this._activated = false;
             this.visible = false;
             this.anchored = true;
             this.graphView = graphView;
-            
-            toggleMinimap.UnregisterValueChangedCallback(this.ActiveMinimap);
-            toggleMinimap.RegisterValueChangedCallback(this.ActiveMinimap);
-            
             graphView.UnregisterCallback<GeometryChangedEvent>(this.UpdatePosition);
             graphView.RegisterCallback<GeometryChangedEvent>(this.UpdatePosition);
         }
@@ -26,7 +21,7 @@ namespace TaskStreamer.Tool
         private bool _activated;
 
 
-        private void ActiveMinimap(ChangeEvent<bool> activeEvent)
+        public void Show(ChangeEvent<bool> activeEvent)
         {
             this._activated = activeEvent.newValue;
             this.visible = activeEvent.newValue;

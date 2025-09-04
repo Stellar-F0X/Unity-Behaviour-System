@@ -22,31 +22,46 @@ namespace TaskStreamer.Tool
                 {
                     continue;
                 }
-                
+
                 if (asset.main is null)
                 {
-                    Graph graphRef = asset.main;
-                    ObjectFactory.CreateGraph(asset, asset.mainGraphType, ref graphRef, "Main");
-                    asset.main = graphRef;
-                    
-                    asset.graphGuid = UGUID.Create();
-                    asset.blackboard = ScriptableObject.CreateInstance<BlackboardAsset>();
-                    asset.blackboard.name = "Blackboard";
-                    
-                    AssetDatabase.AddObjectToAsset(asset.blackboard, asset);
-                    UnityEditor.EditorUtility.SetDirty(asset.blackboard);
-                    UnityEditor.EditorUtility.SetDirty(asset);
-                    AssetDatabase.SaveAssets();
+                    InitializeAssetIfNeeded(asset); 
+                    continue;
                 }
 
-                if (TaskStreamerAssetProcessor.IsDuplicated(asset))
+                if (IsDuplicated(asset))
                 {
-                    asset.ReassignAllGraphElementGuids();
-                    UnityEditor.EditorUtility.SetDirty(asset);
-                    AssetDatabase.SaveAssets();
+                    HandleDuplicatedAsset(asset);
                 }
             }
         }
+
+
+
+        private static void InitializeAssetIfNeeded(GraphAsset asset)
+        {
+            asset.main = ObjectFactory.CreateGraph(asset, asset.mainGraphType, "Main");
+            asset.blackboard = ObjectFactory.CreateBlackboardAsset("Blackboard");
+            asset.graphGuid = UGUID.Create();
+            
+            AssetDatabase.AddObjectToAsset(asset.blackboard, asset);
+            
+            UnityEditor.EditorUtility.SetDirty(asset);
+            
+            AssetDatabase.SaveAssets();
+        }
+
+
+
+        private static void HandleDuplicatedAsset(GraphAsset asset)
+        {
+            asset.ReassignAllGraphElementGuids();
+            
+            UnityEditor.EditorUtility.SetDirty(asset);
+            
+            AssetDatabase.SaveAssets();
+        }
+
 
 
         private static bool IsDuplicated(GraphAsset currentAsset)

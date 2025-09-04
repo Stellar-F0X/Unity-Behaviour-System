@@ -8,7 +8,7 @@ namespace TaskStreamer.Tool
     {
         public FieldSectionPanel(List<VariableHandle> variableHandles)
         {
-            TaskStreamerResourcesLoader.FieldSectionPanel.CloneTree(this);
+            TaskStreamerResourceLoader.FieldSectionPanel.CloneTree(this);
 
             headerLabel = this.Q<Label>("main-header");
             _fieldListView = this.Q<ListView>("field-list");

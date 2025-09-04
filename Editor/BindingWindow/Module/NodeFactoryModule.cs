@@ -29,9 +29,7 @@ namespace TaskStreamer.Tool
                 Debug.Assert(graphAsset is not null, $"{nameof(NodeFactoryModule<T>)}: GraphAsset is null");
 
                 Graph baseGraph = TaskStreamerEditor.Instance.taskGraphView.focusGraph;
-                Graph newGraph = null;
-
-                ObjectFactory.CreateGraph(graphAsset, graphNode.subGraphType, ref newGraph, creation.title);
+                Graph newGraph = ObjectFactory.CreateGraph(graphAsset, graphNode.subGraphType, creation.title);
 
                 baseGraph.AddSubGraph(newGraph);
                 graphNode.subGraphGuid = newGraph.guid;

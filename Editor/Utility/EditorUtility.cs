@@ -7,31 +7,6 @@ namespace TaskStreamer.Tool
 {
     public static class EditorUtility
     {
-        public static MonoScript GetMonoScriptFromPoco(Type pocoType)
-        {
-            string[] guids = AssetDatabase.FindAssets("t:MonoScript");
-    
-            foreach (string guid in guids)
-            {
-                string path = AssetDatabase.GUIDToAssetPath(guid);
-
-                if (string.IsNullOrEmpty(path))
-                {
-                    continue;
-                }
-                
-                MonoScript script = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
-        
-                if (script != null && script.GetClass() == pocoType)
-                {
-                    return script;
-                }
-            }
-    
-            return null;
-        }
-
-        
         public static T FindAssetByName<T>(string searchFilter) where T : Object
         {
             string[] guids = AssetDatabase.FindAssets(searchFilter);

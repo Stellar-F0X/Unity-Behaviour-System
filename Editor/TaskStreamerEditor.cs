@@ -6,6 +6,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using ObjectFactory = TaskStreamer.Utility.ObjectFactory;
 
 namespace TaskStreamer.Tool
 {
@@ -165,8 +166,8 @@ namespace TaskStreamer.Tool
         {
             TaskStreamerEditor.Instance = this;
 
-            TaskStreamerResourcesLoader.Window.CloneTree(rootVisualElement);
-            rootVisualElement.styleSheets.Add(TaskStreamerResourcesLoader.WindowStyle);
+            TaskStreamerResourceLoader.Window.CloneTree(rootVisualElement);
+            rootVisualElement.styleSheets.Add(TaskStreamerResourceLoader.WindowStyle);
 
             this.taskGraphView = rootVisualElement.Q<TaskGraphView>();
             this._graphBreadcrumbs = rootVisualElement.Q<GraphBreadcrumbs>();
@@ -175,9 +176,15 @@ namespace TaskStreamer.Tool
             this._blackboardField.RegisterValueChangedCallback(this.OnChangeBlackboardAsset);
             this._blackboardField.enabledSelf = !EditorApplication.isPlayingOrWillChangePlaymode;
 
-            this.inspectorView = TaskStreamerResourcesLoader.FloatingInspectorView.Instantiate()[0] as FloatingInspectorView;
-            this._blackboardView = new FloatingBlackboardView(rootVisualElement.Q<ToolbarToggle>("toggle-blackboard"), taskGraphView);
-            this.miniMapView = new MiniMapView(rootVisualElement.Q<ToolbarToggle>("toggle-minimap"), taskGraphView);
+            this.inspectorView = TaskStreamerResourceLoader.FloatingInspectorView.Instantiate()[0] as FloatingInspectorView;
+            this._blackboardView = new FloatingBlackboardView(taskGraphView);
+            this.miniMapView = new MiniMapView(taskGraphView);
+
+            ToolbarToggle blackboardToggle = rootVisualElement.Q<ToolbarToggle>("toggle-blackboard");
+            ToolbarToggle minimapToggle = rootVisualElement.Q<ToolbarToggle>("toggle-minimap");
+            
+            blackboardToggle.RegisterValueChangedCallback(this._blackboardView.Show);
+            minimapToggle.RegisterValueChangedCallback(this.miniMapView.Show);
 
             this.taskGraphView.Add(this.miniMapView);
             this.taskGraphView.Add(this._blackboardView);
@@ -468,12 +475,9 @@ namespace TaskStreamer.Tool
                 Undo.RecordObject(graphAsset, "TaskStreamer(SetBlackboard)");
             }
 
-            BlackboardAsset original = graphAsset.blackboard;
-            BlackboardAsset fresh = Instantiate(evt.newValue as BlackboardAsset);
-            AssetDatabase.RemoveObjectFromAsset(original);
+            BlackboardAsset fresh = ObjectFactory.CloneBlackboardAsset(evt.newValue as BlackboardAsset);
+            AssetDatabase.RemoveObjectFromAsset(graphAsset.blackboard);
             AssetDatabase.AddObjectToAsset(fresh, graphAsset);
-
-            fresh.name = fresh.name.Replace("(Clone)", "");
             
             this.graphAsset.blackboard = fresh;
             this._blackboardView.ChangeBlackboard(fresh);

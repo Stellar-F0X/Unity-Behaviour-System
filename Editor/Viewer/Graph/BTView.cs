@@ -148,7 +148,7 @@ namespace TaskStreamer.Tool
                 return null;
             }
 
-            NodeViewBase nodeView = BehaviorNodeView.Create(node, TaskStreamerResourcesLoader.BehaviorNode);
+            NodeViewBase nodeView = BehaviorNodeView.Create(node, TaskStreamerResourceLoader.BehaviorNode);
             Debug.Assert(nodeView is not null, $"{nameof(TaskGraphView)}: NodeViewBase is null");
             return nodeView;
         }

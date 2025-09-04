@@ -16,7 +16,7 @@ namespace TaskStreamer.Tool
         /// <summary> 서비스 목록 패널을 나타내며, 서비스 항목을 추가 및 관리하는 UI 요소입니다. </summary>
         public ServiceContainerPanel(List<ServiceBase> servicesHandle, ObservableDictionary<ServiceBase, List<VariableHandle>> variableHandlesDic)
         {
-            TaskStreamerResourcesLoader.ServiceContainerPanel.CloneTree(this);
+            TaskStreamerResourceLoader.ServiceContainerPanel.CloneTree(this);
 
             _variableHandles = variableHandlesDic;
             
