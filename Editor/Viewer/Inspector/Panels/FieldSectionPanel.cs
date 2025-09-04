@@ -59,11 +59,6 @@ namespace TaskStreamer.Tool
 
             _variableHandles = handles;
 
-            if (_fieldListView.childCount != 0)
-            {
-                Debug.Log("12323");
-            }
-
             _forceRefreshWithValue = true;
             _fieldListView.itemsSource = handles;
             _forceRefreshWithValue = false;
