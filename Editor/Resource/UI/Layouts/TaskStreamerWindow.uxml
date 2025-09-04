@@ -3,7 +3,7 @@
     <Style src="project://database/Assets/TaskStreamer/Editor/Resource/UI/Styles/TaskStreamerBlackboardStyle.uss?fileID=7433441132597879392&amp;guid=6fc75957a5cd1cf4ba64b2ad0e65c418&amp;type=3#TaskStreamerBlackboardStyle" />
     <ui:VisualElement name="container" style="flex-grow: 1;">
         <uie:Toolbar name="top-toolbar" style="justify-content: flex-start; height: 20px; min-height: auto; flex-shrink: 1; max-height: none; flex-grow: 0; align-items: center; align-content: auto; border-top-width: 1px; border-right-width: 0; border-bottom-width: 1px; border-left-width: 0; flex-wrap: nowrap; align-self: auto; min-width: 0; flex-basis: auto; flex-direction: row;">
-            <TaskStreamer.Tool.GraphBreadcrumbs style="flex-grow: 1; min-height: 95%; min-width: 0; align-items: stretch; margin-left: 5px;" />
+            <TaskStreamer.Tool.NavigationBreadcrumbs style="flex-grow: 1; min-height: 95%; min-width: 0; align-items: stretch; margin-left: 5px;" />
             <uie:ToolbarToggle label="Blackboard" name="toggle-blackboard" value="true" />
             <uie:ToolbarToggle label="Minimap" name="toggle-minimap" value="false" style="overflow: visible; flex-shrink: 1; align-self: flex-start; justify-content: flex-start; align-items: auto; margin-right: 5px; margin-left: 5px; padding-top: 1px; padding-bottom: 1px;" />
         </uie:Toolbar>
