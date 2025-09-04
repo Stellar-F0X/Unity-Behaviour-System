@@ -7,21 +7,21 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    /// <summary> 그래프의 계층적 탐색을 돕는 UI 컴포넌트로, ToolbarBreadcrumbs를 상속받아 그래프 탐색 단계와 아이템 클릭에 따른 동작을 처리합니다. </summary>
+    /// <summary> 그래프 탐색 시 UI 계층적 히스토리를 관리하며, 그래프 항목 추가 및 클릭 시 동작 처리를 제공합니다. </summary>
     [UxmlElement]
-    internal partial class GraphBreadcrumbs : ToolbarBreadcrumbs
+    internal partial class NavigationBreadcrumbs : ToolbarBreadcrumbs
     {
-        public GraphBreadcrumbs() : base()
+        public NavigationBreadcrumbs() : base()
         {
             base.UnregisterCallback<GeometryChangedEvent>(this.GeometryChanged);
             base.RegisterCallback<GeometryChangedEvent>(this.GeometryChanged);
         }
-        
-        
-        /// TextSizeOffset는 버튼 텍스트의 가로 크기에 여백을 추가로 계산하는 상수로, 값은 15f입니다.
-        /// 버튼의 가시성 여부를 판단할 때 사용됩니다.
+
+
+        /// TextSizeOffset는 버튼 텍스트의 가로 길이에 추가 여백을 포함시키기 위해 사용되는 상수로, 값은 15f입니다.
+        /// 버튼의 가시성 판단 및 동적 크기 조정에 활용됩니다.
         private const float TextSizeOffset = 15f;
-        
+
 
         /// <summary>
         /// 새로운 그래프 항목을 푸시하고 클릭 이벤트를 추가합니다.
@@ -98,9 +98,9 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>
-        /// 지정된 버튼의 텍스트와 버튼 크기를 비교하여 버튼의 가시성과 활성화 상태를 업데이트합니다.
+        /// 지정된 텍스트 크기와 버튼 크기를 비교하여 ToolbarButton의 가시성과 활성화 상태를 업데이트합니다.
         /// </summary>
-        /// <param name="button">가시성을 확인하고 업데이트할 대상 ToolbarButton입니다.</param>
+        /// <param name="button">업데이트할 대상 ToolbarButton 객체입니다.</param>
         private void UpdateButtonVisibility(ToolbarButton button)
         {
             Vector2 textSize = button.MeasureTextSize(button.text, 0, MeasureMode.Undefined, 0, MeasureMode.Undefined);

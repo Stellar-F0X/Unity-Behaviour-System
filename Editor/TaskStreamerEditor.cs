@@ -18,7 +18,7 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>그래프 탐색 시 그래프 계층 구조를 표시하고 관리하는 ToolbarBreadcrumbs를 나타냅니다.</summary>
-        private GraphBreadcrumbs _graphBreadcrumbs;
+        private NavigationBreadcrumbs _navigationBreadcrumbs;
 
 
         /// <summary>Graph 블랙보드를 연결하고 변경 사항을 처리하는 ObjectField 필드를 나타냅니다.</summary>
@@ -170,7 +170,7 @@ namespace TaskStreamer.Tool
             rootVisualElement.styleSheets.Add(TaskStreamerResourceLoader.WindowStyle);
 
             this.taskGraphView = rootVisualElement.Q<TaskGraphView>();
-            this._graphBreadcrumbs = rootVisualElement.Q<GraphBreadcrumbs>();
+            this._navigationBreadcrumbs = rootVisualElement.Q<NavigationBreadcrumbs>();
             this._blackboardField = rootVisualElement.Q<ObjectField>("blackboard-field");
 
             this._blackboardField.RegisterValueChangedCallback(this.OnChangeBlackboardAsset);
@@ -420,10 +420,10 @@ namespace TaskStreamer.Tool
 
             if (isSubGraph == false)
             {
-                this._graphBreadcrumbs.Clear();
+                this._navigationBreadcrumbs.Clear();
             }
 
-            this._graphBreadcrumbs.PushItem(graph, () => this.OpenGraph(graph));
+            this._navigationBreadcrumbs.PushItem(graph, () => this.OpenGraph(graph));
 
             this.OpenGraph(graph);
         }
