@@ -89,6 +89,7 @@ namespace TaskStreamer.Tool
             _serviceListView.Clear();
             _variableHandles = handlesDic;
             _serviceListView.itemsSource = serviceList;
+            _serviceListView.visible = serviceList.Count > 0;
         }
 
 
