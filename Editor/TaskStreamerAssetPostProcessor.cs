@@ -5,7 +5,7 @@ using ObjectFactory = TaskStreamer.Utility.ObjectFactory;
 
 namespace TaskStreamer.Tool
 {
-    public class TaskStreamerAssetProcessor : AssetPostprocessor
+    public class TaskStreamerAssetPostProcessor : AssetPostprocessor
     {
         private static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
         {

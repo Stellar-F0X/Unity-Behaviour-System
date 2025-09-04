@@ -191,7 +191,6 @@ namespace TaskStreamer.Tool
             this.taskGraphView.Add(this.inspectorView);
             
             this.taskGraphView.onElementSelected += inspectorView.UpdateSelection;
-            this.taskGraphView.onElementUnselected += _ => inspectorView.ClearInspector();
             
             this.OnSelectionChange();
         }
@@ -357,7 +356,7 @@ namespace TaskStreamer.Tool
         {
             if (Instance == null || taskGraphView == null || inspectorView == null)
             {
-                Debug.LogError("TaskStreamerEditor is not initialized.");
+                Debug.Assert(isLoadingTreeToView, "TaskStreamerEditor is not initialized.");
                 return;
             }
 
@@ -445,7 +444,7 @@ namespace TaskStreamer.Tool
             isLoadingTreeToView = true;
             currentGraph = drawGraph;
 
-            inspectorView?.ClearInspector();
+            inspectorView?.ClearInspector(true);
             taskGraphView?.TrySetupGraphEditorView(drawGraph);
             _blackboardView?.ChangeBlackboard(graphAsset?.blackboard);
 
@@ -485,7 +484,7 @@ namespace TaskStreamer.Tool
 
             //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
             this.graphAsset.TrySynchronizeVariablesOfNodes();
-            this.inspectorView.ClearInspector();
+            this.inspectorView.ClearInspector(true);
 
             UnityEditor.EditorUtility.SetDirty(graphAsset);
             UnityEditor.EditorUtility.SetDirty(fresh);
