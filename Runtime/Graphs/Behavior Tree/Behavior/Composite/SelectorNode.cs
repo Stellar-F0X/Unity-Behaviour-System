@@ -2,7 +2,7 @@ using Unity.Properties;
 
 namespace TaskStreamer.BT
 {
-    [GeneratePropertyBag]
+    [GeneratePropertyBag, Readable]
     public sealed class SelectorNode : CompositeNode
     {
         private bool _isChildrenInvalid;

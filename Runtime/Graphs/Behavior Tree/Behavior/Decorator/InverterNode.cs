@@ -2,7 +2,7 @@ using Unity.Properties;
 
 namespace TaskStreamer.BT
 {
-    [GeneratePropertyBag]
+    [GeneratePropertyBag, Readable]
     public class InverterNode : DecoratorNode
     {
         public override string tooltip
