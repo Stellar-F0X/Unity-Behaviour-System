@@ -29,6 +29,11 @@ namespace TaskStreamer.Tool
         private FloatingBlackboardView _blackboardView;
 
 
+        /// <summary>그래프 업데이트가 필요한 상태를 나타내는 플래그입니다.</summary>
+        private bool _requiresGraphUpdate;
+
+
+
 
         /// <summary>Task Streamer 에디터의 설정 정보를 제공하는 정적 속성입니다.</summary>
         public static EditorSettings settings
@@ -165,6 +170,7 @@ namespace TaskStreamer.Tool
         private void CreateGUI()
         {
             TaskStreamerEditor.Instance = this;
+            this._requiresGraphUpdate = true;
 
             TaskStreamerResourceLoader.Window.CloneTree(rootVisualElement);
             rootVisualElement.styleSheets.Add(TaskStreamerResourceLoader.WindowStyle);
@@ -182,19 +188,18 @@ namespace TaskStreamer.Tool
 
             ToolbarToggle blackboardToggle = rootVisualElement.Q<ToolbarToggle>("toggle-blackboard");
             ToolbarToggle minimapToggle = rootVisualElement.Q<ToolbarToggle>("toggle-minimap");
-            
+
             blackboardToggle.RegisterValueChangedCallback(this._blackboardView.Show);
             minimapToggle.RegisterValueChangedCallback(this.miniMapView.Show);
 
             this.taskGraphView.Add(this.miniMapView);
             this.taskGraphView.Add(this._blackboardView);
             this.taskGraphView.Add(this.inspectorView);
-            
+
             this.taskGraphView.onElementSelected += inspectorView.UpdateSelection;
-            
+
             this.OnSelectionChange();
         }
-
 
 #endregion
 
@@ -218,6 +223,7 @@ namespace TaskStreamer.Tool
                 EditorApplication.update += this.RuntimeUpdate;
             }
         }
+
 
 
         /// <summary>에디터 창이 비활성화될 때 등록된 이벤트와 업데이트 핸들러를 해제합니다.</summary>
@@ -360,14 +366,28 @@ namespace TaskStreamer.Tool
                 return;
             }
 
+            GraphAsset previousAsset = this.graphAsset;
+
+            //변경할 그래프가 없거나, 
             if (this.TryGetGraphAsset() == false)
             {
                 return;
             }
 
-            this.ChangeGraph(graphAsset.main);
+            bool updateFlag = false;
 
-            if (graphAsset.blackboard != null)
+            //아니면 그래프가 같거나, 뷰가 초기화되어 그래프를 강제로 갱신할 필요가 없다면 종료합니다.
+            if (_requiresGraphUpdate || previousAsset != this.graphAsset)
+            {
+                this._requiresGraphUpdate = false;
+
+                this.ChangeGraph(graphAsset.main);
+
+                updateFlag = true;
+            }
+
+            //나는 indent가 싫어
+            if (updateFlag && graphAsset.blackboard != null)
             {
                 this._blackboardField.SetValueWithoutNotify(graphAsset.blackboard);
             }
@@ -477,7 +497,7 @@ namespace TaskStreamer.Tool
             BlackboardAsset fresh = ObjectFactory.CloneBlackboardAsset(evt.newValue as BlackboardAsset);
             AssetDatabase.RemoveObjectFromAsset(graphAsset.blackboard);
             AssetDatabase.AddObjectToAsset(fresh, graphAsset);
-            
+
             this.graphAsset.blackboard = fresh;
             this._blackboardView.ChangeBlackboard(fresh);
             this._blackboardField.SetValueWithoutNotify(fresh);
