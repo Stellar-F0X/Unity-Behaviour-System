@@ -8,11 +8,11 @@ using UnityEngine.UIElements;
 namespace TaskStreamer.Tool
 {
     /// <summary> ServiceSectionPanel 클래스는 Unity UIElements의 VisualElement를 확장하여 서비스 항목을 표시, 설정, 삭제 등의 UI 기능을 제공하는 패널입니다. </summary>
-    internal class ServiceSectionPanel : VisualElement, IRefreshablePanel
+    internal class ServiceSectionPanel : VisualElement
     {
         public ServiceSectionPanel()
         {
-            TaskStreamerResourcesLoader.ServiceSectionPanel.CloneTree(this);
+            TaskStreamerResourceLoader.ServiceSectionPanel.CloneTree(this);
 
             _headerFoldout = this.Q<Foldout>("main-header"); 
             _fieldListView = this.Q<ListView>("field-list"); 
@@ -85,17 +85,9 @@ namespace TaskStreamer.Tool
 
             OnDeleteRequested?.Invoke(this);
         }
-        
-        
 
-        /// <summary> RefreshPanel 메서드는 패널의 ListView와 같은 UI 요소를 동적으로 갱신하는 역할을 수행합니다. </summary>
-        public void RefreshPanel()
-        {
-            _fieldListView.RefreshItems();
-        }
 
-        
-        
+
         /// <summary> 서비스 섹션 패널의 UI 요소들을 주어진 서비스와 연결하고 초기화합니다. </summary>
         /// <param name="newService">UI에 연결할 새로운 서비스 객체입니다.</param>
         /// <param name="variableHandles">서비스의 변수들에 대한 참조를 담은 핸들 목록입니다.</param>

@@ -22,7 +22,7 @@ namespace TaskStreamer.Tool
             this.AddManipulator(new RectangleSelector());
             this.AddManipulator(new GraphZoomer(2f, 0.2f));
 
-            styleSheets.Add(TaskStreamerResourcesLoader.WindowStyle);
+            styleSheets.Add(TaskStreamerResourceLoader.WindowStyle);
         }
 
         
@@ -160,7 +160,7 @@ namespace TaskStreamer.Tool
         /// <param name="onNodeCreated">노드 생성 후 실행할 콜백입니다.</param>
         public void OpenContextualMenuWindow(Vector2 mousePosition, Action<NodeViewBase> onNodeCreated = null)
         {
-            if (TaskStreamerEditor.canEditGraph == false)
+            if (TaskStreamerEditor.canEditGraph == false || this._graphView is null)
             {
                 return;
             }

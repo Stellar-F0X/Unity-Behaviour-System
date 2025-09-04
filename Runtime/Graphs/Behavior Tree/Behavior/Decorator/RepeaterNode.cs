@@ -7,7 +7,7 @@ namespace TaskStreamer.BT
     public class RepeaterNode : DecoratorNode
     {
         [SetValue(5)]
-        public BlackboardVariable<uint> repeatCount;
+        public BlackboardVariable<int> repeatCount;
         
         private int _currentCount = 0;
 

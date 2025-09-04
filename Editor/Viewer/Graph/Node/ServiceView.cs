@@ -10,7 +10,7 @@ namespace TaskStreamer.Tool
     {
         public ServiceView(ServiceBase service)
         {
-            TaskStreamerResourcesLoader.ServiceView.CloneTree(this);
+            TaskStreamerResourceLoader.ServiceView.CloneTree(this);
             
             Type serviceType = service.GetType();
             base.userData = service;

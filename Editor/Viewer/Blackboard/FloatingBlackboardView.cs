@@ -15,20 +15,18 @@ namespace TaskStreamer.Tool
     /// </summary>
     internal class FloatingBlackboardView : BlackboardViewBase
     {
-        public FloatingBlackboardView(ToolbarToggle toggleBlackboard, TaskGraphView taskGraphView)
+        public FloatingBlackboardView(TaskGraphView taskGraphView)
         {
             base.title = "Blackboard";
             this.style.left = 15;
             this.style.top = 15;
             this.graphView = taskGraphView;
             
-            toggleBlackboard.RegisterValueChangedCallback(evt => this.style.display = evt.newValue ? DisplayStyle.Flex : DisplayStyle.None);
-            
             this.addItemRequested += this.OpenContextualMenuWindow;
             this.editTextRequested += this.OnEditElementTitleText;
             this.removeItemRequest += this.OnRemoveItemRequest;
             
-            this.styleSheets.Add(TaskStreamerResourcesLoader.BlackboardStyle);
+            this.styleSheets.Add(TaskStreamerResourceLoader.BlackboardStyle);
             
             this._addElementButton = this.Q<Button>("addButton");
             this._contentContainer = this.Q<VisualElement>("contentContainer");
@@ -106,6 +104,13 @@ namespace TaskStreamer.Tool
             this.Clear();
             
             TaskStreamerEditor.Instance.inspectorView.ClearInspector();
+        }
+
+
+
+        public void Show(ChangeEvent<bool> evt)
+        {
+            this.style.display = evt.newValue ? DisplayStyle.Flex : DisplayStyle.None;
         }
 
         

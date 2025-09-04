@@ -13,7 +13,7 @@ namespace TaskStreamer.Tool
         /// BlackboardBasedCondition의 조건 목록을 UI로 표시하는 VisualElement 클래스입니다.
         public BlackboardBasedConditionListField(VariableHandle fieldInfo)
         {
-            TaskStreamerResourcesLoader.BBBConditionListField.CloneTree(this);
+            TaskStreamerResourceLoader.BBBConditionListField.CloneTree(this);
 
             _conditionPolicyEnumView = this.Q<EnumField>("condition-evaluation-policy");
             _conditionListView = this.Q<ListView>("condition-list-view");

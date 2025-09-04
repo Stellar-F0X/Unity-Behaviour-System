@@ -4,13 +4,14 @@ using TaskStreamer.FSM;
 using TaskStreamer;
 using Unity.Properties;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace TaskStreamer.Utility
 {
     /// <summary> 'T'ask 'S'treamer Object Factory </summary>
     internal static class ObjectFactory
     {
-         /// <summary> 새로운 BlackboardVariable 객체를 생성한다. </summary>
+        /// <summary> 새로운 BlackboardVariable 객체를 생성한다. </summary>
         /// <param name="implementedType">생성할 BlackboardVariable의 타입</param>
         /// <param name="name">BlackboardVariable의 이름 (기본값: 빈 문자열)</param>
         /// <param name="defaultValue">BlackboardVariable의 기본 값 (기본값: null)</param>
@@ -34,7 +35,7 @@ namespace TaskStreamer.Utility
             {
                 createdValue.boxedValue = defaultValue;
             }
-            
+
             return createdValue;
         }
 
@@ -50,7 +51,7 @@ namespace TaskStreamer.Utility
             Debug.Assert(reference != null, "blackboard is null");
 
             Debug.Assert(variableGuid.IsEmpty() == false, "variable guid is empty");
-            
+
             Debug.Assert(implementedType != null, $"{typeof(ObjectFactory)}: BlackboardVariableType is null");
 
             BlackboardVariable createdValue = BlackboardVariable.Create(implementedType, variableGuid, true);
@@ -60,15 +61,15 @@ namespace TaskStreamer.Utility
                 Debug.LogError($"{typeof(ObjectFactory)}: Failed to create BlackboardVariable of type {implementedType}");
                 return null;
             }
-            
+
             createdValue.implementedType = implementedType;
-            
+
             variable.SetBlackboardReference(reference);
             return createdValue;
         }
-        
-        
-        
+
+
+
 #if UNITY_EDITOR
         /// <summary> 지정된 유형의 노드를 생성한다. </summary>
         /// <param name="nodeType">생성할 노드의 Type.</param>
@@ -143,13 +144,11 @@ namespace TaskStreamer.Utility
         /// <param name="graphType">생성할 그래프의 유형(FSM 또는 BT)입니다.</param>
         /// <param name="graph">생성된 그래프 객체의 참조입니다.</param>
         /// <param name="graphName">생성할 그래프의 이름입니다.</param>
-        public static void CreateGraph(GraphAsset asset, GraphType graphType, ref Graph graph, string graphName)
+        public static Graph CreateGraph(GraphAsset asset, GraphType graphType, string graphName)
         {
-            if (asset == null)
-            {
-                Debug.LogError($"{typeof(ObjectFactory)}: GraphAsset is null");
-                return;
-            }
+            Graph graph = null;
+            
+            Debug.Assert(asset != null, $"{typeof(ObjectFactory)}: GraphAsset is null");
 
             switch (graphType)
             {
@@ -159,6 +158,7 @@ namespace TaskStreamer.Utility
             }
 
             Debug.Assert(graph != null, $"{typeof(ObjectFactory)}: Failed to create a graph.");
+            return graph;
         }
 
 
@@ -176,7 +176,7 @@ namespace TaskStreamer.Utility
             }
 
             object createdObject = Activator.CreateInstance(serviceType);
-            
+
             ServiceBase result = createdObject as ServiceBase;
 
             if (result == null)
@@ -189,7 +189,7 @@ namespace TaskStreamer.Utility
             propertyBag.Accept(new BlackboardVariableFieldInitializeVisitor(), ref createdObject);
             return result;
         }
-        
+
 
 
 
@@ -246,6 +246,31 @@ namespace TaskStreamer.Utility
             module.configuredComparisonType = comparable?.comparison ?? Condition.DEFAULT_COMPARISON;
 
             return module;
+        }
+
+
+
+        /// <summary> 새로운 BlackboardAsset 객체를 생성한다. </summary>
+        /// <param name="blackboardName">생성할 BlackboardAsset의 이름</param>
+        /// <returns>생성된 BlackboardAsset 객체</returns>
+        public static BlackboardAsset CreateBlackboardAsset(string blackboardName)
+        {
+            BlackboardAsset blackboardAsset = ScriptableObject.CreateInstance<BlackboardAsset>();
+            blackboardAsset.name = blackboardName;
+            UnityEditor.EditorUtility.SetDirty(blackboardAsset);
+            return blackboardAsset;
+        }
+
+
+
+        /// <summary> 주어진 BlackboardAsset을 복제한다. </summary>
+        /// <param name="asset">복제할 대상 BlackboardAsset</param>
+        /// <returns>복제된 새로운 BlackboardAsset 객체</returns>
+        public static BlackboardAsset CloneBlackboardAsset(this BlackboardAsset asset)
+        {
+            BlackboardAsset clone = Object.Instantiate(asset);
+            clone.name = clone.name.Replace("(Clone)", "");
+            return clone;
         }
 #endif
     }

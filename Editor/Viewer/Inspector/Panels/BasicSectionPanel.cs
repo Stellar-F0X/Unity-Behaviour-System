@@ -4,6 +4,7 @@ using System.Linq;
 using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEditor.UIElements;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
@@ -14,7 +15,7 @@ namespace TaskStreamer.Tool
         /// <summary> 작업(Task)의 기본 속성을 표시하고 편집할 수 있는 UI 패널입니다. </summary>
         public BasicSectionPanel(Task targetTask, Action<string> renamingCallback)
         {
-            TaskStreamerResourcesLoader.BasicSectionPanel.CloneTree(this);
+            TaskStreamerResourceLoader.BasicSectionPanel.CloneTree(this);
 
             _nameField = this.Q<TextField>("name-field");
             _monoScriptField = this.Q<ObjectField>("script-field");
@@ -22,9 +23,7 @@ namespace TaskStreamer.Tool
             _desContentField = this.Q<TextField>("description-content");
             _baseTitleHeader = this.Q<Label>("base-title-header");
 
-            _targetTask = targetTask;
-            _nodeType = targetTask.GetType();
-            _monoScriptField.value = EditorUtility.GetMonoScriptFromPoco(_nodeType);
+
             _renamingCallback = renamingCallback;
 
             this.InitializeFields(targetTask);
@@ -34,8 +33,8 @@ namespace TaskStreamer.Tool
             _desContentField.RegisterValueChangedCallback(evt => targetTask.description = evt.newValue);
         }
 
-        
-        
+
+
         /// <summary>작업의 태그를 선택하는 DropdownField UI 요소입니다.</summary>
         private readonly DropdownField _tagSelectionField;
 
@@ -45,11 +44,11 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>현재 노드의 클래스 타입 정보를 저장하는 변수입니다.</summary>
-        private readonly Type _nodeType;
+        private Type _nodeType;
 
 
         /// <summary>패널에서 처리 및 표시할 대상 작업(Task)을 나타냅니다.</summary>
-        private readonly Task _targetTask;
+        private Task _targetTask;
 
 
         /// <summary>작업(Task)의 기본 제목을 표시하는 UI 라벨 요소입니다.</summary>
@@ -63,8 +62,8 @@ namespace TaskStreamer.Tool
         /// <summary>Task의 설명 내용을 입력하거나 수정하는 데 사용되는 텍스트 필드입니다.</summary>
         private readonly TextField _desContentField;
 
-        
-        /// <summary>Task의 관련 MonoScript를 표시하고 설정하기 위해 사용하는 ObjectField UI 요소입니다.</summary>
+
+        /// <summary>작업(Task)에 연결된 MonoScript를 지정하거나 참조할 수 있는 ObjectField UI 요소입니다.</summary>
         private readonly ObjectField _monoScriptField;
 
 
@@ -77,10 +76,34 @@ namespace TaskStreamer.Tool
 
 
 
+        public void RefreshPanelWithNewValue(object newValue)
+        {
+            if (newValue is NodeViewBase nodeView)
+            {
+                this._targetTask = nodeView.targetNode;
+                this._renamingCallback = nodeView.onRenamingNode;
+                this.InitializeFields(nodeView.targetNode);
+                return;
+            }
+
+            if (newValue is ArrowEdge edgeView)
+            {
+                this._targetTask = edgeView.targetTransition;
+                this.InitializeFields(edgeView.targetTransition);
+                return;
+            }
+
+            Debug.LogError("targetTask is null");
+        }
+
+
+
         /// <summary> Task의 필드를 초기화하고, UI 요소를 갱신합니다. </summary>
         /// <param name="task"> 초기화 대상이 되는 Task 객체입니다. </param>
         private void InitializeFields(Task task)
         {
+            _nodeType = task.GetType();
+            _monoScriptField.value = task.script;
             _nameField.enabledSelf = task.canEditName;
             _nameField.SetValueWithoutNotify(task.name);
             _desContentField.SetValueWithoutNotify(task.description);

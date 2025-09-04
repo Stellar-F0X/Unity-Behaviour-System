@@ -1,10 +1,12 @@
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using TaskStreamer;
 using Unity.Properties;
-using UnityEngine;
+using Debug = UnityEngine.Debug;
 using UTypeUtility = Unity.Properties.TypeUtility;
 
 namespace TaskStreamer.Utility
@@ -65,7 +67,43 @@ namespace TaskStreamer.Utility
 
 
 #if UNITY_EDITOR
-        
+        public static MonoScript GetScriptByType(Type pocoType)
+        {
+            if (pocoType == null)
+            {
+                return null;
+            }
+
+            Assembly assembly = pocoType.Assembly;
+            int targetToken = pocoType.MetadataToken;
+            ReadableAttribute readable = pocoType.GetAttribute<ReadableAttribute>();
+
+            if (readable is null)
+            {
+                Debug.LogError("ReadableAttribute is not found. Make sure the type is marked with [Readable] attribute.");
+                return null;
+            }
+
+            string path = PathUtility.ToAssetPath(readable.filePath);
+            MonoScript script = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
+
+            if (script == null)
+            {
+                return null;
+            }
+
+            Type scriptType = script.GetClass();
+
+            if (scriptType?.Assembly == assembly && scriptType.MetadataToken == targetToken)
+            {
+                return script;
+            }
+
+            return null;
+        }
+
+
+
         public static List<VariableHandle> TryGetFieldHandles(Type type, object targetReference)
         {
             IPropertyBag propertyBag = PropertyBag.GetPropertyBag(type);

@@ -2,7 +2,7 @@ using Unity.Properties;
 
 namespace TaskStreamer.FSM
 {
-    [GeneratePropertyBag]
+    [GeneratePropertyBag, Readable]
     public class AnyState : StateBase
     {
         public override StateNodeType nodeType

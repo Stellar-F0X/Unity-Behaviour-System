@@ -82,23 +82,31 @@ namespace TaskStreamer.Tool
             _resizer.RegisterCallback<MouseDownEvent>(this.OnResizerMouseDown);
             _resizer.RegisterCallback<MouseMoveEvent>(this.OnResizerMouseMove);
             _resizer.RegisterCallback<MouseUpEvent>(this.OnResizerMouseUp);
+
+            // 휠 스크롤 이벤트 등록
+            this.RegisterCallback<WheelEvent>(this.OnWheelEvent);
         }
 
 
 #region Inspector Logic
+
         /// <summary> 선택된 그래프 요소의 데이터를 기반으로 인스펙터 뷰를 갱신합니다. </summary>
         /// <param name="selectedElement"> 선택된 그래프 요소 </param>
         public void UpdateSelection(GraphElement selectedElement)
         {
-            this.ClearInspector();
-
             if (selectedElement is null)
             {
                 Debug.LogError("selectedElement is null");
+                return;
+            }
+
+            if (_contentContainer.childCount == 0)
+            {
+                this.CreateInspectorContent(selectedElement);
             }
             else
             {
-                this.CreateInspectorContent(selectedElement);
+                this.RefreshInspectorWithNewValue(selectedElement);
             }
         }
 
@@ -112,20 +120,30 @@ namespace TaskStreamer.Tool
 
 
         /// <summary> 인스펙터 뷰의 내용을 초기화 및 모든 기존 데이터를 정리 </summary>
-        public void ClearInspector()
+        public void ClearInspector(bool force = false)
         {
-            _contentContainer?.Clear();
+            if (_contentContainer is null || _contentContainer.childCount == 0)
+            {
+                return;
+            }
+
+            if (force)
+            {
+                _contentContainer.Clear();
+            }
+            else
+            {
+                _contentContainer[0].style.display = DisplayStyle.None;
+                _contentContainer[1].style.display = DisplayStyle.None;
+                _contentContainer[2].style.display = DisplayStyle.None;
+            }
         }
 
 
         /// <summary> 인스펙터 뷰의 내용을 새로고침하고 필요한 경우 패널을 갱신 </summary>
         public void RefreshInspector()
         {
-            if (_contentContainer is null || _contentContainer.enabledSelf == false)
-            {
-                Debug.LogWarning("Failed to refresh inspector: Content container is disabled");
-                return;
-            }
+            Debug.Assert(_contentContainer != null && _contentContainer.enabledSelf, "Failed to refresh inspector: Content container is disabled");
 
             foreach (VisualElement child in _contentContainer.Children())
             {
@@ -135,12 +153,59 @@ namespace TaskStreamer.Tool
                 }
             }
         }
+        
+        
+        
+        private void RefreshInspectorWithNewValue(GraphElement graphElement)
+        {
+            Debug.Assert(_contentContainer != null && _contentContainer.enabledSelf, "Failed to refresh inspector: Content container is disabled");
+            
+            switch (graphElement)
+            {
+                case BehaviorNodeView bNodeView:
+                {
+                    _contentContainer[0].style.display = DisplayStyle.Flex;
+                    _contentContainer[1].style.display = DisplayStyle.Flex;
+                    _contentContainer[2].style.display = DisplayStyle.Flex;
+                    
+                    ((IRefreshablePanel)_contentContainer[0]).RefreshPanelWithNewValue(bNodeView);
+                    ((IRefreshablePanel)_contentContainer[1]).RefreshPanelWithNewValue(bNodeView.variableHandles);
+                    ((IRefreshablePanel)_contentContainer[2]).RefreshPanelWithNewValue((bNodeView.serviceList, bNodeView.variableHandlesDic));
+                    break;
+                }
+
+                case StateNodeView sNodeView:
+                {
+                    _contentContainer[0].style.display = DisplayStyle.Flex;
+                    _contentContainer[1].style.display = DisplayStyle.Flex;
+                    _contentContainer[2].style.display = DisplayStyle.None;
+                    
+                    ((IRefreshablePanel)_contentContainer[0]).RefreshPanelWithNewValue(sNodeView);
+                    ((IRefreshablePanel)_contentContainer[1]).RefreshPanelWithNewValue(sNodeView.variableHandles);
+                    break;
+                }
+
+                case ArrowEdge edgeView:
+                {
+                    _contentContainer[0].style.display = DisplayStyle.Flex;
+                    _contentContainer[1].style.display = DisplayStyle.Flex;
+                    _contentContainer[2].style.display = DisplayStyle.None;
+                    
+                    ((IRefreshablePanel)_contentContainer[0]).RefreshPanelWithNewValue(edgeView);
+                    ((IRefreshablePanel)_contentContainer[1]).RefreshPanelWithNewValue(edgeView.variableHandles);
+                    break;
+                }
+            }
+        }
+
 
 
         /// <summary> 그래프 요소에 따라 적절한 인스펙터 콘텐츠를 생성 및 추가 </summary>
         /// <param name="graphElement"> 인스펙터 콘텐츠를 생성할 대상 그래프 요소 </param>
         private void CreateInspectorContent(GraphElement graphElement)
         {
+            Debug.Assert(_contentContainer != null && _contentContainer.enabledSelf, "Failed to refresh inspector: Content container is disabled");
+            
             switch (graphElement)
             {
                 case BehaviorNodeView bNodeView:
@@ -155,6 +220,7 @@ namespace TaskStreamer.Tool
                 {
                     _contentContainer.Add(new BasicSectionPanel(sNodeView.targetNode, sNodeView.onRenamingNode));
                     _contentContainer.Add(new FieldSectionPanel(sNodeView.variableHandles));
+                    _contentContainer.Add(new ServiceContainerPanel() { style = { display = DisplayStyle.None } });
                     break;
                 }
 
@@ -162,15 +228,46 @@ namespace TaskStreamer.Tool
                 {
                     _contentContainer.Add(new BasicSectionPanel(edgeView.targetTransition, null));
                     _contentContainer.Add(new FieldSectionPanel(edgeView.variableHandles));
+                    _contentContainer.Add(new ServiceContainerPanel() { style = { display = DisplayStyle.None } });
                     break;
                 }
             }
         }
+
 #endregion
 
 
 
 #region Mouse Event And Calculate Position Logic
+
+        /// <summary> 휠 스크롤 이벤트를 처리하여 이 VisualElement 내에서만 스크롤이 동작하도록 함 </summary>
+        /// <param name="evt">휠 이벤트 데이터</param>
+        private void OnWheelEvent(WheelEvent evt)
+        {
+            // 마우스가 이 VisualElement 영역 내에 있는지 확인
+            if (this.worldBound.Contains(evt.mousePosition) == false)
+            {
+                return;
+            }
+
+            if (this._contentContainer != null)
+            {
+                ScrollView scrollView = this._contentContainer;
+                Vector2 scrollOffset = scrollView.scrollOffset;
+
+                float maxHeight = scrollView.verticalScroller.highValue;
+                float moveHeight = scrollOffset.y + evt.delta.y;
+
+                scrollOffset.y = Mathf.Clamp(moveHeight, 0, maxHeight);
+                scrollView.scrollOffset = scrollOffset;
+            }
+
+            // 이벤트 전파를 중단하여 다른 요소에서 스크롤되지 않도록 함
+            evt.StopPropagation();
+        }
+
+
+
         /// <summary> 타이틀바 마우스 다운 이벤트를 처리하여 드래그 상태를 활성화 </summary>
         /// <param name="evt">마우스 다운 이벤트 데이터</param>
         private void OnTitleBarMouseDown(MouseDownEvent evt)
@@ -309,6 +406,7 @@ namespace TaskStreamer.Tool
 
             evt.StopPropagation();
         }
+
 #endregion
     }
 }

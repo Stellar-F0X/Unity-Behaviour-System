@@ -13,35 +13,38 @@ namespace TaskStreamer.Tool
     /// </summary>
     internal class ServiceContainerPanel : VisualElement, IRefreshablePanel
     {
-        /// <summary> 서비스 목록 패널을 나타내며, 서비스 항목을 추가 및 관리하는 UI 요소입니다. </summary>
-        public ServiceContainerPanel(List<ServiceBase> servicesHandle, ObservableDictionary<ServiceBase, List<VariableHandle>> variableHandlesDic)
+        public ServiceContainerPanel()
         {
-            TaskStreamerResourcesLoader.ServiceContainerPanel.CloneTree(this);
-
-            _variableHandles = variableHandlesDic;
+            TaskStreamerResourceLoader.ServiceContainerPanel.CloneTree(this);
             
             _elementContainer = this.Q<VisualElement>("container"); 
             _serviceListView = this.Q<ListView>("service-list"); 
             _addServiceButton = this.Q<Button>("add-button"); 
             
-            _addServiceButton.enabledSelf = TaskStreamerEditor.canEditGraph;
             _addServiceButton.clickable.clickedWithEventInfo += this.OnAddServiceButtonClicked;
-            _serviceListView.itemsSource = servicesHandle;
+            _addServiceButton.enabledSelf = TaskStreamerEditor.canEditGraph;
+            
             _serviceListView.makeItem += () => new ServiceSectionPanel();
-            _serviceListView.bindItem += BindServiceItem;
-
+            _serviceListView.bindItem += this.BindServiceItem;
+        }
+        
+        
+        public ServiceContainerPanel(List<ServiceBase> serviceList, ObservableDictionary<ServiceBase, List<VariableHandle>> variableHandles) : this()
+        {
+            this.RefreshPanelWithNewValue((serviceList, variableHandles));
+            
             this.RefreshPanel();
         }
 
 
         /// _variableHandles는 서비스의 고유 식별자인 UGUID와 해당 서비스의 VariableHandle 리스트를 연관 짓는
         /// ObservableDictionary로, 서비스별 변수 핸들을 관리합니다.
-        private readonly ObservableDictionary<ServiceBase, List<VariableHandle>> _variableHandles;
+        private ObservableDictionary<ServiceBase, List<VariableHandle>> _variableHandles;
 
 
         /// _serviceListView 변수는 서비스 목록을 표시하고 관리하기 위한 ListView UI 요소입니다.
         /// _serviceList 데이터를 바인딩하여 항목 표시 및 갱신 작업을 수행합니다.
-        private readonly ListView _serviceListView;
+        private ListView _serviceListView;
 
 
         /// <summary> 새 서비스를 추가하는 버튼으로, 클릭 시 서비스 추가 로직이 실행됩니다. </summary>
@@ -71,6 +74,21 @@ namespace TaskStreamer.Tool
             {
                 _elementContainer.style.display = DisplayStyle.None;
             }
+        }
+        
+        
+
+        public void RefreshPanelWithNewValue(object newValue)
+        {
+            if (newValue is not (List<ServiceBase> serviceList, ObservableDictionary<ServiceBase, List<VariableHandle>> handlesDic))
+            {
+                Debug.LogError("newValue is not (List<ServiceBase>, ObservableDictionary<ServiceBase, List<VariableHandle>>)");
+                return;
+            }
+            
+            _serviceListView.Clear();
+            _variableHandles = handlesDic;
+            _serviceListView.itemsSource = serviceList;
         }
 
 
