@@ -15,9 +15,17 @@ namespace TaskStreamer.Tool
             SerializedProperty updateMode = serializedObject.FindProperty("_tickMode");
             SerializedProperty runtimBB = serializedObject.FindProperty("_runtimeBlackboard");
 
+            GraphAsset previousGraph = graphAsset.objectReferenceValue as GraphAsset;
+            
             graphAsset.objectReferenceValue = EditorGUILayout.ObjectField("Graph Asset", graphAsset.objectReferenceValue, typeof(GraphAsset), false);
             updateMode.enumValueIndex = EditorGUILayout.Popup("Tick Mode", updateMode.enumValueIndex, updateMode.enumDisplayNames);
             pauseUpdate.boolValue = EditorGUILayout.Toggle("Pause Update", pauseUpdate.boolValue);
+
+
+            if ((graphAsset.objectReferenceValue == null || previousGraph != graphAsset.objectReferenceValue) && EditorWindow.HasOpenInstances<TaskStreamerEditor>())
+            {
+                TaskStreamerEditor.OpenWindow(graphAsset.objectReferenceValue as GraphAsset);
+            }
 
             using (new EditorGUILayout.HorizontalScope())
             {

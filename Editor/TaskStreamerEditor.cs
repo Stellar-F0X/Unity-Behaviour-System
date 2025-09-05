@@ -154,6 +154,12 @@ namespace TaskStreamer.Tool
             //Call CreateGUI
             TaskStreamerEditor.OpenWindow();
 
+            if (graphAsset == null)
+            {
+                TaskStreamerEditor.Instance.Initialize();
+                return;
+            }
+
             if (Instance.graphAsset != graphAsset)
             {
                 Instance.graphAsset = graphAsset;
