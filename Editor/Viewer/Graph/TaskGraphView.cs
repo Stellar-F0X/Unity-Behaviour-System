@@ -211,7 +211,7 @@ namespace TaskStreamer.Tool
                     {
                         case Edge edge: this.graphView.DisconnectNodesByEdge(focusGraph, edge); break;
 
-                        case NodeViewBase nodeView: this.graphView.DeleteNodeFromGraph(focusGraph, nodeView.targetNode); break;
+                        case NodeViewBase nodeView: this.graphView.DeleteNodeFromGraph(focusGraph, nodeView); break;
 
                         case NodeGroupView groupView: this.focusGraph.DeleteGroupData(groupView.groupData); break;
                     }

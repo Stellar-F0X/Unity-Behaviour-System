@@ -51,10 +51,7 @@ namespace TaskStreamer.Tool
         private readonly Button _deleteButton;
 
 
-        /// <summary>
-        /// ServiceSectionPanel에서 사용되는 변수 핸들(VariableHandle)의 목록을 저장하는 필드입니다.
-        /// 패널의 데이터 바인딩 및 UI 갱신에 사용됩니다.
-        /// </summary>
+        /// <summary> ServiceSectionPanel에서 사용되는 변수 핸들(VariableHandle)의 목록을 저장하는 필드로 패널의 데이터 바인딩 및 UI 갱신에 사용됩니다. </summary>
         private List<VariableHandle> _variableHandles;
 
         

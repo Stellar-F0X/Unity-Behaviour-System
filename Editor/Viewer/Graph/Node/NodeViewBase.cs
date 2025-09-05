@@ -165,6 +165,10 @@ namespace TaskStreamer.Tool
         }
 
 
+
+        public virtual void OnRemoved() { }
+
+
         
         /// <summary> NodeBase의 Name 변경 이벤트 호출 시, 해당 NodeView의 제목을 수정하고 관련 SubGraph의 이름도 업데이트합니다. </summary>
         /// <param name="newName">변경할 새로운 노드 이름</param>
