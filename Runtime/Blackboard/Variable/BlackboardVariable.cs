@@ -292,7 +292,7 @@ namespace TaskStreamer
             }
             else
             {
-                Debug.LogError($"Failed to set value of type '{value?.GetType()}' to BlackboardVariable<{typeof(TValue)}>");
+                Debug.LogError($"'{this.key}' Failed to set value of type '{value?.GetType()}' to BlackboardVariable<{typeof(TValue)}>");
             }
         }
 

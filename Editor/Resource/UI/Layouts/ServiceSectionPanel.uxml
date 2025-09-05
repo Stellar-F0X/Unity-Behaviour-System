@@ -1,8 +1,8 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/TaskStreamer/Editor/Resource/UI/Styles/PanelStyle.uss?fileID=7433441132597879392&amp;guid=a285340815d834a45b02dc7a0303c3eb&amp;type=3#PanelStyle" />
-    <ui:VisualElement name="container" style="flex-grow: 0; flex-direction: column;">
+    <ui:VisualElement name="container" picking-mode="Ignore" style="flex-grow: 0; flex-direction: column;">
         <ui:Foldout text="Foldout" name="main-header">
-            <ui:ListView name="field-list" virtualization-method="DynamicHeight" allow-add="false" allow-remove="false" show-alternating-row-backgrounds="None" show-border="false" selection-type="None" show-bound-collection-size="false" />
+            <ui:ListView name="field-list" virtualization-method="DynamicHeight" allow-add="false" allow-remove="false" show-alternating-row-backgrounds="None" show-border="false" selection-type="None" show-bound-collection-size="false" focusable="true" picking-mode="Ignore" />
         </ui:Foldout>
         <ui:Toggle name="enable-toggle" value="true" style="position: absolute; top: 4px; left: auto; height: 14px; right: auto;" />
         <ui:Button icon-image="project://database/Assets/TaskStreamer/Editor/Resource/UI/Images/Delete.png?fileID=2800000&amp;guid=8091cef9245c02446876c26c51e446e9&amp;type=3#Delete" name="delete-button" style="position: absolute; top: 4px; left: auto; height: 14px; width: 25px; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; right: 0; border-top-width: 1px; border-left-color: rgb(45, 45, 45); border-right-color: rgb(45, 45, 45); border-top-color: rgb(45, 45, 45); border-bottom-color: rgb(45, 45, 45);" />

@@ -25,7 +25,7 @@ namespace TaskStreamer
 
             BlackboardVariable bbVariable = null;
             
-            SetValueAttribute setValue = context.Property.GetAttribute<SetValueAttribute>();
+            DefaultValueAttribute setValue = context.Property.GetAttribute<DefaultValueAttribute>();
 
             if (setValue is not null)
             {

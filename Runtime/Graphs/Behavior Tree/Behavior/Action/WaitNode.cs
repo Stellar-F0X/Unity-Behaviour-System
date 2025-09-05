@@ -7,7 +7,7 @@ namespace TaskStreamer.BT
     [Readable, GeneratePropertyBag, Serializable]
     public class WaitNode : ActionNode
     {
-        [SetValue(1f)]
+        [DefaultValue(1.0f)]
         public BlackboardVariable<float> waitTime;
         
         private float _startTime;

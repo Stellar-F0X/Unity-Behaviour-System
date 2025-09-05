@@ -11,7 +11,7 @@ namespace TaskStreamer.BT
         [Tooltip("Determines how success or failure is evaluated among child nodes.")]
         public BlackboardVariable<ParallelPolicy> parallelPolicy;
 
-        [SetValue(true)]
+        [DefaultValue(true)]
         [Tooltip("Stop updating children as soon as the policy resolves to Success or Failure. If disabled, all children are evaluated every tick.")]
         public BlackboardVariable<bool> shortCircuit;
 
