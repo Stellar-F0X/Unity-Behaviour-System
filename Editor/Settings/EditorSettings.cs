@@ -20,12 +20,5 @@ namespace TaskStreamer.Tool
         
         public Gradient nodeStatusGradient;
         public Gradient edgeStatusGradient;
-
-
-        private void Awake()
-        {
-            //프로젝트 뷰에선 숨기고, 빌드될땐, 이미 모든 노드에 값이 할당된 뒤일테니, 빌드에 포함하지 않음.
-            this.hideFlags = HideFlags.HideInInspector | HideFlags.DontSaveInBuild;
-        }
     }
 }
