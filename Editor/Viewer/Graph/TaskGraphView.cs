@@ -72,7 +72,10 @@ namespace TaskStreamer.Tool
         /// <param name="changeGraph">에디터 뷰에 설정할 새로운 그래프 데이터입니다.</param>
         public void TrySetupGraphEditorView(Graph changeGraph)
         {
-            Debug.Assert(changeGraph is not null, "changeGraph is not null");
+            if (changeGraph is null)
+            {
+                return;
+            }
 
             this._graphView = GraphViewBase.CreateGraphView(changeGraph);
 

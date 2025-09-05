@@ -31,7 +31,7 @@ namespace TaskStreamer.BT
         
         public int childCount
         {
-            get { return _children.Count; }
+            get { return _children[0] == null ? 0 : _children.Count; }
         }
         
         public IEnumerable<NodeBase> GetChildren()
