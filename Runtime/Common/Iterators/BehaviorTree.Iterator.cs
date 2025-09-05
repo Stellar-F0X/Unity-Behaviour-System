@@ -47,6 +47,7 @@ namespace TaskStreamer.BT
                 int pointIndex = 0;
                 int callStackSize = 0;
 
+                //TODO: 왜 Root 하나뿐이면 오류가 나는지 찾아야됨.
                 while (pointIndex < queue.Count)
                 {
                     TreeTraversal traversal = queue[pointIndex++];

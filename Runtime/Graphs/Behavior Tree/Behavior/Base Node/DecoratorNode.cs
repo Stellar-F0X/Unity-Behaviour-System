@@ -8,12 +8,12 @@ namespace TaskStreamer.BT
         {
             _children.Add(null);
         }
-        
-        
+
+
         public BehaviorNodeBase child
         {
             get { return _children[0]; }
-            
+
             set { _children[0] = value; }
         }
 
@@ -22,7 +22,7 @@ namespace TaskStreamer.BT
         {
             get { return BehaviorNodeType.Decorator; }
         }
-        
+
         public BehaviorNodeBase this[int index]
         {
             get { return _children[index]; }
@@ -30,10 +30,10 @@ namespace TaskStreamer.BT
 
         public int childCount
         {
-            get { return _children.Count; }
+            get { return _children[0] == null ? 0 : _children.Count; }
         }
 
-        
+
         public IEnumerable<NodeBase> GetChildren()
         {
             return _children;

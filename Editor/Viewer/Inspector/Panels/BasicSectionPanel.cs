@@ -71,6 +71,11 @@ namespace TaskStreamer.Tool
         /// <summary> 패널 데이터를 갱신하여 최신 상태를 반영합니다. </summary>
         public void RefreshPanel()
         {
+            if (this._targetTask is null)
+            {
+                return;
+            }
+            
             this.InitializeFields(this._targetTask);
         }
 
