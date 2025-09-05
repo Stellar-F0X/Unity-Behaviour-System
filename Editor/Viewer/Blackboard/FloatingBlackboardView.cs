@@ -83,7 +83,7 @@ namespace TaskStreamer.Tool
         {
             this._contentContainer.Clear(); 
 
-            this.blackboard = TaskStreamerEditor.Instance.graphAsset.blackboard;
+            this.blackboard = TaskStreamerEditor.Instance.graphAsset?.blackboard;
 
             if (blackboard == null)
             {

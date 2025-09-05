@@ -156,7 +156,7 @@ namespace TaskStreamer.Tool
 
             if (graphAsset == null)
             {
-                TaskStreamerEditor.Instance.Initialize();
+                TaskStreamerEditor.ClearWindow();
                 return;
             }
 
@@ -165,6 +165,18 @@ namespace TaskStreamer.Tool
                 Instance.graphAsset = graphAsset;
                 Instance.ChangeGraph(graphAsset.main);
             }
+        }
+
+
+        /// <summary>Task Streamer 에디터 창의 상태를 초기화하고 내용을 비웁니다.</summary>
+        public static void ClearWindow()
+        {
+            if (Instance == null)
+            {
+                return;
+            }
+            
+            TaskStreamerEditor.Instance.Initialize();
         }
 
 #endregion
