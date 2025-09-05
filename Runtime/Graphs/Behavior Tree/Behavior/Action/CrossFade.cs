@@ -10,10 +10,10 @@ namespace TaskStreamer.BT
         public BlackboardVariable<Animator> animator;
         public BlackboardVariable<string> animationName;
 
-        [SetValue(0)]
+        [DefaultValue(0)]
         public BlackboardVariable<int> layer;
 
-        [SetValue(0.1f)]
+        [DefaultValue(0.1f)]
         [Tooltip("Duration of the crossfade transition in seconds.")]
         public BlackboardVariable<float> transitionDuration;
         public BlackboardVariable<float> timeOffset;

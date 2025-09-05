@@ -6,7 +6,7 @@ namespace TaskStreamer.BT
     [Serializable, GeneratePropertyBag, Readable]
     public class RepeaterNode : DecoratorNode
     {
-        [SetValue(5)]
+        [DefaultValue(5)]
         public BlackboardVariable<int> repeatCount;
         
         private int _currentCount = 0;

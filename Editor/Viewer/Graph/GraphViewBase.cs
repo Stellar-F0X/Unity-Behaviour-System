@@ -67,10 +67,14 @@ namespace TaskStreamer.Tool
         /// </summary>
         /// <param name="graph">대상 그래프</param>
         /// <param name="targetNode">삭제할 노드</param>
-        public void DeleteNodeFromGraph(Graph graph, NodeBase targetNode)
+        public void DeleteNodeFromGraph(Graph graph, NodeViewBase targetNode)
         {
+            TaskStreamerEditor.Instance.inspectorView.ClearInspector(true);
+            
+            targetNode.OnRemoved();
+            
             // 서브그래프 노드인 경우 특별 처리
-            if (targetNode is ISubGraphProvider subGraphNode)
+            if (targetNode.targetNode is ISubGraphProvider subGraphNode)
             {
                 UGUID targetGuid = subGraphNode.subGraphGuid;
                 Graph foundSubGraph = TaskStreamerEditor.Instance.graphAsset.GetGraph(targetGuid);
@@ -81,7 +85,7 @@ namespace TaskStreamer.Tool
             }
 
             // 노드 자체도 삭제
-            graph.DeleteAndRemoveNodeFromList(targetNode);
+            graph.DeleteAndRemoveNodeFromList(targetNode.targetNode);
         }
 
 

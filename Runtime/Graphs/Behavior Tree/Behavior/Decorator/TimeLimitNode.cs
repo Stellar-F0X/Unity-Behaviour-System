@@ -7,7 +7,7 @@ namespace TaskStreamer.BT
     [Serializable, GeneratePropertyBag, Readable]
     public class TimeLimitNode : DecoratorNode
     {
-        [SetValue(1f)]
+        [DefaultValue(1f)]
         public BlackboardVariable<float> limitTime;
         
         private float _startTime;

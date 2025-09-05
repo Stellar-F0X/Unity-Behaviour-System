@@ -80,6 +80,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
+            //데이터가 이미 지워진 경우, 강제로 지우지 않으면 오류가 발생할 수도 있다. 
             if (force)
             {
                 container.Clear();

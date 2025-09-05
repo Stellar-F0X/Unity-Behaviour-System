@@ -6,7 +6,7 @@ namespace TaskStreamer.FSM
     [Serializable, GeneratePropertyBag, Readable]
     public class WaitState : ActionState
     {
-        [SetValue(1f)]
+        [DefaultValue(1f)]
         public BlackboardVariable<float> waitTime;
         
         private float _startTime;

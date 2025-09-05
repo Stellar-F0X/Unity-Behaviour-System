@@ -1,6 +1,6 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/TaskStreamer/Editor/Resource/UI/Styles/PanelStyle.uss?fileID=7433441132597879392&amp;guid=a285340815d834a45b02dc7a0303c3eb&amp;type=3#PanelStyle" />
-    <ui:VisualElement name="container" style="flex-grow: 0; flex-direction: column;">
+    <ui:VisualElement name="container" picking-mode="Ignore" style="flex-grow: 0; flex-direction: column;">
         <ui:Label text="Properties" name="main-header" class="label-header" style="color: rgb(196, 196, 196);" />
         <ui:ListView name="field-list" virtualization-method="DynamicHeight" allow-add="false" allow-remove="false" show-alternating-row-backgrounds="None" show-border="false" selection-type="None" show-bound-collection-size="false" />
         <ui:VisualElement name="header-line" class="line" />

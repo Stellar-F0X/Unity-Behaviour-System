@@ -267,7 +267,7 @@ namespace TaskStreamer.Tool
         /// <summary> BlackboardVariable를 Local로 변환합니다. </summary>
         private void OnConvertSharedToLocal()
         {
-            SetValueAttribute setValue = this._variableHandle.GetAttribute<SetValueAttribute>();
+            DefaultValueAttribute setValue = this._variableHandle.GetAttribute<DefaultValueAttribute>();
             BlackboardVariable newLocal = null;
 
             if (setValue is not null)

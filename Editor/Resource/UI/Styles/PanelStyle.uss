@@ -51,6 +51,10 @@
     flex-grow: 0;
 }
 
+#container > #main-header > #unity-content {
+    margin-left: 5px;
+}
+
 Label {
     width: 150px;
 }

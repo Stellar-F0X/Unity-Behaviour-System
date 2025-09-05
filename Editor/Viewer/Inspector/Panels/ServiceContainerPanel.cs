@@ -17,7 +17,6 @@ namespace TaskStreamer.Tool
         {
             TaskStreamerResourceLoader.ServiceContainerPanel.CloneTree(this);
             
-            _elementContainer = this.Q<VisualElement>("container"); 
             _serviceListView = this.Q<ListView>("service-list"); 
             _addServiceButton = this.Q<Button>("add-button"); 
             
@@ -51,10 +50,6 @@ namespace TaskStreamer.Tool
         private readonly Button _addServiceButton;
 
 
-        /// 현재 UI 컨테이너를 나타내는 VisualElement로, 서비스 목록 UI의 가시성을 제어하는 역할을 함.
-        private readonly VisualElement _elementContainer;
-
-
 
         /// <summary> 서비스 목록과 UI 패널을 새로고침하여 현재 상태를 반영합니다. </summary>
         public void RefreshPanel()
@@ -67,12 +62,12 @@ namespace TaskStreamer.Tool
 
             if (_serviceListView.itemsSource.Count > 0)
             {
+                _serviceListView.style.display = DisplayStyle.Flex;
                 _serviceListView.RefreshItems();
-                _elementContainer.style.display = DisplayStyle.Flex;
             }
             else
             {
-                _elementContainer.style.display = DisplayStyle.None;
+                _serviceListView.style.display = DisplayStyle.None;
             }
         }
         
@@ -88,7 +83,7 @@ namespace TaskStreamer.Tool
             
             _serviceListView.Clear();
             _variableHandles = handlesDic;
-            _serviceListView.visible = serviceList.Count > 0;
+            _serviceListView.style.display = serviceList.Count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
             _serviceListView.itemsSource = serviceList;
         }
 
@@ -118,22 +113,14 @@ namespace TaskStreamer.Tool
         /// <param name="evt">버튼 클릭 이벤트 정보</param>
         private void OnAddServiceButtonClicked(EventBase evt)
         {
-            BindingWindow window = CreateServiceBindingWindow();
+            BindingWindow window = BindingWindowBuilder.GetBuilder("Services", false)
+                                                       .AddFactoryModule(
+                                                           () => new ServiceFactoryModule("Services", true),
+                                                           () => new TypeTreeProvider(true))
+                                                       .Build();
+            
             window.RegisterCreationCallbackOnce((Action<ServiceBase>)OnServiceCreated);
             window.OpenWindow(evt.originalMousePosition);
-        }
-
-
-
-        /// <summary> 서비스 바인딩을 위한 창을 생성합니다. </summary>
-        /// <returns>생성된 BindingWindow 객체를 반환합니다.</returns>
-        private BindingWindow CreateServiceBindingWindow()
-        {
-            return BindingWindowBuilder.GetBuilder("Services", false)
-                                       .AddFactoryModule(
-                                           () => new ServiceFactoryModule("Services", true),
-                                           () => new TypeTreeProvider(true))
-                                       .Build();
         }
 
 
@@ -145,10 +132,9 @@ namespace TaskStreamer.Tool
             Debug.Assert(service is not null, "service is null");
 
             List<VariableHandle> handles = TypeUtility.TryGetFieldHandles(service.GetType(), service);
-            Debug.Assert(handles is not null, "handles is null");;
+            Debug.Assert(handles is not null, "handles is null");
             
-            _variableHandles.Add(service, handles);
-            
+            this._variableHandles.Add(service, handles);
             this.RefreshPanel();
         }
 

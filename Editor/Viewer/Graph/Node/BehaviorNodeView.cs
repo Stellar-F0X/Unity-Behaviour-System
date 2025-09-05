@@ -85,23 +85,23 @@ namespace TaskStreamer.Tool
             {
                 case NotifyCollectionChangedAction.Reset:
                 {
-                    this._serviceContainer.Clear();
                     this.serviceList.Clear();
+                    this._serviceContainer.Clear();
                     break;
                 }
                 
                 case NotifyCollectionChangedAction.Add:
                 {
-                    this._serviceContainer.Add(new ServiceView(service));
                     this.serviceList.Add(service);
+                    this._serviceContainer.Add(new ServiceView(service));
                     break;
                 } 
 
                 case NotifyCollectionChangedAction.Remove:
                 {
                     int index = serviceList.IndexOf(service);
-                    this._serviceContainer.RemoveAt(index);
                     this.serviceList.RemoveAt(index);
+                    this._serviceContainer.RemoveAt(index);
                     break;
                 } 
             }

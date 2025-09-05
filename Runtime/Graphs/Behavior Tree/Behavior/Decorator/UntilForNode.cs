@@ -6,7 +6,7 @@ namespace TaskStreamer.BT
     [Serializable, GeneratePropertyBag, Readable]
     public class UntilForNode : DecoratorNode
     {
-        [SetValue(UntilCondition.Success)]
+        [DefaultValue(UntilCondition.Success)]
         public BlackboardVariable<UntilCondition> targetResult;
 
 
