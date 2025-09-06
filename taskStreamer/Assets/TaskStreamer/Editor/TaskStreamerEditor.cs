@@ -379,7 +379,6 @@ namespace TaskStreamer.Tool
         {
             if (Instance == null || taskGraphView == null || inspectorView == null)
             {
-                Debug.Assert(isLoadingTreeToView, "TaskStreamerEditor is not initialized.");
                 return;
             }
 
