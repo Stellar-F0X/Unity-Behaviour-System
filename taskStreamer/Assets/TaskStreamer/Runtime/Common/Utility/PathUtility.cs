@@ -10,9 +10,9 @@ namespace TaskStreamer.Utility
 {
     public static class PathUtility
     {
-        private const string ASSETS_BASE_PATH = "Assets/TaskStreamer/Editor/Resource/UI/";
+        private const string ASSETS_BASE_PATH = "Assets/TaskStreamer/Editor/Resource/";
 
-        private const string PACKAGES_BASE_PATH = "Packages/com.stellarf0x.taskstreamer/Editor/Resource/UI/";
+        private const string PACKAGES_BASE_PATH = "Packages/com.stellarf0x.taskstreamer/Editor/Resource/";
 
 
 
@@ -35,10 +35,17 @@ namespace TaskStreamer.Utility
 
             string filePath = new string(filePathSpan);
 #endif
-            
-            T cachedAsset = AssetDatabase.LoadAssetAtPath<T>(filePath);
-            Debug.Assert(cachedAsset != null, $"Cannot load {typeof(T).Name}.");
-            return cachedAsset;
+            try
+            {
+                T cachedAsset = AssetDatabase.LoadAssetAtPath<T>(filePath);
+                Debug.Assert(cachedAsset != null, $"Cannot load {typeof(T).Name}.");
+                return cachedAsset;
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+                return null;
+            }
         }
         
         

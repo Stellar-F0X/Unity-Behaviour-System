@@ -36,6 +36,7 @@ namespace TaskStreamer.Tool
             this._unlinkButton.enabledSelf = TaskStreamerEditor.canEditGraph && TaskStreamerEditor.hasBlackboard;
 
             this._linkToSharedButton.clickable.clickedWithEventInfo += this.OnOpenSharedVariableSelector;
+            this._linkToSharedButton.iconImage = TaskStreamerResourceLoader.bindingButton;
             this._linkToSharedButton.enabledSelf = TaskStreamerEditor.canEditGraph && TaskStreamerEditor.hasBlackboard;
         }
 

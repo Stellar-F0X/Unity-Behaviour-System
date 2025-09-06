@@ -16,11 +16,11 @@ namespace TaskStreamer.Tool
         private static VisualTreeAsset _settings;
         private static StyleSheet _settingsStyle;
 
-        private static VisualTreeAsset _floatingInspectorView;
+        private static VisualTreeAsset _floatingInspector;
 
         private static VisualTreeAsset _behaviorNode;
         private static VisualTreeAsset _stateNode;
-        private static VisualTreeAsset _serviceView;
+        private static VisualTreeAsset _serviceBlock;
 
         private static StyleSheet _edgeStyle;
 
@@ -33,10 +33,11 @@ namespace TaskStreamer.Tool
         private static VisualTreeAsset _bbbConditionListField;
         private static VisualTreeAsset _bbVariableField;
         private static StyleSheet _blackboardStyle;
-        private static StyleSheet _cursorStyle;
 
         private static Texture2D  _resizeHandleImage;
         private static Texture2D  _deleteButtonImage;
+        private static Texture2D  _bindingButtonImage;
+        private static Texture2D _addButtonImage;
 
 
 
@@ -46,77 +47,80 @@ namespace TaskStreamer.Tool
             get { return _window ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/TaskStreamerWindow.uxml"); }
         }
 
+        
+        public static VisualTreeAsset Settings
+        {
+            get { return _settings ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/TaskStreamerSettings.uxml"); }
+        }
+        
 
         public static VisualTreeAsset BehaviorNode
         {
-            get { return _behaviorNode ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/BehaviorNode.uxml"); }
+            get { return _behaviorNode ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Node/BehaviorNode.uxml"); }
         }
 
 
         public static VisualTreeAsset StateNode
         {
-            get { return _stateNode ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/StateNode.uxml"); }
+            get { return _stateNode ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Node/StateNode.uxml"); }
         }
 
-
-        public static VisualTreeAsset Settings
+        
+        public static VisualTreeAsset ServiceBlock
         {
-            get { return _settings ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/TaskStreamerSettings.uxml"); }
+            get { return _serviceBlock ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Node/ServiceBlock.uxml"); }
         }
-
+        
 
         public static VisualTreeAsset BasicSectionPanel
         {
-            get { return _basicSectionPanel ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/BasicSectionPanel.uxml"); }
+            get { return _basicSectionPanel ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/BasicSection.uxml"); }
         }
 
 
         public static VisualTreeAsset FieldSectionPanel
         {
-            get { return _fieldSectionPanel ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/FieldSectionPanel.uxml"); }
+            get { return _fieldSectionPanel ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/FieldSection.uxml"); }
         }
 
 
         public static VisualTreeAsset ServiceSectionPanel
         {
-            get { return _serviceSectionPanel ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/ServiceSectionPanel.uxml"); }
+            get { return _serviceSectionPanel ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/ServiceSection.uxml"); }
         }
 
 
         public static VisualTreeAsset ServiceContainerPanel
         {
-            get { return _serviceContainerPanel ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/ServiceContainerPanel.uxml"); }
+            get { return _serviceContainerPanel ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/ServiceSectionContainer.uxml"); }
         }
 
 
-        public static VisualTreeAsset FloatingInspectorView
+        public static VisualTreeAsset FloatingInspector
         {
-            get { return _floatingInspectorView ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/FloatingInspectorView.uxml"); }
+            get { return _floatingInspector ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/FloatingInspector.uxml"); }
         }
 
 
         public static VisualTreeAsset BBVariableField
         {
-            get { return _bbVariableField ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/BBVariableField.uxml"); }
+            get { return _bbVariableField ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/BlackboardVariableField.uxml"); }
         }
 
 
         public static VisualTreeAsset BBBConditionField
         {
-            get { return _bbbConditionField ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/BBBasedConditionField.uxml"); }
+            get { return _bbbConditionField ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/ConditionField.uxml"); }
         }
 
 
         public static VisualTreeAsset BBBConditionListField
         {
-            get { return _bbbConditionListField ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/BBBasedConditionFieldList.uxml"); }
+            get { return _bbbConditionListField ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/ConditionFieldList.uxml"); }
         }
 
 
-        public static VisualTreeAsset ServiceView
-        {
-            get { return _serviceView ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/ServiceView.uxml"); }
-        }
+
 
 
         public static StyleSheet SettingsStyle
@@ -141,12 +145,6 @@ namespace TaskStreamer.Tool
         {
             get { return _blackboardStyle ??= PathUtility.LoadAsset<StyleSheet>("Styles/TaskStreamerBlackboardStyle.uss"); }
         }
-
-
-        public static StyleSheet CursorStyle
-        {
-            get { return _cursorStyle ??= PathUtility.LoadAsset<StyleSheet>("Styles/CursorStyle.uss"); }
-        } 
 #endregion
 
 
@@ -161,6 +159,19 @@ namespace TaskStreamer.Tool
         public static Texture2D  deleteButton
         {
             get { return _deleteButtonImage ??= PathUtility.LoadAsset<Texture2D>("Images/deleteButton.png"); }
+        }
+        
+        
+        public static Texture2D  bindingButton
+        {
+            get { return _bindingButtonImage ??= PathUtility.LoadAsset<Texture2D>("Images/bindingButton.png"); }
+        }
+
+
+
+        public static Texture2D addButton
+        {
+            get { return _addButtonImage ??= PathUtility.LoadAsset<Texture2D>("Images/addButton.png"); }
         }
 #endregion
     }

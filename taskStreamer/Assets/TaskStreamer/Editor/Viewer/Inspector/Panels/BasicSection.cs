@@ -10,10 +10,10 @@ using UnityEngine.UIElements;
 namespace TaskStreamer.Tool
 {
     /// <summary> DefaultPanel 클래스는 작업(Task) 또는 전환(Transition)을 표시하고, 수정할 수 있는 기본 패널 UI를 제공합니다. </summary>
-    internal class BasicSectionPanel : VisualElement, IRefreshablePanel
+    internal class BasicSection : VisualElement, IRefreshablePanel
     {
         /// <summary> 작업(Task)의 기본 속성을 표시하고 편집할 수 있는 UI 패널입니다. </summary>
-        public BasicSectionPanel(Task targetTask, Action<string> renamingCallback)
+        public BasicSection(Task targetTask, Action<string> renamingCallback)
         {
             TaskStreamerResourceLoader.BasicSectionPanel.CloneTree(this);
 

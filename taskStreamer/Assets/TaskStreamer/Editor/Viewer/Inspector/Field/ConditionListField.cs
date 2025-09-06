@@ -8,16 +8,17 @@ using UnityEngine.UIElements;
 namespace TaskStreamer.Tool
 {
     /// BlackboardBasedCondition의 조건 목록을 UI로 표시하는 VisualElement 클래스.
-    internal class BlackboardBasedConditionListField : VisualElement, IRefreshableField
+    internal class ConditionListField : VisualElement, IRefreshableField
     {
         /// BlackboardBasedCondition의 조건 목록을 UI로 표시하는 VisualElement 클래스입니다.
-        public BlackboardBasedConditionListField(VariableHandle fieldInfo)
+        public ConditionListField(VariableHandle fieldInfo)
         {
             TaskStreamerResourceLoader.BBBConditionListField.CloneTree(this);
 
             _conditionPolicyEnumView = this.Q<EnumField>("condition-evaluation-policy");
             _conditionListView = this.Q<ListView>("condition-list-view");
-            _conditionDeleteBtn = this.Q<Button>("condition-delete-btn");
+            _conditionAddButton = this.Q<Button>("condition-add-btn");
+            _conditionAddButton.iconImage = TaskStreamerResourceLoader.addButton;
 
             this.InitializeConditionListView(fieldInfo);
         }
@@ -29,7 +30,7 @@ namespace TaskStreamer.Tool
 
 
         /// <summary> 조건 삭제 버튼을 나타내는 변수입니다. </summary>
-        private readonly Button _conditionDeleteBtn;
+        private readonly Button _conditionAddButton;
 
 
         /// <summary> 조건 평가 정책을 설정하기 위한 EnumField UI 요소입니다. </summary>
@@ -51,9 +52,9 @@ namespace TaskStreamer.Tool
             _conditionListView.headerTitle = StringUtility.ToNicifyName(fieldInfo.context);
             _conditionListView.itemsSource = _bbCondition!.modules;
             _conditionListView.bindItem = this.BindConditionItem;
-            _conditionListView.makeItem = () => new BlackBoardBasedConditionField();
+            _conditionListView.makeItem = () => new ConditionField();
             
-            _conditionDeleteBtn.clickable.clickedWithEventInfo += this.OnAddButtonClicked;
+            _conditionAddButton.clickable.clickedWithEventInfo += this.OnAddButtonClicked;
             
             _conditionPolicyEnumView.value = _bbCondition.evaluationPolicy;
             _conditionPolicyEnumView.RegisterValueChangedCallback(e => _bbCondition.evaluationPolicy = (EvaluationPolicy)e.newValue);
@@ -88,7 +89,7 @@ namespace TaskStreamer.Tool
         /// <param name="index">바인딩할 데이터의 인덱스.</param>
         private void BindConditionItem(VisualElement element, int index)
         {
-            BlackBoardBasedConditionField conditionField = element as BlackBoardBasedConditionField;
+            ConditionField conditionField = element as ConditionField;
 
             Debug.Assert(conditionField is not null, "conditionField is null");
 
@@ -114,7 +115,7 @@ namespace TaskStreamer.Tool
 
         /// <summary> 특정 변수가 삭제 요청되었을 때 처리하는 메서드입니다. </summary>
         /// <param name="variableView">삭제 요청된 BBBasedConditionField의 참조입니다.</param>
-        private void OnVariableDeleteRequested(BlackBoardBasedConditionField variableView)
+        private void OnVariableDeleteRequested(ConditionField variableView)
         {
             int index = _conditionListView.itemsSource.IndexOf(variableView.conditionValueValue);
 

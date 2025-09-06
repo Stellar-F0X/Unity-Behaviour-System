@@ -8,12 +8,12 @@ using UnityEngine.UIElements;
 namespace TaskStreamer.Tool
 {
     /// <summary>
-    /// ServiceContainerPanel 클래스는 VisualElement를 상속받아 서비스 리스트를 UI로 관리하며,
+    /// ServiceContainer 클래스는 VisualElement를 상속받아 서비스 리스트를 UI로 관리하며,
     /// IRefreshablePanel 인터페이스를 구현하여 동적 갱신 기능을 제공합니다.
     /// </summary>
-    internal class ServiceContainerPanel : VisualElement, IRefreshablePanel
+    internal class ServiceContainer : VisualElement, IRefreshablePanel
     {
-        public ServiceContainerPanel()
+        public ServiceContainer()
         {
             TaskStreamerResourceLoader.ServiceContainerPanel.CloneTree(this);
             
@@ -23,12 +23,12 @@ namespace TaskStreamer.Tool
             _addServiceButton.clickable.clickedWithEventInfo += this.OnAddServiceButtonClicked;
             _addServiceButton.enabledSelf = TaskStreamerEditor.canEditGraph;
             
-            _serviceListView.makeItem += () => new ServiceSectionPanel();
+            _serviceListView.makeItem += () => new ServiceSection();
             _serviceListView.bindItem += this.BindServiceItem;
         }
         
         
-        public ServiceContainerPanel(List<ServiceBase> serviceList, ObservableDictionary<ServiceBase, List<VariableHandle>> variableHandles) : this()
+        public ServiceContainer(List<ServiceBase> serviceList, ObservableDictionary<ServiceBase, List<VariableHandle>> variableHandles) : this()
         {
             this.RefreshPanelWithNewValue((serviceList, variableHandles));
             
@@ -56,7 +56,7 @@ namespace TaskStreamer.Tool
         {
             if (_serviceListView.itemsSource is null)
             {
-                Debug.LogError($"{typeof(ServiceContainerPanel)}'s itemsSource is null");
+                Debug.LogError($"{typeof(ServiceContainer)}'s itemsSource is null");
                 return;
             }
 
@@ -94,7 +94,7 @@ namespace TaskStreamer.Tool
         /// <param name="index">목록의 서비스 항목 인덱스</param>
         private void BindServiceItem(VisualElement element, int index)
         {
-            if (element is not ServiceSectionPanel servicePanel || index < 0 || _serviceListView.itemsSource.Count <= index)
+            if (element is not ServiceSection servicePanel || index < 0 || _serviceListView.itemsSource.Count <= index)
             {
                 return;
             }
@@ -142,7 +142,7 @@ namespace TaskStreamer.Tool
 
         /// <summary> 서비스 삭제 요청 시 해당 서비스를 목록에서 제거합니다.  </summary>
         /// <param name="sectionPanel">삭제 요청이 발생한 서비스 섹션 패널</param>
-        private void OnServiceDeletionRequested(ServiceSectionPanel sectionPanel)
+        private void OnServiceDeletionRequested(ServiceSection sectionPanel)
         {
             if (_serviceListView.itemsSource.Count == 0)
             {

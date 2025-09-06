@@ -8,9 +8,9 @@ namespace TaskStreamer.Tool
     /// <summary>
     /// BBBasedConditionField는 시각적 요소로, 조건 필드에 관련된 UI를 정의합니다.
     /// </summary>
-    internal class BlackBoardBasedConditionField : VisualElement
+    internal class ConditionField : VisualElement
     {
-        public BlackBoardBasedConditionField()
+        public ConditionField()
         {
             TaskStreamerResourceLoader.BBBConditionField.CloneTree(this);
 
@@ -18,6 +18,7 @@ namespace TaskStreamer.Tool
             _rightVariableField = this.Q<VisualElement>("right--field-view--field");
             _comparisionField = this.Q<DropdownField>("comparison-type-field");
             _conditionDeleteButton = this.Q<Button>("condition-delete-btn");
+            _conditionDeleteButton.iconImage = TaskStreamerResourceLoader.deleteButton;
 
             _conditionDeleteButton.UnregisterCallback<ClickEvent>(this.OnDeleteButtonClicked);
             _conditionDeleteButton.RegisterCallback<ClickEvent>(this.OnDeleteButtonClicked);
@@ -28,7 +29,7 @@ namespace TaskStreamer.Tool
 
 
         /// <summary> 삭제 요청 이벤트를 발생시킵니다. </summary>
-        public event Action<BlackBoardBasedConditionField> OnDeleteRequested;
+        public event Action<ConditionField> OnDeleteRequested;
 
 
         /// <summary> VisualElement that represents the left variable field in the condition UI. </summary>

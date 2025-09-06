@@ -7,10 +7,10 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    /// <summary> ServiceSectionPanel 클래스는 Unity UIElements의 VisualElement를 확장하여 서비스 항목을 표시, 설정, 삭제 등의 UI 기능을 제공하는 패널입니다. </summary>
-    internal class ServiceSectionPanel : VisualElement
+    /// <summary> ServiceSection 클래스는 Unity UIElements의 VisualElement를 확장하여 서비스 항목을 표시, 설정, 삭제 등의 UI 기능을 제공하는 패널입니다. </summary>
+    internal class ServiceSection : VisualElement
     {
-        public ServiceSectionPanel()
+        public ServiceSection()
         {
             TaskStreamerResourceLoader.ServiceSectionPanel.CloneTree(this);
 
@@ -32,7 +32,7 @@ namespace TaskStreamer.Tool
         
         /// 삭제 요청 이벤트를 처리하기 위한 변수입니다.
         /// ServiceSectionPanel에서 삭제 버튼 클릭 시 호출됩니다.
-        public event Action<ServiceSectionPanel> OnDeleteRequested;
+        public event Action<ServiceSection> OnDeleteRequested;
 
         
         /// _headerFoldout 변수는 UI의 Foldout 요소를 참조하며, 서비스 섹션의 확장/축소 상태를 관리합니다.
@@ -56,7 +56,7 @@ namespace TaskStreamer.Tool
         private List<VariableHandle> _variableHandles;
 
         
-        /// _service는 ServiceSectionPanel 내부에서 사용되는 ServiceBase 타입의 비공개 멤버 변수로,
+        /// _service는 ServiceSection 내부에서 사용되는 ServiceBase 타입의 비공개 멤버 변수로,
         /// 패널과 연결된 서비스 데이터를 참조하며, 서비스의 상태와 설정을 반영합니다.
         private ServiceBase _service;
         
@@ -130,7 +130,7 @@ namespace TaskStreamer.Tool
             {
                 case BlackboardVariable: return VisualUtility.GetFieldByValueType(handle);
 
-                case BlackboardBasedCondition: return new BlackboardBasedConditionListField(handle);
+                case BlackboardBasedCondition: return new ConditionListField(handle);
                 
                 default: return new UnsupportedTypeField(handle.context);
             }

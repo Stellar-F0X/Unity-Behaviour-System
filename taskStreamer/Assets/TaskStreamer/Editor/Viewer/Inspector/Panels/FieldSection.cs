@@ -5,9 +5,9 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    internal class FieldSectionPanel : VisualElement, IRefreshablePanel
+    internal class FieldSection : VisualElement, IRefreshablePanel
     {
-        public FieldSectionPanel(List<VariableHandle> variableHandles)
+        public FieldSection(List<VariableHandle> variableHandles)
         {
             TaskStreamerResourceLoader.FieldSectionPanel.CloneTree(this);
 
@@ -89,7 +89,7 @@ namespace TaskStreamer.Tool
             {
                 case BlackboardVariable: return VisualUtility.GetFieldByValueType(handle);
 
-                case BlackboardBasedCondition: return new BlackboardBasedConditionListField(handle);
+                case BlackboardBasedCondition: return new ConditionListField(handle);
 
                 default: throw new System.ArgumentException($"Unsupported handle value type: {handle.initialValue?.GetType()}");
             }

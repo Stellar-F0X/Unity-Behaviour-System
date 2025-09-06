@@ -6,31 +6,31 @@ using UnityEngine.UIElements;
 namespace TaskStreamer.Tool
 {
     /// <summary> 선택된 그래프 요소의 데이터를 기반으로 플로팅 인스펙터를 갱신 및 관리하는 클래스 </summary>
-    internal class FloatingInspectorView : FloatingPanel
+    internal class FloatingInspector : FloatingPanel
     {
-        public FloatingInspectorView()
+        public FloatingInspector()
         {
-            TaskStreamerResourceLoader.FloatingInspectorView.CloneTree(this);
+            TaskStreamerResourceLoader.FloatingInspector.CloneTree(this);
             
             this.AddToClassList("inspector-window");
         }
         
         
-        public BasicSectionPanel basicPanel
+        public BasicSection basicPanel
         {
-            get { return container[0] as BasicSectionPanel; }
+            get { return container[0] as BasicSection; }
         }
 
         
-        public FieldSectionPanel fieldContainerPanel
+        public FieldSection fieldContainerPanel
         {
-            get { return container[1] as FieldSectionPanel; }
+            get { return container[1] as FieldSection; }
         }
 
         
-        public ServiceContainerPanel serviceContainerPanel
+        public ServiceContainer serviceContainerPanel
         {
-            get { return container[2] as ServiceContainerPanel; }
+            get { return container[2] as ServiceContainer; }
         }
 
 
@@ -168,25 +168,25 @@ namespace TaskStreamer.Tool
             {
                 case BehaviorNodeView bNodeView:
                 {
-                    container.Add(new BasicSectionPanel(bNodeView.targetNode, bNodeView.onRenamingNode));
-                    container.Add(new FieldSectionPanel(bNodeView.variableHandles));
-                    container.Add(new ServiceContainerPanel(bNodeView.serviceList, bNodeView.variableHandlesDic));
+                    container.Add(new BasicSection(bNodeView.targetNode, bNodeView.onRenamingNode));
+                    container.Add(new FieldSection(bNodeView.variableHandles));
+                    container.Add(new ServiceContainer(bNodeView.serviceList, bNodeView.variableHandlesDic));
                     break;
                 }
 
                 case StateNodeView sNodeView:
                 {
-                    container.Add(new BasicSectionPanel(sNodeView.targetNode, sNodeView.onRenamingNode));
-                    container.Add(new FieldSectionPanel(sNodeView.variableHandles));
-                    container.Add(new ServiceContainerPanel() { style = { display = DisplayStyle.None } });
+                    container.Add(new BasicSection(sNodeView.targetNode, sNodeView.onRenamingNode));
+                    container.Add(new FieldSection(sNodeView.variableHandles));
+                    container.Add(new ServiceContainer() { style = { display = DisplayStyle.None } });
                     break;
                 }
 
                 case ArrowEdge edgeView:
                 {
-                    container.Add(new BasicSectionPanel(edgeView.targetTransition, null));
-                    container.Add(new FieldSectionPanel(edgeView.variableHandles));
-                    container.Add(new ServiceContainerPanel() { style = { display = DisplayStyle.None } });
+                    container.Add(new BasicSection(edgeView.targetTransition, null));
+                    container.Add(new FieldSection(edgeView.variableHandles));
+                    container.Add(new ServiceContainer() { style = { display = DisplayStyle.None } });
                     break;
                 }
             }

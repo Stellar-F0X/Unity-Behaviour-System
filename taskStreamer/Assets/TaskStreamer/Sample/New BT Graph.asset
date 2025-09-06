@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _blackboardData:
     _appliedVersion:
-      _value0: 3160612332
-      _value1: 1197481603
-      _value2: 1491818164
-      _value3: 738427078
+      _value0: 3073317337
+      _value1: 1185880364
+      _value2: 3286443945
+      _value3: 3438711134
     _variables:
     - rid: 26404894811619392
     - rid: 26404894811619394
@@ -590,7 +590,8 @@ MonoBehaviour:
           _script: {fileID: 0}
           _conditions:
             evaluationPolicy: 0
-            modules: []
+            modules:
+            - rid: 26404925452582950
           _sourceNode:
             rid: 26404894811619407
           _destinationNode:
@@ -782,4 +783,37 @@ MonoBehaviour:
           _isShared: 0
           _usage: 0
           _value: Waiting 3
+          _blackboard: {fileID: 0}
+    - rid: 26404925452582950
+      type: {class: AnimatorCondition, ns: TaskStreamer, asm: TaskStreamer}
+      data:
+        comparisonValue: 1
+        configuredComparisonType: 3
+        leftVariable:
+          _key: '#__Local_Variable#__'
+          _keyHash: 1495459429
+          _guid:
+            _value0: 872618251
+            _value1: 1238640271
+            _value2: 1061162427
+            _value3: 2330804707
+          _typeName: TaskStreamer.AnimatorVariable, TaskStreamer, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 1
+          _value: {fileID: 0}
+          _blackboard: {fileID: 0}
+        rightVariable:
+          _key: '#__Local_Variable#__'
+          _keyHash: 1495459429
+          _guid:
+            _value0: 427768513
+            _value1: 1205629015
+            _value2: 3162776234
+            _value3: 2926430218
+          _typeName: TaskStreamer.AnimatorVariable, TaskStreamer, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 1
+          _value: {fileID: 0}
           _blackboard: {fileID: 0}

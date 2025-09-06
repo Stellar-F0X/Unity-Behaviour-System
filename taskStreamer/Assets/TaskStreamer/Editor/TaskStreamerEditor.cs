@@ -98,7 +98,7 @@ namespace TaskStreamer.Tool
         }
 
         /// <summary>Task Streamer 에디터의 Floating Inspector View를 관리합니다.</summary>
-        public FloatingInspectorView inspectorView
+        public FloatingInspector inspectorView
         {
             get;
             private set;
@@ -200,7 +200,7 @@ namespace TaskStreamer.Tool
             this._blackboardField.RegisterValueChangedCallback(this.OnChangeBlackboardAsset);
             this._blackboardField.enabledSelf = !EditorApplication.isPlayingOrWillChangePlaymode;
 
-            this.inspectorView = new FloatingInspectorView();
+            this.inspectorView = new FloatingInspector();
             this._blackboardView = new FloatingBlackboardView(taskGraphView);
             this.miniMapView = new MiniMapView(taskGraphView);
 
@@ -248,7 +248,6 @@ namespace TaskStreamer.Tool
         private void OnDisable()
         {
             EditorApplication.playModeStateChanged -= this.OnEditorStateChanged;
-            EditorApplication.delayCall -= this.OnSelectionChange;
             EditorApplication.update -= this.RuntimeUpdate;
 
             Undo.undoRedoPerformed -= this.OnEditorUndoPerformed;
