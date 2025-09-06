@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _blackboardData:
     _appliedVersion:
-      _value0: 3684938410
-      _value1: 1325594091
-      _value2: 2416974503
-      _value3: 1463926694
+      _value0: 3160612332
+      _value1: 1197481603
+      _value2: 1491818164
+      _value3: 738427078
     _variables:
     - rid: 26404894811619392
     - rid: 26404894811619394
@@ -344,7 +344,7 @@ MonoBehaviour:
           _value3: 1149262911
         canEditName: 1
         _script: {fileID: 11500000, guid: 63fb28b93c3c64b489c15786afb73b51, type: 3}
-        position: {x: 46, y: 360}
+        position: {x: 24, y: 360}
         _parent:
           rid: 26404894811619405
         _services: []
@@ -367,7 +367,7 @@ MonoBehaviour:
           _value3: 1780695112
         canEditName: 1
         _script: {fileID: 0}
-        position: {x: 0, y: 0}
+        position: {x: 202, y: 62}
         _transitions:
         - name: 'Enter To Wait '
           tag: 
@@ -414,7 +414,7 @@ MonoBehaviour:
           _value3: 1864207201
         canEditName: 1
         _script: {fileID: 0}
-        position: {x: -230, y: 0}
+        position: {x: 202, y: 184}
         _transitions: []
     - rid: 26404894811619404
       type: {class: WaitNode, ns: TaskStreamer.BT, asm: TaskStreamer}

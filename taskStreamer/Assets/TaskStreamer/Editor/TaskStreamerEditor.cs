@@ -200,7 +200,7 @@ namespace TaskStreamer.Tool
             this._blackboardField.RegisterValueChangedCallback(this.OnChangeBlackboardAsset);
             this._blackboardField.enabledSelf = !EditorApplication.isPlayingOrWillChangePlaymode;
 
-            this.inspectorView = TaskStreamerResourceLoader.FloatingInspectorView.Instantiate()[0] as FloatingInspectorView;
+            this.inspectorView = new FloatingInspectorView();
             this._blackboardView = new FloatingBlackboardView(taskGraphView);
             this.miniMapView = new MiniMapView(taskGraphView);
 

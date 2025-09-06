@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    public class FloatingPanel : VisualElement
+    internal abstract class FloatingPanel : VisualElement
     {
         protected FloatingPanel()
         {

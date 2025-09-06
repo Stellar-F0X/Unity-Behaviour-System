@@ -23,3 +23,22 @@
     margin-left: 5px;
     margin-right: 5px;
 }
+
+.inspector-window {
+    width: 270px;
+    min-width: 250px;
+    min-height: 70px;
+    flex-shrink: 0;
+    padding-bottom: 10px;
+    border-bottom-width: 1px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-left-color: rgb(43, 43, 43);
+    border-right-color: rgb(43, 43, 43);
+    border-top-color: rgb(43, 43, 43);
+    border-bottom-color: rgb(43, 43, 43);
+    background-color: rgb(57, 57, 57);
+    position: absolute;
+}

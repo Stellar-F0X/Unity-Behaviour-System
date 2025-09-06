@@ -3,20 +3,15 @@
 	  "version": "1.0.0",
 	  "displayName": "Task Streamer",
 	  "description": "AI",
-	  "unity": "6.0.49",
 	  "author": {
-	    "name": "Stellar-F0X",
-	    "url": "https://github.com/Stellar-F0X/Task-Streamer.git?path=taskStreamer/Assets/TaskStreamer"
+	    "name": "Stellar-F0X"
 	  },
 	  "keywords": [
-		"ai",
-		"bt",
         "behavior tree",
-		"behaviour tree",
-		"fsm",
-		"state machine",
 		"finite state machine",
+		"node based graph",
         "editor",
-	    "unity"
+	    "unity",
+		"ai"
 	  ]
 	}

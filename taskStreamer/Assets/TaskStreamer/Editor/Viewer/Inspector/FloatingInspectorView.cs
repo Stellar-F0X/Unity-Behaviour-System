@@ -6,9 +6,16 @@ using UnityEngine.UIElements;
 namespace TaskStreamer.Tool
 {
     /// <summary> 선택된 그래프 요소의 데이터를 기반으로 플로팅 인스펙터를 갱신 및 관리하는 클래스 </summary>
-    [UxmlElement]
-    internal partial class FloatingInspectorView : FloatingPanel
+    internal class FloatingInspectorView : FloatingPanel
     {
+        public FloatingInspectorView()
+        {
+            TaskStreamerResourceLoader.FloatingInspectorView.CloneTree(this);
+            
+            this.AddToClassList("inspector-window");
+        }
+        
+        
         public BasicSectionPanel basicPanel
         {
             get { return container[0] as BasicSectionPanel; }
