@@ -1,5 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <Style src="project://database/Assets/TaskStreamer/Editor/Resource/UI/Styles/NodeViewStyle.uss?fileID=7433441132597879392&amp;guid=23050fd4400d01a4db0fe6da0c675537&amp;type=3#NodeViewStyle" />
+    <Style src="project://database/Assets/TaskStreamer/Editor/Resource/UI/Styles/CursorStyle.uss?fileID=7433441132597879392&amp;guid=8a0cfcbb7c5fdc34b9e6abbd12891d28&amp;type=3#CursorStyle" />
     <ui:VisualElement name="node-border" style="background-color: rgb(43, 43, 43); border-bottom-left-radius: 10px; border-bottom-right-radius: 10px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px;">
         <ui:VisualElement name="contents" focusable="false" style="align-self: stretch;">
             <ui:VisualElement name="input" language-direction="Inherit" picking-mode="Ignore" style="height: 13px; align-self: auto; flex-direction: column;" />

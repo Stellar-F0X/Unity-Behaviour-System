@@ -1,5 +1,4 @@
 using TaskStreamer.Utility;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -34,9 +33,14 @@ namespace TaskStreamer.Tool
         private static VisualTreeAsset _bbbConditionListField;
         private static VisualTreeAsset _bbVariableField;
         private static StyleSheet _blackboardStyle;
+        private static StyleSheet _cursorStyle;
+
+        private static Texture2D  _resizeHandleImage;
+        private static Texture2D  _deleteButtonImage;
 
 
 
+#region UXML & USS
         public static VisualTreeAsset Window
         {
             get { return _window ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/TaskStreamerWindow.uxml"); }
@@ -137,5 +141,27 @@ namespace TaskStreamer.Tool
         {
             get { return _blackboardStyle ??= PathUtility.LoadAsset<StyleSheet>("Styles/TaskStreamerBlackboardStyle.uss"); }
         }
+
+
+        public static StyleSheet CursorStyle
+        {
+            get { return _cursorStyle ??= PathUtility.LoadAsset<StyleSheet>("Styles/CursorStyle.uss"); }
+        } 
+#endregion
+
+
+
+#region Images
+        public static Texture2D resizeHandle
+        {
+            get { return _resizeHandleImage ??= PathUtility.LoadAsset<Texture2D>("Images/resizeHandle.png"); }
+        }
+        
+        
+        public static Texture2D  deleteButton
+        {
+            get { return _deleteButtonImage ??= PathUtility.LoadAsset<Texture2D>("Images/deleteButton.png"); }
+        }
+#endregion
     }
 }

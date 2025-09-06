@@ -22,6 +22,7 @@ namespace TaskStreamer.Tool
             _fieldListView.makeItem += () => new VisualElement();
             _fieldListView.bindItem += this.BindItem;
             _deleteButton.clicked += this.OnDeleteButtonClicked;
+            _deleteButton.iconImage = TaskStreamerResourceLoader.deleteButton;
             _deleteButton.enabledSelf = TaskStreamerEditor.canEditGraph;
 
             _enableToggle.RegisterValueChangedCallback(evt => service.enable = evt.newValue); 

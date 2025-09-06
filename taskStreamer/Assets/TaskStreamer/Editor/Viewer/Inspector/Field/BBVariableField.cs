@@ -32,6 +32,7 @@ namespace TaskStreamer.Tool
             this.CreateVariableFieldByType(this._blackboardVariable.isShared);
 
             this._unlinkButton.clickable.clicked += this.OnConvertSharedToLocal;
+            this._unlinkButton.iconImage = TaskStreamerResourceLoader.deleteButton;
             this._unlinkButton.enabledSelf = TaskStreamerEditor.canEditGraph && TaskStreamerEditor.hasBlackboard;
 
             this._linkToSharedButton.clickable.clickedWithEventInfo += this.OnOpenSharedVariableSelector;

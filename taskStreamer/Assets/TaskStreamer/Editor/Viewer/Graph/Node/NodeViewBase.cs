@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using TaskStreamer.BT;
-using TaskStreamer.FSM;
 using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Cursor = UnityEngine.UIElements.Cursor;
 using TypeUtility = TaskStreamer.Utility.TypeUtility;
 
 namespace TaskStreamer.Tool
@@ -218,6 +217,7 @@ namespace TaskStreamer.Tool
             port.pickingMode = TaskStreamerEditor.canEditGraph ? PickingMode.Position : PickingMode.Ignore;
             port.style.flexDirection = direction;
             port.portName = portName;
+            port.AddToClassList("cursor-link");
             container.Add(port);
         }
         

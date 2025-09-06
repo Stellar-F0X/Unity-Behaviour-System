@@ -5,6 +5,6 @@
             <ui:Label text="Inspector" name="title-label" class="title-label" style="-unity-text-align: middle-left; margin-left: 5px; margin-right: 5px; color: rgb(238, 238, 238);" />
         </ui:VisualElement>
         <ui:ScrollView name="content-container" class="content-container" style="padding-top: 3px; padding-right: 3px; padding-bottom: 3px; padding-left: 3px;" />
-        <ui:VisualElement name="resizer" style="flex-grow: 1; position: absolute; right: 0; bottom: 0; width: 20px; height: 20px; background-image: url(&quot;project://database/Assets/TaskStreamer/Editor/Resource/UI/Images/resizer.png?fileID=2800000&amp;guid=4d2a6806a1146da45ab58d1ec7151c12&amp;type=3#resizer&quot;); -unity-background-image-tint-color: rgb(150, 150, 150);" />
+        <ui:VisualElement name="resizer" style="flex-grow: 1; position: absolute; right: 0; bottom: 0; width: 20px; height: 20px; background-image: none; -unity-background-image-tint-color: rgb(150, 150, 150);" />
     </TaskStreamer.Tool.FloatingInspectorView>
 </ui:UXML>

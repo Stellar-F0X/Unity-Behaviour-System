@@ -4,6 +4,7 @@ using UnityEditor;
 using System;
 using System.IO;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace TaskStreamer.Utility
 {
@@ -15,7 +16,7 @@ namespace TaskStreamer.Utility
 
 
 
-        public static T LoadAsset<T>(string fileName) where T : ScriptableObject
+        public static T LoadAsset<T>(string fileName) where T : Object
         {
 #if USE_ASSETS_PATH
             Span<char> filePathSpan = stackalloc char[ASSETS_BASE_PATH.Length + fileName.Length];
