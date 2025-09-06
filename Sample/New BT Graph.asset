@@ -1,0 +1,785 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-2962241396834395292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9e9b92832e4aae97d34577304b1d3e, type: 3}
+  m_Name: Blackboard
+  m_EditorClassIdentifier: 
+  _blackboardData:
+    _appliedVersion:
+      _value0: 3684938410
+      _value1: 1325594091
+      _value2: 2416974503
+      _value3: 1463926694
+    _variables:
+    - rid: 26404894811619392
+    - rid: 26404894811619394
+    - rid: 26404894811619396
+  references:
+    version: 2
+    RefIds:
+    - rid: 26404894811619392
+      type: {class: StringVariable, ns: TaskStreamer, asm: TaskStreamer}
+      data:
+        _key: Enter
+        _keyHash: 2024927082
+        _guid:
+          _value0: 3754894300
+          _value1: 1158732679
+          _value2: 2898979766
+          _value3: 3054539818
+        _typeName: TaskStreamer.StringVariable, TaskStreamer, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+        _isShared: 0
+        _usage: 0
+        _value: sdd
+        _blackboard: {fileID: 0}
+    - rid: 26404894811619394
+      type: {class: StringVariable, ns: TaskStreamer, asm: TaskStreamer}
+      data:
+        _key: Update
+        _keyHash: -1618399154
+        _guid:
+          _value0: 2750318318
+          _value1: 1086839497
+          _value2: 2848721797
+          _value3: 1415848122
+        _typeName: TaskStreamer.StringVariable, TaskStreamer, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+        _isShared: 0
+        _usage: 0
+        _value: 
+        _blackboard: {fileID: 0}
+    - rid: 26404894811619396
+      type: {class: StringVariable, ns: TaskStreamer, asm: TaskStreamer}
+      data:
+        _key: Exit
+        _keyHash: 876292912
+        _guid:
+          _value0: 148986084
+          _value1: 1253516354
+          _value2: 1402813367
+          _value3: 2041510595
+        _typeName: TaskStreamer.StringVariable, TaskStreamer, Version=0.0.0.0, Culture=neutral,
+          PublicKeyToken=null
+        _isShared: 0
+        _usage: 0
+        _value: 
+        _blackboard: {fileID: 0}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ff390c6a0488f41b85a84e73c6e39b, type: 3}
+  m_Name: New BT Graph
+  m_EditorClassIdentifier: 
+  blackboard: {fileID: -2962241396834395292}
+  _graphGuid:
+    _value0: 1203412387
+    _value1: 1264658573
+    _value2: 3535930258
+    _value3: 867345434
+  _main:
+    rid: 26404868219994292
+  _graphTreeMap:
+    cachedPair:
+    - _key:
+        _value0: 3714679602
+        _value1: 1244896154
+        _value2: 3445023136
+        _value3: 2858273332
+      _value:
+      - _value0: 3852742466
+        _value1: 1167544626
+        _value2: 800300713
+        _value3: 81829230
+    - _key:
+        _value0: 3852742466
+        _value1: 1167544626
+        _value2: 800300713
+        _value3: 81829230
+      _value:
+      - _value0: 3138625198
+        _value1: 1144483453
+        _value2: 4005664164
+        _value3: 2708050984
+  _graphMap:
+    cachedPair:
+    - _key:
+        _value0: 3714679602
+        _value1: 1244896154
+        _value2: 3445023136
+        _value3: 2858273332
+      _value:
+        rid: 26404868219994292
+    - _key:
+        _value0: 3852742466
+        _value1: 1167544626
+        _value2: 800300713
+        _value3: 81829230
+      _value:
+        rid: 26404894811619399
+    - _key:
+        _value0: 3138625198
+        _value1: 1144483453
+        _value2: 4005664164
+        _value3: 2708050984
+      _value:
+        rid: 26404894811619408
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 26404868219994292
+      type: {class: BehaviorTree, ns: TaskStreamer.BT, asm: TaskStreamer}
+      data:
+        _name: Main
+        _guid:
+          _value0: 3714679602
+          _value1: 1244896154
+          _value2: 3445023136
+          _value3: 2858273332
+        _baseGraphGuid:
+          _value0: 0
+          _value1: 0
+          _value2: 0
+          _value3: 0
+        _nodeGroup: []
+        _graphAsset: {fileID: 11400000}
+        _nodeLookup:
+          cachedPair:
+          - _key:
+              _value0: 2184076927
+              _value1: 1217820201
+              _value2: 376547505
+              _value3: 2704055624
+            _value:
+              rid: 26404868219994293
+          - _key:
+              _value0: 489084107
+              _value1: 1287732382
+              _value2: 4157156256
+              _value3: 1149262911
+            _value:
+              rid: 26404894811619400
+          - _key:
+              _value0: 3313726319
+              _value1: 1329226109
+              _value2: 520751510
+              _value3: 2744134472
+            _value:
+              rid: 26404894811619404
+          - _key:
+              _value0: 3191354159
+              _value1: 1238473997
+              _value2: 3484913811
+              _value3: 3196585220
+            _value:
+              rid: 26404894811619405
+    - rid: 26404868219994293
+      type: {class: RootNode, ns: TaskStreamer.BT, asm: TaskStreamer}
+      data:
+        name: Root
+        tag: 
+        description: 
+        _guid:
+          _value0: 2184076927
+          _value1: 1217820201
+          _value2: 376547505
+          _value3: 2704055624
+        canEditName: 1
+        _script: {fileID: 11500000, guid: 6563dd266a3c03142aad5b47e15e6658, type: 3}
+        position: {x: 128, y: 33}
+        _parent:
+          rid: -2
+        _services:
+        - rid: 26404894811619398
+        _children:
+        - rid: 26404894811619405
+    - rid: 26404894811619398
+      type: {class: LogService, ns: TaskStreamer.BT, asm: TaskStreamer}
+      data:
+        name: LogService
+        tag: 
+        description: 
+        _guid:
+          _value0: 999419944
+          _value1: 1261556250
+          _value2: 4254403773
+          _value3: 2889038336
+        canEditName: 0
+        _script: {fileID: 0}
+        enable: 1
+        onStart:
+          _key: 
+          _keyHash: 0
+          _guid:
+            _value0: 3754894300
+            _value1: 1158732679
+            _value2: 2898979766
+            _value3: 3054539818
+          _typeName: TaskStreamer.StringVariable, TaskStreamer, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          _isShared: 1
+          _usage: 0
+          _value: 
+          _blackboard: {fileID: -2962241396834395292}
+        onUpdate:
+          _key: 
+          _keyHash: 0
+          _guid:
+            _value0: 2750318318
+            _value1: 1086839497
+            _value2: 2848721797
+            _value3: 1415848122
+          _typeName: TaskStreamer.StringVariable, TaskStreamer, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          _isShared: 1
+          _usage: 0
+          _value: 
+          _blackboard: {fileID: -2962241396834395292}
+        onStop:
+          _key: 
+          _keyHash: 0
+          _guid:
+            _value0: 148986084
+            _value1: 1253516354
+            _value2: 1402813367
+            _value3: 2041510595
+          _typeName: TaskStreamer.StringVariable, TaskStreamer, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          _isShared: 1
+          _usage: 0
+          _value: 
+          _blackboard: {fileID: -2962241396834395292}
+    - rid: 26404894811619399
+      type: {class: StateMachine, ns: TaskStreamer.FSM, asm: TaskStreamer}
+      data:
+        _name: 'Sub FSM '
+        _guid:
+          _value0: 3852742466
+          _value1: 1167544626
+          _value2: 800300713
+          _value3: 81829230
+        _baseGraphGuid:
+          _value0: 3714679602
+          _value1: 1244896154
+          _value2: 3445023136
+          _value3: 2858273332
+        _nodeGroup: []
+        _graphAsset: {fileID: 11400000}
+        _nodeLookup:
+          cachedPair:
+          - _key:
+              _value0: 633482994
+              _value1: 1314021744
+              _value2: 1868759208
+              _value3: 1780695112
+            _value:
+              rid: 26404894811619401
+          - _key:
+              _value0: 2141298258
+              _value1: 1174520012
+              _value2: 855402685
+              _value3: 3951633047
+            _value:
+              rid: 26404894811619402
+          - _key:
+              _value0: 2374089169
+              _value1: 1079168207
+              _value2: 3955963051
+              _value3: 1864207201
+            _value:
+              rid: 26404894811619403
+          - _key:
+              _value0: 1852338805
+              _value1: 1171146810
+              _value2: 2974226060
+              _value3: 108794450
+            _value:
+              rid: 26404894811619406
+          - _key:
+              _value0: 4212415913
+              _value1: 1254016962
+              _value2: 407490461
+              _value3: 4231077090
+            _value:
+              rid: 26404894811619407
+          - _key:
+              _value0: 2688965431
+              _value1: 1327606248
+              _value2: 3368402822
+              _value3: 2913359410
+            _value:
+              rid: 26404894811619409
+        _current:
+          rid: 26404894811619401
+        _any:
+          rid: 26404894811619403
+        _exit:
+          rid: 26404894811619402
+    - rid: 26404894811619400
+      type: {class: SubFSMNode, ns: TaskStreamer.BT, asm: TaskStreamer}
+      data:
+        name: 'Sub FSM '
+        tag: 
+        description: 
+        _guid:
+          _value0: 489084107
+          _value1: 1287732382
+          _value2: 4157156256
+          _value3: 1149262911
+        canEditName: 1
+        _script: {fileID: 11500000, guid: 63fb28b93c3c64b489c15786afb73b51, type: 3}
+        position: {x: 46, y: 360}
+        _parent:
+          rid: 26404894811619405
+        _services: []
+        _children: []
+        _subGraphGuid:
+          _value0: 3852742466
+          _value1: 1167544626
+          _value2: 800300713
+          _value3: 81829230
+    - rid: 26404894811619401
+      type: {class: EnterState, ns: TaskStreamer.FSM, asm: TaskStreamer}
+      data:
+        name: Enter
+        tag: 
+        description: 
+        _guid:
+          _value0: 633482994
+          _value1: 1314021744
+          _value2: 1868759208
+          _value3: 1780695112
+        canEditName: 1
+        _script: {fileID: 0}
+        position: {x: 0, y: 0}
+        _transitions:
+        - name: 'Enter To Wait '
+          tag: 
+          description: 
+          _guid:
+            _value0: 856549305
+            _value1: 1131260304
+            _value2: 3256153512
+            _value3: 1889298757
+          canEditName: 0
+          _script: {fileID: 0}
+          _conditions:
+            evaluationPolicy: 0
+            modules: []
+          _sourceNode:
+            rid: 26404894811619401
+          _destinationNode:
+            rid: 26404894811619407
+    - rid: 26404894811619402
+      type: {class: ExitState, ns: TaskStreamer.FSM, asm: TaskStreamer}
+      data:
+        name: Exit
+        tag: 
+        description: 
+        _guid:
+          _value0: 2141298258
+          _value1: 1174520012
+          _value2: 855402685
+          _value3: 3951633047
+        canEditName: 1
+        _script: {fileID: 11500000, guid: 27589c04cd05471c849c798e580624b6, type: 3}
+        position: {x: -198, y: 355}
+        _transitions: []
+    - rid: 26404894811619403
+      type: {class: AnyState, ns: TaskStreamer.FSM, asm: TaskStreamer}
+      data:
+        name: Any
+        tag: 
+        description: 
+        _guid:
+          _value0: 2374089169
+          _value1: 1079168207
+          _value2: 3955963051
+          _value3: 1864207201
+        canEditName: 1
+        _script: {fileID: 0}
+        position: {x: -230, y: 0}
+        _transitions: []
+    - rid: 26404894811619404
+      type: {class: WaitNode, ns: TaskStreamer.BT, asm: TaskStreamer}
+      data:
+        name: 'Wait '
+        tag: 
+        description: 
+        _guid:
+          _value0: 3313726319
+          _value1: 1329226109
+          _value2: 520751510
+          _value3: 2744134472
+        canEditName: 1
+        _script: {fileID: 11500000, guid: 84266bc38451e2e49bb68af89b374249, type: 3}
+        position: {x: 226, y: 360}
+        _parent:
+          rid: 26404894811619405
+        _services:
+        - rid: 26404894811619412
+        _children: []
+        waitTime:
+          _key: waitTime
+          _keyHash: 591261771
+          _guid:
+            _value0: 2352403853
+            _value1: 1124600300
+            _value2: 4039328152
+            _value3: 3496994079
+          _typeName: TaskStreamer.BlackboardVariable`1[[System.Single, mscorlib,
+            Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]],
+            TaskStreamer, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 0
+          _value: 1
+          _blackboard: {fileID: 0}
+    - rid: 26404894811619405
+      type: {class: SequencerNode, ns: TaskStreamer.BT, asm: TaskStreamer}
+      data:
+        name: 'Sequencer '
+        tag: 
+        description: 
+        _guid:
+          _value0: 3191354159
+          _value1: 1238473997
+          _value2: 3484913811
+          _value3: 3196585220
+        canEditName: 1
+        _script: {fileID: 11500000, guid: 2ed0c02321058e24cabc1881149d1e4c, type: 3}
+        position: {x: 128, y: 194}
+        _parent:
+          rid: 26404868219994293
+        _services: []
+        _children:
+        - rid: 26404894811619400
+        - rid: 26404894811619404
+    - rid: 26404894811619406
+      type: {class: LogState, ns: TaskStreamer.FSM, asm: TaskStreamer}
+      data:
+        name: 'Log '
+        tag: 
+        description: 
+        _guid:
+          _value0: 1852338805
+          _value1: 1171146810
+          _value2: 2974226060
+          _value3: 108794450
+        canEditName: 1
+        _script: {fileID: 11500000, guid: 9f5bda6f5cb14ad1857ac6fbea1d23fe, type: 3}
+        position: {x: -314, y: 184}
+        _transitions:
+        - name: Log  To Exit
+          tag: 
+          description: 
+          _guid:
+            _value0: 641453539
+            _value1: 1206804051
+            _value2: 1310675589
+            _value3: 3970172138
+          canEditName: 0
+          _script: {fileID: 0}
+          _conditions:
+            evaluationPolicy: 0
+            modules: []
+          _sourceNode:
+            rid: 26404894811619406
+          _destinationNode:
+            rid: 26404894811619402
+        - name: 'Log  To Sub BT '
+          tag: 
+          description: 
+          _guid:
+            _value0: 2518038950
+            _value1: 1184003727
+            _value2: 3055891602
+            _value3: 3378551342
+          canEditName: 0
+          _script: {fileID: 11500000, guid: cc4b697a2ad84a35920e4a0328ac1eb5, type: 3}
+          _conditions:
+            evaluationPolicy: 0
+            modules:
+            - rid: 26404894811619411
+          _sourceNode:
+            rid: 26404894811619406
+          _destinationNode:
+            rid: 26404894811619409
+        onEnterMessages:
+          _key: 
+          _keyHash: 0
+          _guid:
+            _value0: 3754894300
+            _value1: 1158732679
+            _value2: 2898979766
+            _value3: 3054539818
+          _typeName: TaskStreamer.StringVariable, TaskStreamer, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          _isShared: 1
+          _usage: 0
+          _value: 
+          _blackboard: {fileID: -2962241396834395292}
+        onUpdateMessages:
+          _key: 
+          _keyHash: 0
+          _guid:
+            _value0: 2750318318
+            _value1: 1086839497
+            _value2: 2848721797
+            _value3: 1415848122
+          _typeName: TaskStreamer.StringVariable, TaskStreamer, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          _isShared: 1
+          _usage: 0
+          _value: 
+          _blackboard: {fileID: -2962241396834395292}
+        onExitMessages:
+          _key: onExitMessages
+          _keyHash: -735184534
+          _guid:
+            _value0: 90146037
+            _value1: 1175997038
+            _value2: 3505033659
+            _value3: 2394325791
+          _typeName: TaskStreamer.BlackboardVariable`1[[System.String, mscorlib,
+            Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]],
+            TaskStreamer, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 0
+          _value: On Exit~~
+          _blackboard: {fileID: 0}
+    - rid: 26404894811619407
+      type: {class: WaitState, ns: TaskStreamer.FSM, asm: TaskStreamer}
+      data:
+        name: 'Wait '
+        tag: 
+        description: 
+        _guid:
+          _value0: 4212415913
+          _value1: 1254016962
+          _value2: 407490461
+          _value3: 4231077090
+        canEditName: 1
+        _script: {fileID: 11500000, guid: 2248a06a5de24dfb8302bf9bd2e47b4a, type: 3}
+        position: {x: 0, y: 184}
+        _transitions:
+        - name: 'Wait  To Log '
+          tag: 
+          description: 
+          _guid:
+            _value0: 3370559702
+            _value1: 1288709965
+            _value2: 3953866916
+            _value3: 4027479813
+          canEditName: 0
+          _script: {fileID: 0}
+          _conditions:
+            evaluationPolicy: 0
+            modules: []
+          _sourceNode:
+            rid: 26404894811619407
+          _destinationNode:
+            rid: 26404894811619406
+        waitTime:
+          _key: waitTime
+          _keyHash: 591261771
+          _guid:
+            _value0: 149189659
+            _value1: 1273598149
+            _value2: 1998229172
+            _value3: 2666556651
+          _typeName: TaskStreamer.BlackboardVariable`1[[System.Single, mscorlib,
+            Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]],
+            TaskStreamer, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 0
+          _value: 1
+          _blackboard: {fileID: 0}
+    - rid: 26404894811619408
+      type: {class: BehaviorTree, ns: TaskStreamer.BT, asm: TaskStreamer}
+      data:
+        _name: 'Sub BT '
+        _guid:
+          _value0: 3138625198
+          _value1: 1144483453
+          _value2: 4005664164
+          _value3: 2708050984
+        _baseGraphGuid:
+          _value0: 3852742466
+          _value1: 1167544626
+          _value2: 800300713
+          _value3: 81829230
+        _nodeGroup: []
+        _graphAsset: {fileID: 11400000}
+        _nodeLookup:
+          cachedPair:
+          - _key:
+              _value0: 2619522144
+              _value1: 1229813172
+              _value2: 1270187435
+              _value3: 3227388930
+            _value:
+              rid: 26404894811619410
+    - rid: 26404894811619409
+      type: {class: SubBTState, ns: TaskStreamer.FSM, asm: TaskStreamer}
+      data:
+        name: 'Sub BT '
+        tag: 
+        description: 
+        _guid:
+          _value0: 2688965431
+          _value1: 1327606248
+          _value2: 3368402822
+          _value3: 2913359410
+        canEditName: 1
+        _script: {fileID: 11500000, guid: e92906669b7d422d9134d342cd9e3820, type: 3}
+        position: {x: -467, y: 355}
+        _transitions:
+        - name: Sub BT  To Exit
+          tag: 
+          description: 
+          _guid:
+            _value0: 3551850415
+            _value1: 1115768875
+            _value2: 80820155
+            _value3: 226199192
+          canEditName: 0
+          _script: {fileID: 0}
+          _conditions:
+            evaluationPolicy: 0
+            modules: []
+          _sourceNode:
+            rid: 26404894811619409
+          _destinationNode:
+            rid: 26404894811619402
+        _subGraphGuid:
+          _value0: 3138625198
+          _value1: 1144483453
+          _value2: 4005664164
+          _value3: 2708050984
+    - rid: 26404894811619410
+      type: {class: RootNode, ns: TaskStreamer.BT, asm: TaskStreamer}
+      data:
+        name: Root
+        tag: 
+        description: 
+        _guid:
+          _value0: 2619522144
+          _value1: 1229813172
+          _value2: 1270187435
+          _value3: 3227388930
+        canEditName: 1
+        _script: {fileID: 0}
+        position: {x: 0, y: 0}
+        _parent:
+          rid: -2
+        _services: []
+        _children:
+        - rid: -2
+    - rid: 26404894811619411
+      type: {class: StringCondition, ns: TaskStreamer, asm: TaskStreamer}
+      data:
+        comparisonValue: 1
+        configuredComparisonType: 3
+        leftVariable:
+          _key: 
+          _keyHash: 0
+          _guid:
+            _value0: 3754894300
+            _value1: 1158732679
+            _value2: 2898979766
+            _value3: 3054539818
+          _typeName: TaskStreamer.StringVariable, TaskStreamer, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          _isShared: 1
+          _usage: 1
+          _value: 
+          _blackboard: {fileID: -2962241396834395292}
+        rightVariable:
+          _key: '#__Local_Variable#__'
+          _keyHash: 1495459429
+          _guid:
+            _value0: 910403349
+            _value1: 1196073398
+            _value2: 3919417780
+            _value3: 2310144520
+          _typeName: TaskStreamer.StringVariable, TaskStreamer, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 1
+          _value: enter
+          _blackboard: {fileID: 0}
+    - rid: 26404894811619412
+      type: {class: LogService, ns: TaskStreamer.BT, asm: TaskStreamer}
+      data:
+        name: LogService
+        tag: 
+        description: 
+        _guid:
+          _value0: 700937858
+          _value1: 1212727680
+          _value2: 1285697190
+          _value3: 2663990308
+        canEditName: 0
+        _script: {fileID: 0}
+        enable: 1
+        onStart:
+          _key: onStart
+          _keyHash: 1257636046
+          _guid:
+            _value0: 1927627643
+            _value1: 1089926084
+            _value2: 3852578693
+            _value3: 3803613590
+          _typeName: TaskStreamer.BlackboardVariable`1[[System.String, mscorlib,
+            Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]],
+            TaskStreamer, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 0
+          _value: Waiting 1
+          _blackboard: {fileID: 0}
+        onUpdate:
+          _key: onUpdate
+          _keyHash: -1725183189
+          _guid:
+            _value0: 3221850068
+            _value1: 1268835731
+            _value2: 96965775
+            _value3: 3724091360
+          _typeName: TaskStreamer.BlackboardVariable`1[[System.String, mscorlib,
+            Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]],
+            TaskStreamer, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 0
+          _value: Waiting 2
+          _blackboard: {fileID: 0}
+        onStop:
+          _key: '#__Local_Variable#__'
+          _keyHash: 1495459429
+          _guid:
+            _value0: 278664126
+            _value1: 1286861589
+            _value2: 4055935420
+            _value3: 1008241602
+          _typeName: TaskStreamer.BlackboardVariable`1[[System.String, mscorlib,
+            Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]],
+            TaskStreamer, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 0
+          _value: Waiting 3
+          _blackboard: {fileID: 0}
