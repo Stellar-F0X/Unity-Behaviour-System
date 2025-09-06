@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using TaskStreamer.BT;
+using Unity.Properties;
 
     #ROOTNAMESPACEBEGIN#
 [Serializable, GeneratePropertyBag, Readable]
@@ -11,11 +12,11 @@ public class #SCRIPTNAME# : DecoratorNode
     #NOTRIM#
     }
 
-    protected override NodeBase.EStatus OnUpdate()
+    protected override Status OnUpdate()
     {
-        return NodeBase.EStatus.Failure;
+        return Status.Failure;
     }
-
+    
     protected override void OnExit()
     {
     #NOTRIM#

@@ -15,7 +15,7 @@ namespace TaskStreamer.Tool
     {
         public ServiceContainer()
         {
-            TaskStreamerResourceLoader.ServiceContainerPanel.CloneTree(this);
+            TaskStreamerResourceLoader.serviceContainerPanel.CloneTree(this);
             
             _serviceListView = this.Q<ListView>("service-list"); 
             _addServiceButton = this.Q<Button>("add-button"); 

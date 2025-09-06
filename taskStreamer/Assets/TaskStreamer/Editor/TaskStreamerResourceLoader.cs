@@ -42,79 +42,79 @@ namespace TaskStreamer.Tool
 
 
 #region UXML & USS
-        public static VisualTreeAsset Window
+        public static VisualTreeAsset window
         {
             get { return _window ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/TaskStreamerWindow.uxml"); }
         }
 
         
-        public static VisualTreeAsset Settings
+        public static VisualTreeAsset settings
         {
             get { return _settings ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/TaskStreamerSettings.uxml"); }
         }
         
 
-        public static VisualTreeAsset BehaviorNode
+        public static VisualTreeAsset behaviorNode
         {
             get { return _behaviorNode ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Node/BehaviorNode.uxml"); }
         }
 
 
-        public static VisualTreeAsset StateNode
+        public static VisualTreeAsset stateNode
         {
             get { return _stateNode ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Node/StateNode.uxml"); }
         }
 
         
-        public static VisualTreeAsset ServiceBlock
+        public static VisualTreeAsset serviceBlock
         {
             get { return _serviceBlock ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Node/ServiceBlock.uxml"); }
         }
         
 
-        public static VisualTreeAsset BasicSectionPanel
+        public static VisualTreeAsset basicSectionPanel
         {
             get { return _basicSectionPanel ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/BasicSection.uxml"); }
         }
 
 
-        public static VisualTreeAsset FieldSectionPanel
+        public static VisualTreeAsset fieldSectionPanel
         {
             get { return _fieldSectionPanel ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/FieldSection.uxml"); }
         }
 
 
-        public static VisualTreeAsset ServiceSectionPanel
+        public static VisualTreeAsset serviceSectionPanel
         {
             get { return _serviceSectionPanel ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/ServiceSection.uxml"); }
         }
 
 
-        public static VisualTreeAsset ServiceContainerPanel
+        public static VisualTreeAsset serviceContainerPanel
         {
             get { return _serviceContainerPanel ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/ServiceSectionContainer.uxml"); }
         }
 
 
-        public static VisualTreeAsset FloatingInspector
+        public static VisualTreeAsset floatingInspector
         {
             get { return _floatingInspector ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/FloatingInspector.uxml"); }
         }
 
 
-        public static VisualTreeAsset BBVariableField
+        public static VisualTreeAsset blackboardVariableField
         {
             get { return _bbVariableField ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/BlackboardVariableField.uxml"); }
         }
 
 
-        public static VisualTreeAsset BBBConditionField
+        public static VisualTreeAsset conditionField
         {
             get { return _bbbConditionField ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/ConditionField.uxml"); }
         }
 
 
-        public static VisualTreeAsset BBBConditionListField
+        public static VisualTreeAsset conditionListField
         {
             get { return _bbbConditionListField ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/ConditionFieldList.uxml"); }
         }
@@ -123,25 +123,25 @@ namespace TaskStreamer.Tool
 
 
 
-        public static StyleSheet SettingsStyle
+        public static StyleSheet settingsStyle
         {
             get { return _settingsStyle ??= PathUtility.LoadAsset<StyleSheet>("Styles/TaskStreamerSettingsStyle.uss"); }
         }
 
 
-        public static StyleSheet WindowStyle
+        public static StyleSheet windowStyle
         {
             get { return _windowStyle ??= PathUtility.LoadAsset<StyleSheet>("Styles/TaskStreamerWindowStyle.uss"); }
         }
 
 
-        public static StyleSheet EdgeStyle
+        public static StyleSheet edgeStyle
         {
             get { return _edgeStyle ??= PathUtility.LoadAsset<StyleSheet>("Styles/EdgeStyle.uss"); }
         }
 
 
-        public static StyleSheet BlackboardStyle
+        public static StyleSheet blackboardStyle
         {
             get { return _blackboardStyle ??= PathUtility.LoadAsset<StyleSheet>("Styles/TaskStreamerBlackboardStyle.uss"); }
         }
@@ -166,8 +166,7 @@ namespace TaskStreamer.Tool
         {
             get { return _bindingButtonImage ??= PathUtility.LoadAsset<Texture2D>("Images/bindingButton.png"); }
         }
-
-
+        
 
         public static Texture2D addButton
         {

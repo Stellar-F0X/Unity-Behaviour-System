@@ -10,7 +10,7 @@ namespace TaskStreamer.Tool
     {
         public FloatingInspector()
         {
-            TaskStreamerResourceLoader.FloatingInspector.CloneTree(this);
+            TaskStreamerResourceLoader.floatingInspector.CloneTree(this);
             
             this.AddToClassList("inspector-window");
         }

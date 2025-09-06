@@ -5,7 +5,7 @@ using UnityEngine;
 namespace TaskStreamer.BT
 {
     [Serializable, GeneratePropertyBag, Readable]
-    public class CrossFade : ActionNode
+    public class CrossFadeNode : ActionNode
     {
         public BlackboardVariable<Animator> animator;
         public BlackboardVariable<string> animationName;
@@ -33,7 +33,7 @@ namespace TaskStreamer.BT
         {
             if (string.IsNullOrEmpty(animationName.value))
             {
-                Debug.LogError($"{typeof(CrossFade)}: Animation Name is empty.");
+                Debug.LogError($"{typeof(CrossFadeNode)}: Animation Name is empty.");
                 _animationHash = -1;
                 return;
             }

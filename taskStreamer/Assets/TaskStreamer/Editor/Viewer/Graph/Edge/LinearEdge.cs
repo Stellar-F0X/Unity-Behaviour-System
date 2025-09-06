@@ -6,7 +6,7 @@ namespace TaskStreamer.Tool
     {
         public LinearEdge()
         {
-            this.styleSheets.Add(TaskStreamerResourceLoader.EdgeStyle); //USS 추가
+            this.styleSheets.Add(TaskStreamerResourceLoader.edgeStyle); //USS 추가
         }
     }
 }

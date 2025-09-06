@@ -190,8 +190,8 @@ namespace TaskStreamer.Tool
             TaskStreamerEditor.Instance = this;
             this._requiresGraphUpdate = true;
 
-            TaskStreamerResourceLoader.Window.CloneTree(rootVisualElement);
-            rootVisualElement.styleSheets.Add(TaskStreamerResourceLoader.WindowStyle);
+            TaskStreamerResourceLoader.window.CloneTree(rootVisualElement);
+            rootVisualElement.styleSheets.Add(TaskStreamerResourceLoader.windowStyle);
 
             this.taskGraphView = rootVisualElement.Q<TaskGraphView>();
             this._navigationBreadcrumbs = rootVisualElement.Q<NavigationBreadcrumbs>();

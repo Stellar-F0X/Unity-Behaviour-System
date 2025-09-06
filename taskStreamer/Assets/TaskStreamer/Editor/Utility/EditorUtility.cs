@@ -30,9 +30,18 @@ namespace TaskStreamer.Tool
         }
 
 
-        public static string FindAssetPath(string searchFilter)
+        public static string FindAssetPath(string searchFilter, params string[] searchFolders)
         {
-            string[] guids = AssetDatabase.FindAssets(searchFilter);
+            string[] guids = null;
+
+            if (searchFolders.Length == 0)
+            {
+                guids = AssetDatabase.FindAssets(searchFilter);
+            }
+            else
+            {
+                guids = AssetDatabase.FindAssets(searchFilter, searchFolders);
+            }
 
             if (guids != null && guids.Length > 0)
             {

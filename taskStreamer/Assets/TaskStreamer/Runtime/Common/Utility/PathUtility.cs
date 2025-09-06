@@ -16,17 +16,31 @@ namespace TaskStreamer.Utility
 
 
 
+        public static string basePath
+        {
+            get
+            {
+#if USE_ASSETS_PATH
+                return ASSETS_BASE_PATH;
+#else
+                return PACKAGES_BASE_PATH;
+#endif
+            }
+        }
+
+
+
         public static T LoadAsset<T>(string fileName) where T : Object
         {
 #if USE_ASSETS_PATH
             Span<char> filePathSpan = stackalloc char[ASSETS_BASE_PATH.Length + fileName.Length];
-            
+
             ASSETS_BASE_PATH.AsSpan().CopyTo(filePathSpan);
             fileName.AsSpan().CopyTo(filePathSpan[ASSETS_BASE_PATH.Length..]);
-            
+
             string filePath = new string(filePathSpan);
-            
-            
+
+
 #else
             Span<char> filePathSpan = stackalloc char[PACKAGES_BASE_PATH.Length + fileName.Length];
 
@@ -47,9 +61,9 @@ namespace TaskStreamer.Utility
                 return null;
             }
         }
-        
-        
-        
+
+
+
         public static string ToAssetPath(string fullPath)
         {
             if (string.IsNullOrEmpty(fullPath))
@@ -65,9 +79,9 @@ namespace TaskStreamer.Utility
             {
                 return fullPath;
             }
-            
+
             string dataPath = Application.dataPath.Replace('\\', '/');
-            
+
             string projectPath = Path.GetDirectoryName(dataPath)?.Replace('\\', '/');
 
             // Assets 폴더 내부 경로인지 확인

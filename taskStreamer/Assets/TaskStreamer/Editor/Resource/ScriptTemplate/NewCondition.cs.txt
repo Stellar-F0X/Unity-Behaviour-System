@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using TaskStreamer;
 
     #ROOTNAMESPACEBEGIN#
 //Send the comparison operator to use as a BitFlag in the Comparable attribute 

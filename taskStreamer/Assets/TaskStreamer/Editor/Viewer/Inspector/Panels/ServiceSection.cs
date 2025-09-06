@@ -12,7 +12,7 @@ namespace TaskStreamer.Tool
     {
         public ServiceSection()
         {
-            TaskStreamerResourceLoader.ServiceSectionPanel.CloneTree(this);
+            TaskStreamerResourceLoader.serviceSectionPanel.CloneTree(this);
 
             _headerFoldout = this.Q<Foldout>("main-header"); 
             _fieldListView = this.Q<ListView>("field-list"); 

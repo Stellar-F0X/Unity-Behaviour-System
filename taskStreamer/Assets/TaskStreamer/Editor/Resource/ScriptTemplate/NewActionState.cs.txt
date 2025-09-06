@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
+using TaskStreamer;
 using TaskStreamer.FSM;
+using Unity.Properties;
 
     #ROOTNAMESPACEBEGIN#
 [Serializable, GeneratePropertyBag, Readable]

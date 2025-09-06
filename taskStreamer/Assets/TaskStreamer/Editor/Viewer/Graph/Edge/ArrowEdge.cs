@@ -18,7 +18,7 @@ namespace TaskStreamer.Tool
         /// Represents a custom Unity edge with arrow functionality for graph-based tools.
         public ArrowEdge()
         {
-            this.styleSheets.Add(TaskStreamerResourceLoader.EdgeStyle); //USS 추가
+            this.styleSheets.Add(TaskStreamerResourceLoader.edgeStyle); //USS 추가
             this.generateVisualContent = this.DrawArrow;
             this.isGhostEdgeMode = true;
 

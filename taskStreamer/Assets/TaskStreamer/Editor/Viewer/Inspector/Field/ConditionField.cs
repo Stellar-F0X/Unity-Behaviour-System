@@ -12,7 +12,7 @@ namespace TaskStreamer.Tool
     {
         public ConditionField()
         {
-            TaskStreamerResourceLoader.BBBConditionField.CloneTree(this);
+            TaskStreamerResourceLoader.conditionField.CloneTree(this);
 
             _leftVariableField = this.Q<VisualElement>("left--field-view--field");
             _rightVariableField = this.Q<VisualElement>("right--field-view--field");

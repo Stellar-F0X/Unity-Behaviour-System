@@ -14,7 +14,7 @@ namespace TaskStreamer.Tool
         public BlackboardVariableField(VariableHandle variableHandle)
         {
             Debug.Assert(variableHandle is not null, "bbVariable is not null");
-            TaskStreamerResourceLoader.BBVariableField.CloneTree(this);
+            TaskStreamerResourceLoader.blackboardVariableField.CloneTree(this);
 
             this._variableNameLabel = this.Q<Label>("name-field");
             this._valueFieldContainer = this.Q<VisualElement>("value-field");
