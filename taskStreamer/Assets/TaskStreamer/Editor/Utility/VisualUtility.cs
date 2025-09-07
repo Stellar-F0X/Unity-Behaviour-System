@@ -139,16 +139,7 @@ namespace TaskStreamer.Tool
                 return objectField;
             }
 
-            if (typeof(ScriptableObject).IsAssignableFrom(type))
-            {
-                var objectField = new BlackboardVariableField<Object, ObjectField>(context);
-                objectField.localVariableInputField.allowSceneObjects = false;
-                objectField.localVariableInputField.objectType = type;
-                objectField.localVariableInputField.label = "";
-                return objectField;
-            }
-
-            if (typeof(Object).IsAssignableFrom(type))
+            if (typeof(MonoBehaviour).IsAssignableFrom(type) || typeof(ScriptableObject).IsAssignableFrom(type) || typeof(Object).IsAssignableFrom(type))
             {
                 var objectField = new BlackboardVariableField<Object, ObjectField>(context);
                 objectField.localVariableInputField.allowSceneObjects = false;

@@ -5,7 +5,7 @@ using Unity.Properties;
 
     #ROOTNAMESPACEBEGIN#
 [Serializable, GeneratePropertyBag, Readable]
-public class #SCRIPTNAME# : ServiceBase
+public partial class #SCRIPTNAME# : ServiceBase
 {
     public override void OnStart()
     {

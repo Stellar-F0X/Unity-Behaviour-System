@@ -6,7 +6,7 @@ using Unity.Properties;
 
     #ROOTNAMESPACEBEGIN#
 [Serializable, GeneratePropertyBag, Readable]
-public class #SCRIPTNAME# : ActionState
+public partial class #SCRIPTNAME# : ActionState
 {
     protected override void OnEnter() 
     {

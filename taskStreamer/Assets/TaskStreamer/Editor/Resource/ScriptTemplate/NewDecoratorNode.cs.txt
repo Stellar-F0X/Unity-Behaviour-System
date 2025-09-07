@@ -5,7 +5,7 @@ using Unity.Properties;
 
     #ROOTNAMESPACEBEGIN#
 [Serializable, GeneratePropertyBag, Readable]
-public class #SCRIPTNAME# : DecoratorNode
+public partial class #SCRIPTNAME# : DecoratorNode
 {
     protected override void OnEnter() 
     {

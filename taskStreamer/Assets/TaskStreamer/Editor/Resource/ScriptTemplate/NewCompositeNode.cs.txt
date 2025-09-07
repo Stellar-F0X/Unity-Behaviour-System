@@ -6,7 +6,7 @@ using Unity.Properties;
 
     #ROOTNAMESPACEBEGIN#
 [Serializable, GeneratePropertyBag, Readable]
-public class #SCRIPTNAME# : CompositeNode
+public partial class #SCRIPTNAME# : CompositeNode
 {
     protected override void OnEnter() 
     {
