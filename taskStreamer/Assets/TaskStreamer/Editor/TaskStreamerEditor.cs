@@ -1,3 +1,4 @@
+using System;
 using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -6,6 +7,7 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 using ObjectFactory = TaskStreamer.Utility.ObjectFactory;
 
 namespace TaskStreamer.Tool
@@ -175,7 +177,7 @@ namespace TaskStreamer.Tool
             {
                 return;
             }
-            
+
             TaskStreamerEditor.Instance.Initialize();
         }
 
@@ -220,7 +222,6 @@ namespace TaskStreamer.Tool
         }
 
 #endregion
-
 
 
         /// <summary>에디터 창이 활성화될 때 필요한 이벤트를 등록하고 초기화 작업을 수행합니다.</summary>
@@ -390,22 +391,20 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            bool updateFlag = false;
-
             //아니면 그래프가 같거나, 뷰가 초기화되어 그래프를 강제로 갱신할 필요가 없다면 종료합니다.
+            
+            
             if (_requiresGraphUpdate || previousAsset != this.graphAsset)
             {
                 this._requiresGraphUpdate = false;
 
                 this.ChangeGraph(graphAsset.main);
 
-                updateFlag = true;
-            }
-
-            //나는 indent가 싫어
-            if (updateFlag && graphAsset.blackboard != null)
-            {
-                this._blackboardField.SetValueWithoutNotify(graphAsset.blackboard);
+                
+                if (graphAsset.blackboard != null)
+                {
+                    this._blackboardField.SetValueWithoutNotify(graphAsset.blackboard);
+                }
             }
         }
 

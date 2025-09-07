@@ -7,13 +7,10 @@ namespace TaskStreamer.BT
     [Serializable, GeneratePropertyBag, Readable]
     public class LogNode : ActionNode
     {
-        [SerializeReference]
         public BlackboardVariable<string> onEnterMessages;
         
-        [SerializeReference]
         public BlackboardVariable<string> onUpdateMessages;
         
-        [SerializeReference]
         public BlackboardVariable<string> onExitMessages;
 
 

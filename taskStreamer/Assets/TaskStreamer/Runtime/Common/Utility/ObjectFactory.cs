@@ -83,12 +83,6 @@ namespace TaskStreamer.Utility
                 return null;
             }
 
-            if (PropertyBag.Exists(nodeType) == false)
-            {
-                Debug.LogError($"{typeof(ObjectFactory)}: The {nodeType} hasn't {nameof(GeneratePropertyBagAttribute)}");
-                return null;
-            }
-
             object createdObject = Activator.CreateInstance(nodeType);
 
             if (createdObject is not NodeBase newNode)

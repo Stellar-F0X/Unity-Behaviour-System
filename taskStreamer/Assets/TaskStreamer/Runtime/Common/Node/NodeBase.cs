@@ -264,9 +264,9 @@ namespace TaskStreamer
 
         internal virtual void ExitNode() { }
 
-        
+
         internal virtual void OnCreateInEditor() { }
-        
+
 
         internal virtual void OnInstantiate() { }
 

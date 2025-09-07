@@ -386,7 +386,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 832575519}
-  - component: {fileID: 832575518}
   m_Layer: 0
   m_Name: Global Volume
   m_TagString: Untagged
@@ -394,23 +393,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &832575518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 832575517}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IsGlobal: 1
-  priority: 0
-  blendDistance: 0
-  weight: 1
-  sharedProfile: {fileID: 11400000, guid: 10fc4df2da32a41aaa32d77bc913491c, type: 2}
 --- !u!4 &832575519
 Transform:
   m_ObjectHideFlags: 0
@@ -460,10 +442,10 @@ MonoBehaviour:
   _graphAsset: {fileID: 11400000, guid: d6fdd16bfc875fd43b887c8dacc1afc0, type: 2}
   _runtimeBlackboard:
     _appliedVersion:
-      _value0: 3228416987
-      _value1: 1259151620
-      _value2: 3798300090
-      _value3: 2401736119
+      _value0: 1800011933
+      _value1: 1202289385
+      _value2: 3871758010
+      _value3: 3848619792
     _variables:
     - rid: 26404902326763579
     - rid: 26404902326763580

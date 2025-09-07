@@ -63,8 +63,9 @@ namespace TaskStreamer.Tool
         protected override void OnInitialize()
         {
             base.OnInitialize();
+            
             //remove 'List<serviceBase>' variable handle
-            variableHandles.RemoveAt(0);
+            variableHandles.Remove(v => v.initialValue is List<ServiceBase>, true);
             
             this._variableHandlesDic.onCollectionItemChanged -= this.OnServiceViewListChanged;
             

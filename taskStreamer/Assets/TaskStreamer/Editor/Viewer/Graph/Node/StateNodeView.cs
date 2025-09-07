@@ -41,8 +41,9 @@ namespace TaskStreamer.Tool
         protected override void OnInitialize()
         {
             base.OnInitialize();
+            
             //remove 'List<Transition>' variable handle
-            variableHandles.RemoveAt(0);
+            variableHandles.Remove(v => v.initialValue is List<Transition>);
         }
 
 

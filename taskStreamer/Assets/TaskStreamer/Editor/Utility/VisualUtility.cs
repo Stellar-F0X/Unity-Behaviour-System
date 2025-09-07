@@ -130,16 +130,10 @@ namespace TaskStreamer.Tool
                 return new BlackboardVariableField<Color, ColorField>(context);
             }
 
-            if (typeof(GameObject).IsAssignableFrom(type))
-            {
-                var objectField = new BlackboardVariableField<Object, ObjectField>(context);
-                objectField.localVariableInputField.allowSceneObjects = true;
-                objectField.localVariableInputField.objectType = type;
-                objectField.localVariableInputField.label = "";
-                return objectField;
-            }
-
-            if (typeof(MonoBehaviour).IsAssignableFrom(type) || typeof(ScriptableObject).IsAssignableFrom(type) || typeof(Object).IsAssignableFrom(type))
+            if (typeof(GameObject).IsAssignableFrom(type) || 
+                typeof(MonoBehaviour).IsAssignableFrom(type) || 
+                typeof(ScriptableObject).IsAssignableFrom(type) || 
+                typeof(Object).IsAssignableFrom(type))
             {
                 var objectField = new BlackboardVariableField<Object, ObjectField>(context);
                 objectField.localVariableInputField.allowSceneObjects = false;
