@@ -54,6 +54,11 @@ namespace TaskStreamer.Tool
         /// <summary> 서비스 목록과 UI 패널을 새로고침하여 현재 상태를 반영합니다. </summary>
         public void RefreshPanel()
         {
+            if (TaskStreamerEditor.Instance.currentGraph.graphType != GraphType.BT)
+            {
+                return;
+            }
+            
             if (_serviceListView.itemsSource is null)
             {
                 Debug.LogError($"{typeof(ServiceContainer)}'s itemsSource is null");
@@ -75,6 +80,11 @@ namespace TaskStreamer.Tool
 
         public void RefreshPanelWithNewValue(object newValue)
         {
+            if (TaskStreamerEditor.Instance.currentGraph.graphType != GraphType.BT)
+            {
+                return;
+            }
+            
             if (newValue is not (List<ServiceBase> serviceList, ObservableDictionary<ServiceBase, List<VariableHandle>> handlesDic))
             {
                 Debug.LogError("newValue is not (List<ServiceBase>, ObservableDictionary<ServiceBase, List<VariableHandle>>)");

@@ -47,3 +47,7 @@
     border-top-color: rgb(44, 44, 44);
     border-bottom-color: rgb(44, 44, 44);
 }
+
+.blackboard > .blackboardField > .mainContainer {
+    height: 30px;
+}
