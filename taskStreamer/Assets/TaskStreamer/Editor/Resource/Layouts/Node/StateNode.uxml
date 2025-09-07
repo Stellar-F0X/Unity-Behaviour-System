@@ -1,6 +1,6 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/TaskStreamer/Editor/Resource/UI/Styles/NodeViewStyle.uss?fileID=7433441132597879392&amp;guid=23050fd4400d01a4db0fe6da0c675537&amp;type=3#NodeViewStyle" />
-    <Style src="project://database/Assets/TaskStreamer/Editor/Resource/UI/Styles/CursorStyle.uss?fileID=7433441132597879392&amp;guid=8a0cfcbb7c5fdc34b9e6abbd12891d28&amp;type=3#CursorStyle" />
+    <Style src="../../Styles/NodeViewStyle.uss" />
+    <Style src="../../Styles/CursorStyle.uss" />
     <ui:VisualElement name="node-border" style="padding-top: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 0; border-left-color: rgb(120, 120, 120); border-right-color: rgb(120, 120, 120); border-top-color: rgb(120, 120, 120); border-bottom-color: rgb(120, 120, 120); border-top-width: 2px; border-right-width: 2px; border-bottom-width: 2px; border-left-width: 2px; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px;">
         <ui:VisualElement name="contents" style="flex-grow: 1;">
             <ui:VisualElement name="input" language-direction="Inherit" picking-mode="Ignore" style="position: absolute; flex-grow: 1; min-height: 100%; min-width: 100%;" />

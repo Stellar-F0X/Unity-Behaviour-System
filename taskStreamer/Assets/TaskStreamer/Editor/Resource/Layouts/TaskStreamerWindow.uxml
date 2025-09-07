@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/TaskStreamer/Editor/Resource/UI/Styles/TaskStreamerWindowStyle.uss?fileID=7433441132597879392&amp;guid=9f7ef0b4ed1e21f4580d6f651abac776&amp;type=3#TaskStreamerWindowStyle" />
-    <Style src="project://database/Assets/TaskStreamer/Editor/Resource/UI/Styles/TaskStreamerBlackboardStyle.uss?fileID=7433441132597879392&amp;guid=6fc75957a5cd1cf4ba64b2ad0e65c418&amp;type=3#TaskStreamerBlackboardStyle" />
+    <Style src="../Styles/TaskStreamerWindowStyle.uss" />
+    <Style src="../Styles/TaskStreamerBlackboardStyle.uss" />
     <ui:VisualElement name="container" style="flex-grow: 1;">
         <uie:Toolbar name="top-toolbar" style="justify-content: flex-start; height: 20px; min-height: auto; flex-shrink: 1; max-height: none; flex-grow: 0; align-items: center; align-content: auto; border-top-width: 1px; border-right-width: 0; border-bottom-width: 1px; border-left-width: 0; flex-wrap: nowrap; align-self: auto; min-width: 0; flex-basis: auto; flex-direction: row;">
             <TaskStreamer.Tool.NavigationBreadcrumbs style="flex-grow: 1; min-height: 95%; min-width: 0; align-items: stretch; margin-left: 5px;" />
