@@ -278,7 +278,7 @@ namespace TaskStreamer.Tool
         private void OnHierarchyChange()
         {
             //유니티의 Object 타입에 구현된 Equals 함수를 사용하여 Fake null을 검사.
-            if (graphAsset != null)
+            if (this.graphAsset != null)
             {
                 return;
             }
@@ -291,7 +291,7 @@ namespace TaskStreamer.Tool
         /// <summary>프로젝트 변경 시, 에디터 내 활성 상태의 그래프 에셋을 재검증하고 필요에 따라 초기화합니다.</summary>
         private void OnProjectChange()
         {
-            if (graphAsset == null)
+            if (this.graphAsset == null)
             {
                 this.Initialize();
                 return;
@@ -319,12 +319,12 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            if (graphAsset?.main is null)
+            if (this.graphAsset?.main is null)
             {
                 return;
             }
 
-            taskGraphView.UpdateNodeView();
+            this.taskGraphView.UpdateNodeView();
         }
 
 
@@ -338,9 +338,9 @@ namespace TaskStreamer.Tool
             }
 
             isLoadingTreeToView = true;
-            taskGraphView?.TrySetupGraphEditorView(currentGraph);
-            _blackboardField.SetValueWithoutNotify(graphAsset?.blackboard);
-            _blackboardView?.OnUndoPerformed();
+            this.taskGraphView?.TrySetupGraphEditorView(currentGraph);
+            this._blackboardField.SetValueWithoutNotify(graphAsset?.blackboard);
+            this._blackboardView?.OnUndoPerformed();
             isLoadingTreeToView = false;
         }
 

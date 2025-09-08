@@ -121,6 +121,7 @@ namespace TaskStreamer
             Debug.Assert(createdVariable is not null, $"{typeof(ObjectFactory)}: Failed to create a blackboard variable.");
 
             createdVariable.implementedType = implementedType;
+            createdVariable._typeName = implementedType.AssemblyQualifiedName;
             createdVariable._isShared = shared;
             return createdVariable;
         }
@@ -134,7 +135,7 @@ namespace TaskStreamer
         internal static BlackboardVariable Create(Type implementedType, UGUID variableGuid, bool shared)
         {
             Debug.Assert(variableGuid.IsEmpty() == false, "reference Guid is empty");
-            BlackboardVariable createdVariable = Create(implementedType, shared);
+            BlackboardVariable createdVariable = BlackboardVariable.Create(implementedType, shared);
 
             createdVariable._guid = variableGuid;
             return createdVariable;
@@ -161,16 +162,35 @@ namespace TaskStreamer
         /// <remarks> 타입이 null이면 디버그 검사를 통해 경고를 발생시킵니다. </remarks>
         public void OnBeforeSerialize()
         {
-            Debug.Assert(implementedType is not null, "Failed to serialize a property.");
-            this._typeName = implementedType.AssemblyQualifiedName;
+            if (implementedType is null)
+            {
+                //필드명아 바뀌거나, 제네릭 타입이 바뀌면 필드가 초기화되는데, 
+                //그때 implementedType, TypeName이 마찬가지로 사라지므로 다시 대입.
+                this.implementedType = this.GetType();
+            }
+
+            if (implementedType is not null)
+            {
+                this._typeName = implementedType.AssemblyQualifiedName;
+            }
+            else
+            {
+                Debug.Log("Failed to serialize a property.");
+            }
         }
 
 
         /// <summary> 직렬화된 데이터로부터 타입 정보를 복원합니다. </summary>
         public void OnAfterDeserialize()
         {
-            Debug.Assert(_typeName.IsNotNullOrEmpty(), "Failed to deserialize a property.");
-            this.implementedType = Type.GetType(_typeName);
+            if (_typeName.IsNotNullOrEmpty())
+            {
+                this.implementedType = Type.GetType(_typeName);
+            }
+            else
+            {
+                Debug.LogError("Failed to deserialize a property.");
+            }
         }
 
 
@@ -284,7 +304,7 @@ namespace TaskStreamer
             {
                 return;
             }
-            
+
             //문제는 완전히 다른 유형의 값이 들어왔을 때.
             if (newValue is TValue typedValue)
             {
