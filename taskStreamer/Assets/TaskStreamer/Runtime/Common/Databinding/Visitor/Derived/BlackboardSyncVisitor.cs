@@ -38,10 +38,10 @@ namespace TaskStreamer
         }
 
 
-        /// <summary> NodeDictionary 타입의 프로퍼티를 방문할 때 실행되는 메서드입니다. </summary>
+        /// <summary> BlackboardVariable 타입의 프로퍼티를 방문할 때 실행되는 메서드입니다. </summary>
         /// <param name="context">프로퍼티 방문에 대한 컨텍스트를 나타냅니다.</param>
         /// <param name="container">프로퍼티가 속한 컨테이너 객체입니다.</param>
-        /// <param name="value">방문 중인 NodeDictionary 타입의 값입니다.</param>
+        /// <param name="bbVariable">방문 중인 BlackboardVariable 타입의 값입니다.</param>
         public void Visit<TContainer>(in VisitContext<TContainer> context, ref TContainer container, BlackboardVariable bbVariable)
         {
             if (context.Property.IsReadOnly)

@@ -14,7 +14,7 @@ namespace TaskStreamer.Tool
         private BehaviorNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
         {
             string nodeName = StringUtility.ToNicifyName(targetNode.name, "Node");
-            base._nodeTypeLabel.text = nodeName;
+            base._nodeTypeLabel.text = StringUtility.ToNicifyName(targetNode.GetType().Name, "Node");
             base.targetNode.name = nodeName;
             base.title = nodeName;
             

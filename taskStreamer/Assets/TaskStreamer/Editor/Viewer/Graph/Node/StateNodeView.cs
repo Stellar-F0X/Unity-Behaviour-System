@@ -13,7 +13,7 @@ namespace TaskStreamer.Tool
         private StateNodeView(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(targetNode, nodeUxml)
         {
             string nodeName = StringUtility.ToNicifyName(targetNode.name, "State");
-            base._nodeTypeLabel.text = nodeName;
+            base._nodeTypeLabel.text = StringUtility.ToNicifyName(targetNode.GetType().Name, "State");
             base.targetNode.name = nodeName;
             base.title = nodeName;
 
