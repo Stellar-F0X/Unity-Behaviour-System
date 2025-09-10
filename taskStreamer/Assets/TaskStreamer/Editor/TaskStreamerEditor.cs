@@ -452,6 +452,8 @@ namespace TaskStreamer.Tool
             }
 
             TaskStreamerEditor.canEditGraph = !Application.isPlaying;
+            
+            //현재 에디터가 그려지고 있는지 판단하는 로직도 필요한가?
 
             if (isSubGraph == false)
             {
