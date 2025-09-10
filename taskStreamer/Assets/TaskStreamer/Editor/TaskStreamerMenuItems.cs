@@ -43,6 +43,8 @@ namespace TaskStreamer.Tool
         {
             string path = EditorUtility.FindAssetPath("NewActionState.cs t:TextAsset", $"{PathUtility.basePath}/ScriptTemplate");
             ProjectWindowUtil.CreateScriptAssetFromTemplateFile(path, "New Action State.cs");
+            //TODO: 여기서 ProjectWindowUtil.CreateScriptAssetWithContent()을 통해 어트리뷰트에 guid를 주입.
+            //그리고 생성.
         }
 
 

@@ -9,7 +9,7 @@ namespace TaskStreamer
     public sealed partial class BlackboardBasedCondition
     {
         [DontCreateProperty]
-        public EvaluationPolicy evaluationPolicy;
+        public EvaluationPolicy evaluationPolicy = EvaluationPolicy.Pass;
         
         [SerializeReference]
         public List<Condition> modules = new List<Condition>();

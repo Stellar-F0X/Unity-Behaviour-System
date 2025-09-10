@@ -60,7 +60,7 @@ namespace TaskStreamer.Tool
         /// <summary> 연결된 Transition 개체를 나타내며, 내부적으로 설정 가능합니다. </summary>
         public Transition targetTransition
         {
-            get { return _targetTransition; }
+            get { return this._targetTransition; }
 
             internal set { this._targetTransition = value; }
         }
