@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 namespace TaskStreamer.BT
 {
     [GeneratePropertyBag, Readable]
-    public class RandomSelector : CompositeNode
+    public class RandomSelectorNode : CompositeNode
     {
         private bool _isChildrenInvalid;
         private int _currentRandomIndex;
