@@ -385,22 +385,22 @@ namespace TaskStreamer.Tool
 
             GraphAsset previousAsset = this.graphAsset;
 
+            
             //변경할 그래프가 없거나, 
             if (this.TryGetGraphAsset() == false)
             {
                 return;
             }
-
+            
+            
             //아니면 그래프가 같거나, 뷰가 초기화되어 그래프를 강제로 갱신할 필요가 없다면 종료합니다.
-            
-            
             if (_requiresGraphUpdate || previousAsset != this.graphAsset)
             {
                 this._requiresGraphUpdate = false;
 
                 this.ChangeGraph(graphAsset.main);
 
-                
+
                 if (graphAsset.blackboard != null)
                 {
                     this._blackboardField.SetValueWithoutNotify(graphAsset.blackboard);
@@ -453,14 +453,15 @@ namespace TaskStreamer.Tool
 
             TaskStreamerEditor.canEditGraph = !Application.isPlaying;
             
-            //현재 에디터가 그려지고 있는지 판단하는 로직도 필요한가?
-
-            if (isSubGraph == false)
+            if (this._navigationBreadcrumbs is not null)
             {
-                this._navigationBreadcrumbs.Clear();
-            }
+                if (isSubGraph == false)
+                {
+                    this._navigationBreadcrumbs.Clear();
+                }
 
-            this._navigationBreadcrumbs.PushItem(graph, () => this.OpenGraph(graph));
+                this._navigationBreadcrumbs.PushItem(graph, () => this.OpenGraph(graph));
+            }
 
             this.OpenGraph(graph);
         }
