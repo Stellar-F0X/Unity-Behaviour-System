@@ -167,6 +167,11 @@ namespace TaskStreamer.Tool
                 Instance.graphAsset = graphAsset;
                 Instance.ChangeGraph(graphAsset.main);
             }
+
+            if (Instance._blackboardField.value != graphAsset.blackboard)
+            {
+                Instance._blackboardField.SetValueWithoutNotify(graphAsset.blackboard);
+            }
         }
 
 
@@ -183,7 +188,7 @@ namespace TaskStreamer.Tool
 
 #endregion
 
-        
+
 
 #region Create GUIs
 
@@ -250,11 +255,9 @@ namespace TaskStreamer.Tool
         private void OnDisable()
         {
             EditorApplication.playModeStateChanged -= this.OnEditorStateChanged;
-            EditorApplication.update -= this.RuntimeUpdate;
-
-            Undo.undoRedoPerformed -= this.OnEditorUndoPerformed;
-
             EditorSceneManager.sceneClosed -= this.OnSceneClosed;
+            EditorApplication.update -= this.RuntimeUpdate;
+            Undo.undoRedoPerformed -= this.OnEditorUndoPerformed;
         }
 
 
@@ -271,6 +274,7 @@ namespace TaskStreamer.Tool
             this.inspectorView?.ClearInspector();
             this.taskGraphView?.ClearEditorView();
             this._blackboardView?.ClearView();
+            this._blackboardField?.SetValueWithoutNotify(null);
         }
 
 
@@ -292,13 +296,13 @@ namespace TaskStreamer.Tool
         /// <summary>프로젝트 변경 시, 에디터 내 활성 상태의 그래프 에셋을 재검증하고 필요에 따라 초기화합니다.</summary>
         private void OnProjectChange()
         {
-            if (this.graphAsset == null)
+            if (this.graphAsset != null)
             {
-                this.Initialize();
+                this.OnSelectionChange();
                 return;
             }
 
-            this.OnSelectionChange();
+            this.Initialize();
         }
 
 
@@ -386,26 +390,25 @@ namespace TaskStreamer.Tool
 
             GraphAsset previousAsset = this.graphAsset;
 
-            
+
             //변경할 그래프가 없거나, 
             if (this.TryGetGraphAsset() == false)
             {
                 return;
             }
             
-            
             //아니면 그래프가 같거나, 뷰가 초기화되어 그래프를 강제로 갱신할 필요가 없다면 종료합니다.
-            if (_requiresGraphUpdate || previousAsset != this.graphAsset)
+            if (_requiresGraphUpdate == false && previousAsset == this.graphAsset)
             {
-                this._requiresGraphUpdate = false;
+                return;
+            }
 
-                this.ChangeGraph(graphAsset.main);
-
-
-                if (graphAsset.blackboard != null)
-                {
-                    this._blackboardField.SetValueWithoutNotify(graphAsset.blackboard);
-                }
+            this._requiresGraphUpdate = false;
+            
+            
+            if (this.ChangeGraph(graphAsset.main) && graphAsset.blackboard != null)
+            {
+                this._blackboardField.SetValueWithoutNotify(graphAsset.blackboard);
             }
         }
 
@@ -445,15 +448,15 @@ namespace TaskStreamer.Tool
         /// <summary>에디터에서 편집할 그래프를 변경하고 관련 설정을 초기화합니다.</summary>
         /// <param name="graph">변경하려는 그래프 인스턴스입니다.</param>
         /// <param name="isSubGraph">서브 그래프 여부를 나타냅니다.</param>
-        public void ChangeGraph(Graph graph, bool isSubGraph = false)
+        public bool ChangeGraph(Graph graph, bool isSubGraph = false)
         {
             if (graph is null)
             {
-                return;
+                return false;
             }
 
             TaskStreamerEditor.canEditGraph = !Application.isPlaying;
-            
+
             if (this._navigationBreadcrumbs is not null)
             {
                 if (isSubGraph == false)
@@ -465,6 +468,7 @@ namespace TaskStreamer.Tool
             }
 
             this.OpenGraph(graph);
+            return true;
         }
 
 
