@@ -39,8 +39,6 @@ namespace TaskStreamer.Utility
             fileName.AsSpan().CopyTo(filePathSpan[ASSETS_BASE_PATH.Length..]);
 
             string filePath = new string(filePathSpan);
-
-
 #else
             Span<char> filePathSpan = stackalloc char[PACKAGES_BASE_PATH.Length + fileName.Length];
 
@@ -49,6 +47,7 @@ namespace TaskStreamer.Utility
 
             string filePath = new string(filePathSpan);
 #endif
+
             try
             {
                 T cachedAsset = AssetDatabase.LoadAssetAtPath<T>(filePath);
@@ -62,59 +61,45 @@ namespace TaskStreamer.Utility
             }
         }
 
-
-
-        public static string ToAssetPath(string fullPath)
+        
+        
+        public static string CallerFilePathToUnityPath(string callerFilePath)
         {
-            if (string.IsNullOrEmpty(fullPath))
+            if (string.IsNullOrEmpty(callerFilePath))
             {
                 return null;
             }
 
-            // 슬래시 통일
-            fullPath = fullPath.Replace('\\', '/');
-
-            // 이미 상대 경로인 경우 그대로 반환
-            if (fullPath.StartsWith("Assets/") || fullPath.StartsWith("Packages/"))
-            {
-                return fullPath;
-            }
+            callerFilePath = Path.GetFullPath(callerFilePath).Replace('\\', '/');
 
             string dataPath = Application.dataPath.Replace('\\', '/');
-
-            string projectPath = Path.GetDirectoryName(dataPath)?.Replace('\\', '/');
-
-            // Assets 폴더 내부 경로인지 확인
-            if (fullPath.StartsWith(dataPath))
+            
+            if (callerFilePath.StartsWith(dataPath))
             {
-                return "Assets" + fullPath.Substring(dataPath.Length);
+                return "Assets" + callerFilePath.Substring(dataPath.Length);
+            }
+            
+            string projectRoot = Path.GetDirectoryName(dataPath)?.Replace('\\', '/');
+
+            string packageCachePath = projectRoot + "/Library/PackageCache/";
+
+            if (callerFilePath.StartsWith(packageCachePath) == false)
+            {
+                return null;
             }
 
-            // Packages 폴더 내부 경로인지 확인
-            string packagesPath = projectPath + "/Packages";
+            string relative = callerFilePath.Substring(packageCachePath.Length);
+            
+            int at = relative.IndexOf('@');
 
-            if (fullPath.StartsWith(packagesPath))
+            if (at > 0)
             {
-                return "Packages" + fullPath.Substring(packagesPath.Length);
+                int slash = relative.IndexOf('/', at);
+
+                relative = slash > 0 ? relative.Remove(at, slash - at) : relative.Substring(0, at);
             }
 
-            // 경로에서 Assets/ 찾기
-            int assetsIndex = fullPath.LastIndexOf("/Assets/", StringComparison.Ordinal);
-
-            if (assetsIndex >= 0)
-            {
-                return fullPath.Substring(assetsIndex + 1); // "/Assets/" -> "Assets/"
-            }
-
-            // 경로에서 Packages/ 찾기
-            int packagesIndex = fullPath.LastIndexOf("/Packages/", StringComparison.Ordinal);
-
-            if (packagesIndex >= 0)
-            {
-                return fullPath.Substring(packagesIndex + 1); // "/Packages/" -> "Packages/"
-            }
-
-            return null; // 변환 불가능한 경로
+            return "Packages/" + relative;
         }
     }
 }

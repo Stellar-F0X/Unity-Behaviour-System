@@ -84,7 +84,7 @@ namespace TaskStreamer.Utility
                 return null;
             }
 
-            string path = PathUtility.ToAssetPath(readable.filePath);
+            string path = PathUtility.CallerFilePathToUnityPath(readable.filePath);
             MonoScript script = AssetDatabase.LoadAssetAtPath<MonoScript>(path);
 
             if (script == null)
