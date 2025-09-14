@@ -1,6 +1,7 @@
 using System;
 using TaskStreamer.Utility;
 using UnityEditor;
+using UnityEngine;
 using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
@@ -95,10 +96,11 @@ namespace TaskStreamer.Tool
 
             Undo.RecordObject(TaskStreamerEditor.Instance.graphAsset, "TaskStreamer (ChangeBBVariableComparisonType)");
 
-            _comparisionField.value = this._comparisionField.choices[index];
+            this._comparisionField.value = this._comparisionField.choices[index];
             
-            //Comparison의 가장 첫 번째 값인 Comparison.EQ는 1부터 시작한다.
-            _conditionValue.comparisonValue = (Comparison)(1 << index);
+            Debug.Assert(Enum.TryParse(_comparisionField.value, out Comparison result), "Failed to parse comparison value");
+            
+            _conditionValue.comparisonValue = result;
 
             UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
         }
