@@ -372,12 +372,14 @@ namespace TaskStreamer
             Debug.Assert(clone is not null, "Failed to duplicate a blackboard variable.");
 
             clone.implementedType = this.implementedType;
+            clone._typeName = this._typeName;
+            clone._keyHash = this._keyHash;
+            clone._key = this._key;
+            clone._guid = this._guid;
+            
             clone._isShared = this._isShared;
             clone._blackboard = this._blackboard;
-            clone._typeName = this._typeName;
-            clone._guid = this._guid;
             clone.value = this.value;
-            clone.key = this.key;
             return clone;
         }
 

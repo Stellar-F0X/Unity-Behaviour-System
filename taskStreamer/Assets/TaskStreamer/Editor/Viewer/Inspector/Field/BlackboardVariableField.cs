@@ -2,6 +2,7 @@ using System;
 using TaskStreamer;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 using ObjectFactory = TaskStreamer.Utility.ObjectFactory;
 
@@ -9,11 +10,12 @@ namespace TaskStreamer.Tool
 {
     //BlackboardVariable 형태.
     /// <summary>Blackboard 변수의 필드를 UI로 나타내기 위한 클래스. TValue는 값의 타입, TBindableField는 값 바인딩에 사용하는 VisualElement 타입을 나타냅니다.</summary>
-    internal class BlackboardVariableField<TValue, TBindableField> : VisualElement, INotifyValueChanged<TValue>, IRefreshableField where TBindableField : BindableElement, INotifyValueChanged<TValue>, new()
+    internal class BlackboardVariableField<TValue, TBindableField> : VisualElement, INotifyValueChanged<TValue>, IRefreshableField
+        where TBindableField : BindableElement, INotifyValueChanged<TValue>, new()
     {
         public BlackboardVariableField(VariableHandle variableHandle)
         {
-            Debug.Assert(variableHandle is not null, "bbVariable is not null");
+            Assert.IsNotNull(variableHandle, "bbVariable is not null");
             TaskStreamerResourceLoader.blackboardVariableField.CloneTree(this);
 
             this._variableNameLabel = this.Q<Label>("name-field");
@@ -23,6 +25,8 @@ namespace TaskStreamer.Tool
 
             this._variableHandle = variableHandle;
             this._blackboardVariable = variableHandle.GetValue<BlackboardVariable>();
+            Assert.IsNotNull(this._blackboardVariable, "Blackboard Variable is unavailable");
+
             this._variableNameLabel.text = ObjectNames.NicifyVariableName(variableHandle.context);
 
             this._localVariableInputField = new TBindableField();
@@ -84,6 +88,7 @@ namespace TaskStreamer.Tool
 #endregion
 
 
+
         /// <summary> 이 필드 값은 BlackboardVariable에 바인딩된 값을 나타냅니다. </summary>
         public TValue value
         {
@@ -98,15 +103,15 @@ namespace TaskStreamer.Tool
             get { return _localVariableInputField; }
         }
 
-        
-        
+
+
         public void RefreshVariableFieldPanel(VariableHandle handle)
         {
             BlackboardVariable variable = handle.GetValue<BlackboardVariable>();
-            Debug.Assert(variable is not null, "variable is null");
-            
+            Assert.IsNotNull(variable, "variable is null");
+
             this._blackboardVariable = variable;
-            
+
             this.CreateVariableFieldByType(variable.isShared);
         }
 
@@ -115,16 +120,12 @@ namespace TaskStreamer.Tool
         /// <param name="newValue"> 새롭게 설정할 변수 값입니다. </param>
         private void UpdateBlackboardVariableValue(TValue newValue)
         {
-            if (_blackboardVariable is BlackboardVariable<TValue> typedVariable)
-            {
-                Undo.RecordObject(TaskStreamerEditor.Instance.graphAsset, "TaskStreamer (ChangeBBVariableValue)");
-                typedVariable.value = newValue;
-                UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
-            }
-            else
-            {
-                Debug.LogError($"Cannot cast the BlackboardVariable<{typeof(TValue).Name}>");
-            }
+            BlackboardVariable<TValue> typedVariable = _blackboardVariable as BlackboardVariable<TValue>;
+            Assert.IsNotNull(typedVariable, $"Cannot cast the BlackboardVariable<{typeof(TValue).Name}>");
+
+            Undo.RecordObject(TaskStreamerEditor.Instance.graphAsset, "TaskStreamer (ChangeBBVariableValue)");
+            typedVariable.value = newValue;
+            UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
         }
 
 
@@ -156,7 +157,7 @@ namespace TaskStreamer.Tool
                 this._localVariableInputField.style.display = DisplayStyle.Flex;
                 this._valueFieldContainer.Add(this.CreateLocalVariableDisplayField());
             }
-            
+
             ReadOnlyAttribute readOnly = this._variableHandle.GetAttribute<ReadOnlyAttribute>();
 
             //여기서 결정해도 InitializeBlackboardVariableField 함수에서 런타임 중인지 아닌지에 따라 활성화가 다시 결정된다.
@@ -258,10 +259,15 @@ namespace TaskStreamer.Tool
         /// <returns> 생성된 VisualElement입니다. </returns>
         private VisualElement CreateLocalVariableDisplayField()
         {
+            Assert.IsNotNull(this._blackboardVariable, "Blackboard Variable is unavailable");
+
             this._unlinkButton.style.display = DisplayStyle.None;
             this._variableNameLabel.style.color = _defaultVariableLabelColor;
 
-            this._localVariableInputField.SetValueWithoutNotify((TValue)_blackboardVariable.boxedValue);
+            bool assignable = typeof(TValue).IsAssignableFrom(this._blackboardVariable.valueType);
+            Assert.IsTrue(assignable, $"type is not {typeof(TValue)}, That is {_blackboardVariable.valueType}");
+
+            this._localVariableInputField.SetValueWithoutNotify((TValue)this._blackboardVariable.boxedValue);
             return this._localVariableInputField;
         }
 
@@ -281,7 +287,7 @@ namespace TaskStreamer.Tool
                 newLocal = ObjectFactory.CreateBlackboardVariable(_variableHandle.fieldType);
             }
 
-            Debug.Assert(newLocal is not null, "newVariable is null");
+            Assert.IsNotNull(newLocal, "newVariable is null");
 
             newLocal.usage = _blackboardVariable.usage;
             this._variableHandle.SetValue(newLocal);
