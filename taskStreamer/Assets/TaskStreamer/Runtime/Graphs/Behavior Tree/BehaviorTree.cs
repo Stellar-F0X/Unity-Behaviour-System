@@ -36,7 +36,7 @@ namespace TaskStreamer.BT
         }
 #endif
 
-        public override IGraphIterator GetIterator(GraphIteratorType iteratorType)
+        public override IGraphIterator GetIterator(GraphIteratorType iteratorType = GraphIteratorType.Default)
         {
             switch (iteratorType)
             {

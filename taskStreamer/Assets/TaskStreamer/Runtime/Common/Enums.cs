@@ -205,18 +205,29 @@ namespace TaskStreamer
 
     
 
-    /// <summary> 그래프 순회 방식의 유형을 정의합니다. </summary>
-    [Tooltip("Defines the type of graph traversal using a linear search approach.")]
+    /// <summary> 
+    /// 그래프 순회(탐색) 방식의 유형을 정의합니다.
+    /// </summary>
     public enum GraphIteratorType : byte
     {
+        /// <summary> 
+        /// 그래프의 기본 순회 방식을 정의합니다.  
+        ///<para> BT - BFS (너비 우선 탐색) </para>
+        ///FSM - LS (선형 탐색)
+        /// </summary>
+        [Tooltip("Default traversal mode depending on graph type. BT uses BFS, FSM uses LS.")]
         Default,
-        
-        /// <summary> Linear Search 노드를 만나는 순서대로 순차적으로 처리하는 그래프 순회 방식입니다. </summary>
-        [Tooltip("Represents a graph traversal type where nodes are processed sequentially in the order they are encountered.")]
+    
+        /// <summary> 
+        /// Linear Search — 노드를 만나는 순서대로 차례로 처리하는 방식입니다. 
+        /// </summary>
+        [Tooltip("Nodes are processed sequentially in the order they are encountered.")]
         LS,
-        
-        /// <summary> Breath-First Search 현재 깊이의 모든 형제 노드를 먼저 탐색한 후 다음 깊이의 노드로 진행하는 그래프 순회 방식입니다. </summary>
-        [Tooltip("Represents a graph traversal method that explores all sibling nodes at the current depth level before proceeding to nodes at the next depth level.")] 
+    
+        /// <summary> 
+        /// Breadth-First Search — 현재 깊이의 모든 노드를 먼저 탐색한 후 다음 깊이로 진행하는 방식입니다. 
+        /// </summary>
+        [Tooltip("Explores all nodes at the current depth before moving to the next depth level.")]
         BFS
     };
     

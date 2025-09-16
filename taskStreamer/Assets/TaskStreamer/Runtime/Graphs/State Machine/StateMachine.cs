@@ -52,15 +52,15 @@ namespace TaskStreamer.FSM
 #endif
 
 
-        public override IGraphIterator GetIterator(GraphIteratorType iteratorType)
+        public override IGraphIterator GetIterator(GraphIteratorType iteratorType = GraphIteratorType.Default)
         {
             switch (iteratorType)
             {
+                case GraphIteratorType.Default: return new Graph.CommonLSIterator(this);
+                
                 case GraphIteratorType.LS: return new Graph.CommonLSIterator(this);
 
                 case GraphIteratorType.BFS: return new StateMachine.BFSIterator(this);
-                
-                case GraphIteratorType.Default: return new Graph.CommonLSIterator(this);
             }
 
             throw new NotImplementedException("BreadthFirstSearch iterator is not implemented for StateMachine.");
