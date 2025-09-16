@@ -1,6 +1,6 @@
 using System;
 using UnityEditor.Experimental.GraphView;
-using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
@@ -14,21 +14,18 @@ namespace TaskStreamer.Tool
             
             this.AddToClassList("inspector-window");
         }
-        
-        
-        public BasicSection basicPanel
+
+        private BasicPropertiesSection basicPropertiesPanel
         {
-            get { return container[0] as BasicSection; }
+            get { return container[0] as BasicPropertiesSection; }
         }
 
-        
-        public FieldSection fieldContainerPanel
+        private FieldPropertiesSection fieldPropertiesPanel
         {
-            get { return container[1] as FieldSection; }
+            get { return container[1] as FieldPropertiesSection; }
         }
-
         
-        public ServiceContainer serviceContainerPanel
+        private ServiceContainer serviceContainerPanel
         {
             get { return container[2] as ServiceContainer; }
         }
@@ -40,18 +37,11 @@ namespace TaskStreamer.Tool
         /// <param name="selectedElement"> 선택된 그래프 요소 </param>
         public void UpdateSelection(GraphElement selectedElement)
         {
-            if (selectedElement is null)
-            {
-                Debug.LogError("selectedElement is null");
-                return;
-            }
+            Assert.IsNotNull(selectedElement, "selectedElement is null");
             
-            if (container is null)
-            {
-                Debug.LogError("Failed to refresh inspector: Content container is disabled");
-                return;
-            }
+            Assert.IsNotNull(container, "Failed to refresh inspector: Content container is disabled");
 
+            
             if (container.enabledSelf == false)
             {
                 return;
@@ -105,11 +95,7 @@ namespace TaskStreamer.Tool
         /// <summary> 그래프 변경 사항에 따라 인스펙터 뷰를 새로고침합니다. </summary>
         public void RefreshInspector()
         {
-            if (container is null || container.enabledSelf == false)
-            {
-                Debug.LogError("Failed to refresh inspector: Content container is disabled");
-                return;
-            }
+            Assert.IsFalse(container is null || container.enabledSelf == false, "Failed to refresh inspector");
 
             foreach (VisualElement child in container.Children())
             {
@@ -126,15 +112,15 @@ namespace TaskStreamer.Tool
         /// <param name="graphElement"> 갱신에 사용될 그래프 요소 </param>
         private void RefreshInspectorWithNewValue(GraphElement graphElement)
         {
-            basicPanel.style.display = DisplayStyle.Flex;
-            fieldContainerPanel.style.display = DisplayStyle.Flex;
+            basicPropertiesPanel.style.display = DisplayStyle.Flex;
+            fieldPropertiesPanel.style.display = DisplayStyle.Flex;
             
             switch (graphElement)
             {
                 case BehaviorNodeView bNodeView:
                 {
-                    basicPanel.RefreshPanelWithNewValue(bNodeView);
-                    fieldContainerPanel.RefreshPanelWithNewValue(bNodeView.variableHandles);
+                    basicPropertiesPanel.RefreshPanelWithNewValue(bNodeView);
+                    fieldPropertiesPanel.RefreshPanelWithNewValue(bNodeView.variableHandles);
                     serviceContainerPanel.RefreshPanelWithNewValue((bNodeView.serviceList, bNodeView.variableHandlesDic));
                     serviceContainerPanel.style.display = DisplayStyle.Flex;
                     break;
@@ -142,16 +128,16 @@ namespace TaskStreamer.Tool
 
                 case StateNodeView sNodeView:
                 {
-                    basicPanel.RefreshPanelWithNewValue(sNodeView);
-                    fieldContainerPanel.RefreshPanelWithNewValue(sNodeView.variableHandles);
+                    basicPropertiesPanel.RefreshPanelWithNewValue(sNodeView);
+                    fieldPropertiesPanel.RefreshPanelWithNewValue(sNodeView.variableHandles);
                     serviceContainerPanel.style.display = DisplayStyle.None;
                     break;
                 }
 
                 case ArrowEdge edgeView:
                 {
-                    basicPanel.RefreshPanelWithNewValue(edgeView);
-                    fieldContainerPanel.RefreshPanelWithNewValue(edgeView.variableHandles);
+                    basicPropertiesPanel.RefreshPanelWithNewValue(edgeView);
+                    fieldPropertiesPanel.RefreshPanelWithNewValue(edgeView.variableHandles);
                     serviceContainerPanel.style.display = DisplayStyle.None;
                     break;
                 }
@@ -168,24 +154,24 @@ namespace TaskStreamer.Tool
             {
                 case BehaviorNodeView bNodeView:
                 {
-                    container.Add(new BasicSection(bNodeView.targetNode, bNodeView.onRenamingNode));
-                    container.Add(new FieldSection(bNodeView.variableHandles));
+                    container.Add(new BasicPropertiesSection(bNodeView.targetNode, bNodeView.onRenamingNode));
+                    container.Add(new FieldPropertiesSection(bNodeView.variableHandles));
                     container.Add(new ServiceContainer(bNodeView.serviceList, bNodeView.variableHandlesDic));
                     break;
                 }
 
                 case StateNodeView sNodeView:
                 {
-                    container.Add(new BasicSection(sNodeView.targetNode, sNodeView.onRenamingNode));
-                    container.Add(new FieldSection(sNodeView.variableHandles));
+                    container.Add(new BasicPropertiesSection(sNodeView.targetNode, sNodeView.onRenamingNode));
+                    container.Add(new FieldPropertiesSection(sNodeView.variableHandles));
                     container.Add(new ServiceContainer() { style = { display = DisplayStyle.None } });
                     break;
                 }
 
                 case ArrowEdge edgeView:
                 {
-                    container.Add(new BasicSection(edgeView.targetTransition, null));
-                    container.Add(new FieldSection(edgeView.variableHandles));
+                    container.Add(new BasicPropertiesSection(edgeView.targetTransition, null));
+                    container.Add(new FieldPropertiesSection(edgeView.variableHandles));
                     container.Add(new ServiceContainer() { style = { display = DisplayStyle.None } });
                     break;
                 }

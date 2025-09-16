@@ -24,8 +24,8 @@ namespace TaskStreamer.Tool
 
         private static StyleSheet _edgeStyle;
 
-        private static VisualTreeAsset _basicSectionPanel;
-        private static VisualTreeAsset _fieldSectionPanel;
+        private static VisualTreeAsset _basicPropertiesSectionPanel;
+        private static VisualTreeAsset _fieldPropertiesSection;
         private static VisualTreeAsset _serviceContainerPanel;
         private static VisualTreeAsset _serviceSectionPanel;
 
@@ -72,15 +72,15 @@ namespace TaskStreamer.Tool
         }
         
 
-        public static VisualTreeAsset basicSectionPanel
+        public static VisualTreeAsset basicPropertiesSectionPanel
         {
-            get { return _basicSectionPanel ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/BasicSection.uxml"); }
+            get { return _basicPropertiesSectionPanel ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/BasicPropertiesSection.uxml"); }
         }
 
 
-        public static VisualTreeAsset fieldSectionPanel
+        public static VisualTreeAsset fieldPropertiesSection
         {
-            get { return _fieldSectionPanel ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/FieldSection.uxml"); }
+            get { return _fieldPropertiesSection ??= PathUtility.LoadAsset<VisualTreeAsset>("Layouts/Inspector/FieldPropertiesSection.uxml"); }
         }
 
 

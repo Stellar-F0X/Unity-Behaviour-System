@@ -5,11 +5,11 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    internal class FieldSection : VisualElement, IRefreshablePanel
+    internal class FieldPropertiesSection : VisualElement, IRefreshablePanel
     {
-        public FieldSection(List<VariableHandle> variableHandles)
+        public FieldPropertiesSection(List<VariableHandle> variableHandles)
         {
-            TaskStreamerResourceLoader.fieldSectionPanel.CloneTree(this);
+            TaskStreamerResourceLoader.fieldPropertiesSection.CloneTree(this);
 
             headerLabel = this.Q<Label>("main-header");
             _fieldListView = this.Q<ListView>("field-list");

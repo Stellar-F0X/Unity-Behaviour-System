@@ -11,7 +11,7 @@ namespace TaskStreamer.BT
         [DontCreateProperty]
         private Graph _subGraph;
         
-        [SerializeField, DontCreateProperty, HideInInspector]
+        [SerializeField, DontCreateProperty]
         private UGUID _subGraphGuid;
 
         

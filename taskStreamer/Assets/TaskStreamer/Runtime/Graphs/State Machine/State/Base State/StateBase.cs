@@ -22,21 +22,25 @@ namespace TaskStreamer.FSM
             internal set { _machine = value; }
         }
 
+        
         public IReadOnlyList<Transition> transitions
-        {
+        { 
             get { return _transitions; }
-        }
+        } 
 
+        
         public float enteredTime
         {
             get;
             private set;
         }
 
+        
         public float elapsedTime
         {
             get { return Time.time - enteredTime; }
         }
+        
 
         public bool blockTransition
         {
@@ -44,6 +48,7 @@ namespace TaskStreamer.FSM
             
             set { _blockTransition = value; }
         }
+        
 
         public abstract StateNodeType nodeType
         {

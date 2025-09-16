@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TaskStreamer.BT;
 using TaskStreamer.Utility;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
@@ -16,22 +17,21 @@ namespace TaskStreamer.Tool
         public ServiceContainer()
         {
             TaskStreamerResourceLoader.serviceContainerPanel.CloneTree(this);
-            
-            _serviceListView = this.Q<ListView>("service-list"); 
-            _addServiceButton = this.Q<Button>("add-button"); 
-            
-            _addServiceButton.clickable.clickedWithEventInfo += this.OnAddServiceButtonClicked;
-            _addServiceButton.enabledSelf = TaskStreamerEditor.canEditGraph;
-            
+
+            _serviceListView = this.Q<ListView>("service-list");
             _serviceListView.makeItem += () => new ServiceSection();
             _serviceListView.bindItem += this.BindServiceItem;
+            
+            Button addServiceButton = this.Q<Button>("add-button");
+            addServiceButton.clickable.clickedWithEventInfo += this.OnAddServiceButtonClicked;
+            addServiceButton.enabledSelf = TaskStreamerEditor.canEditGraph;
         }
-        
-        
+
+
         public ServiceContainer(List<ServiceBase> serviceList, ObservableDictionary<ServiceBase, List<VariableHandle>> variableHandles) : this()
         {
             this.RefreshPanelWithNewValue((serviceList, variableHandles));
-            
+
             this.RefreshPanel();
         }
 
@@ -43,11 +43,7 @@ namespace TaskStreamer.Tool
 
         /// _serviceListView 변수는 서비스 목록을 표시하고 관리하기 위한 ListView UI 요소입니다.
         /// _serviceList 데이터를 바인딩하여 항목 표시 및 갱신 작업을 수행합니다.
-        private ListView _serviceListView;
-
-
-        /// <summary> 새 서비스를 추가하는 버튼으로, 클릭 시 서비스 추가 로직이 실행됩니다. </summary>
-        private readonly Button _addServiceButton;
+        private readonly ListView _serviceListView;
 
 
 
@@ -59,11 +55,7 @@ namespace TaskStreamer.Tool
                 return;
             }
             
-            if (_serviceListView.itemsSource is null)
-            {
-                Debug.LogError($"{typeof(ServiceContainer)}'s itemsSource is null");
-                return;
-            }
+            Assert.IsNotNull(_serviceListView.itemsSource, $"{typeof(ServiceContainer)}'s itemsSource is null");
 
             if (_serviceListView.itemsSource.Count > 0)
             {
@@ -75,8 +67,8 @@ namespace TaskStreamer.Tool
                 _serviceListView.style.display = DisplayStyle.None;
             }
         }
-        
-        
+
+
 
         public void RefreshPanelWithNewValue(object newValue)
         {
@@ -84,13 +76,13 @@ namespace TaskStreamer.Tool
             {
                 return;
             }
-            
+
             if (newValue is not (List<ServiceBase> serviceList, ObservableDictionary<ServiceBase, List<VariableHandle>> handlesDic))
             {
                 Debug.LogError("newValue is not (List<ServiceBase>, ObservableDictionary<ServiceBase, List<VariableHandle>>)");
                 return;
             }
-            
+
             _serviceListView.Clear();
             _variableHandles = handlesDic;
             _serviceListView.style.display = serviceList.Count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
@@ -111,8 +103,8 @@ namespace TaskStreamer.Tool
 
             ServiceBase service = (ServiceBase)_serviceListView.itemsSource[index];
 
-            servicePanel.OnDeleteRequested -= this.OnServiceDeletionRequested;
-            servicePanel.OnDeleteRequested += this.OnServiceDeletionRequested;
+            servicePanel.onDeleteRequested -= this.OnServiceDeletionRequested;
+            servicePanel.onDeleteRequested += this.OnServiceDeletionRequested;
 
             servicePanel.Initialize(service, _variableHandles[service]);
         }
@@ -128,7 +120,7 @@ namespace TaskStreamer.Tool
                                                            () => new ServiceFactoryModule("Services", true),
                                                            () => new TypeTreeProvider(true))
                                                        .Build();
-            
+
             window.RegisterCreationCallbackOnce((Action<ServiceBase>)OnServiceCreated);
             window.OpenWindow(evt.originalMousePosition);
         }
@@ -139,11 +131,12 @@ namespace TaskStreamer.Tool
         /// <param name="service">추가된 서비스 객체</param>
         private void OnServiceCreated(ServiceBase service)
         {
-            Debug.Assert(service is not null, "service is null");
-
-            List<VariableHandle> handles = TypeUtility.TryGetFieldHandles(service.GetType(), service);
-            Debug.Assert(handles is not null, "handles is null");
+            Assert.IsNotNull(service, "service is null");
             
+            List<VariableHandle> handles = TypeUtility.TryGetFieldHandles(service.GetType(), service);
+            
+            Assert.IsNotNull(handles, "handles is null");
+
             this._variableHandles.Add(service, handles);
             this.RefreshPanel();
         }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using TaskStreamer.BT;
 using TaskStreamer.Utility;
 using UnityEngine.UIElements;
@@ -32,7 +31,7 @@ namespace TaskStreamer.Tool
         
         /// 삭제 요청 이벤트를 처리하기 위한 변수입니다.
         /// ServiceSectionPanel에서 삭제 버튼 클릭 시 호출됩니다.
-        public event Action<ServiceSection> OnDeleteRequested;
+        public event Action<ServiceSection> onDeleteRequested;
 
         
         /// _headerFoldout 변수는 UI의 Foldout 요소를 참조하며, 서비스 섹션의 확장/축소 상태를 관리합니다.
@@ -81,7 +80,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            OnDeleteRequested?.Invoke(this);
+            onDeleteRequested?.Invoke(this);
         }
 
 
@@ -108,14 +107,14 @@ namespace TaskStreamer.Tool
         {
             VariableHandle handle = _variableHandles[index];
 
+            if (element.childCount > 0)
+            {
+                element.Clear();
+            }
+
             if (element.childCount == 0)
             {
                 element.Add(this.CreateFieldElement(handle));
-            }
-
-            if (element.childCount > 0 && element[0] is IRefreshableField fieldRefreshable)
-            {
-                fieldRefreshable.RefreshVariableFieldPanel(handle);
             }
         }
 

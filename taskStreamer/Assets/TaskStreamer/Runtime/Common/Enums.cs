@@ -209,6 +209,8 @@ namespace TaskStreamer
     [Tooltip("Defines the type of graph traversal using a linear search approach.")]
     public enum GraphIteratorType : byte
     {
+        Default,
+        
         /// <summary> Linear Search 노드를 만나는 순서대로 순차적으로 처리하는 그래프 순회 방식입니다. </summary>
         [Tooltip("Represents a graph traversal type where nodes are processed sequentially in the order they are encountered.")]
         LS,

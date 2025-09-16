@@ -1,5 +1,4 @@
 using System;
-using TaskStreamer;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -276,7 +275,8 @@ namespace TaskStreamer.Tool
         private void OnConvertSharedToLocal()
         {
             DefaultValueAttribute setValue = this._variableHandle.GetAttribute<DefaultValueAttribute>();
-            BlackboardVariable newLocal = null;
+            
+            BlackboardVariable newLocal;
 
             if (setValue is not null)
             {

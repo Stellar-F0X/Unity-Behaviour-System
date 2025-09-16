@@ -149,7 +149,7 @@ namespace TaskStreamer
         internal abstract void InitializeOnEnterRuntime(TaskStreamer streamer);
 
 
-        public abstract IGraphIterator GetIterator(GraphIteratorType iteratorType);
+        public abstract IGraphIterator GetIterator(GraphIteratorType iteratorType = GraphIteratorType.Default);
 
 
         internal abstract Status UpdateGraph();

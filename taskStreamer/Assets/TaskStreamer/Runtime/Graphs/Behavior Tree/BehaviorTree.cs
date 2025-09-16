@@ -41,8 +41,10 @@ namespace TaskStreamer.BT
             switch (iteratorType)
             {
                 case GraphIteratorType.LS: return new Graph.CommonLSIterator(this);
-
+                
                 case GraphIteratorType.BFS: return new BehaviorTree.BFSIterator(this);
+                
+                case GraphIteratorType.Default: return new BehaviorTree.BFSIterator(this);
             }
 
             throw new ArgumentException("BreadthFirstSearch iterator is not implemented for BehaviorTree.");

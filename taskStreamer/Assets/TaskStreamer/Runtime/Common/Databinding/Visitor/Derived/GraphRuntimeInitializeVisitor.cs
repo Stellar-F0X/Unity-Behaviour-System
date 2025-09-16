@@ -9,7 +9,7 @@ using UnityEngine;
 namespace TaskStreamer
 {
     /// <summary> 런타임에서 그래프 탐색 및 처리를 활성화하는 클래스 </summary>
-    internal class GraphRuntimeInitializeVisitor : GraphVisitorBase,
+    internal class GraphRuntimeInitializeVisitor : GraphVisitorBase, 
                                                    IVisitPropertyAdapter<NodeDictionary>,
                                                    IVisitPropertyAdapter<KeyValuePair<UGUID, NodeBase>>,
                                                    IVisitPropertyAdapter<Transition>,
@@ -20,16 +20,17 @@ namespace TaskStreamer
         public GraphRuntimeInitializeVisitor(GraphContext context) : base(context)
         {
             //내부적으로 Concurrent dictionary에서 PropertyBag을 가져오는 방식이라 평균 O(1)이지만, 역시 캐싱이 제일 빠르다. 
-            _nodeDictionaryVisitBag = PropertyBag.GetPropertyBag<Dictionary<UGUID, NodeBase>>();
+            _nodeDictionaryVisitBag = PropertyBag.GetPropertyBag<Dictionary<UGUID, NodeBase>>(); 
 
-            _conditionModulesVisitBag = PropertyBag.GetPropertyBag<List<Condition>>();
+            _conditionModulesVisitBag = PropertyBag.GetPropertyBag<List<Condition>>(); 
         }
+        
+        
 
+        private static IPropertyBag<Dictionary<UGUID, NodeBase>> _nodeDictionaryVisitBag; 
 
-
-        private static IPropertyBag<Dictionary<UGUID, NodeBase>> _nodeDictionaryVisitBag;
-
-        private static IPropertyBag<List<Condition>> _conditionModulesVisitBag;
+        
+        private static IPropertyBag<List<Condition>> _conditionModulesVisitBag; 
 
 
 
@@ -45,8 +46,8 @@ namespace TaskStreamer
             {
                 Debug.Assert(graph.entry != null, "entry node is null.");
                 graph.InitializeOnEnterRuntime(_context.taskStreamer);
-            }
-        }
+            } 
+        } 
 
 
 
@@ -111,7 +112,7 @@ namespace TaskStreamer
             {
                 context.Property.SetValue(ref container, value.Duplicate());
                 return;
-            }
+            } 
 
             //shared variable이지만, blackboard가 null이라면 제때 제거되지 않은 잘못된 객체이므로 경고를 띄운다. 
             if (_context.blackboard == null || _context.blackboard.count == 0)
