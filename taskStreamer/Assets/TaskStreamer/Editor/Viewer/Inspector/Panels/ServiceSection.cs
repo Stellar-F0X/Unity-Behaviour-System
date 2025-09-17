@@ -88,11 +88,11 @@ namespace TaskStreamer.Tool
         /// <summary> 서비스 섹션 패널의 UI 요소들을 주어진 서비스와 연결하고 초기화합니다. </summary>
         /// <param name="newService">UI에 연결할 새로운 서비스 객체입니다.</param>
         /// <param name="variableHandles">서비스의 변수들에 대한 참조를 담은 핸들 목록입니다.</param>
-        public void Initialize(ServiceBase newService, List<VariableHandle> variableHandles)
+        public void Initialize(ServiceBase newService)
         {
             _service = newService;
             _headerFoldout.text = StringUtility.ToNicifyName(newService.name);
-            _variableHandles = variableHandles;
+            _variableHandles = newService.variableHandles;
             _enableToggle.value = newService.enable;
             _headerFoldout.value = newService.isExpanded;
             _fieldListView.itemsSource = _variableHandles;

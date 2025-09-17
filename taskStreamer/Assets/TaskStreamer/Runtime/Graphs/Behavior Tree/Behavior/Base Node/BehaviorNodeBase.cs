@@ -20,7 +20,7 @@ namespace TaskStreamer.BT
 
 
         /// BehaviorNodeBase 클래스에서 사용되는 비공개 변수로, 노드와 연관된 ServiceBase 객체 목록을 관리합니다.
-        [SerializeReference, HideInInspector]
+        [SerializeReference, DontCreateProperty, HideInInspector]
         private List<ServiceBase> _services = new List<ServiceBase>(1);
 
 

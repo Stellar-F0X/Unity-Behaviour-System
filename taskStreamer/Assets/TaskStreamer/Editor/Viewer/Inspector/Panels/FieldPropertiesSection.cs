@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
@@ -51,14 +52,11 @@ namespace TaskStreamer.Tool
 
         public void RefreshPanelWithNewValue(object newValue)
         {
-            if (newValue is not List<VariableHandle> handles)
-            {
-                Debug.LogError("New value is not a List<VariableHandle>");
-                return;
-            }
+            Assert.IsNotNull(newValue, "New Value is null");
+            List<VariableHandle> handles = newValue as List<VariableHandle>;
+            Assert.IsNotNull(handles, $"New value is not a {typeof(List<VariableHandle>)}");
 
             _variableHandles = handles;
-
             _forceRefreshWithValue = true;
             _fieldListView.itemsSource = handles;
             _forceRefreshWithValue = false;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using TaskStreamer.Utility;
+using Unity.Properties;
 using UnityEngine;
 
 namespace TaskStreamer.FSM
@@ -11,7 +12,7 @@ namespace TaskStreamer.FSM
         private bool _blockTransition;
         private StateMachine _machine;
 
-        [SerializeField, HideInInspector]
+        [SerializeField, DontCreateProperty, HideInInspector]
         private List<Transition> _transitions = new List<Transition>();
 
 
@@ -22,33 +23,33 @@ namespace TaskStreamer.FSM
             internal set { _machine = value; }
         }
 
-        
-        public IReadOnlyList<Transition> transitions
-        { 
-            get { return _transitions; }
-        } 
 
-        
+        public IReadOnlyList<Transition> transitions
+        {
+            get { return _transitions; }
+        }
+
+
         public float enteredTime
         {
             get;
             private set;
         }
 
-        
+
         public float elapsedTime
         {
             get { return Time.time - enteredTime; }
         }
-        
+
 
         public bool blockTransition
         {
             get { return _blockTransition; }
-            
+
             set { _blockTransition = value; }
         }
-        
+
 
         public abstract StateNodeType nodeType
         {
@@ -153,6 +154,6 @@ namespace TaskStreamer.FSM
                 Debug.LogError("Transition not found in the state node.");
             }
         }
-        #endif
+#endif
     }
 }

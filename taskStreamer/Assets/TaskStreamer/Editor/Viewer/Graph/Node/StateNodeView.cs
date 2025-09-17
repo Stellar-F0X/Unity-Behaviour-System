@@ -38,17 +38,6 @@ namespace TaskStreamer.Tool
 
 
 
-        protected override void OnInitialize()
-        {
-            base.OnInitialize();
-            
-            //remove 'List<Transition>' variable handle
-            variableHandles.Remove(v => v.initialValue is List<Transition>);
-        }
-
-
-
-
         public override Port InstantiatePort(Orientation orientation, Direction direction, Port.Capacity capacity, Type type)
         {
             return new PortView(GraphType.FSM, direction, capacity);

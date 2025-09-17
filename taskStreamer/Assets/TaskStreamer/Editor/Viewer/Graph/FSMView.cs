@@ -189,7 +189,6 @@ namespace TaskStreamer.Tool
                 ((StateNodeView)edge.output.node).connectionEdges[sourceNode.guid] = transitionView;
 
                 transitionView.targetTransition = transition; //이미 만들어진거라 대입할 수 밖에 없다.
-                transitionView.CollectTransitionFields(transition);
                 this.RegisterTransitionEdgeEvents(transitionView, view);
             }
         }

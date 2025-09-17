@@ -260,4 +260,15 @@ namespace TaskStreamer
         [Tooltip("Variable used in condition evaluation.")]
         Condition = 1
     };
+
+
+    /// <summary> Represents the addition of an element to the list in the context of a notification for list changes.  </summary>
+    public enum NotifyListChanged : byte
+    {
+        /// <summary> Represents the removal of an element from the list in the context of a notification for list changes. </summary>
+        Remove = 0,
+
+        /// <summary> Represents an addition operation to a list, typically indicating that an item has been added in the context of a list change notification. </summary>
+        Add = 1,
+    }
 }

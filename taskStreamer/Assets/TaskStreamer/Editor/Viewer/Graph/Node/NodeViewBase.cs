@@ -5,7 +5,6 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
-using Cursor = UnityEngine.UIElements.Cursor;
 using TypeUtility = TaskStreamer.Utility.TypeUtility;
 
 namespace TaskStreamer.Tool
@@ -77,15 +76,6 @@ namespace TaskStreamer.Tool
         {
             get { return _connectionEdges; }
         }
-        
-
-        /// 특정 노드 또는 엣지의 필드 속성 정보를 저장하는 읽기 전용 List 객체입니다.
-        /// TypeUtility를 통해 초기화되며, 필드 속성 관리를 위한 데이터로 활용됩니다.
-        internal List<VariableHandle> variableHandles
-        {
-            get;
-            private set;
-        }
 
         
         /// <summary>
@@ -129,10 +119,6 @@ namespace TaskStreamer.Tool
         protected virtual void OnInitialize()
         {
             this.onRenamingNode = this.ChangeNodeViewName;
-            
-            this.variableHandles = TypeUtility.TryGetFieldHandles(targetNode.GetType(), this.targetNode);
-            
-            Debug.Assert(this.variableHandles != null, $"Properties is null. Type: {targetNode.GetType().FullName}");
         }
 
 

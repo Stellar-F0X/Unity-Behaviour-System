@@ -8,7 +8,7 @@ namespace TaskStreamer.FSM
     [Serializable, GeneratePropertyBag, Readable]
     public sealed class Transition : Task
     {
-        internal Transition(NodeBase sourceNode, NodeBase destinationNode)
+        internal Transition(NodeBase sourceNode, NodeBase destinationNode) : base()
         {
             this._guid = UGUID.Create();
             this._sourceNode = sourceNode;

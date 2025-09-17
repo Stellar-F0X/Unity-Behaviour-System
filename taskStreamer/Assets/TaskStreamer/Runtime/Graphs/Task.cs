@@ -1,10 +1,9 @@
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 using System;
+using System.Collections.Generic;
 using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
+using UnityEngine.Assertions;
 using TypeUtility = TaskStreamer.Utility.TypeUtility;
 
 namespace TaskStreamer
@@ -32,7 +31,7 @@ namespace TaskStreamer
         [SerializeField, DontCreateProperty]
         protected UGUID _guid;
 
-        
+
 #if UNITY_EDITOR
         /// 특정 Task에서 이름 편집 가능 여부를 나타내는 불리언 필드입니다.
         [SerializeField, DontCreateProperty]
@@ -41,24 +40,36 @@ namespace TaskStreamer
 
         /// Task 클래스와 관련된 MonoScript 객체를 참조하며, 스크립트 타입 정보를 제공합니다.
         [SerializeField, DontCreateProperty]
-        private MonoScript _script;
+        private UnityEditor.MonoScript _script;
+
+
+        [NonSerialized, DontCreateProperty]
+        private List<VariableHandle> _variableHandles;
 
 
 
         /// 지정된 MonoScript를 반환하거나, 없을 경우 현재 클래스 타입에 해당하는 스크립트를 가져오는 프로퍼티입니다.
-        internal MonoScript script
+        internal UnityEditor.MonoScript script
         {
             get
             {
-                if (_script == null)
-                {
-                    _script = TypeUtility.GetScriptByType(this.GetType());
-                }
-
-                Debug.Assert(_script != null, $"MonoScript for {this.GetType().Name} is not found.");
+                _script = _script != null ? _script : TypeUtility.GetScriptByType(this.GetType());
+                Assert.IsNotNull(_script, $"MonoScript for {this.GetType().Name} is not found.");
                 return _script;
             }
         }
+
+
+        internal List<VariableHandle> variableHandles
+        {
+            get
+            {
+                this._variableHandles = this._variableHandles ?? TypeUtility.TryGetFieldHandles(this.GetType(), this);
+                Assert.IsNotNull(this._variableHandles, $"Properties is null. Type: {this.GetType().FullName}");
+                return _variableHandles;
+            }
+        }
+
 #endif
 
         /// `guid` 속성은 각 `Task` 객체를 식별하기 위해 사용되는 고유한 식별자입니다.

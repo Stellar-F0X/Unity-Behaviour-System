@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using TaskStreamer.BT;
 using TaskStreamer.Utility;
 using UnityEditor.Experimental.GraphView;
@@ -18,26 +17,22 @@ namespace TaskStreamer.Tool
             base.targetNode.name = nodeName;
             base.title = nodeName;
             
-            this._serviceContainer = this.Q<VisualElement>("service-container");
+            this._serviceContainerView = this.Q<VisualElement>("service-container");
             this._elementGroup.AddToClassList($"behavior-node");
 
             this.Indicator = new BehaviorIndicator(this, TaskStreamerEditor.settings);
-            _variableHandlesDic = new ObservableDictionary<ServiceBase, List<VariableHandle>>();
+            
+            this.serviceList.ForEach(s => this._serviceContainerView.Add(new ServiceView(s)));
+            this.serviceListChangedAction += this.OnServiceViewListChanged;
         }
+
+
+        //TODO: 추후 BehaviorNodeBase의 List<ServiceBase> 자체를 ObservableList<ServiceBase>로 변경하고 해당 이벤트를 삭제.
+        internal readonly Action<NotifyListChanged, ServiceBase> serviceListChangedAction;
         
+        
+        private readonly VisualElement _serviceContainerView;
 
-        private readonly ObservableDictionary<ServiceBase, List<VariableHandle>> _variableHandlesDic;
-
-        private readonly VisualElement _serviceContainer;
-
-
-
-
-        //nodeView가 생성될때 serviceBase 객체의 필드를 variableHandle로 미리 캐싱해둠. 
-        internal ObservableDictionary<ServiceBase, List<VariableHandle>> variableHandlesDic
-        {
-            get { return _variableHandlesDic; }
-        }
         
         
         internal List<ServiceBase> serviceList
@@ -57,52 +52,25 @@ namespace TaskStreamer.Tool
             nodeView.CreatePorts();
             return nodeView;
         }
-        
-        
-        
-        protected override void OnInitialize()
-        {
-            base.OnInitialize();
-            
-            //remove 'List<serviceBase>' variable handle
-            variableHandles.Remove(v => v.initialValue is List<ServiceBase>, true);
-            
-            this._variableHandlesDic.onCollectionItemChanged -= this.OnServiceViewListChanged;
-            
-            foreach (ServiceBase service in serviceList)
-            {
-                this._variableHandlesDic.Add(service, TypeUtility.TryGetFieldHandles(service.GetType(), service));
-                this._serviceContainer.Add(new ServiceView(service));
-            }
-            
-            this._variableHandlesDic.onCollectionItemChanged += this.OnServiceViewListChanged;
-        }
 
 
 
-        private void OnServiceViewListChanged(Dictionary<ServiceBase, List<VariableHandle>> _, NotifyCollectionChangedAction action, ServiceBase service, List<VariableHandle> handleList)
+        private void OnServiceViewListChanged(NotifyListChanged action, ServiceBase service)
         {
             switch (action)
             {
-                case NotifyCollectionChangedAction.Reset:
-                {
-                    this.serviceList.Clear();
-                    this._serviceContainer.Clear();
-                    break;
-                }
-                
-                case NotifyCollectionChangedAction.Add:
+                case NotifyListChanged.Add:
                 {
                     this.serviceList.Add(service);
-                    this._serviceContainer.Add(new ServiceView(service));
+                    this._serviceContainerView.Add(new ServiceView(service));
                     break;
                 } 
 
-                case NotifyCollectionChangedAction.Remove:
+                case NotifyListChanged.Remove:
                 {
                     int index = serviceList.IndexOf(service);
                     this.serviceList.RemoveAt(index);
-                    this._serviceContainer.RemoveAt(index);
+                    this._serviceContainerView.RemoveAt(index);
                     break;
                 } 
             }

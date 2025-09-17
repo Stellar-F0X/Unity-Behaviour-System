@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using TaskStreamer.BT;
 using TaskStreamer.Utility;
 using UnityEngine;
@@ -28,19 +29,16 @@ namespace TaskStreamer.Tool
         }
 
 
-        public ServiceContainer(List<ServiceBase> serviceList, ObservableDictionary<ServiceBase, List<VariableHandle>> variableHandles) : this()
+        public ServiceContainer(List<ServiceBase> serviceList, Action<NotifyListChanged, ServiceBase> listChangeAction) : this()
         {
-            this.RefreshPanelWithNewValue((serviceList, variableHandles));
+            this.RefreshPanelWithNewValue((serviceList, listChangeAction));
 
             this.RefreshPanel();
         }
 
 
-        /// _variableHandles는 서비스의 고유 식별자인 UGUID와 해당 서비스의 VariableHandle 리스트를 연관 짓는
-        /// ObservableDictionary로, 서비스별 변수 핸들을 관리합니다.
-        private ObservableDictionary<ServiceBase, List<VariableHandle>> _variableHandles;
-
-
+        private event Action<NotifyListChanged, ServiceBase> _onServiceListChanged;
+        
         /// _serviceListView 변수는 서비스 목록을 표시하고 관리하기 위한 ListView UI 요소입니다.
         /// _serviceList 데이터를 바인딩하여 항목 표시 및 갱신 작업을 수행합니다.
         private readonly ListView _serviceListView;
@@ -77,16 +75,25 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            if (newValue is not (List<ServiceBase> serviceList, ObservableDictionary<ServiceBase, List<VariableHandle>> handlesDic))
+            if (newValue is not (List<ServiceBase> serviceList, Action<NotifyListChanged, ServiceBase> listChangeAction))
             {
-                Debug.LogError("newValue is not (List<ServiceBase>, ObservableDictionary<ServiceBase, List<VariableHandle>>)");
+                Debug.LogError("newValue is invalid");
                 return;
             }
-
+            
             _serviceListView.Clear();
-            _variableHandles = handlesDic;
-            _serviceListView.style.display = serviceList.Count > 0 ? DisplayStyle.Flex : DisplayStyle.None;
+
+            if (serviceList.Count > 0)
+            {
+                _serviceListView.style.display = DisplayStyle.Flex;
+            }
+            else
+            {
+                _serviceListView.style.display = DisplayStyle.None;
+            }
+            
             _serviceListView.itemsSource = serviceList;
+            _onServiceListChanged = listChangeAction;
         }
 
 
@@ -106,7 +113,7 @@ namespace TaskStreamer.Tool
             servicePanel.onDeleteRequested -= this.OnServiceDeletionRequested;
             servicePanel.onDeleteRequested += this.OnServiceDeletionRequested;
 
-            servicePanel.Initialize(service, _variableHandles[service]);
+            servicePanel.Initialize(service);
         }
 
 
@@ -133,11 +140,7 @@ namespace TaskStreamer.Tool
         {
             Assert.IsNotNull(service, "service is null");
             
-            List<VariableHandle> handles = TypeUtility.TryGetFieldHandles(service.GetType(), service);
-            
-            Assert.IsNotNull(handles, "handles is null");
-
-            this._variableHandles.Add(service, handles);
+            this._onServiceListChanged?.Invoke(NotifyListChanged.Add, service);
             this.RefreshPanel();
         }
 
@@ -159,7 +162,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            this._variableHandles.Remove(sectionPanel.service);
+            this._onServiceListChanged?.Invoke(NotifyListChanged.Remove, sectionPanel.service);
             this.RefreshPanel();
         }
     }

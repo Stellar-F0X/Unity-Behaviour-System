@@ -120,8 +120,8 @@ namespace TaskStreamer.Tool
                 case BehaviorNodeView bNodeView:
                 {
                     basicPropertiesPanel.RefreshPanelWithNewValue(bNodeView);
-                    fieldPropertiesPanel.RefreshPanelWithNewValue(bNodeView.variableHandles);
-                    serviceContainerPanel.RefreshPanelWithNewValue((bNodeView.serviceList, bNodeView.variableHandlesDic));
+                    fieldPropertiesPanel.RefreshPanelWithNewValue(bNodeView.targetNode.variableHandles);
+                    serviceContainerPanel.RefreshPanelWithNewValue((bNodeView.serviceList, bNodeView.serviceListChangedAction));
                     serviceContainerPanel.style.display = DisplayStyle.Flex;
                     break;
                 }
@@ -129,7 +129,7 @@ namespace TaskStreamer.Tool
                 case StateNodeView sNodeView:
                 {
                     basicPropertiesPanel.RefreshPanelWithNewValue(sNodeView);
-                    fieldPropertiesPanel.RefreshPanelWithNewValue(sNodeView.variableHandles);
+                    fieldPropertiesPanel.RefreshPanelWithNewValue(sNodeView.targetNode.variableHandles);
                     serviceContainerPanel.style.display = DisplayStyle.None;
                     break;
                 }
@@ -137,7 +137,7 @@ namespace TaskStreamer.Tool
                 case ArrowEdge edgeView:
                 {
                     basicPropertiesPanel.RefreshPanelWithNewValue(edgeView);
-                    fieldPropertiesPanel.RefreshPanelWithNewValue(edgeView.variableHandles);
+                    fieldPropertiesPanel.RefreshPanelWithNewValue(edgeView.targetTransition.variableHandles);
                     serviceContainerPanel.style.display = DisplayStyle.None;
                     break;
                 }
@@ -155,15 +155,15 @@ namespace TaskStreamer.Tool
                 case BehaviorNodeView bNodeView:
                 {
                     container.Add(new BasicPropertiesSection(bNodeView.targetNode, bNodeView.onRenamingNode));
-                    container.Add(new FieldPropertiesSection(bNodeView.variableHandles));
-                    container.Add(new ServiceContainer(bNodeView.serviceList, bNodeView.variableHandlesDic));
+                    container.Add(new FieldPropertiesSection(bNodeView.targetNode.variableHandles));
+                    container.Add(new ServiceContainer(bNodeView.serviceList, bNodeView.serviceListChangedAction));
                     break;
                 }
 
                 case StateNodeView sNodeView:
                 {
                     container.Add(new BasicPropertiesSection(sNodeView.targetNode, sNodeView.onRenamingNode));
-                    container.Add(new FieldPropertiesSection(sNodeView.variableHandles));
+                    container.Add(new FieldPropertiesSection(sNodeView.targetNode.variableHandles));
                     container.Add(new ServiceContainer() { style = { display = DisplayStyle.None } });
                     break;
                 }
@@ -171,7 +171,7 @@ namespace TaskStreamer.Tool
                 case ArrowEdge edgeView:
                 {
                     container.Add(new BasicPropertiesSection(edgeView.targetTransition, null));
-                    container.Add(new FieldPropertiesSection(edgeView.variableHandles));
+                    container.Add(new FieldPropertiesSection(edgeView.targetTransition.variableHandles));
                     container.Add(new ServiceContainer() { style = { display = DisplayStyle.None } });
                     break;
                 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using TaskStreamer.FSM;
-using TaskStreamer.Utility;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -30,7 +29,7 @@ namespace TaskStreamer.Tool
         /// Represents a custom edge in a graph view with additional functionalities such as events and transition data.
         public ArrowEdge(Transition transition) : this()
         {
-            this.CollectTransitionFields(transition);
+            this.targetTransition = transition;
             this.viewDataKey = transition.guid.ToString();
         }
 
@@ -64,13 +63,7 @@ namespace TaskStreamer.Tool
 
             internal set { this._targetTransition = value; }
         }
-
-        /// <summary> 필드 속성 리스트를 관리하는 내부 프로퍼티 </summary>
-        internal List<VariableHandle> variableHandles
-        {
-            get;
-            private set;
-        }
+        
 
         /// <summary> Indicates whether the edge is in ghost mode. </summary>
         public bool isGhostEdgeMode
@@ -85,17 +78,6 @@ namespace TaskStreamer.Tool
         protected override EdgeControl CreateEdgeControl()
         {
             return base.CreateEdgeControl();
-        }
-
-
-        /// <summary> Refreshes the transition data for the edge using the specified transition. </summary>
-        /// <param name="newTransition">The new transition data to apply to the edge.</param>
-        public void CollectTransitionFields(in Transition newTransition)
-        {
-            Type type = newTransition.GetType();
-
-            this.targetTransition = newTransition;
-            this.variableHandles = TypeUtility.TryGetFieldHandles(type, newTransition);
         }
 
 
