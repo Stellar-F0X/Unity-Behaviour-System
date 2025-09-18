@@ -12,7 +12,7 @@ namespace TaskStreamer.FSM
         private bool _blockTransition;
         private StateMachine _machine;
 
-        [SerializeField, HideInInspector]
+        [SerializeReference, HideInInspector]
         private List<Transition> _transitions = new List<Transition>();
 
 
@@ -24,7 +24,7 @@ namespace TaskStreamer.FSM
         }
 
 
-        public IReadOnlyList<Transition> transitions
+        internal IReadOnlyList<Transition> transitions
         {
             get { return _transitions; }
         }

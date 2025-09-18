@@ -88,11 +88,6 @@ namespace TaskStreamer.FSM
 
         internal void ChangeState(NodeBase nextNode)
         {
-            if (_current == nextNode)
-            {
-                return;
-            }
-            
             if (_current != null)
             {
                 _current.ExitNode();
@@ -198,7 +193,7 @@ namespace TaskStreamer.FSM
         }
 
 
-        public Transition ConnectStates(StateBase from, StateBase to)
+        internal Transition ConnectStates(StateBase from, StateBase to)
         {
             if (from.TryGetTransition(to.guid, out _))
             {
@@ -215,7 +210,7 @@ namespace TaskStreamer.FSM
         }
 
 
-        public Transition DisconnectStates(StateBase from, StateBase to)
+        internal Transition DisconnectStates(StateBase from, StateBase to)
         {
             if (from.TryGetTransition(to.guid, out Transition transition) == false)
             {

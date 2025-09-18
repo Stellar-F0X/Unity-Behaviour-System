@@ -47,6 +47,7 @@ namespace TaskStreamer
         private List<VariableHandle> _variableHandles;
 
 
+        
 
         /// 지정된 MonoScript를 반환하거나, 없을 경우 현재 클래스 타입에 해당하는 스크립트를 가져오는 프로퍼티입니다.
         internal UnityEditor.MonoScript script

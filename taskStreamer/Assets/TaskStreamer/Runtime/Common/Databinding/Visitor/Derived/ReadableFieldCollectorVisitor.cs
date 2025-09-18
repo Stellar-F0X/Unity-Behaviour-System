@@ -32,7 +32,8 @@ namespace TaskStreamer
         /// <summary>특정 프로퍼티에 대한 방문 로직을 처리합니다.</summary>
         protected override void VisitProperty<TContainer, TValue>(Property<TContainer, TValue> property, ref TContainer container, ref TValue value)
         {
-            Assert.IsFalse(value is null || container is null, $"Value ({typeof(TValue)}) or Container ({typeof(TContainer)}) is null");
+            Assert.IsFalse(container is null, $"Container ({typeof(TContainer)}) is null");
+            Assert.IsFalse(value is null, $"Value ({typeof(TValue)}) is null");
 
             if (property.IsReadOnly)
             {

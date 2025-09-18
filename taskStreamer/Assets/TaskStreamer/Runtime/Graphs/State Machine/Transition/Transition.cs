@@ -7,7 +7,7 @@ using UnityEngine.Assertions;
 namespace TaskStreamer.FSM
 {
     [Serializable, GeneratePropertyBag, Readable]
-    public sealed class Transition : Task
+    internal class Transition : Task
     {
         internal Transition(NodeBase sourceNode, NodeBase destinationNode) : base()
         {
@@ -23,16 +23,16 @@ namespace TaskStreamer.FSM
         }
         
         [SerializeField]
-        private BlackboardVariable<bool> _blockTransition;
+        protected BlackboardVariable<bool> _blockTransition;
 
         [SerializeField]
         private BlackboardBasedCondition _conditions;
 
         [SerializeReference, DontCreateProperty]
-        private NodeBase _sourceNode;
+        protected NodeBase _sourceNode;
 
         [SerializeReference, DontCreateProperty]
-        private NodeBase _destinationNode;
+        protected NodeBase _destinationNode;
 
 
         public UGUID fromNodeGuid
@@ -65,7 +65,7 @@ namespace TaskStreamer.FSM
         }
 
 
-        public bool CheckConditions()
+        public virtual bool CheckConditions()
         {
             Assert.IsNotNull(this._blockTransition, "Transition blockTransition is not set.");
             
@@ -73,9 +73,14 @@ namespace TaskStreamer.FSM
             {
                 return false;
             }
-            else
+            
+            if (conditions.modules.Count > 0)
             {
                 return this.conditions.Execute();
+            }
+            else
+            {
+                return true;
             }
         }
     }

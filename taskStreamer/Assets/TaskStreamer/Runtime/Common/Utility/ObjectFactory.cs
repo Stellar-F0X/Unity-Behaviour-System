@@ -128,7 +128,25 @@ namespace TaskStreamer.Utility
                 return foundTransition;
             }
 
-            return new Transition(from, to);
+            
+            Type transitionType = null;
+            Transition resultTransition = null;
+
+            if (from is AnyState)
+            {
+                transitionType = typeof(AnyTransition);
+                resultTransition = new AnyTransition(from, to);
+            }
+            else
+            {
+                transitionType = typeof(Transition);
+                resultTransition = new Transition(from, to);
+            }
+
+            object reference = resultTransition;
+            IPropertyBag propertyBag = PropertyBag.GetPropertyBag(transitionType);
+            propertyBag.Accept(new BlackboardVariableFieldInitializeVisitor(), ref reference);
+            return resultTransition;
         }
 
 
@@ -141,7 +159,7 @@ namespace TaskStreamer.Utility
         public static Graph CreateGraph(GraphAsset asset, GraphType graphType, string graphName)
         {
             Graph graph = null;
-            
+
             Debug.Assert(asset != null, $"{typeof(ObjectFactory)}: GraphAsset is null");
 
             switch (graphType)
