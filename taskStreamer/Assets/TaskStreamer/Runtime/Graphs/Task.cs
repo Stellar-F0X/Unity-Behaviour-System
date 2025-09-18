@@ -53,7 +53,7 @@ namespace TaskStreamer
         {
             get
             {
-                _script = _script != null ? _script : TypeUtility.GetScriptByType(this.GetType());
+                this._script = _script != null ? _script : TypeUtility.GetScriptByType(this.GetType());
                 Assert.IsNotNull(_script, $"MonoScript for {this.GetType().Name} is not found.");
                 return _script;
             }
@@ -64,7 +64,7 @@ namespace TaskStreamer
         {
             get
             {
-                this._variableHandles = this._variableHandles ?? TypeUtility.TryGetFieldHandles(this.GetType(), this);
+                this._variableHandles ??= TypeUtility.TryGetFieldHandles(this.GetType(), this); 
                 Assert.IsNotNull(this._variableHandles, $"Properties is null. Type: {this.GetType().FullName}");
                 return _variableHandles;
             }

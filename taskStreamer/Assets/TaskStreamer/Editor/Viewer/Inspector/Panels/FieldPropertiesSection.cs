@@ -25,7 +25,8 @@ namespace TaskStreamer.Tool
         private List<VariableHandle> _variableHandles;
 
         private readonly ListView _fieldListView;
-
+        
+        //Using() {} 구문과 비슷한 개념으로, RefreshPanelWithNewValue 함수가 호출되는 동안 강제로 값을 갱신하도록 설정한다.
         private bool _forceRefreshWithValue;
 
 
@@ -56,10 +57,10 @@ namespace TaskStreamer.Tool
             List<VariableHandle> handles = newValue as List<VariableHandle>;
             Assert.IsNotNull(handles, $"New value is not a {typeof(List<VariableHandle>)}");
 
-            _variableHandles = handles;
-            _forceRefreshWithValue = true;
-            _fieldListView.itemsSource = handles;
-            _forceRefreshWithValue = false;
+            this._variableHandles = handles;
+            this._forceRefreshWithValue = true;
+            this._fieldListView.itemsSource = handles;
+            this._forceRefreshWithValue = false;
         }
 
 
@@ -68,29 +69,34 @@ namespace TaskStreamer.Tool
         {
             VariableHandle handle = _variableHandles[index];
 
-            if (this._forceRefreshWithValue || element.childCount == 0)
+            if (this._forceRefreshWithValue == false && element.childCount != 0)
             {
-                element.Clear();
-                element.Add(this.CreateFieldElement(handle));
+                return;
             }
 
-            if (element[0] is IRefreshableField fieldRefreshable)
+            if (this.TryCreateFieldElement(handle, out VisualElement field))
             {
-                fieldRefreshable.RefreshVariableFieldPanel(handle);
+                element.Clear();
+                element.Add(field);
             }
         }
 
 
-        private VisualElement CreateFieldElement(VariableHandle handle)
+        private bool TryCreateFieldElement(VariableHandle handle, out VisualElement field)
         {
             switch (handle.initialValue)
             {
-                case BlackboardVariable: return VisualUtility.GetFieldByValueType(handle);
+                case BlackboardVariable: field = VisualUtility.GetFieldByValueType(handle); break;
 
-                case BlackboardBasedCondition: return new ConditionListField(handle);
+                case BlackboardBasedCondition: field = new ConditionListField(handle); break;
 
-                default: throw new System.ArgumentException($"Unsupported handle value type: {handle.initialValue?.GetType()}");
+                //불필요한 필드들은 무시한다. 예를 들어, 빌드 전 에디터 환경에서 List<Transition>이나 List<ServiceBase>는 'Handle'로써 필요하지 않다.
+                //여기서 필요한 것은 각각의 List로서 Transition이나 ServiceBase가 아니라, 그 객체들의 필드들인데, 이미 Handle로써 주어졌기 때문.
+                //그리고 그 객체들은 플레이 모드 진입할때, ReadableVisitorBase에서 초기화 과정에서만 사용된다. 여기선 사용되지 않는다.
+                default: field = null; break;
             }
+
+            return field != null;
         }
     }
 }

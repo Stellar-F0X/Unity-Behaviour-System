@@ -121,7 +121,7 @@ namespace TaskStreamer.Utility
 
 
 
-        public static Type[] OrderByNameAndFilterAbstracts(this UnityEditor.TypeCache.TypeCollection collection)
+        public static Type[] OrderByNameAndFilterAbstracts(this TypeCache.TypeCollection collection)
         {
             Type[] array = collection.Where(t => t.IsAbstract == false && t.IsGenericType == false).ToArray();
 

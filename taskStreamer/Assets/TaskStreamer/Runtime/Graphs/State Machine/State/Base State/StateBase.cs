@@ -12,7 +12,7 @@ namespace TaskStreamer.FSM
         private bool _blockTransition;
         private StateMachine _machine;
 
-        [SerializeField, DontCreateProperty, HideInInspector]
+        [SerializeField, HideInInspector]
         private List<Transition> _transitions = new List<Transition>();
 
 

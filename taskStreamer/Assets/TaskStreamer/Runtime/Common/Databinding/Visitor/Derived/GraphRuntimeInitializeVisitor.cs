@@ -5,6 +5,7 @@ using TaskStreamer.FSM;
 using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace TaskStreamer
 {
@@ -75,12 +76,7 @@ namespace TaskStreamer
         public void Visit<TContainer>(in VisitContext<TContainer, KeyValuePair<UGUID, NodeBase>> context, ref TContainer container, ref KeyValuePair<UGUID, NodeBase> value)
         {
             IPropertyBag bag = PropertyBag.GetPropertyBag(value.Value.GetType());
-
-            if (bag is null)
-            {
-                Debug.LogError($"Property bag not found for {value.Value.name}");
-                return;
-            }
+            Assert.IsNotNull(bag, $"Property bag not found for {value.Value.name}");
 
             object reference = value.Value;
             bag.Accept(this, ref reference);
@@ -101,30 +97,24 @@ namespace TaskStreamer
             }
 
             //정상적으로 동작한다면, value가 null일 수 없다.
-            if (value is null)
-            {
-                Debug.LogError($"Wrong {typeof(TContainer)}'s {context.Property.Name} Field.");
-                return;
-            }
+            Assert.IsNotNull(value, $"Wrong {typeof(TContainer)}'s {context.Property.Name} Field.");
 
             //null도, shared variable도, 아니라면 그냥 필드에 새 로컬(Local) 객체만 할당 해주면 된다.
             if (value.isShared == false)
             {
                 context.Property.SetValue(ref container, value.Duplicate());
                 return;
-            } 
-
-            //shared variable이지만, blackboard가 null이라면 제때 제거되지 않은 잘못된 객체이므로 경고를 띄운다. 
-            if (_context.blackboard == null || _context.blackboard.count == 0)
-            {
-                Debug.LogError($"Wrong {typeof(TContainer)}'s {context.Property.Name} Field.");
-                return;
             }
+            
+            //shared variable이지만, blackboard가 null이라면 제때 제거되지 않은 잘못된 객체이므로 경고를 띄운다. 
+            Assert.IsFalse(_context.blackboard == null || _context.blackboard.count == 0, $"Wrong {typeof(TContainer)}'s {context.Property.Name} Field.");
 
             //Runtime instantiated 객체가 작동 중임은 런타임 blackboard가 할당됐음을 의미하니, runtime bb variable을 찾아서 할당해준다.
             BlackboardVariable shared = ObjectFactory.CreateSharedBlackboardVariable(value.implementedType, _context.blackboard, value.guid);
+            
+            Assert.IsNotNull(shared, "Variable not found in blackboard.");
+            
             shared.usage = value.usage;
-            Debug.Assert(shared != null, "Variable not found in blackboard.");
             context.Property.SetValue(ref container, shared);
         }
 

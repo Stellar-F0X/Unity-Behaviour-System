@@ -15,25 +15,17 @@ namespace TaskStreamer
         protected ReadableVisitorBase()
         {
             //만약 현 객체가 IPropertyVisitorAdapter 인터페이스를 상속받아, 구현된게 있다면 어뎁터에 추가. 
-            if (this is IPropertyVisitorAdapter visitorAdapter)
+            if (this is not IPropertyVisitorAdapter visitorAdapter)
             {
-                this.AddAdapter(visitorAdapter);
+                return;
             }
+
+            this.AddAdapter(visitorAdapter);
         }
 
 
         /// <summary> ReadableVisitorBase에서 방문 가능한 대상 타입들을 저장하는 정적 컬렉션입니다. </summary>
-        private readonly static HashSet<ICustomAttributeProvider> _VisitAvailable = new HashSet<ICustomAttributeProvider>()
-        {
-#if UNITY_EDITOR
-            typeof(List<NodeGroup>),
-#endif
-            typeof(List<Transition>),
-            typeof(List<Condition>),
-            typeof(List<ServiceBase>),
-            typeof(KeyValuePair<UGUID, Graph>),
-            typeof(KeyValuePair<UGUID, NodeBase>)
-        };
+        private readonly static HashSet<ICustomAttributeProvider> _VisitAvailable = new HashSet<ICustomAttributeProvider>();
 
 
         /// <summary> 지정된 프로퍼티가 제외 대상인지 확인합니다. </summary>
@@ -47,7 +39,39 @@ namespace TaskStreamer
 
             if (_VisitAvailable.Contains(type))
             {
-                return false; //Ignore filtering
+                return false;
+            }
+
+#if UNITY_EDITOR
+            if (typeof(List<NodeGroup>) == type)
+            {
+                return false;
+            }
+#endif
+
+            if (typeof(List<Condition>) == type)
+            {
+                return false;
+            }
+
+            if (typeof(KeyValuePair<UGUID, Graph>) == type)
+            {
+                return false;
+            }
+
+            if (typeof(KeyValuePair<UGUID, NodeBase>) == type)
+            {
+                return false;
+            }
+
+            if (typeof(List<Transition>) == type)
+            {
+                return false;
+            }
+
+            if (typeof(List<ServiceBase>) == type)
+            {
+                return false;
             }
 
             if (type.HasAttribute<ReadableAttribute>())
