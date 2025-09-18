@@ -2,6 +2,7 @@ using System;
 using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace TaskStreamer.FSM
 {
@@ -20,8 +21,11 @@ namespace TaskStreamer.FSM
             base.canEditName = false;
 #endif
         }
+        
+        [SerializeField]
+        private BlackboardVariable<bool> _blockTransition;
 
-        [SerializeField, CreateProperty]
+        [SerializeField]
         private BlackboardBasedCondition _conditions;
 
         [SerializeReference, DontCreateProperty]
@@ -63,7 +67,16 @@ namespace TaskStreamer.FSM
 
         public bool CheckConditions()
         {
-            return this.conditions.Execute();
+            Assert.IsNotNull(this._blockTransition, "Transition blockTransition is not set.");
+            
+            if (this._blockTransition.value)
+            {
+                return false;
+            }
+            else
+            {
+                return this.conditions.Execute();
+            }
         }
     }
 }

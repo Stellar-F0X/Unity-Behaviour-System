@@ -9,7 +9,7 @@ namespace TaskStreamer
     public sealed partial class BlackboardBasedCondition
     {
         [DontCreateProperty]
-        public EvaluationPolicy evaluationPolicy = EvaluationPolicy.Pass;
+        public EvaluationPolicy evaluationPolicy = EvaluationPolicy.All;
         
         [SerializeReference]
         public List<Condition> modules = new List<Condition>();
@@ -17,11 +17,6 @@ namespace TaskStreamer
 
         public bool Execute()
         {
-            if (evaluationPolicy == EvaluationPolicy.Pass)
-            {
-                return true;
-            }
-            
             if (modules is null)
             {
                 Debug.LogWarning("Blackboard variables is not set for this condition.");

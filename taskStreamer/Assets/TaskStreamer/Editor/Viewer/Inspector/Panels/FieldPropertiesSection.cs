@@ -12,13 +12,13 @@ namespace TaskStreamer.Tool
         {
             TaskStreamerResourceLoader.fieldPropertiesSection.CloneTree(this);
 
-            headerLabel = this.Q<Label>("main-header");
-            _fieldListView = this.Q<ListView>("field-list");
+            this._headerLabel = this.Q<Label>("main-header");
+            this._fieldListView = this.Q<ListView>("field-list");
 
             this.RefreshPanelWithNewValue(variableHandles);
 
-            _fieldListView.makeItem += () => new VisualElement();
-            _fieldListView.bindItem += this.BindItem;
+            this._fieldListView.makeItem += () => new VisualElement();
+            this._fieldListView.bindItem += this.BindItem;
         }
 
 
@@ -28,25 +28,20 @@ namespace TaskStreamer.Tool
         
         //Using() {} 구문과 비슷한 개념으로, RefreshPanelWithNewValue 함수가 호출되는 동안 강제로 값을 갱신하도록 설정한다.
         private bool _forceRefreshWithValue;
-
-
-        public Label headerLabel
-        {
-            get;
-            private set;
-        }
+        
+        private Label _headerLabel;
 
 
         public void RefreshPanel()
         {
-            if (_fieldListView.itemsSource is null || _fieldListView.itemsSource.Count == 0)
+            if (this._fieldListView.itemsSource is null || this._fieldListView.itemsSource.Count == 0)
             {
                 return;
             }
 
-            _forceRefreshWithValue = false;
-            _fieldListView.RefreshItems();
-            _forceRefreshWithValue = false;
+            this._forceRefreshWithValue = false;
+            this._fieldListView.RefreshItems();
+            this._forceRefreshWithValue = false;
         }
 
 
@@ -67,7 +62,7 @@ namespace TaskStreamer.Tool
 
         private void BindItem(VisualElement element, int index)
         {
-            VariableHandle handle = _variableHandles[index];
+            VariableHandle handle = this._variableHandles[index];
 
             if (this._forceRefreshWithValue == false && element.childCount != 0)
             {
