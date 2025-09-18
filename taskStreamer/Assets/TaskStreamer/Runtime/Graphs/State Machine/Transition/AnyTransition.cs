@@ -10,7 +10,7 @@ namespace TaskStreamer.FSM
         internal AnyTransition(NodeBase sourceNode, NodeBase destinationNode) : base(sourceNode, destinationNode) { }
 
 
-        [SerializeField]
+        [SerializeField, PropertyOrder(0)]
         private BlackboardVariable<bool> _canTransitionToSelf;
 
 

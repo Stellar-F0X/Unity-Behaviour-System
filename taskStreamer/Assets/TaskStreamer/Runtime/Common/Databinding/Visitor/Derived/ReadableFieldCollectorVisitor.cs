@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TaskStreamer.BT;
 using TaskStreamer.FSM;
+using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -19,14 +20,14 @@ namespace TaskStreamer
 
 
         /// <summary> Unity Properties의 기본 방문 처리기 </summary>
-        public ReadableFieldCollectorVisitor(List<VariableHandle> propertiesContainer)
+        public ReadableFieldCollectorVisitor(PriorityQueue<VariableHandle> propertiesContainer)
         {
             this._propertiesContainer = propertiesContainer;
         }
 
 
         /// <summary>읽기 가능한 필드 정보를 수집하는 프로세서를 나타냅니다.</summary>
-        private readonly List<VariableHandle> _propertiesContainer;
+        private readonly PriorityQueue<VariableHandle> _propertiesContainer;
 
 
         /// <summary>특정 프로퍼티에 대한 방문 로직을 처리합니다.</summary>
@@ -47,8 +48,9 @@ namespace TaskStreamer
                                                          .WithAttributes(property.GetAttributes())
                                                          .Build();
 
+            PropertyOrder order = property.GetAttribute<PropertyOrder>();
             Assert.IsTrue(handle.IsValid(), "잘못된 VariableHandle 값, 고쳐라 인간.");
-            this._propertiesContainer.Add(handle);
+            this._propertiesContainer.Enqueue(handle, order is null ? int.MaxValue : order.priority);
         }
 
 

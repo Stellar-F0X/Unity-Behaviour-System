@@ -114,8 +114,15 @@ namespace TaskStreamer.Utility
                 return null;
             }
 
-            List<VariableHandle> properties = new List<VariableHandle>();
-            propertyBag.Accept(new ReadableFieldCollectorVisitor(properties), ref targetReference);
+            PriorityQueue<VariableHandle> targetProperties = new PriorityQueue<VariableHandle>(PriorityOrder.Ascending);
+            propertyBag.Accept(new ReadableFieldCollectorVisitor(targetProperties), ref targetReference);
+            List<VariableHandle> properties = new List<VariableHandle>(targetProperties.Count);
+            
+            while (targetProperties.Count > 0)
+            {
+                properties.Add(targetProperties.Dequeue());
+            }
+            
             return properties;
         }
 
