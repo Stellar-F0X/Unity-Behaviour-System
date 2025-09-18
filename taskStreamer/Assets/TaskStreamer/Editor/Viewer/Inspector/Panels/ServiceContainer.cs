@@ -81,6 +81,7 @@ namespace TaskStreamer.Tool
                 return;
             }
             
+            _serviceListView.itemsSource = null;
             _serviceListView.Clear();
 
             if (serviceList.Count > 0)

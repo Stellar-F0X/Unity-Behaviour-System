@@ -222,8 +222,6 @@ namespace TaskStreamer.Tool
             this.taskGraphView.Add(this._blackboardView);
             this.taskGraphView.Add(this.inspectorView);
 
-            this.taskGraphView.onElementSelected += inspectorView.UpdateSelection;
-
             this.OnSelectionChange();
         }
 

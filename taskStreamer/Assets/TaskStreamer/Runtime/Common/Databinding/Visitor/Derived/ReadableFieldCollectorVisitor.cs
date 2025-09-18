@@ -1,17 +1,19 @@
+using System;
 using System.Collections.Generic;
+using TaskStreamer.BT;
+using TaskStreamer.FSM;
 using Unity.Properties;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace TaskStreamer
 {
-    /// <summary> ReadableFieldCollectorVisitor 클래스는 DefaultVisitProcessor를 기반으로, 필드 정보를 수집하여 지정된 컨테이너에 저장하는 역할을 수행합니다. </summary>
+#if UNITY_EDITOR
+    /// <summary> ReadableVisitorBase 기반으로, Task 객체의 필드 정보를 수집하여 지정된 컨테이너에 저장한다. </summary>
     public class ReadableFieldCollectorVisitor : ReadableVisitorBase
     {
-        /// <summary>주어진 컨테이너와 값에 기반하여 값을 가져오는 델리게이트입니다.</summary>
         private delegate TValue ValueGetter<TContainer, TValue>(ref TContainer container);
-
-
-        /// <summary>읽을 수 있는 필드 정보를 수집 처리하는 방문자 프로세서입니다.</summary>
+        
         private delegate void ValueSetter<TContainer, TValue>(ref TContainer container, TValue value);
 
 
@@ -30,10 +32,7 @@ namespace TaskStreamer
         /// <summary>특정 프로퍼티에 대한 방문 로직을 처리합니다.</summary>
         protected override void VisitProperty<TContainer, TValue>(Property<TContainer, TValue> property, ref TContainer container, ref TValue value)
         {
-            if (value is null || container is null)
-            {
-                return;
-            }
+            Assert.IsFalse(value is null || container is null, $"Value ({typeof(TValue)}) or Container ({typeof(TContainer)}) is null");
 
             if (property.IsReadOnly)
             {
@@ -47,14 +46,30 @@ namespace TaskStreamer
                                                          .WithAttributes(property.GetAttributes())
                                                          .Build();
 
-            if (handle.IsValid())
+            Assert.IsTrue(handle.IsValid(), "잘못된 VariableHandle 값, 고쳐라 인간.");
+            this._propertiesContainer.Add(handle);
+        }
+
+
+
+        protected override bool IsExcluded<TContainer, TValue>(Property<TContainer, TValue> property, ref TContainer container, ref TValue value)
+        {
+            Type type = property.DeclaredValueType();
+
+            //에디터에선 인스펙터에 있어서 해당 타입의 객체가 필요하지 않으므로 수집에서 제외한다. 
+            if (type == typeof(List<Transition>))
             {
-                _propertiesContainer.Add(handle);
+                return true;
             }
-            else
+
+            //마찬가지.
+            if (type == typeof(List<ServiceBase>))
             {
-                Debug.LogError("잘못된 VariableHandle 값, 고쳐라 인간.");
+                return true;
             }
+
+            return base.IsExcluded(property, ref container, ref value);
         }
     }
+#endif
 }

@@ -197,7 +197,6 @@ namespace TaskStreamer
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;
             bag.Accept(visitor, ref reference);
-
             this.graphGuid = UGUID.Create();
         }
 

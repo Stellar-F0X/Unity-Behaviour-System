@@ -119,26 +119,26 @@ namespace TaskStreamer.Tool
             {
                 case BehaviorNodeView bNodeView:
                 {
+                    serviceContainerPanel.style.display = DisplayStyle.Flex;
                     basicPropertiesPanel.RefreshPanelWithNewValue(bNodeView);
                     fieldPropertiesPanel.RefreshPanelWithNewValue(bNodeView.targetNode.variableHandles);
                     serviceContainerPanel.RefreshPanelWithNewValue((bNodeView.serviceList, bNodeView.serviceListChangedAction));
-                    serviceContainerPanel.style.display = DisplayStyle.Flex;
                     break;
                 }
 
                 case StateNodeView sNodeView:
                 {
+                    serviceContainerPanel.style.display = DisplayStyle.None;
                     basicPropertiesPanel.RefreshPanelWithNewValue(sNodeView);
                     fieldPropertiesPanel.RefreshPanelWithNewValue(sNodeView.targetNode.variableHandles);
-                    serviceContainerPanel.style.display = DisplayStyle.None;
                     break;
                 }
 
                 case ArrowEdge edgeView:
                 {
+                    serviceContainerPanel.style.display = DisplayStyle.None;
                     basicPropertiesPanel.RefreshPanelWithNewValue(edgeView);
                     fieldPropertiesPanel.RefreshPanelWithNewValue(edgeView.targetTransition.variableHandles);
-                    serviceContainerPanel.style.display = DisplayStyle.None;
                     break;
                 }
             }

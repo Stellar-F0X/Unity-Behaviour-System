@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using TaskStreamer.FSM;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Assertions;
 using Edge = UnityEditor.Experimental.GraphView.Edge;
 
 namespace TaskStreamer.Tool
@@ -24,11 +25,11 @@ namespace TaskStreamer.Tool
 
 
         /// <summary> Tries to connect two nodes within a graph view by creating an edge between them. </summary>
-        /// <param name="view"> The graph view that contains the nodes to be connected. </param>
+        /// <param name="graphView"> The graph view that contains the nodes to be connected. </param>
         /// <param name="sourceView"> The first node to connect via an edge. </param>
         /// <param name="targetView"> The second node to connect via an edge. </param>
         /// <returns> True if the nodes were successfully connected; false otherwise. </returns>
-        public override bool TryConnectNodesByEdge(TaskGraphView view, NodeViewBase sourceView, NodeViewBase targetView)
+        public override bool TryConnectNodesByEdge(TaskGraphView graphView, NodeViewBase sourceView, NodeViewBase targetView)
         {
             if (sourceView is null || targetView is null)
             {
@@ -56,8 +57,6 @@ namespace TaskStreamer.Tool
 
             startView.connectionEdges.Add(end.guid, transitionEdge);
 
-            this.RegisterTransitionEdgeEvents(transitionEdge, view);
-
             outputPort.Connect(transitionEdge);
             inputPort.Connect(transitionEdge);
 
@@ -74,7 +73,7 @@ namespace TaskStreamer.Tool
             foreach (NodeBase node in graph.GetIterator(GraphIteratorType.LS))
             {
                 NodeViewBase nodeView = this.RecreateNodeViewOnLoad(node);
-                Debug.Assert(nodeView != null, "Failed creation node view");
+                Assert.IsNotNull(nodeView, "Failed creation node view");
                 graphView.AddNewNodeView(nodeView);
             }
 
@@ -89,7 +88,7 @@ namespace TaskStreamer.Tool
                 {
                     NodeViewBase sourceView = graphView.FindNodeView(stateNode);
                     NodeViewBase targetView = graphView.FindNodeView(transition.toNodeGuid.ToString());
-                    Debug.Assert(sourceView is not null && targetView is not null, "source or target is null");
+                    Assert.IsTrue(sourceView is not null && targetView is not null, "source or target is null");
 
                     this.TryConnectNodesByEdge(graphView, sourceView, targetView);
                 }
@@ -107,10 +106,10 @@ namespace TaskStreamer.Tool
                                            () => new NodeFactoryModule<ActionState>(graphView, "Action"),
                                            () => new TypeTreeProvider(true))
                                        .AddFactoryModule(
-                                           () => new NodeFactoryModule<SubGraphState>(graphView, "Graph"), 
+                                           () => new NodeFactoryModule<SubGraphState>(graphView, "Graph"),
                                            () => new TypeTreeProvider(true))
                                        .AddFactoryModule(
-                                           () => new NodeGroupFactoryModule<NodeGroup>(graphView, "Utility"), 
+                                           () => new NodeGroupFactoryModule<NodeGroup>(graphView, "Utility"),
                                            () => new TypeTreeProvider(false))
                                        .Build();
         }
@@ -163,33 +162,32 @@ namespace TaskStreamer.Tool
         /// <param name="edges"> 연결을 처리하기 위한 엣지 리스트 </param>
         public override void ConnectNodesByEdges(TaskGraphView view, Graph graph, List<Edge> edges)
         {
-            Debug.Assert(edges.Count != 0, "Graph edge's element count is 0");
+            Assert.IsTrue(edges.Count != 0, "Graph edge's element count is 0");
             StateMachine fsm = graph as StateMachine;
+            Assert.IsNotNull(fsm, "fsm graph is null referenced");
 
             //Edge Connector Listener에서 만들어진 커스텀 Edge들이 IEnumerable로 반환된다.
             for (int index = edges.Count - 1; index >= 0; index--)
             {
                 Edge edge = edges[index];
-                
+
                 StateBase sourceNode = edge.output.node.GetNodeByView<StateBase>();
                 StateBase targetNode = edge.input.node.GetNodeByView<StateBase>();
-                Debug.Assert(sourceNode != null && targetNode != null, "sourceNode or targetNode is null");
+                Assert.IsTrue(sourceNode != null && targetNode != null, "sourceNode or targetNode is null");
 
                 Transition transition = fsm.ConnectStates(sourceNode, targetNode);
 
-                if (transition is null || edge is not ArrowEdge transitionView) 
+                if (transition is null || edge is not ArrowEdge transitionView)
                 {
                     //graphViewChange는 Graph의 변경사항을 담은 컨테이너.
                     //그 안에 Edges가 이 함수의 매개변수로 전달되는데,
                     //이미 연결되어있는 경우라면 앞으로 반영될 사항 중, Edge를 제외시킨다.
-                    edges.RemoveAt(index); 
+                    edges.RemoveAt(index);
                     continue;
                 }
 
                 ((StateNodeView)edge.output.node).connectionEdges[sourceNode.guid] = transitionView;
-
                 transitionView.targetTransition = transition; //이미 만들어진거라 대입할 수 밖에 없다.
-                this.RegisterTransitionEdgeEvents(transitionView, view);
             }
         }
 
@@ -205,7 +203,7 @@ namespace TaskStreamer.Tool
             }
 
             NodeViewBase nodeView = StateNodeView.Create(node, TaskStreamerResourceLoader.stateNode);
-            Debug.Assert(nodeView is not null, $"{nameof(TaskGraphView)}: NodeViewBase is null");
+            Assert.IsNotNull(nodeView, $"{nameof(TaskGraphView)}: NodeViewBase is null");
 
             return nodeView;
         }
@@ -217,28 +215,18 @@ namespace TaskStreamer.Tool
         public void TryDisconnectSourceToOriginal(NodeViewBase sourceState)
         {
             StateMachine fsm = TaskStreamerEditor.Instance.currentGraph as StateMachine;
-
+            Assert.IsNotNull(fsm, "fsm graph is null referenced");
+            
             EnterState enter = sourceState.targetNode as EnterState;
+            Assert.IsNotNull(enter, "enter state is null referenced");
 
-            if (fsm is not null && enter is not null && enter.transitions.Count > 0)
+            if (enter.transitions.Count == 0)
             {
-                fsm.DisconnectStates(enter, enter.transitions[0].destinationNode as StateBase);
-                TaskStreamerEditor.Instance.taskGraphView.DeleteElements(sourceState.outputPort.connections);
+                return;
             }
-        }
 
-
-
-        /// <summary> 전이 에지의 선택/해제 이벤트를 그래프 뷰에 바인딩합니다. </summary>
-        /// <param name="transitionEdge"> 선택/해제 이벤트를 등록할 전이 에지 </param>
-        /// <param name="view"> 이벤트를 바인딩할 그래프 뷰 </param>
-        private void RegisterTransitionEdgeEvents(ArrowEdge transitionEdge, TaskGraphView view)
-        {
-            transitionEdge.onTransitionSelected -= view.onElementSelected;
-            transitionEdge.onTransitionSelected += view.onElementSelected;
-
-            transitionEdge.onTransitionUnselected -= view.onElementUnselected;
-            transitionEdge.onTransitionUnselected += view.onElementUnselected;
+            fsm.DisconnectStates(enter, enter.transitions[0].destinationNode as StateBase);
+            TaskStreamerEditor.Instance.taskGraphView.DeleteElements(sourceState.outputPort.connections);
         }
 
 

@@ -12,7 +12,7 @@ namespace TaskStreamer.Tool
     // Copyright (c) 2021 Original Author
     // Licensed under the MIT License. See LICENSE file in the root for details.
     /// <summary> Edge class with arrow styling and transition management. </summary>
-    public class ArrowEdge : Edge
+    public class ArrowEdge : Edge, ISelectableGraphElement
     {
         /// Represents a custom Unity edge with arrow functionality for graph-based tools.
         public ArrowEdge()
@@ -40,14 +40,6 @@ namespace TaskStreamer.Tool
         
         /// <summary> Indicates whether the hover state is currently active. </summary>
         private bool _isHoverActivated;
-
-
-        /// <summary> Event triggered when a transition is selected. </summary>
-        public event Action<GraphElement> onTransitionSelected;
-
-        
-        /// <summary> 이벤트 핸들러로, 트랜지션이 선택 해제될 때 호출됩니다. </summary>
-        public event Action<GraphElement> onTransitionUnselected;
 
         
         /// <summary> Transition 대상 데이터를 저장하는 비공개 필드입니다. </summary>
@@ -84,14 +76,14 @@ namespace TaskStreamer.Tool
         /// <summary>Triggers the transition selection event if it exists.</summary>
         public override void OnSelected()
         {
-            onTransitionSelected?.Invoke(this);
+            TaskStreamerEditor.Instance.taskGraphView.CallSelectionEvent(this);
         }
 
 
         /// <summary>Called when the edge is unselected by the user.</summary>
         public override void OnUnselected()
         {
-            onTransitionUnselected?.Invoke(this);
+            TaskStreamerEditor.Instance.taskGraphView.CallUnselectionEvent(this);
         }
 
 

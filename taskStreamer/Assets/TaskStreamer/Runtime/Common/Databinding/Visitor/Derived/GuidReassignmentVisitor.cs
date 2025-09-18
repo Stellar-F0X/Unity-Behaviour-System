@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using TaskStreamer.BT;
+using TaskStreamer.FSM;
 using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
@@ -35,7 +37,9 @@ namespace TaskStreamer
         {
             value = this.ProcessNodeGuidReassignment(value);
             Debug.Assert(value is not null, "value is not null");
+            context.ContinueVisitation(ref container, ref value);
         }
+
 
 
         /// <summary>GraphDictionary의 GUID를 재할당합니다.</summary>
@@ -102,6 +106,11 @@ namespace TaskStreamer
                 {
                     Graph graph = _context.graphAsset.GetGraph(subGraphNode.subGraphGuid);
                     subGraphNode.subGraphGuid = graph.guid;
+                }
+
+                if (node is BehaviorNodeBase behavior)
+                {
+                    behavior.services.ForEach(s => s.guid = UGUID.Create());
                 }
 
                 List<NodeGroup> groups = _context.currentGraph.nodeGroup;

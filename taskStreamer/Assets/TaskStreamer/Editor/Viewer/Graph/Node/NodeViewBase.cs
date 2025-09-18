@@ -5,18 +5,19 @@ using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
-using TypeUtility = TaskStreamer.Utility.TypeUtility;
 
 namespace TaskStreamer.Tool
 {
     /// Node 클래스에서 확장된 추상 베이스 클래스이며, 노드의 시각적 표현과 데이터 동기화를 관리합니다.
-    internal abstract class NodeViewBase : Node
+    internal abstract class NodeViewBase : Node, ISelectableGraphElement
     {
         protected NodeViewBase(NodeBase targetNode, VisualTreeAsset nodeUxml) : base(AssetDatabase.GetAssetPath(nodeUxml))
         {
             this._elementGroup = this.Q<VisualElement>("contents");
             this._nodeBorder = this.Q<VisualElement>("node-border");
             this._nodeTypeLabel = this.Q<TextElement>("type-label");
+            
+            this._connectionEdges = new Dictionary<UGUID, Edge>();
             
             //title은 sub class에서 처리.
             this.viewDataKey = targetNode.guid.ToString();
@@ -25,15 +26,14 @@ namespace TaskStreamer.Tool
             this.style.left = targetNode.position.x;
             this.style.top = targetNode.position.y;
         }
+        
+        
+        /// _connectionEdges 변수는 각 노드의 연결 정보를 관리하는 Dictionary로, GUID와 Edge 객체의 매핑을 저장합니다.
+        private readonly Dictionary<UGUID, Edge> _connectionEdges;
 
         
-        
-        /// 사용자가 Node를 선택했을 때 발생하는 이벤트로, 선택된 Node 정보를 전달합니다.
-        public event Action<GraphElement> onNodeSelected;
-
-        
-        /// onNodeUnselected 변수는 노드가 선택 해제될 때 실행되는 이벤트를 정의합니다.
-        public event Action<GraphElement> onNodeUnselected;
+        /// _targetNode는 현재 NodeView가 참조하는 데이터 모델인 NodeBase 타입의 객체로, 노드의 상태와 정보를 관리합니다.
+        private readonly NodeBase _targetNode;
         
         
         /// 노드의 종류를 표시하기 위한 UI 텍스트 요소를 나타내는 변수입니다.
@@ -50,14 +50,6 @@ namespace TaskStreamer.Tool
         
         /// <summary> 노드의 상태 또는 강조 표시를 나타내며, UI 테두리 색상 등의 시각적 피드백을 처리하는 데 사용됩니다. </summary>
         protected NodeIndicatorBase Indicator;
-
-        
-        /// _connectionEdges 변수는 각 노드의 연결 정보를 관리하는 Dictionary로, UGUID와 Edge 객체의 매핑을 저장합니다.
-        private Dictionary<UGUID, Edge> _connectionEdges = new Dictionary<UGUID, Edge>();
-
-        
-        /// _targetNode는 현재 NodeView가 참조하는 데이터 모델인 NodeBase 타입의 객체로, 노드의 상태와 정보를 관리합니다.
-        private NodeBase _targetNode;
 
         
         /// 노드의 입력 데이터를 처리하기 위한 입력 포트이며, 다른 노드와 연결될 수 있습니다.
@@ -127,12 +119,7 @@ namespace TaskStreamer.Tool
         /// 노드 선택 이벤트를 트리거하며, 데이터 로딩 중에는 동작하지 않습니다.
         public override void OnSelected()
         {
-            if (TaskStreamerEditor.isLoadingTreeToView)
-            {
-                return;
-            }
-            
-            onNodeSelected?.Invoke(this);
+            TaskStreamerEditor.Instance.taskGraphView.CallSelectionEvent(this);
         }
 
         
@@ -141,12 +128,7 @@ namespace TaskStreamer.Tool
         /// TaskStreamerEditor에서 로드 중에는 실행되지 않습니다.
         public override void OnUnselected()
         {
-            if (TaskStreamerEditor.isLoadingTreeToView)
-            {
-                return;
-            }
-            
-            onNodeUnselected?.Invoke(this);
+            TaskStreamerEditor.Instance.taskGraphView.CallUnselectionEvent(this);
         }
 
 

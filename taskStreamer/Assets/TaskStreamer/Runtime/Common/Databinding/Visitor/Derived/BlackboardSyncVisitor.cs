@@ -9,6 +9,7 @@ using BBCondition = TaskStreamer.BlackboardBasedCondition;
 
 namespace TaskStreamer
 {
+#if UNITY_EDITOR
     /// <summary> Blackboard 교체될 때, 이미 등록되어 있는 BlackboardVariable을 해제하는 용도로 사용되는 객체. </summary>
     internal class BlackboardSyncVisitor : GraphVisitorBase,
                                            IVisitPropertyAdapter<NodeDictionary>,
@@ -148,4 +149,5 @@ namespace TaskStreamer
             return _context.blackboard.variables.FirstOrDefault(v => v != null && v.guid == variable.guid) is not null;
         }
     }
+#endif
 }

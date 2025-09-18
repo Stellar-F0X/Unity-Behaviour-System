@@ -4,6 +4,7 @@ using TaskStreamer.BT;
 using TaskStreamer.Utility;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.Pool;
 
 namespace TaskStreamer.Tool
@@ -23,32 +24,27 @@ namespace TaskStreamer.Tool
         /// <summary>
         /// Attempts to connect two nodes in the task graph by creating an edge between them.
         /// </summary>
-        /// <param name="view">The task graph view where the connection is being made.</param>
+        /// <param name="graphView">The task graph view where the connection is being made.</param>
         /// <param name="sourceView">The sourceView node from which the connection originates.</param>
         /// <param name="targetView">The target node to which the connection is directed.</param>
         /// <returns>
         /// True if the connection was successfully established; otherwise, false.
         /// </returns>
-        public override bool TryConnectNodesByEdge(TaskGraphView view, NodeViewBase sourceView, NodeViewBase targetView)
+        public override bool TryConnectNodesByEdge(TaskGraphView graphView, NodeViewBase sourceView, NodeViewBase targetView)
         {
-            if (sourceView is null || targetView is null || sourceView.outputPort is null || targetView.inputPort is null)
-            {
-                return false;
-            }
+            Assert.IsNotNull(graphView, $"{nameof(TaskGraphView)}: TaskGraphView is null");
+            Assert.IsNotNull(sourceView, $"{nameof(TaskGraphView)}: sourceView is null");
+            Assert.IsNotNull(targetView, $"{nameof(TaskGraphView)}: targetView is null");
+            
+            Assert.IsNotNull(sourceView.outputPort, $"{nameof(TaskGraphView)}: sourceView's outputPort is null");
+            Assert.IsNotNull(targetView.inputPort, $"{nameof(TaskGraphView)}: targetView's inputPort is null");
 
             LinearEdge linkedEdge = sourceView.outputPort.ConnectTo<LinearEdge>(targetView.inputPort);
-
-            if (targetView is BehaviorNodeView connectionTargetView)
-            {
-                connectionTargetView.connectionEdges[UGUID.Empty] = linkedEdge;
-            }
-            else
-            {
-                Debug.LogError("The target node is not a BehaviorNodeView. Connection failed.");
-                return false;
-            }
-
-            view.AddElement(linkedEdge);
+            BehaviorNodeView connectionTargetView = targetView as BehaviorNodeView;
+            Assert.IsNotNull(connectionTargetView, "The target node is not a BehaviorNodeView. Connection failed.");
+            
+            connectionTargetView.connectionEdges[UGUID.Empty] = linkedEdge;
+            graphView.AddElement(linkedEdge);
             return true;
         }
 
@@ -61,6 +57,8 @@ namespace TaskStreamer.Tool
         /// <param name="graph">The graph containing the nodes and parent-child relationships to be processed.</param>
         public override void CreateAndConnectNodes(TaskGraphView graphView, Graph graph)
         {
+            Assert.IsNotNull(graphView, $"{nameof(TaskGraphView)}: TaskGraphView is null");
+            
             // 모든 노드뷰 생성
             foreach (NodeBase node in graph.GetIterator(GraphIteratorType.LS))
             {
@@ -71,17 +69,15 @@ namespace TaskStreamer.Tool
             // 부모-자식 관계에 따른 노드 연결
             foreach (NodeBase parentNodeBase in graph.GetIterator(GraphIteratorType.LS))
             {
-                if (parentNodeBase is not IChildProvider provider || provider.childCount == 0)
+                if (parentNodeBase is IChildProvider provider && provider.childCount != 0)
                 {
-                    continue;
-                }
+                    foreach (NodeBase child in provider.GetChildren())
+                    {
+                        NodeViewBase parentView = graphView.FindNodeView(parentNodeBase);
+                        NodeViewBase childView = graphView.FindNodeView(child);
 
-                foreach (NodeBase child in provider.GetChildren())
-                {
-                    NodeViewBase parentView = graphView.FindNodeView(parentNodeBase);
-                    NodeViewBase childView = graphView.FindNodeView(child);
-
-                    this.TryConnectNodesByEdge(graphView, parentView, childView);
+                        this.TryConnectNodesByEdge(graphView, parentView, childView);
+                    }
                 }
             }
         }
@@ -93,7 +89,9 @@ namespace TaskStreamer.Tool
         /// <param name="selection">A list of selectable elements to be filtered. Elements representing certain nodes, such as Root nodes, are deselected and removed from this list.</param>
         public override void FilterSelectionElements(List<ISelectable> selection)
         {
-            if (selection is null || selection.Count == 0)
+            Assert.IsNotNull(selection, $"{nameof(TaskGraphView)}: selection is null");
+            
+            if (selection.Count == 0)
             {
                 return;
             }
@@ -143,13 +141,10 @@ namespace TaskStreamer.Tool
         /// <returns>A new NodeViewBase instance representing the recreated NodeView, or null if the input node is null.</returns>
         public override NodeViewBase RecreateNodeViewOnLoad(NodeBase node)
         {
-            if (node == null)
-            {
-                return null;
-            }
+            Assert.IsNotNull(node, $"{nameof(TaskGraphView)}: NodeBase is null");
 
             NodeViewBase nodeView = BehaviorNodeView.Create(node, TaskStreamerResourceLoader.behaviorNode);
-            Debug.Assert(nodeView is not null, $"{nameof(TaskGraphView)}: NodeViewBase is null");
+            Assert.IsNotNull(nodeView, $"{nameof(TaskGraphView)}: NodeViewBase is null");
             return nodeView;
         }
 
@@ -160,11 +155,7 @@ namespace TaskStreamer.Tool
         public override void DisconnectNodesByEdge(Graph graph, Edge edge)
         {
             BehaviorTree tree = graph as BehaviorTree;
-
-            if (tree is null)
-            {
-                return;
-            }
+            Assert.IsNotNull(tree, $"{nameof(TaskGraphView)}: BehaviorTree is null");
 
             BehaviorNodeBase parentNode = edge.output.node.GetNodeByView<BehaviorNodeBase>();
             BehaviorNodeBase childNode = edge.input.node.GetNodeByView<BehaviorNodeBase>();
@@ -182,23 +173,26 @@ namespace TaskStreamer.Tool
         /// <param name="edges">A list of edges that define the connections between nodes.</param>
         public override void ConnectNodesByEdges(TaskGraphView graphView, Graph graph, List<Edge> edges)
         {
-            if (graph is not BehaviorTree tree || edges.Count == 0)
+            Assert.IsNotNull(graphView, $"{nameof(TaskGraphView)}: TaskGraphView is null");
+            
+            if (edges.Count == 0)
             {
                 return;
             }
+            
+            BehaviorTree tree = graph as BehaviorTree;
+            Assert.IsNotNull(tree, $"{nameof(TaskGraphView)}: behaviorTree is null");
 
             foreach (Edge edge in edges)
             {
                 BehaviorNodeBase parentNode = edge.output.node.GetNodeByView<BehaviorNodeBase>();
                 BehaviorNodeBase childNode = edge.input.node.GetNodeByView<BehaviorNodeBase>();
 
-                if (parentNode is null || childNode is null)
+                if (parentNode is not null && childNode is not null && edge.output.node is NodeViewBase view)
                 {
-                    continue;
+                    view.connectionEdges[UGUID.Empty] = edge;
+                    tree.ConnectNodes(parentNode, childNode);
                 }
-
-                ((NodeViewBase)edge.output.node).connectionEdges[UGUID.Empty] = edge;
-                tree.ConnectNodes(parentNode, childNode);
             }
         }
 
@@ -212,13 +206,13 @@ namespace TaskStreamer.Tool
         {
             return BindingWindowBuilder.GetBuilder("Behavior Tree", reuse: true)
                                        .AddFactoryModule(
-                                           () => new NodeFactoryModule<ActionNode>(graphView, "Action"), 
+                                           () => new NodeFactoryModule<ActionNode>(graphView, "Action"),
                                            () => new TypeTreeProvider(true))
                                        .AddFactoryModule(
                                            () => new NodeFactoryModule<DecoratorNode>(graphView, "Decorator"),
                                            () => new TypeTreeProvider(true))
                                        .AddFactoryModule(
-                                           () => new NodeFactoryModule<CompositeNode>(graphView, "Composite"), 
+                                           () => new NodeFactoryModule<CompositeNode>(graphView, "Composite"),
                                            () => new TypeTreeProvider(true))
                                        .AddFactoryModule(
                                            () => new NodeFactoryModule<SubGraphNode>(graphView, "Graph"),
@@ -281,10 +275,7 @@ namespace TaskStreamer.Tool
         /// <returns>True if the connection is valid for disconnection; otherwise, false.</returns>
         private bool IsValidConnectionForDisconnect(NodeViewBase nodeView, bool checkInputPort)
         {
-            if (nodeView is null)
-            {
-                return false;
-            }
+            Assert.IsNotNull(nodeView, $"{nameof(TaskGraphView)}: NodeViewBase is null");
 
             if (checkInputPort)
             {
@@ -318,7 +309,7 @@ namespace TaskStreamer.Tool
         private void DisconnectAndDeleteEdge(NodeViewBase parentView, NodeViewBase childView, Edge edge, Port port)
         {
             BehaviorTree behaviorTree = TaskStreamerEditor.Instance.currentGraph as BehaviorTree;
-            Debug.Assert(behaviorTree is not null, $"{nameof(TaskGraphView)}: BehaviorTree is null");
+            Assert.IsNotNull(behaviorTree, $"{nameof(TaskGraphView)}: BehaviorTree is null");
 
             behaviorTree.DisconnectNodes((BehaviorNodeBase)parentView.targetNode, (BehaviorNodeBase)childView.targetNode);
             port.Disconnect(edge);

@@ -64,7 +64,7 @@ namespace TaskStreamer
         {
             get
             {
-                this._variableHandles ??= TypeUtility.TryGetFieldHandles(this.GetType(), this); 
+                this._variableHandles = this._variableHandles ?? TypeUtility.TryGetFieldHandles(this.GetType(), this); 
                 Assert.IsNotNull(this._variableHandles, $"Properties is null. Type: {this.GetType().FullName}");
                 return _variableHandles;
             }

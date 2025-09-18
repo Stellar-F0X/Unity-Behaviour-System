@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace TaskStreamer
 {
-    //에디터에서 노드가 생성될때 쓰이는 PropertyVisitor로, 'Node 객체를 대상'으로 필드의 BlackboardVariable을 할당한다.
+#if UNITY_EDITOR
+    /// <summary> 에디터에서 노드가 생성될때 쓰이는 PropertyVisitor로, 'Node 객체를 대상'으로 필드의 BlackboardVariable을 할당한다. </summary>
     public class BlackboardVariableFieldInitializeVisitor : ReadableVisitorBase, IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
         public void Visit<TContainer>(in VisitContext<TContainer> context, ref TContainer container, BlackboardVariable value)
@@ -15,7 +16,7 @@ namespace TaskStreamer
                 Debug.LogError($"'{typeof(TContainer)}.{context.Property.Name}' is read-only and cannot be modified.");
                 return;
             }
-            
+
             Type valueType = context.Property.DeclaredValueType();
 
             if (valueType.IsInterface || valueType.IsAbstract)
@@ -24,7 +25,7 @@ namespace TaskStreamer
             }
 
             BlackboardVariable bbVariable = null;
-            
+
             DefaultValueAttribute setValue = context.Property.GetAttribute<DefaultValueAttribute>();
 
             if (setValue is not null)
@@ -46,4 +47,5 @@ namespace TaskStreamer
             context.Property.SetValue(ref container, bbVariable);
         }
     }
+#endif
 }

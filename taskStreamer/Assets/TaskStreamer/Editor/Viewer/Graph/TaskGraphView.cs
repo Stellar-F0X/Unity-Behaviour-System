@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
@@ -25,38 +26,30 @@ namespace TaskStreamer.Tool
             styleSheets.Add(TaskStreamerResourceLoader.windowStyle);
         }
 
-        
-        /// <summary>그래프 요소가 선택될 때 호출되는 이벤트입니다.</summary>
-        public Action<GraphElement> onElementSelected;
 
-        
-        /// <summary>노드가 선택 해제될 때 호출되는 이벤트입니다.</summary>
-        public Action<GraphElement> onElementUnselected;
-
-        
         /// <summary>내부에서 그래프 뷰 동작을 관리하는 필드입니다.</summary>
         private GraphViewBase _graphView;
 
-        
+
         /// <summary>다음 업데이트 시점을 나타내는 변수입니다.</summary>
         private float _nextUpdateTime;
 
 
-        
+
         /// <summary>TaskGraphView에서 사용하는 GraphViewBase 인스턴스를 반환합니다.</summary>
         public GraphViewBase graphView
         {
             get { return _graphView; }
         }
 
-        
+
         /// <summary>현재 활성화된 그래프를 반환합니다.</summary>
         public Graph focusGraph
         {
             get { return TaskStreamerEditor.Instance.currentGraph; }
         }
 
-        
+
 
         /// <summary>에디터 뷰를 초기화하고 모든 그래프 요소를 제거합니다.</summary>
         public void ClearEditorView()
@@ -85,7 +78,15 @@ namespace TaskStreamer.Tool
             this.deleteSelection += this.OnDeleteSelectionElements;
 
             this._graphView.CreateAndConnectNodes(this, this.focusGraph);
-            this.focusGraph.nodeGroup?.ForEach(this.RecreateNodeGroupViewOnLoad);
+
+            //Recreate node groups when graph view loading
+            this.focusGraph.nodeGroup?.ForEach(data =>
+            {
+                NodeGroupView nodeGroupView = new NodeGroupView(data, TaskStreamerEditor.settings.nodeGroupColor);
+                nodeGroupView.AddElements(nodes.Where(n => n is NodeViewBase v && data.Contains(v.targetNode.guid)));
+                nodeGroupView.SetPosition(new Rect(data.position, Vector2.zero));
+                base.AddElement(nodeGroupView);
+            });
         }
 
 
@@ -95,11 +96,7 @@ namespace TaskStreamer.Tool
         /// <returns>호환 가능한 출력 포트들의 리스트를 반환합니다.</returns>
         public override List<Port> GetCompatiblePorts(Port input, NodeAdapter nodeAdapter)
         {
-            if (input is null)
-            {
-                Debug.LogWarning($"{typeof(TaskGraphView)}: Input is null");
-                return null;
-            }
+            Assert.IsNotNull(input, $"{typeof(TaskGraphView)}: Input is null");
 
             //direction은 input과 output이므로, 다른 노드라도 같은 포트에 못 꽂게 방지
             return ports.Where(output => input.direction != output.direction && input.node != output.node).ToList();
@@ -141,16 +138,16 @@ namespace TaskStreamer.Tool
             {
                 return;
             }
-            
+
             float interval = TaskStreamerEditor.settings.updateInterval;
-            
+
             _nextUpdateTime = Time.time + interval;
 
             foreach (NodeViewBase view in base.nodes)
             {
                 if (view.indicator.CanHighlight())
                 {
-                    view.indicator.Highlight(interval); 
+                    view.indicator.Highlight(interval);
                 }
             }
         }
@@ -163,10 +160,12 @@ namespace TaskStreamer.Tool
         /// <param name="onNodeCreated">노드 생성 후 실행할 콜백입니다.</param>
         public void OpenContextualMenuWindow(Vector2 mousePosition, Action<NodeViewBase> onNodeCreated = null)
         {
-            if (TaskStreamerEditor.canEditGraph == false || this._graphView is null)
+            if (TaskStreamerEditor.canEditGraph == false)
             {
                 return;
             }
+
+            Assert.IsNotNull(this._graphView, "Task streamer graph view is null");
 
             BindingWindow bindingWindow = _graphView.CreateGraphNodeCreationWindow(this);
             bindingWindow.RegisterCreationCallbackOnce(onNodeCreated);
@@ -184,16 +183,38 @@ namespace TaskStreamer.Tool
 
         /// <summary>지정된 노드를 선택합니다.</summary>
         /// <param name="nodeView">선택할 노드를 나타내는 NodeViewBase 인스턴스</param>
-        public void SelectNode(NodeViewBase nodeView)
+        public void SelectNodeForCode(NodeViewBase nodeView)
         {
-            if (nodeView is null || nodeView.targetNode == null)
+            Assert.IsNotNull(nodeView?.targetNode, "node view or target node is null");
+
+            if (selection.Count > 0)
+            {
+                base.ClearSelection();
+            }
+
+            base.AddToSelection(nodeView);
+        }
+
+
+        public void CallSelectionEvent(ISelectableGraphElement selectedGraphElement)
+        {
+            if (TaskStreamerEditor.isLoadingTreeToView)
             {
                 return;
             }
 
-            base.ClearSelection();
-            base.AddToSelection(nodeView);
+            FloatingInspector inspector = TaskStreamerEditor.Instance.inspectorView;
+            Assert.IsNotNull(inspector, $"floating inspector is null reference");
+
+            GraphElement graphElement = selectedGraphElement as GraphElement;
+            Assert.IsNotNull(graphElement, $"Selected element is not {typeof(GraphElement)}");
+
+            inspector.UpdateSelection(graphElement);
         }
+
+
+        /// <summary> 선택 해제가 될 때, 실행시킬 기능이 없지만 형식상 구현해둔 함수입니다. </summary>
+        public void CallUnselectionEvent(ISelectableGraphElement selectedGraphElement) { }
 
 #endregion
 
@@ -216,7 +237,7 @@ namespace TaskStreamer.Tool
 
                         case NodeViewBase nodeView: this.graphView.DeleteNodeFromGraph(focusGraph, nodeView); break;
 
-                        case NodeGroupView groupView: this.focusGraph.DeleteGroupData(groupView.groupData); break;
+                        case NodeGroupView groupView: this.focusGraph.DeleteGroupDataAndRemoveFromList(groupView.groupData); break;
                     }
                 }
             }
@@ -247,7 +268,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            _graphView.FilterSelectionElements(this.selection);
+            this._graphView.FilterSelectionElements(this.selection);
 
             //DeleteSelection는 내부적으로 Selection 배열을 이용해서 VisualElement들을 제거함.
             //따라서 삭제되면 안되는 요소들만 Selection 배열에서 제거한 뒤, 현재 선택된 요소들(Selection 배열)을 제거하면 됨.
@@ -258,19 +279,6 @@ namespace TaskStreamer.Tool
 
 
 #region Create Graph Elements
-
-        /// <summary>로딩 시 그룹 데이터로부터 NodeGroupView를 재생성합니다.</summary>
-        /// <param name="data">재생성 대상이 되는 NodeGroup 데이터입니다.</param>
-        private void RecreateNodeGroupViewOnLoad(NodeGroup data)
-        {
-            NodeGroupView nodeGroupView = new NodeGroupView(data, TaskStreamerEditor.settings.nodeGroupColor);
-
-            nodeGroupView.AddElements(nodes.Where(n => n is NodeViewBase v && data.Contains(v.targetNode.guid)));
-            nodeGroupView.SetPosition(new Rect(data.position, Vector2.zero));
-            
-            base.AddElement(nodeGroupView);
-        }
-
 
         /// <summary>지정된 타입과 위치에서 새로운 노드를 생성하고 NodeView를 반환합니다.</summary>
         /// <param name="type">생성할 노드의 타입입니다.</param>
@@ -291,16 +299,9 @@ namespace TaskStreamer.Tool
         /// <param name="nodeView">추가할 노드 뷰 객체입니다.</param>
         public void AddNewNodeView(NodeViewBase nodeView)
         {
-            if (nodeView == null || nodeView.targetNode == null)
-            {
-                return;
-            }
+            Assert.IsNotNull(nodeView, "");
 
-            nodeView.onNodeSelected -= this.onElementSelected;
-            nodeView.onNodeSelected += this.onElementSelected;
-            
-            nodeView.onNodeUnselected -= this.onElementUnselected;
-            nodeView.onNodeUnselected += this.onElementUnselected;
+            Assert.IsNotNull(nodeView.targetNode, "");
 
             this.AddElement(nodeView);
         }
@@ -312,11 +313,11 @@ namespace TaskStreamer.Tool
         /// <returns>생성된 NodeGroupView 객체.</returns>
         public NodeGroupView CreateNewNodeGroupView(string title, Vector2 position)
         {
-            NodeGroup nodeNodeGroupData = focusGraph.CreateGroupData(title, position);
+            NodeGroup nodeNodeGroupData = focusGraph.CreateGroupDataAndAddToList(title, position);
             NodeGroupView groupView = new NodeGroupView(nodeNodeGroupData, TaskStreamerEditor.settings.nodeGroupColor);
 
             groupView.SetPosition(new Rect(position, Vector2.zero));
-            
+
             base.AddElement(groupView);
             return groupView;
         }

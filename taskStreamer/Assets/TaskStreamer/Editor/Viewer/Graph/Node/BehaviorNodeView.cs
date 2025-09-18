@@ -4,6 +4,7 @@ using TaskStreamer.BT;
 using TaskStreamer.Utility;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
@@ -57,23 +58,31 @@ namespace TaskStreamer.Tool
 
         private void OnServiceViewListChanged(NotifyListChanged action, ServiceBase service)
         {
+            Assert.IsNotNull(this._serviceContainerView, "Service container view is not found");
+            Assert.IsNotNull(this.serviceList, "Service list is null");
+            Assert.IsNotNull(service, "Service is null");
+            
             switch (action)
             {
                 case NotifyListChanged.Add:
                 {
-                    this.serviceList.Add(service);
                     this._serviceContainerView.Add(new ServiceView(service));
+                    this.serviceList.Add(service);
                     break;
                 } 
 
                 case NotifyListChanged.Remove:
                 {
-                    int index = serviceList.IndexOf(service);
-                    this.serviceList.RemoveAt(index);
+                    int index = this.serviceList.IndexOf(service);
+                    Assert.IsTrue(index >= 0, "service is not in serviceList");
                     this._serviceContainerView.RemoveAt(index);
+                    this.serviceList.RemoveAt(index);
                     break;
                 } 
             }
+
+            Assert.IsNotNull(TaskStreamerEditor.Instance.graphAsset, "graph asset is not found");
+            UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
         }
 
 

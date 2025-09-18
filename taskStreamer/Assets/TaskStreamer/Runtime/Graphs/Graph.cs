@@ -165,7 +165,7 @@ namespace TaskStreamer
 
 #region Group Data
 
-        internal NodeGroup CreateGroupData(string title, Vector2 position)
+        internal NodeGroup CreateGroupDataAndAddToList(string title, Vector2 position)
         {
             NodeGroup newNodeGroupData = new NodeGroup(title, position, this);
 
@@ -185,7 +185,7 @@ namespace TaskStreamer
         }
 
 
-        internal void DeleteGroupData(NodeGroup data)
+        internal void DeleteGroupDataAndRemoveFromList(NodeGroup data)
         {
             if (data is null)
             {

@@ -36,7 +36,7 @@ namespace TaskStreamer.Tool
                 UnityEditor.EditorUtility.SetDirty(graphAsset);
             }
 
-            _view.SelectNode(creation);
+            _view.SelectNodeForCode(creation);
         }
     }
 }
