@@ -123,7 +123,7 @@ namespace TaskStreamer
         /// <summary> 지정된 GUID에 해당하는 서브 그래프 목록을 반환한다. </summary>
         /// <param name="baseGraphGuid"> 서브 그래프들을 식별할 기준이 되는 그래프의 GUID. </param>
         /// <returns> 기준 그래프의 서브 그래프 목록을 반환하거나, 기준 GUID가 비어있거나 데이터가 없을 경우 null을 반환한다. </returns>
-        public List<Graph> GetSubGraphs(UGUID baseGraphGuid)
+        internal List<Graph> GetSubGraphs(UGUID baseGraphGuid)
         {
             if (baseGraphGuid.IsEmpty() || _graphTreeMap.TryGetValue(baseGraphGuid, out List<UGUID> subGraphGuids) == false)
             {
@@ -147,7 +147,7 @@ namespace TaskStreamer
         /// <summary> 지정된 UGUID에 해당하는 그래프를 반환한다. </summary>
         /// <param name="graphGuid"> 검색할 그래프의 UGUID. </param>
         /// <returns> UGUID에 해당하는 그래프를 반환하거나, 없으면 null을 반환한다. </returns>
-        public Graph GetGraph(UGUID graphGuid)
+        internal Graph GetGraph(UGUID graphGuid)
         {
             if (_graphMap.TryGetValue(graphGuid, out Graph graph))
             {
@@ -185,7 +185,7 @@ namespace TaskStreamer
 
 #if UNITY_EDITOR
         /// <summary> 모든 그래프 요소의 GUID를 새로 생성된 GUID로 재할당한다. </summary>
-        public void ReassignAllGraphElementGuids()
+        internal void ReassignAllGraphElementGuids()
         {
             if (PropertyBag.Exists<GraphAsset>() == false)
             {
@@ -221,7 +221,7 @@ namespace TaskStreamer
         /// <summary> 서브 그래프를 추가한다. </summary>
         /// <param name="baseGuid"> 기준 그래프의 GUID. </param>
         /// <param name="graph"> 추가할 서브 그래프 객체. </param>
-        public void AddSubGraph(UGUID baseGuid, Graph graph)
+        internal void AddSubGraph(UGUID baseGuid, Graph graph)
         {
             if (Application.isPlaying == false && Undo.isProcessing == false)
             {
@@ -255,7 +255,7 @@ namespace TaskStreamer
         /// <summary> 그래프와 해당 그래프의 모든 하위 그래프를 삭제한다. </summary>
         /// <param name="baseGuid"> 제거 대상 그래프의 부모 그래프 GUID. </param>
         /// <param name="graph"> 제거할 그래프 객체. </param>
-        public void RemoveSubGraph(UGUID baseGuid, Graph graph)
+        internal void RemoveSubGraph(UGUID baseGuid, Graph graph)
         {
             if (Application.isPlaying == false && Undo.isProcessing == false)
             {

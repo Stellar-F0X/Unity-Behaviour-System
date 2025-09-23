@@ -125,8 +125,9 @@ namespace TaskStreamer.FSM
                 return;
             }
 
-            _subGraph.ResetGraph();
+            this._subGraph.ResetGraph();
 
+            //서브 그래프로가 실행 중일땐, 실행되다말고, 다른 노드로 이동되면 안되기 때문에 상태 전이를 막는다.
             this.blockTransition = true;
         }
 
@@ -146,6 +147,7 @@ namespace TaskStreamer.FSM
                 return;
             }
 
+            //서브 그래프로가 Failure나 Success를 반환하면, 그래프 동작이 끝났다는 것이므로 상태 전이를 다시 허용한다.
             if (_subGraph.UpdateGraph() != Status.Running)
             {
                 this.blockTransition = false;

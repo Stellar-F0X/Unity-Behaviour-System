@@ -98,6 +98,19 @@ namespace TaskStreamer.BT
         {
             get { return _services; }
         }
+        
+        
+        public float enteredTime
+        {
+            get;
+            private set;
+        }
+
+
+        public float elapsedTime
+        {
+            get { return Time.time - enteredTime; }
+        }
 
 
         
@@ -151,6 +164,7 @@ namespace TaskStreamer.BT
         internal override sealed void EnterNode()
         {
             this.tree.interrupter.PushInCallStack(callStackID, this);
+            this.enteredTime = Time.time;
 
             foreach (ServiceBase service in _services)
             {
@@ -183,6 +197,7 @@ namespace TaskStreamer.BT
             this.OnExit();
             this.onNodeExit?.Invoke();
             this.callState = NodeCallState.BeforeEnter;
+            this.enteredTime = 0;
 
             // If a parent node fails during execution, this node's result is set to Failure.
             this.status = (this.status == Status.Running ? Status.Failure : this.status);

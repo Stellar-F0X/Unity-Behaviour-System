@@ -47,7 +47,12 @@ namespace TaskStreamer
 
         public Transform transform
         {
-            get { return streamer?.transform; }
+            get { return streamer.transform; }
+        }
+
+        public GameObject gameObject
+        {
+            get { return streamer.gameObject; }
         }
 
 #endregion
