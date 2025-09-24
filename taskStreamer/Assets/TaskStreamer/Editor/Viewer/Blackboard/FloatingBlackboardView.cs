@@ -210,7 +210,7 @@ namespace TaskStreamer.Tool
                                                        .Build();
 
             window.RegisterCreationCallbackOnce((Action<BlackboardVariable>)RecordAndAddVariable);
-            window.OpenWindow(EditorGUIUtility.GUIToScreenPoint(Event.current.mousePosition));
+            window.OpenWindow(GUIUtility.GUIToScreenPoint(Event.current.mousePosition));
         }
 
 
@@ -236,6 +236,7 @@ namespace TaskStreamer.Tool
             if (blackboard.TryRenameKey(variable, newName))
             {
                 field.text = newName;
+                UnityEditor.EditorUtility.SetDirty(this.blackboard);
             }
         }
 
