@@ -8,27 +8,26 @@ using Edge = UnityEditor.Experimental.GraphView.Edge;
 namespace TaskStreamer.Tool
 {
     /// <summary>
-    /// Represents a specialized view for managing finite state machine (FSM) graphs in the TaskStreamer tool.
+    /// FSM(유한 상태 기계) 구조를 그래프 기반 인터페이스에서 시각화하고 관리하는
+    /// 기능을 제공하는 클래스.
     /// </summary>
     /// <remarks>
-    /// FSMView extends the functionality of the base class GraphViewBase to provide specific handling
-    /// for FSM-related graph operations, such as node connection, disconnection, node recreation,
-    /// and specialized graph behavior for finite state machine systems.
+    /// 이 클래스는 그래프 뷰 시스템 기반을 확장하여 FSM 작업에 특화된 기능을 제공합니다.
+    /// 상태 간 연결, 전환 관리, 유효한 FSM 구성을 보장하는 작업을 지원합니다.
+    /// 주로 동적 FSM 조작이 필요한 도구나 환경에서 사용됩니다.
     /// </remarks>
     internal class FSMView : GraphViewBase
     {
-        /// <summary>
-        /// Represents the base class for the Finite State Machine (FSM) graph view.
-        /// This class provides methods for managing nodes, connections, and interactions within the FSM graph.
-        /// </summary>
         protected internal FSMView() { }
 
 
-        /// <summary> Tries to connect two nodes within a graph view by creating an edge between them. </summary>
-        /// <param name="graphView"> The graph view that contains the nodes to be connected. </param>
-        /// <param name="sourceView"> The first node to connect via an edge. </param>
-        /// <param name="targetView"> The second node to connect via an edge. </param>
-        /// <returns> True if the nodes were successfully connected; false otherwise. </returns>
+        /// <summary>
+        /// 두 노드를 그래프 뷰에서 엣지를 생성하여 연결을 시도합니다.
+        /// </summary>
+        /// <param name="graphView">노드들이 포함된 그래프 뷰입니다.</param>
+        /// <param name="sourceView">연결의 소스 노드입니다.</param>
+        /// <param name="targetView">연결의 타겟 노드입니다.</param>
+        /// <returns>노드 연결이 성공적으로 이루어졌으면 true, 그렇지 않으면 false를 반환합니다.</returns>
         public override bool TryConnectNodesByEdge(TaskGraphView graphView, NodeViewBase sourceView, NodeViewBase targetView)
         {
             if (sourceView is null || targetView is null)
@@ -65,9 +64,12 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 그래프를 불러올때, 주어진 그래프의 노드들을 생성 및 연결하고, TaskGraphView에 반영한다. </summary>
-        /// <param name="graphView"> 노드 뷰를 생성 및 추가할 대상 TaskGraphView </param>
-        /// <param name="graph"> 순회 및 처리에 사용할 소스 그래프 </param>
+        /// <summary>
+        /// Creates nodes from the provided graph and connects them based on its structure.
+        /// The resulting nodes are added to the specified graph view for display and interaction.
+        /// </summary>
+        /// <param name="graphView">The TaskGraphView instance where the created node views will be displayed.</param>
+        /// <param name="graph">The source Graph instance containing nodes and edges to process and connect.</param>
         public override void CreateAndConnectNodes(TaskGraphView graphView, Graph graph)
         {
             foreach (NodeBase node in graph.GetIterator(GraphIteratorType.LS))
@@ -96,9 +98,12 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 상태 머신 그래프 작업을 위한 노드 생성 창을 생성하고 반환한다. </summary>
-        /// <param name="graphView"> 상태 머신 그래프 작업을 위한 그래프 뷰 </param>
-        /// <returns> 노드 생성 및 추가를 지원하는 CreationWindow 인스턴스 </returns>
+        /// <summary>
+        /// 상태 머신 그래프를 위한 노드 생성 창을 생성한다.
+        /// 이 창은 다양한 유형 및 유틸리티를 사용해 그래프 노드를 추가하고 관리할 수 있는 기능을 제공한다.
+        /// </summary>
+        /// <param name="graphView">노드 생성 창이 생성될 상태 머신과 연관된 그래프 뷰이다.</param>
+        /// <returns>노드 생성 및 관리를 위한 구성이 완료된 <see cref="BindingWindow"/> 인스턴스를 반환한다.</returns>
         public override BindingWindow CreateGraphNodeCreationWindow(TaskGraphView graphView)
         {
             return BindingWindowBuilder.GetBuilder("State Machine", reuse: true)
@@ -115,8 +120,10 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 선택된 노드 중 특정 조건에 따라 제외해야 할 노드를 필터링한다. </summary>
-        /// <param name="selection"> 선택된 요소들의 리스트 </param>
+        /// <summary>
+        /// Filters the selected elements based on specific conditions, removing nodes that do not meet the criteria from the selection.
+        /// </summary>
+        /// <param name="selection">The list of selected elements in the graph view to process.</param>
         public override void FilterSelectionElements(List<ISelectable> selection)
         {
             for (int i = 0; i < selection.Count; ++i)
@@ -135,9 +142,12 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 지정된 그래프와 관련된 Edge를 이용해 노드 간의 연결을 해제한다. </summary>
-        /// <param name="graph"> Edge와 연결된 그래프 객체 </param>
-        /// <param name="edge"> 연결 해제를 수행할 대상 Edge 객체 </param>
+        /// <summary>
+        /// 두 노드를 제공된 엣지를 사용하여 그래프에서 연결 해제합니다.
+        /// 연결을 제거하고 그래프 계층 구조를 갱신합니다.
+        /// </summary>
+        /// <param name="graph">연결 해제를 수행할 엣지가 포함된 그래프 인스턴스입니다.</param>
+        /// <param name="edge">노드 간 연결을 나타내는 엣지입니다.</param>
         public override void DisconnectNodesByEdge(Graph graph, Edge edge)
         {
             if (graph is not StateMachine fsm)
@@ -156,10 +166,13 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 그래프를 수정했을 때 호출되며, 엣지를 통해 노드들을 연결한다. </summary>
-        /// <param name="view"> 작업 그래프 뷰 인스턴스 </param>
-        /// <param name="graph"> 연결을 처리할 대상 그래프 </param>
-        /// <param name="edges"> 연결을 처리하기 위한 엣지 리스트 </param>
+        /// <summary>
+        /// Connects nodes within the graph by traversing the provided edges.
+        /// This method modifies the graph structure based on the given edges.
+        /// </summary>
+        /// <param name="view">The instance of the task graph view where the operation is performed.</param>
+        /// <param name="graph">The graph containing nodes to connect.</param>
+        /// <param name="edges">The list of edges used to define connections between nodes.</param>
         public override void ConnectNodesByEdges(TaskGraphView view, Graph graph, List<Edge> edges)
         {
             Assert.IsTrue(edges.Count != 0, "Graph edge's element count is 0");
@@ -192,9 +205,12 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> 로드 시 노드의 NodeView를 재생성한다. </summary>
-        /// <param name="node"> 재생성할 타겟 NodeBase </param>
-        /// <return> 재생성된 NodeViewBase 개체를 반환하거나, 타겟 노드가 null일 경우 null을 반환한다. </return>
+        /// <summary>
+        /// 주어진 NodeBase 객체를 기반으로 NodeView를 재생성합니다.
+        /// 그래프 로드 시 대응되는 NodeView가 올바르게 생성되도록 보장합니다.
+        /// </summary>
+        /// <param name="node">NodeView를 재생성해야 하는 NodeBase 객체입니다.</param>
+        /// <returns>주어진 NodeBase에 대응하는 새롭게 생성된 NodeViewBase 인스턴스를 반환합니다. 입력이 null인 경우 null을 반환합니다.</returns>
         public override NodeViewBase RecreateNodeViewOnLoad(NodeBase node)
         {
             if (node == null)
@@ -210,17 +226,19 @@ namespace TaskStreamer.Tool
 
 
 
-        /// <summary> Attempts to disconnect the source node from its originally connected node when creating a new node through drag-and-drop. </summary>
-        /// <param name="sourceState"> The source node where the drag-and-drop operation begins. </param>
+        /// <summary>
+        /// 소스 노드와 원래 연결된 노드 간의 연결을 끊으려고 시도합니다.
+        /// 이 메서드는 드래그 앤 드롭을 통해 새 노드를 생성하는 작업 중에 사용됩니다.
+        /// </summary>
+        /// <param name="sourceState">연결을 끊으려는 소스 노드를 나타내는 노드입니다.</param>
         public void TryDisconnectSourceToOriginal(NodeViewBase sourceState)
         {
             StateMachine fsm = TaskStreamerEditor.Instance.currentGraph as StateMachine;
             Assert.IsNotNull(fsm, "fsm graph is null referenced");
-            
-            EnterState enter = sourceState.targetNode as EnterState;
-            Assert.IsNotNull(enter, "enter state is null referenced");
 
-            if (enter.transitions.Count == 0)
+            //enter 노드만이 하나의 아웃풋 포트를 가지므로, enter 노드인지만 확인한다.
+            //exit 또는 any 노드는 output 포트 없이, input 포트만 가지므로 검사하지 않아도 된다.
+            if (sourceState.targetNode is not EnterState enter || enter.transitions.Count == 0)
             {
                 return;
             }
@@ -231,17 +249,17 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>
-        /// Determines the connection port information between two nodes.
-        /// Selects a valid direction (A->B or B->A) and returns the corresponding output/input ports,
-        /// start/end states, and the starting node view.
+        /// 노드 간의 연결 정보를 결정합니다.
+        /// 유효한 방향(A->B 또는 B->A)을 선택하고, 연결에 필요한 출력/입력 포트,
+        /// 시작/종료 상태 및 시작 노드 뷰를 반환합니다.
         /// </summary>
-        /// <param name="a">The first node involved in the connection process.</param>
-        /// <param name="b">The second node involved in the connection process.</param>
-        /// <param name="outPort">The output port determined for the connection.</param>
-        /// <param name="inputPort">The input port determined for the connection.</param>
-        /// <param name="start">The starting state for the connection.</param>
-        /// <param name="end">The ending state for the connection.</param>
-        /// <returns>The starting StateNodeView if a valid connection can be determined; otherwise, null.</returns>
+        /// <param name="a">연결 과정에 포함된 첫 번째 노드입니다.</param>
+        /// <param name="b">연결 과정에 포함된 두 번째 노드입니다.</param>
+        /// <param name="outPort">결정된 출력 포트를 반환합니다.</param>
+        /// <param name="inputPort">결정된 입력 포트를 반환합니다.</param>
+        /// <param name="start">연결의 시작 상태를 반환합니다.</param>
+        /// <param name="end">연결의 종료 상태를 반환합니다.</param>
+        /// <returns>유효한 연결이 결정되면 시작 StateNodeView를 반환하며, 그렇지 않으면 null을 반환합니다.</returns>
         public StateNodeView TracePortConnection(NodeViewBase a, NodeViewBase b, out Port outPort, out Port inputPort, out StateBase start, out StateBase end)
         {
             // A -> B 연결 시도
@@ -272,9 +290,12 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary> Determines if a specific node type should be excluded from selection in the FSM view. </summary>
-        /// <param name="type"> The type of the node being evaluated for exclusion. </param>
-        /// <returns> True if the node type should be excluded from selection; otherwise, false. </returns>
+        /// <summary>
+        /// 지정된 노드 유형(StateNodeType)이 선택에서 제외되어야 하는지 여부를 결정합니다.
+        /// 이 메서드는 제외 기준을 평가하여 선택에 포함되지 않아야 할 요소를 식별합니다.
+        /// </summary>
+        /// <param name="type">선택 제외 기준을 평가할 노드 유형(StateNodeType).</param>
+        /// <returns>노드 유형이 제외 기준을 충족하면 true를 반환하고, 그렇지 않으면 false를 반환합니다.</returns>
         private bool ShouldExcludeFromSelection(StateNodeType type)
         {
             if (type == StateNodeType.Any || type == StateNodeType.Enter || type == StateNodeType.Exit)
