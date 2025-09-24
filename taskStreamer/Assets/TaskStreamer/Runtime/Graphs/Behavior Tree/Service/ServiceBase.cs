@@ -1,5 +1,6 @@
 using System;
 using TaskStreamer.Utility;
+using UnityEngine;
 
 namespace TaskStreamer.BT
 {
@@ -14,20 +15,48 @@ namespace TaskStreamer.BT
         }
 
 
+        
         public bool enable = true;
 
 #if UNITY_EDITOR
         internal bool isExpanded = true;
 #endif
 
+        
+        /// <summary>
+        /// 현재 Service가 부착되어 있는 노드입니다.
+        /// 런타임 진입시 초기화 과정에 할당됩니다.
+        /// </summary>
+        public BehaviorNodeBase node
+        {
+            get;
+            internal set;
+        }
 
-        public virtual void OnStart() { }
+        public Transform transform
+        {
+            get { return node.transform; }
+        }
 
+        public GameObject gameObject
+        {
+            get { return node.gameObject; }
+        }
 
-        public virtual void OnUpdate() { }
+        public TaskStreamer streamer
+        {
+            get { return node.streamer; }
+        }
 
-
-        public virtual void OnStop() { }
+        public float enteredTime
+        {
+            get { return node.enteredTime; }
+        }
+        
+        public float elapsedTime
+        {
+            get { return node.elapsedTime; }
+        }
 
 
         public bool Equals(ServiceBase other)
@@ -44,5 +73,14 @@ namespace TaskStreamer.BT
 
             return ReferenceEquals(this, other);
         }
+        
+
+        public virtual void OnStart() { }
+
+
+        public virtual void OnUpdate() { }
+
+
+        public virtual void OnStop() { }
     }
 }

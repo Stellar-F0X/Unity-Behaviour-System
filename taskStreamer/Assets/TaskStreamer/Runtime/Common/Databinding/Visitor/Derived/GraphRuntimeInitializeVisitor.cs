@@ -143,6 +143,8 @@ namespace TaskStreamer
             foreach (ServiceBase service in serviceList)
             {
                 IPropertyBag bag = PropertyBag.GetPropertyBag(service.GetType());
+                service.node = container as BehaviorNodeBase;
+                Assert.IsNotNull(service.node);
 
                 if (bag is null)
                 {
