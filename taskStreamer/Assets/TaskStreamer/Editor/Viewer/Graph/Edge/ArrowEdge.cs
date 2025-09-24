@@ -12,7 +12,7 @@ namespace TaskStreamer.Tool
     // Copyright (c) 2021 Original Author
     // Licensed under the MIT License. See LICENSE file in the root for details.
     /// <summary> Edge class with arrow styling and transition management. </summary>
-    internal class ArrowEdge : Edge, ISelectableGraphElement
+    internal class ArrowEdge : Edge, ISelectableView
     {
         /// Represents a custom Unity edge with arrow functionality for graph-based tools.
         public ArrowEdge()

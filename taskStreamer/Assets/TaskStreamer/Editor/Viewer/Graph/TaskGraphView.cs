@@ -25,8 +25,7 @@ namespace TaskStreamer.Tool
 
             styleSheets.Add(TaskStreamerResourceLoader.windowStyle);
         }
-
-
+        
         /// <summary>내부에서 그래프 뷰 동작을 관리하는 필드입니다.</summary>
         private GraphViewBase _graphView;
 
@@ -65,11 +64,8 @@ namespace TaskStreamer.Tool
         /// <param name="changeGraph">에디터 뷰에 설정할 새로운 그래프 데이터입니다.</param>
         public void TrySetupGraphEditorView(Graph changeGraph)
         {
-            if (changeGraph is null)
-            {
-                return;
-            }
-
+            Assert.IsNotNull(changeGraph, "change graph is null");
+            
             this._graphView = GraphViewBase.CreateGraphView(changeGraph);
 
             this.ClearEditorView();
@@ -80,13 +76,7 @@ namespace TaskStreamer.Tool
             this._graphView.CreateAndConnectNodes(this, this.focusGraph);
 
             //Recreate node groups when graph view loading
-            this.focusGraph.nodeGroup?.ForEach(data =>
-            {
-                NodeGroupView nodeGroupView = new NodeGroupView(data, TaskStreamerEditor.settings.nodeGroupColor);
-                nodeGroupView.AddElements(nodes.Where(n => n is NodeViewBase v && data.Contains(v.targetNode.guid)));
-                nodeGroupView.SetPosition(new Rect(data.position, Vector2.zero));
-                base.AddElement(nodeGroupView);
-            });
+            this.focusGraph.nodeGroup?.ForEach(this.RecreateNodeGroupView);
         }
 
 
@@ -101,6 +91,7 @@ namespace TaskStreamer.Tool
             //direction은 input과 output이므로, 다른 노드라도 같은 포트에 못 꽂게 방지
             return ports.Where(output => input.direction != output.direction && input.node != output.node).ToList();
         }
+        
 
 
         /// <summary>주어진 노드에 해당하는 NodeView를 찾아 반환합니다.</summary>
@@ -117,9 +108,9 @@ namespace TaskStreamer.Tool
         }
 
 
-        /// <summary>주어진 노드에 해당하는 NodeView를 찾습니다.</summary>
-        /// <param name="node">NodeBase 인스턴스입니다.</param>
-        /// <returns>찾은 NodeBase에 대한 NodeViewBase입니다. 없으면 null을 반환합니다.</returns>
+        /// <summary>주어진 GUID를 기준으로 해당 NodeView를 찾습니다.</summary>
+        /// <param name="guid">찾고자 하는 노드의 고유 식별자입니다.</param>
+        /// <returns>해당 GUID에 일치하는 NodeViewBase 인스턴스입니다. 없으면 null을 반환합니다.</returns>
         public NodeViewBase FindNodeView(string guid)
         {
             if (string.IsNullOrEmpty(guid))
@@ -134,21 +125,17 @@ namespace TaskStreamer.Tool
         /// <summary>런타임 중 노드 뷰들을 업데이트합니다.</summary>
         public void UpdateNodeView()
         {
-            if (Time.time < _nextUpdateTime)
+            if (Time.unscaledTime < _nextUpdateTime)
             {
                 return;
             }
 
             float interval = TaskStreamerEditor.settings.updateInterval;
+            this._nextUpdateTime = Time.unscaledTime + interval;
 
-            _nextUpdateTime = Time.time + interval;
-
-            foreach (NodeViewBase view in base.nodes)
+            foreach (Node node in this.nodes)
             {
-                if (view.indicator.CanHighlight())
-                {
-                    view.indicator.Highlight(interval);
-                }
+                ((NodeViewBase)node).indicator.TryHighlight(interval);
             }
         }
 
@@ -196,7 +183,7 @@ namespace TaskStreamer.Tool
         }
 
 
-        public void CallSelectionEvent(ISelectableGraphElement selectedGraphElement)
+        public void CallSelectionEvent(ISelectableView selectedView)
         {
             if (TaskStreamerEditor.isLoadingTreeToView)
             {
@@ -206,7 +193,7 @@ namespace TaskStreamer.Tool
             FloatingInspector inspector = TaskStreamerEditor.Instance.inspectorView;
             Assert.IsNotNull(inspector, $"floating inspector is null reference");
 
-            GraphElement graphElement = selectedGraphElement as GraphElement;
+            GraphElement graphElement = selectedView as GraphElement;
             Assert.IsNotNull(graphElement, $"Selected element is not {typeof(GraphElement)}");
 
             inspector.UpdateSelection(graphElement);
@@ -214,7 +201,7 @@ namespace TaskStreamer.Tool
 
 
         /// <summary> 선택 해제가 될 때, 실행시킬 기능이 없지만 형식상 구현해둔 함수입니다. </summary>
-        public void CallUnselectionEvent(ISelectableGraphElement selectedGraphElement) { }
+        public void CallUnselectionEvent(ISelectableView selectedView) { }
 
 #endregion
 
@@ -280,6 +267,17 @@ namespace TaskStreamer.Tool
 
 #region Create Graph Elements
 
+        /// <summary> GraphView가 로드될 때, Node Group Data를 토대로 Node Group View를 다시 생성합니다. </summary>
+        /// <param name="data"> Node Group View를 생성하기 위한 Node Group Data 입니다. </param>
+        private void RecreateNodeGroupView(NodeGroup data)
+        {
+            NodeGroupView nodeGroupView = new NodeGroupView(data, TaskStreamerEditor.settings.nodeGroupColor);
+            nodeGroupView.AddElements(nodes.Where(n => n is NodeViewBase v && data.Contains(v.targetNode.guid)));
+            nodeGroupView.SetPosition(new Rect(data.position, Vector2.zero));
+            base.AddElement(nodeGroupView);
+        }
+        
+        
         /// <summary>지정된 타입과 위치에서 새로운 노드를 생성하고 NodeView를 반환합니다.</summary>
         /// <param name="type">생성할 노드의 타입입니다.</param>
         /// <param name="mousePosition">노드의 초기 위치입니다.</param>
@@ -299,9 +297,8 @@ namespace TaskStreamer.Tool
         /// <param name="nodeView">추가할 노드 뷰 객체입니다.</param>
         public void AddNewNodeView(NodeViewBase nodeView)
         {
-            Assert.IsNotNull(nodeView, "");
-
-            Assert.IsNotNull(nodeView.targetNode, "");
+            Assert.IsNotNull(nodeView, "node view is null");
+            Assert.IsNotNull(nodeView.targetNode, "target node is null");
 
             this.AddElement(nodeView);
         }

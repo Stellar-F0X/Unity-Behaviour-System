@@ -322,7 +322,12 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            if (this.graphAsset?.main is null)
+            if (this.graphAsset == null)
+            {
+                return;
+            }
+
+            if (this.graphAsset.main is null)
             {
                 return;
             }
@@ -394,7 +399,7 @@ namespace TaskStreamer.Tool
             {
                 return;
             }
-            
+
             //아니면 그래프가 같거나, 뷰가 초기화되어 그래프를 강제로 갱신할 필요가 없다면 종료합니다.
             if (_requiresGraphUpdate == false && previousAsset == this.graphAsset)
             {
@@ -402,8 +407,8 @@ namespace TaskStreamer.Tool
             }
 
             this._requiresGraphUpdate = false;
-            
-            
+
+
             if (this.ChangeGraph(graphAsset.main) && graphAsset.blackboard != null)
             {
                 this._blackboardField.SetValueWithoutNotify(graphAsset.blackboard);

@@ -7,38 +7,37 @@ namespace TaskStreamer.BT
     [GeneratePropertyBag, Readable]
     public class RandomSelectorNode : CompositeNode
     {
-        private bool _isChildrenInvalid;
+        private readonly List<int> _randomIndices = new List<int>();
+        
         private int _currentRandomIndex;
 
-        private readonly List<int> _randomIndices = new List<int>();
 
         
         public override void OnAwake()
         {
-            _isChildrenInvalid = children is null || children.Count == 0;
-
-            if (_isChildrenInvalid)
+            if (children is null || children.Count == 0)
             {
                 return;
             }
             
-            for (int i = 0; i < children!.Count; i++)
+            for (int i = 0; i < children.Count; i++)
             {
-                _randomIndices.Add(i);
+                this._randomIndices.Add(i);
             }
         }
 
 
         protected override void OnEnter()
         {
-            this.ShuffleIndices(_randomIndices);
-            _currentChildrenIndex = _randomIndices[_currentRandomIndex];
+            this.ShuffleIndices(this._randomIndices);
+            
+            this._currentChildrenIndex = this._randomIndices[_currentRandomIndex];
         }
 
 
         protected override Status OnUpdate()
         {
-            if (_isChildrenInvalid)
+            if (children is null || children.Count == 0)
             {
                 return Status.Failure;
             }

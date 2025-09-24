@@ -10,8 +10,8 @@ namespace TaskStreamer
     [Serializable, Readable]
     public abstract class NodeBase : Task
     {
-        protected Action onNodeEnter;
-        protected Action onNodeExit;
+        protected Action<NodeBase> onNodeEnter;
+        protected Action<NodeBase> onNodeExit;
 
         
 #if UNITY_EDITOR

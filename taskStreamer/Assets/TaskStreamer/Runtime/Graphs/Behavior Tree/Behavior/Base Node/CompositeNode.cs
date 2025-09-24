@@ -40,9 +40,9 @@ namespace TaskStreamer.BT
         }
 
 
-        private void ResetChildrenIndex()
+        private void ResetChildrenIndex(NodeBase _)
         {
-            _currentChildrenIndex = 0;
+            this._currentChildrenIndex = 0;
         }
     }
 }

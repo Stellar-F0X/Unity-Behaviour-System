@@ -33,11 +33,11 @@ namespace TaskStreamer.BT
 
         public override void OnAwake()
         {
-            _isChildStopped = new List<bool>(children.Count);
+            this._isChildStopped = new List<bool>(children.Count);
 
             for (int i = 0; i < children.Count; ++i)
             {
-                _isChildStopped.Add(false);
+                this._isChildStopped.Add(false);
             }
         }
 

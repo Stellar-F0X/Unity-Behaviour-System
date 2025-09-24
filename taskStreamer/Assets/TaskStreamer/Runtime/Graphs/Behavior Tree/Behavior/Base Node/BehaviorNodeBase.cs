@@ -174,7 +174,7 @@ namespace TaskStreamer.BT
                 }
             }
             
-            this.onNodeEnter?.Invoke();
+            this.onNodeEnter?.Invoke(this);
             this.OnEnter();
             this.callState = NodeCallState.Updating;
         }
@@ -195,7 +195,7 @@ namespace TaskStreamer.BT
             }
             
             this.OnExit();
-            this.onNodeExit?.Invoke();
+            this.onNodeExit?.Invoke(this);
             this.callState = NodeCallState.BeforeEnter;
             this.enteredTime = 0;
 

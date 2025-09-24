@@ -51,30 +51,23 @@ namespace TaskStreamer.Tool
             base.onTryCreate = this.ExecuteCreateActions;
             this._useCallback = useCallback;
         }
-        
+
 
         private readonly bool _useCallback;
 
-        
+
         private void ExecuteCreateActions(Type childType, Vector2 position, string entryName, Delegate createAction)
         {
-            try
-            {
-                this.BeforeCreate(childType, position);
-                
-                T creation = this.Create(childType, position, entryName);
-                
-                if (this._useCallback)
-                {
-                    createAction?.DynamicInvoke(creation);
-                }
+            this.BeforeCreate(childType, position);
 
-                this.AfterCreate(creation);
-            }
-            catch (Exception e)
+            T creation = this.Create(childType, position, entryName);
+
+            if (this._useCallback)
             {
-                Debug.LogAssertion(e);
+                createAction?.DynamicInvoke(creation);
             }
+
+            this.AfterCreate(creation);
         }
 
 

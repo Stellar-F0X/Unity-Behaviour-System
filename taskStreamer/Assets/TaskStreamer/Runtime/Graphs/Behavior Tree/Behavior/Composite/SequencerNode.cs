@@ -5,18 +5,9 @@ namespace TaskStreamer.BT
     [GeneratePropertyBag, Readable]
     public sealed class SequencerNode : CompositeNode
     {
-        private int _childrenCount;
-        private bool _childrenIsInvalid;
-
-        public override void OnAwake()
-        {
-            _childrenIsInvalid = children is null || children.Count == 0;
-        }
-
-
         protected override Status OnUpdate()
         {
-            if (_childrenIsInvalid)
+            if (children is null || children.Count == 0)
             {
                 return Status.Failure;
             }

@@ -105,7 +105,7 @@ namespace TaskStreamer.FSM
         {
             this.enteredTime = Time.time;
             this.OnEnter();
-            this.onNodeEnter?.Invoke();
+            this.onNodeEnter?.Invoke(this);
             this.callState = NodeCallState.Updating;
         }
 
@@ -113,7 +113,7 @@ namespace TaskStreamer.FSM
         internal override sealed void ExitNode()
         {
             this.OnExit();
-            this.onNodeExit?.Invoke();
+            this.onNodeExit?.Invoke(this);
             this.callState = NodeCallState.BeforeEnter;
             this.enteredTime = 0;
         }

@@ -5,18 +5,9 @@ namespace TaskStreamer.BT
     [GeneratePropertyBag, Readable]
     public sealed class SelectorNode : CompositeNode
     {
-        private bool _isChildrenInvalid;
-
-        
-        public override void OnAwake()
-        {
-            _isChildrenInvalid = children is null || children.Count == 0;
-        }
-
-        
         protected override Status OnUpdate()
         {
-            if (_isChildrenInvalid)
+            if (children is null || children.Count == 0)
             {
                 return Status.Failure;
             }
