@@ -48,7 +48,7 @@ namespace TaskStreamer
                                                          .WithAttributes(property.GetAttributes())
                                                          .Build();
 
-            PropertyOrder order = property.GetAttribute<PropertyOrder>();
+            PropertyOrderAttribute order = property.GetAttribute<PropertyOrderAttribute>();
             Assert.IsTrue(handle.IsValid(), "잘못된 VariableHandle 값, 고쳐라 인간.");
             this._propertiesContainer.Enqueue(handle, order is null ? int.MaxValue : order.priority);
         }

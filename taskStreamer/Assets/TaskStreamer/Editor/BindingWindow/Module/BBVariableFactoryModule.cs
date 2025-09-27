@@ -1,6 +1,7 @@
 using System;
 using TaskStreamer.Utility;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace TaskStreamer.Tool
 {
@@ -12,7 +13,7 @@ namespace TaskStreamer.Tool
         protected override BlackboardVariable Create(Type type, Vector2 position, string entryName)
         {
             BlackboardVariable variable = ObjectFactory.CreateBlackboardVariable(type, StringUtility.ToNicifyName(type.Name));
-            Debug.Assert(variable is not null, "Variable is null");
+            Assert.IsNotNull(variable, "Variable is null");
             return variable;
         }
     }

@@ -130,15 +130,35 @@ namespace TaskStreamer.Utility
 
         public static Type[] OrderByNameAndFilterAbstracts(this TypeCache.TypeCollection collection)
         {
-            Type[] array = collection.Where(t => t.IsAbstract == false && t.IsGenericType == false).ToArray();
+            Type[] array = collection.Where(Include).ToArray();
 
             if (array.Length <= 1)
             {
                 return array;
             }
+            else
+            {
+                Array.Sort(array, (a, b) => a.Name[0].CompareTo(b.Name[0]));
+                return array;
+            }
+            
+            
+            bool Include(Type t)
+            {
+                if (t.IsAbstract || t.IsGenericType)
+                {
+                    return false;
+                }
 
-            Array.Sort(array, (a, b) => a.Name[0].CompareTo(b.Name[0]));
-            return array;
+                if (t.GetAttribute<HideInCreationMenuAttribute>() is null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
 

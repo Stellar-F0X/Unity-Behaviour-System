@@ -3,9 +3,9 @@ using System;
 namespace TaskStreamer
 {
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
-    public class PropertyOrder : Attribute
+    public class PropertyOrderAttribute : Attribute
     {
-        public PropertyOrder(int priority = Int32.MaxValue)
+        public PropertyOrderAttribute(int priority = Int32.MaxValue)
         {
             this.priority = priority;
         }

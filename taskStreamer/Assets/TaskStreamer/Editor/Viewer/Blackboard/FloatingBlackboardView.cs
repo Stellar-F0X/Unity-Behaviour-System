@@ -207,6 +207,9 @@ namespace TaskStreamer.Tool
                                                        .AddFactoryModule(
                                                            () => new BlackboardVariableFactoryModule("Variables", 0),
                                                            () => new TypeTreeProvider(true))
+                                                       .AddFactoryModule(
+                                                           () => new EnumBlackboardVariableFactoryModule("Enums", 1),
+                                                           () => new TypeTreeProvider(true))
                                                        .Build();
 
             window.RegisterCreationCallbackOnce((Action<BlackboardVariable>)RecordAndAddVariable);
