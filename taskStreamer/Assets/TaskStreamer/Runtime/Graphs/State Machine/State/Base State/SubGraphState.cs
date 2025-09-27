@@ -2,6 +2,7 @@ using System;
 using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace TaskStreamer.FSM
 {
@@ -96,7 +97,7 @@ namespace TaskStreamer.FSM
         {
             _subGraph = streamer.graphAsset.GetGraph(subGraphGuid);
 
-            Debug.Assert(_subGraph != null, "SubGraph not found");
+            Assert.IsNotNull(_subGraph, "SubGraph not found");
         }
 
 
@@ -168,6 +169,25 @@ namespace TaskStreamer.FSM
             }
 
             this._subGraph.StopGraph();
+        }
+
+
+        protected override bool CanTransition(out NodeBase nextState)
+        {
+            if (base.CanTransition(out nextState) == false)
+            {
+                return false;
+            }
+
+            SubGraphTransitionPolicy policy = this.transitionPolicy.value;
+            
+            //동작 도중에 직접 연결된 트랜지션에 대해서, 갑작스러운 전이를 허용한다면 True를 반환.
+            if ((policy & SubGraphTransitionPolicy.AllowLinkedWhileRunning) > 0)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

@@ -259,21 +259,31 @@ namespace TaskStreamer
     };
 
 
-    /// <summary> Represents the addition of an element to the list in the context of a notification for list changes.  </summary>
+    /// <summary> 리스트 변경 알림의 맥락에서 요소 추가/제거 동작을 나타냅니다. </summary>
+    [Tooltip("Represents operations related to list change notifications.")]
     public enum NotifyListChanged : byte
     {
-        /// <summary> Represents the removal of an element from the list in the context of a notification for list changes. </summary>
+        /// <summary> 리스트에서 요소가 제거됨을 나타냅니다. </summary>
+        [Tooltip("Represents the removal of an element from the list.")]
         Remove = 0,
 
-        /// <summary> Represents an addition operation to a list, typically indicating that an item has been added in the context of a list change notification. </summary>
+        /// <summary> 리스트에 요소가 추가됨을 나타냅니다. </summary>
+        [Tooltip("Represents the addition of an element to the list.")]
         Add = 1,
     }
 
 
+    /// <summary> 실행 중인 노드에서의 전환 허용 정책을 정의합니다. </summary>
+    [Tooltip("Defines policies for allowing transitions while a node is executing.")]
     [Flags]
     public enum SubGraphTransitionPolicy
     {
-        AllowAnyNodeTransition = 1,
-        AllowLinkedTransition = 2,
+        /// <summary> 실행 중에도 Any 노드 전환이 허용됨을 나타냅니다. </summary>
+        [Tooltip("Allows transitions by Any Node even while executing.")]
+        AllowAnyWhileRunning = 1,
+
+        /// <summary> 실행 중에도 연결된 노드 전환이 허용됨을 나타냅니다. </summary>
+        [Tooltip("Allows transitions to linked nodes while executing.")]
+        AllowLinkedWhileRunning = 2,
     }
 }

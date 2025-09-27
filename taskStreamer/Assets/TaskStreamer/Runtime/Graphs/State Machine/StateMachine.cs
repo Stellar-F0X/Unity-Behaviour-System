@@ -22,6 +22,7 @@ namespace TaskStreamer.FSM
         private StateBase _exit;
 
         private bool _blockAllTransition;
+        private bool _ended;
 
 
         public override GraphType graphType
@@ -57,7 +58,7 @@ namespace TaskStreamer.FSM
             switch (iteratorType)
             {
                 case GraphIteratorType.Default: return new Graph.CommonLSIterator(this);
-                
+
                 case GraphIteratorType.LS: return new Graph.CommonLSIterator(this);
 
                 case GraphIteratorType.BFS: return new StateMachine.BFSIterator(this);
@@ -69,8 +70,9 @@ namespace TaskStreamer.FSM
 
         internal override void InitializeOnEnterRuntime(TaskStreamer streamer)
         {
-            foreach (StateBase node in this.GetIterator(GraphIteratorType.LS))
+            foreach (NodeBase nodeBase in this.GetIterator(GraphIteratorType.LS))
             {
+                StateBase node = (StateBase)nodeBase;
                 node.streamer = streamer;
                 node.machine = this;
             }
@@ -84,15 +86,15 @@ namespace TaskStreamer.FSM
             _any = _nodeLookup[_any.guid] as StateBase;
             Debug.Assert(_any != null, "any node is null.");
         }
-        
+
 
         internal void ChangeState(NodeBase nextNode)
         {
-            if (_current != null)
+            if (_current is not null)
             {
                 _current.ExitNode();
             }
-            
+
             _current = (StateBase)nextNode;
             _current.EnterNode();
         }
@@ -100,25 +102,22 @@ namespace TaskStreamer.FSM
 
         internal override Status UpdateGraph()
         {
-            if (_current == null)
+            if (_current is null)
             {
                 return Status.Failure;
             }
-
+            
             _current.UpdateNode();
             _any.UpdateNode();
-
-            if (_current.guid == _exit.guid)
+            
+            if (this._ended)
             {
                 return Status.Success;
             }
-
-            if (this.TryGetNextState(out NodeBase nextState))
+            else
             {
-                this.ChangeState(nextState);
+                return Status.Running;
             }
-
-            return Status.Running;
         }
 
 
@@ -135,7 +134,10 @@ namespace TaskStreamer.FSM
                 Debug.LogError($"{typeof(StateMachine)}: Cannot cast the prepared entry node to an Entry node.");
                 return;
             }
-
+            
+            this._ended = false;
+            
+            //enter, exit, any는 enter/exit 함수가 구현되어 있지 않으므로 호출 안해도 됨.
             _current = entryState;
             _current.EnterNode();
             _any.EnterNode();
@@ -153,26 +155,8 @@ namespace TaskStreamer.FSM
             {
                 _any.ExitNode();
             }
-        }
 
-
-        private bool TryGetNextState(out NodeBase nextState)
-        {
-            if (this.blockAllTransition == false)
-            {
-                if (_current.CheckTransition(out nextState))
-                {
-                    return true;
-                }
-
-                if (_any.CheckTransition(out nextState))
-                {
-                    return true;
-                }
-            }
-
-            nextState = null;
-            return false;
+            this._ended = true;
         }
 
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TaskStreamer.Utility;
 using Unity.Properties;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace TaskStreamer.FSM
 {
@@ -61,9 +62,15 @@ namespace TaskStreamer.FSM
         internal void UpdateNode()
         {
             this.callCount++;
-
             this.OnUpdate();
+
+            if (this.CanTransition(out NodeBase nextState))
+            {
+                Assert.IsNotNull(this._machine);
+                this._machine.ChangeState(nextState);
+            }
         }
+
 
 
         internal bool TryGetTransition(UGUID nextStateNodeGuid, out Transition resultTransition)
@@ -82,24 +89,6 @@ namespace TaskStreamer.FSM
         }
 
 
-        internal bool CheckTransition(out NodeBase nextStateNode)
-        {
-            if (_blockTransition == false && _transitions.Count > 0)
-            {
-                foreach (Transition transition in this._transitions)
-                {
-                    if (transition.CheckConditions())
-                    {
-                        nextStateNode = transition.destinationNode;
-                        return true;
-                    }
-                }
-            }
-
-            nextStateNode = null;
-            return false;
-        }
-
 
         internal override sealed void EnterNode()
         {
@@ -108,6 +97,7 @@ namespace TaskStreamer.FSM
             this.onNodeEnter?.Invoke(this);
             this.callState = NodeCallState.Updating;
         }
+
 
 
         internal override sealed void ExitNode()
@@ -119,7 +109,32 @@ namespace TaskStreamer.FSM
         }
 
 
+
+        protected virtual bool CanTransition(out NodeBase nextState)
+        {
+            if (this._blockTransition || this._transitions.Count == 0)
+            {
+                nextState = null;
+                return false;
+            }
+
+            foreach (Transition transition in this._transitions)
+            {
+                if (transition.CheckConditions())
+                {
+                    nextState = transition.destinationNode;
+                    return true;
+                }
+            }
+
+            nextState = null;
+            return false;
+        }
+
+
+
         protected abstract void OnUpdate();
+
 
 
 #if UNITY_EDITOR

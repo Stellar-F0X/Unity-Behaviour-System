@@ -1,4 +1,5 @@
 using Unity.Properties;
+using UnityEngine;
 
 namespace TaskStreamer.FSM
 {
@@ -10,6 +11,10 @@ namespace TaskStreamer.FSM
             get { return StateNodeType.Exit; }
         }
 
-        protected override void OnUpdate() { }
+
+        protected override void OnUpdate()
+        {
+            base.machine.StopGraph();
+        }
     }
 }
