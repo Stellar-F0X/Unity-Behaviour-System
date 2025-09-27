@@ -1,5 +1,6 @@
 using System;
 using TaskStreamer;
+using TaskStreamer.Utility;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEditor.UIElements;
@@ -90,9 +91,14 @@ namespace TaskStreamer.Tool
 
             if (type.IsEnum)
             {
-                var enumField = new BlackboardVariableField<Enum, EnumField>(context);
-                enumField.localVariableInputField.Init(Activator.CreateInstance(type) as Enum);
-                return enumField;
+                if (type.GetAttribute<FlagsAttribute>() is null)
+                {
+                    return new BlackboardVariableEnumField<EnumField>(context);
+                }
+                else
+                {
+                    return new BlackboardVariableEnumField<EnumFlagsField>(context);
+                }
             }
 
             if (type == typeof(Vector2))
@@ -130,15 +136,18 @@ namespace TaskStreamer.Tool
                 return new BlackboardVariableField<Color, ColorField>(context);
             }
 
-            if (typeof(GameObject).IsAssignableFrom(type) || 
-                typeof(MonoBehaviour).IsAssignableFrom(type) || 
-                typeof(ScriptableObject).IsAssignableFrom(type) || 
-                typeof(Object).IsAssignableFrom(type))
+            bool isComponentOrObject = typeof(GameObject).IsAssignableFrom(type);
+            isComponentOrObject |= typeof(ScriptableObject).IsAssignableFrom(type);
+            isComponentOrObject |= typeof(MonoBehaviour).IsAssignableFrom(type);
+            isComponentOrObject |= typeof(Object).IsAssignableFrom(type);
+
+            if (isComponentOrObject)
             {
                 var objectField = new BlackboardVariableField<Object, ObjectField>(context);
-                objectField.localVariableInputField.allowSceneObjects = false;
-                objectField.localVariableInputField.objectType = type;
-                objectField.localVariableInputField.label = "";
+                ObjectField localObjectField = objectField.localVariableInputField;
+                localObjectField.allowSceneObjects = false;
+                localObjectField.objectType = type;
+                localObjectField.label = "";
                 return objectField;
             }
 

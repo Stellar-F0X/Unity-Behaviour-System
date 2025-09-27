@@ -1,5 +1,6 @@
 using System;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UIElements;
@@ -9,18 +10,22 @@ namespace TaskStreamer.Tool
 {
     //BlackboardVariable 형태.
     /// <summary>Blackboard 변수의 필드를 UI로 나타내기 위한 클래스. TValue는 값의 타입, TBindableField는 값 바인딩에 사용하는 VisualElement 타입을 나타냅니다.</summary>
-    internal class BlackboardVariableField<TValue, TBindableField> : VisualElement, INotifyValueChanged<TValue>, IRefreshableField
-        where TBindableField : BindableElement, INotifyValueChanged<TValue>, new()
+    internal class BlackboardVariableField<TValue, TBindableField> : VisualElement, INotifyValueChanged<TValue>, IRefreshableField where TBindableField : BindableElement, INotifyValueChanged<TValue>, new()
     {
-        public BlackboardVariableField(VariableHandle variableHandle)
+        protected BlackboardVariableField()
         {
-            Assert.IsNotNull(variableHandle, "bbVariable is not null");
             TaskStreamerResourceLoader.blackboardVariableField.CloneTree(this);
-
+            
             this._variableNameLabel = this.Q<Label>("name-field");
             this._valueFieldContainer = this.Q<VisualElement>("value-field");
             this._unlinkButton = this.Q<Button>("unlink-button");
             this._linkToSharedButton = this.Q<Button>("link-button");
+        }
+        
+        
+        public BlackboardVariableField(VariableHandle variableHandle) : this()
+        {
+            Assert.IsNotNull(variableHandle, "bbVariable is not null");
 
             this._variableHandle = variableHandle;
             this._blackboardVariable = variableHandle.GetValue<BlackboardVariable>();
@@ -29,9 +34,8 @@ namespace TaskStreamer.Tool
             this._variableNameLabel.text = ObjectNames.NicifyVariableName(variableHandle.context);
 
             this._localVariableInputField = new TBindableField();
-            this._localVariableInputField.SetValueWithoutNotify((TValue)_blackboardVariable.boxedValue);
             this._localVariableInputField.RegisterValueChangedCallback(this.OnVariableValueChanged);
-
+            
             this.CreateVariableFieldByType(this._blackboardVariable.isShared);
 
             this._unlinkButton.clickable.clicked += this.OnConvertSharedToLocal;
@@ -74,7 +78,7 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>Blackboard 변수에 대한 내부 데이터를 저장하는 필드이다.</summary>
-        private BlackboardVariable _blackboardVariable;
+        protected BlackboardVariable _blackboardVariable;
 
 
         /// <summary>BlackboardVariable의 정보를 저장하고 조작하기 위한 변수입니다.</summary>
@@ -86,9 +90,8 @@ namespace TaskStreamer.Tool
 
 #endregion
 
-
-
-        /// <summary> 이 필드 값은 BlackboardVariable에 바인딩된 값을 나타냅니다. </summary>
+        
+        [Obsolete("BlackboardVariable은 직접 값을 대입하는 방식으로 사용되지 않습니다.")]
         public TValue value
         {
             get;
@@ -117,10 +120,11 @@ namespace TaskStreamer.Tool
 
         /// <summary> Blackboard 변수의 값을 갱신합니다. </summary>
         /// <param name="newValue"> 새롭게 설정할 변수 값입니다. </param>
-        private void UpdateBlackboardVariableValue(TValue newValue)
+        protected virtual void UpdateBlackboardVariableValue(TValue newValue)
         {
             BlackboardVariable<TValue> typedVariable = _blackboardVariable as BlackboardVariable<TValue>;
-            Assert.IsNotNull(typedVariable, $"Cannot cast the BlackboardVariable<{typeof(TValue).Name}>");
+            Type impType = _blackboardVariable.implementedType;
+            Assert.IsNotNull(typedVariable, $"{impType} is Cannot cast the BlackboardVariable<{typeof(TValue).Name}>");
 
             Undo.RecordObject(TaskStreamerEditor.Instance.graphAsset, "TaskStreamer (ChangeBBVariableValue)");
             typedVariable.value = newValue;
@@ -157,7 +161,7 @@ namespace TaskStreamer.Tool
                 this._valueFieldContainer.Add(this.CreateLocalVariableDisplayField());
             }
 
-            ReadOnlyAttribute readOnly = this._variableHandle.GetAttribute<ReadOnlyAttribute>();
+            ReadOnlyAttribute readOnly = this._variableHandle.GetAttribute<ReadOnlyAttribute>(); 
 
             //여기서 결정해도 InitializeBlackboardVariableField 함수에서 런타임 중인지 아닌지에 따라 활성화가 다시 결정된다.
             this._localVariableInputField.enabledSelf = readOnly is null;
@@ -265,7 +269,7 @@ namespace TaskStreamer.Tool
 
             bool assignable = typeof(TValue).IsAssignableFrom(this._blackboardVariable.valueType);
             Assert.IsTrue(assignable, $"type is not {typeof(TValue)}, That is {_blackboardVariable.valueType}");
-
+            
             this._localVariableInputField.SetValueWithoutNotify((TValue)this._blackboardVariable.boxedValue);
             return this._localVariableInputField;
         }
@@ -275,7 +279,7 @@ namespace TaskStreamer.Tool
         private void OnConvertSharedToLocal()
         {
             DefaultValueAttribute setValue = this._variableHandle.GetAttribute<DefaultValueAttribute>();
-            
+
             BlackboardVariable newLocal;
 
             if (setValue is not null)

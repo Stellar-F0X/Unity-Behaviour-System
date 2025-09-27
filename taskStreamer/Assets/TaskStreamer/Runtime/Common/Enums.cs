@@ -268,4 +268,12 @@ namespace TaskStreamer
         /// <summary> Represents an addition operation to a list, typically indicating that an item has been added in the context of a list change notification. </summary>
         Add = 1,
     }
+
+
+    [Flags]
+    public enum SubGraphTransitionPolicy
+    {
+        AllowAnyNodeTransition = 1,
+        AllowLinkedTransition = 2,
+    }
 }

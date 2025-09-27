@@ -23,7 +23,7 @@ namespace TaskStreamer.FSM
         /// 이 변수는 상태 실행 도중 전이 허용 여부를 정의하며, <see cref="BlackboardVariable{TValue}"/>로 구현되어
         /// 런타임 중 동적으로 값을 관리할 수 있습니다.
         /// </remarks>
-        public BlackboardVariable<bool> canTransitionDuringExecution;
+        public BlackboardVariable<SubGraphTransitionPolicy> transitionPolicy;
 
 
         /// <summary>
@@ -65,8 +65,7 @@ namespace TaskStreamer.FSM
         /// 서브그래프의 고유 식별자를 나타내는 프로퍼티.
         /// </summary>
         /// <remarks>
-        /// 이 프로퍼티는 서브그래프를 식별하기 위해 사용되는 <c>UGUID</c> 값을 저장 및 제공한다.
-        /// <see cref="TaskStreamer.FSM.SubGraphState"/> 클래스는 이 값을 기반으로 서브그래프를 관리 및 참조한다.
+        /// 이 프로퍼티는 서브그래프를 식별하기 위해 사용되는 <c>GUID</c> 값을 저장 및 제공한다.
         /// </remarks>
         public UGUID subGraphGuid
         {
@@ -81,7 +80,7 @@ namespace TaskStreamer.FSM
         /// </summary>
         /// <remarks>
         /// 이 속성은 하위 그래프의 종류를 정의하며, 해당 상태에서 동작하는 그래프의 유형을 식별하는 데 사용됩니다.
-        /// GraphType 열거형의 값을 반환하며, 예를 들어 Behavior Tree(BT), Finite State Machine(FSM), Goal Oriented Action Planning(GOAP) 등이 포함됩니다.
+        /// GraphType 열거형의 값을 반환하며, 예를 들어 Behavior Tree(BT), Finite State Machine(FSM) 등이 포함됩니다.
         /// </remarks>
         public abstract GraphType subGraphType
         {
@@ -93,9 +92,6 @@ namespace TaskStreamer.FSM
         /// 상태가 활성화될 때 호출된다. 이 메서드는 subGraphGuid를 사용하여 그래프 에셋에서 서브 그래프를 가져와
         /// _subGraph에 할당하며, 서브 그래프가 올바르게 초기화되었는지 확인하고 그 존재를 보증한다.
         /// </summary>
-        /// <exception cref="System.Diagnostics.DebugAssertException">
-        /// 서브 그래프가 Null인 경우 발생한다.
-        /// </exception>
         public override void OnAwake()
         {
             _subGraph = streamer.graphAsset.GetGraph(subGraphGuid);
@@ -125,7 +121,7 @@ namespace TaskStreamer.FSM
             this._subGraph.ResetGraph();
 
             //서브 그래프로가 실행 중일땐, 실행되다말고, 다른 노드로 이동되면 안되기 때문에 상태 전이를 막는다.
-            this.blockTransition = !canTransitionDuringExecution.value;
+            this.blockTransition = true;
         }
 
 
@@ -149,7 +145,7 @@ namespace TaskStreamer.FSM
             }
 
             //서브 그래프로가 Failure나 Success를 반환하면, 그래프 동작이 끝났다는 것이므로 상태 전이를 다시 허용한다.
-            if (_subGraph.UpdateGraph() != Status.Running || canTransitionDuringExecution.value)
+            if (_subGraph.UpdateGraph() != Status.Running)
             {
                 this.blockTransition = false;
             }

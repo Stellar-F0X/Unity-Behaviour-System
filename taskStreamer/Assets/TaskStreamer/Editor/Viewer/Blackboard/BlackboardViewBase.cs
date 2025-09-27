@@ -62,6 +62,13 @@ namespace TaskStreamer.Tool
 
             foreach (BlackboardField field in items)
             {
+                TextField textField = field.Q<TextField>("textField");
+                
+                if (textField is null || textField.style.display == DisplayStyle.Flex)
+                {
+                    continue;
+                }
+                
                 field.RemoveFromHierarchy(); 
                 removeItemRequest?.Invoke(this, field);  //콜백 알림(여기서 데이터 모델도 싱크시킴)
             }
