@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using TaskStreamer;
 using TaskStreamer.BT;
 using Unity.Properties;
 
@@ -12,9 +13,9 @@ public partial class #SCRIPTNAME# : DecoratorNode
     #NOTRIM#
     }
 
-    protected override Status OnUpdate()
+    protected override TaskStreamer.Status OnUpdate()
     {
-        return Status.Failure;
+        return TaskStreamer.Status.Failure;
     }
     
     protected override void OnExit()

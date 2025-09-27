@@ -116,7 +116,7 @@ namespace TaskStreamer.BT
         
         /// 노드의 업데이트 로직을 실행하여 현재 상태를 반환합니다.
         /// <return> 노드 실행 결과 상태를 반환합니다.
-        internal Status UpdateNode()
+        public Status UpdateNode()
         {
             this.callCount++;
 
