@@ -37,6 +37,11 @@ namespace TaskStreamer.FSM
             set { _blockAllTransition = value; }
         }
 
+        public StateBase current
+        {
+            get { return this._current; }
+        }
+
 
 #if UNITY_EDITOR
         public static StateMachine CreateGraph(string graphName, GraphAsset graphAsset)

@@ -22,7 +22,7 @@ namespace TaskStreamer.FSM
                 return false;
             }
 
-            if (nextState is not SubGraphState subGraphState)
+            if (machine.current is not SubGraphState subGraphState)
             {
                 return true;
             }
@@ -34,8 +34,10 @@ namespace TaskStreamer.FSM
             {
                 return true;
             }
-
-            return false;
+            else
+            {
+                return false;
+            }
         }
     }
 }

@@ -186,8 +186,15 @@ namespace TaskStreamer.FSM
             {
                 return true;
             }
-
-            return false;
+            
+            if (nextState is null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
