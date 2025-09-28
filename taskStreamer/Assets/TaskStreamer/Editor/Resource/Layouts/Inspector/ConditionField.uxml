@@ -1,9 +1,9 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="../../Styles/ConditionFieldStyle.uss" />
-    <ui:VisualElement name="container" style="margin-left: 3px; margin-right: 3px; padding-bottom: 0; padding-top: 0; flex-direction: row; flex-grow: 0; margin-bottom: 2px; margin-top: 1px;">
+    <Style src="project://database/Assets/TaskStreamer/Editor/Resource/Styles/ConditionFieldStyle.uss?fileID=7433441132597879392&amp;guid=8688bf9cf70a0d2439f96b9c35220bd5&amp;type=3#ConditionFieldStyle" />
+    <ui:VisualElement name="container" style="margin-left: 3px; margin-right: 3px; padding-bottom: 0; padding-top: 0; flex-direction: row; flex-grow: 0; margin-bottom: 1px; margin-top: 1px;">
         <ui:VisualElement name="left--field-view--field" style="flex-grow: 1; padding-left: 0; padding-right: 1px; margin-top: 1px; margin-right: 1px; margin-bottom: 1px; margin-left: 1px; flex-shrink: 0; width: 150px;" />
         <ui:DropdownField name="comparison-type-field" />
         <ui:VisualElement name="right--field-view--field" style="flex-grow: 1; padding-left: 1px; padding-right: 1px; margin-top: 1px; margin-right: 1px; margin-bottom: 1px; margin-left: 1px; flex-shrink: 0; width: 150px;" />
-        <ui:Button name="condition-delete-btn" style="padding-left: 5px; padding-right: 5px; padding-top: 0; padding-bottom: 0; position: relative; right: auto; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; flex-direction: row; left: auto; background-color: rgb(45, 45, 45); margin-top: 2px; margin-bottom: 2px; flex-shrink: 1; align-self: center; align-content: auto; justify-content: flex-end;" />
+        <ui:Button name="condition-delete-btn" style="padding-left: 5px; padding-right: 5px; padding-top: 0; padding-bottom: 0; position: relative; right: auto; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; flex-direction: row; left: auto; background-color: rgb(81, 81, 81); margin-top: 1px; margin-bottom: 0; flex-shrink: 1; align-self: center; align-content: auto; justify-content: flex-end;" />
     </ui:VisualElement>
 </ui:UXML>
