@@ -120,6 +120,11 @@ namespace TaskStreamer.BT
         {
             this.callCount++;
 
+            if (this.CanVisit() == false)
+            {
+                return Status.Failure;
+            }
+
             if (callState == NodeCallState.BeforeEnter)
             {
                 this.EnterNode();
@@ -201,6 +206,36 @@ namespace TaskStreamer.BT
 
             // If a parent node fails during execution, this node's result is set to Failure.
             this.status = (this.status == Status.Running ? Status.Failure : this.status);
+        }
+        
+        
+        
+        private bool CanVisit()
+        {
+            int count = _services.Count;
+
+            if (_services is null || count == 0)
+            {
+                return true;
+            }
+            
+            for (int index = 0; index < count; ++index)
+            {
+                ServiceBase service = _services[index];
+
+                if (service.enable == false)
+                {
+                    continue;
+                }
+
+                //하나라도 방문을 불허한다면, 바로 종료한다.
+                if (service.CanVisit() == false)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         

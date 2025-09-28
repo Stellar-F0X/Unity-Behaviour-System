@@ -73,6 +73,13 @@ namespace TaskStreamer.BT
 
             return ReferenceEquals(this, other);
         }
+
+
+        /// <summary> Not related to enable option </summary>
+        public virtual bool CanVisit()
+        {
+            return true;
+        }
         
 
         public virtual void OnStart() { }
