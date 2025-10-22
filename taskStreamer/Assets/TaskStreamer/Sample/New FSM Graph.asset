@@ -1,0 +1,287 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ff390c6a0488f41b85a84e73c6e39b, type: 3}
+  m_Name: New FSM Graph
+  m_EditorClassIdentifier: 
+  blackboard: {fileID: 6684651520040317563}
+  _graphGuid:
+    _value0: 3004591974
+    _value1: 1118747426
+    _value2: 928764343
+    _value3: 3192387529
+  _main:
+    rid: 26405195376754736
+  _graphTreeMap:
+    cachedPair: []
+  _graphMap:
+    cachedPair:
+    - _key:
+        _value0: 1600778633
+        _value1: 1202216825
+        _value2: 620461455
+        _value3: 2055194487
+      _value:
+        rid: 26405195376754736
+  references:
+    version: 2
+    RefIds:
+    - rid: 26405195376754736
+      type: {class: StateMachine, ns: TaskStreamer.FSM, asm: TaskStreamer}
+      data:
+        _name: Main
+        _guid:
+          _value0: 1600778633
+          _value1: 1202216825
+          _value2: 620461455
+          _value3: 2055194487
+        _baseGraphGuid:
+          _value0: 0
+          _value1: 0
+          _value2: 0
+          _value3: 0
+        _nodeGroup: []
+        _graphAsset: {fileID: 11400000}
+        _nodeLookup:
+          cachedPair:
+          - _key:
+              _value0: 2297748089
+              _value1: 1235164783
+              _value2: 2041278377
+              _value3: 3689810557
+            _value:
+              rid: 26405195376754737
+          - _key:
+              _value0: 3402320581
+              _value1: 1104707183
+              _value2: 2383997870
+              _value3: 1206870280
+            _value:
+              rid: 26405195376754738
+          - _key:
+              _value0: 240793663
+              _value1: 1223134253
+              _value2: 431264941
+              _value3: 650507861
+            _value:
+              rid: 26405195376754739
+          - _key:
+              _value0: 585711113
+              _value1: 1109837294
+              _value2: 621036977
+              _value3: 2547222308
+            _value:
+              rid: 26405195409784835
+        _current:
+          rid: 26405195376754737
+        _any:
+          rid: 26405195376754739
+        _exit:
+          rid: 26405195376754738
+    - rid: 26405195376754737
+      type: {class: EnterState, ns: TaskStreamer.FSM, asm: TaskStreamer}
+      data:
+        name: Enter
+        tag: 
+        description: 
+        _guid:
+          _value0: 2297748089
+          _value1: 1235164783
+          _value2: 2041278377
+          _value3: 3689810557
+        canEditName: 1
+        _script: {fileID: 11500000, guid: 12267a7d080a49e78fbd31056c49ad67, type: 3}
+        position: {x: 0, y: 0}
+        _transitions:
+        - rid: 26405397999648819
+    - rid: 26405195376754738
+      type: {class: ExitState, ns: TaskStreamer.FSM, asm: TaskStreamer}
+      data:
+        name: Exit
+        tag: 
+        description: 
+        _guid:
+          _value0: 3402320581
+          _value1: 1104707183
+          _value2: 2383997870
+          _value3: 1206870280
+        canEditName: 1
+        _script: {fileID: 11500000, guid: 27589c04cd05471c849c798e580624b6, type: 3}
+        position: {x: 0, y: 201}
+        _transitions: []
+    - rid: 26405195376754739
+      type: {class: AnyState, ns: TaskStreamer.FSM, asm: TaskStreamer}
+      data:
+        name: Any
+        tag: 
+        description: 
+        _guid:
+          _value0: 240793663
+          _value1: 1223134253
+          _value2: 431264941
+          _value3: 650507861
+        canEditName: 1
+        _script: {fileID: 11500000, guid: 555fe37b74144389a8bcc71712eb9bd1, type: 3}
+        position: {x: -230, y: 0}
+        _transitions: []
+    - rid: 26405195409784835
+      type: {class: LogState, ns: TaskStreamer.FSM, asm: TaskStreamer}
+      data:
+        name: 'Log '
+        tag: 
+        description: 
+        _guid:
+          _value0: 585711113
+          _value1: 1109837294
+          _value2: 621036977
+          _value3: 2547222308
+        canEditName: 1
+        _script: {fileID: 11500000, guid: 9f5bda6f5cb14ad1857ac6fbea1d23fe, type: 3}
+        position: {x: -230, y: 201}
+        _transitions:
+        - rid: 26405195409784886
+        onEnterMessages:
+          _key: onEnterMessages
+          _keyHash: 131359777
+          _guid:
+            _value0: 449250911
+            _value1: 1260376820
+            _value2: 4268715953
+            _value3: 4144394008
+          _typeName: TaskStreamer.BlackboardVariable`1[[System.String, mscorlib,
+            Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]],
+            TaskStreamer, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 0
+          _value: 1
+          _blackboard: {fileID: 0}
+        onUpdateMessages:
+          _key: onUpdateMessages
+          _keyHash: -116426459
+          _guid:
+            _value0: 3169861302
+            _value1: 1131681870
+            _value2: 845285291
+            _value3: 3980469088
+          _typeName: TaskStreamer.BlackboardVariable`1[[System.String, mscorlib,
+            Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]],
+            TaskStreamer, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 0
+          _value: 2
+          _blackboard: {fileID: 0}
+        onExitMessages:
+          _key: onExitMessages
+          _keyHash: -735184534
+          _guid:
+            _value0: 587145219
+            _value1: 1324562693
+            _value2: 298277560
+            _value3: 2891973738
+          _typeName: TaskStreamer.BlackboardVariable`1[[System.String, mscorlib,
+            Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]],
+            TaskStreamer, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 0
+          _value: 3
+          _blackboard: {fileID: 0}
+    - rid: 26405195409784886
+      type: {class: Transition, ns: TaskStreamer.FSM, asm: TaskStreamer}
+      data:
+        name: Log  To Exit
+        tag: 
+        description: 
+        _guid:
+          _value0: 4040036443
+          _value1: 1174726132
+          _value2: 584186031
+          _value3: 1634857029
+        canEditName: 0
+        _script: {fileID: 11500000, guid: cc4b697a2ad84a35920e4a0328ac1eb5, type: 3}
+        _blockTransition:
+          _key: _blockTransition
+          _keyHash: -1193254290
+          _guid:
+            _value0: 2975885491
+            _value1: 1181498255
+            _value2: 2807756451
+            _value3: 4109001231
+          _typeName: TaskStreamer.BlackboardVariable`1[[System.Boolean, mscorlib,
+            Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]],
+            TaskStreamer, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 0
+          _value: 0
+          _blackboard: {fileID: 0}
+        _conditions:
+          evaluationPolicy: 1
+          modules: []
+        _sourceNode:
+          rid: 26405195409784835
+        _destinationNode:
+          rid: 26405195376754738
+    - rid: 26405397999648819
+      type: {class: Transition, ns: TaskStreamer.FSM, asm: TaskStreamer}
+      data:
+        name: 'Enter To Log '
+        tag: 
+        description: 
+        _guid:
+          _value0: 3018362338
+          _value1: 1082409056
+          _value2: 605381809
+          _value3: 1740681037
+        canEditName: 0
+        _script: {fileID: 11500000, guid: cc4b697a2ad84a35920e4a0328ac1eb5, type: 3}
+        _blockTransition:
+          _key: _blockTransition
+          _keyHash: -1193254290
+          _guid:
+            _value0: 852530598
+            _value1: 1330943999
+            _value2: 2768453525
+            _value3: 1006737267
+          _typeName: TaskStreamer.BlackboardVariable`1[[System.Boolean, mscorlib,
+            Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]],
+            TaskStreamer, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 0
+          _value: 0
+          _blackboard: {fileID: 0}
+        _conditions:
+          evaluationPolicy: 1
+          modules: []
+        _sourceNode:
+          rid: 26405195376754737
+        _destinationNode:
+          rid: 26405195409784835
+--- !u!114 &6684651520040317563
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9e9b92832e4aae97d34577304b1d3e, type: 3}
+  m_Name: Blackboard
+  m_EditorClassIdentifier: 
+  _blackboardData:
+    _appliedVersion:
+      _value0: 3481081560
+      _value1: 1297892211
+      _value2: 518706560
+      _value3: 456437640
+    _variables: []
+  references:
+    version: 2
+    RefIds: []

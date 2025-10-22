@@ -29,6 +29,7 @@ namespace TaskStreamer.Utility
         }
 
 
+#if UNITY_EDITOR
 
         public static T LoadAsset<T>(string fileName) where T : Object
         {
@@ -61,8 +62,10 @@ namespace TaskStreamer.Utility
             }
         }
 
-        
-        
+#endif
+
+
+
         public static string CallerFilePathToUnityPath(string callerFilePath)
         {
             if (string.IsNullOrEmpty(callerFilePath))
@@ -73,12 +76,12 @@ namespace TaskStreamer.Utility
             callerFilePath = Path.GetFullPath(callerFilePath).Replace('\\', '/');
 
             string dataPath = Application.dataPath.Replace('\\', '/');
-            
+
             if (callerFilePath.StartsWith(dataPath))
             {
                 return "Assets" + callerFilePath.Substring(dataPath.Length);
             }
-            
+
             string projectRoot = Path.GetDirectoryName(dataPath)?.Replace('\\', '/');
 
             string packageCachePath = projectRoot + "/Library/PackageCache/";
@@ -89,7 +92,7 @@ namespace TaskStreamer.Utility
             }
 
             string relative = callerFilePath.Substring(packageCachePath.Length);
-            
+
             int at = relative.IndexOf('@');
 
             if (at > 0)

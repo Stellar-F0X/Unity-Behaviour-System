@@ -11,18 +11,21 @@ namespace TaskStreamer.BT
         {
             this.guid = UGUID.Create();
             this.name = this.GetType().Name;
+
+#if UNITY_EDITOR
             this.canEditName = false;
+#endif
         }
 
 
-        
+
         public bool enable = true;
 
 #if UNITY_EDITOR
         internal bool isExpanded = true;
 #endif
 
-        
+
         /// <summary>
         /// 현재 Service가 부착되어 있는 노드입니다.
         /// 런타임 진입시 초기화 과정에 할당됩니다.
@@ -52,7 +55,7 @@ namespace TaskStreamer.BT
         {
             get { return node.enteredTime; }
         }
-        
+
         public float elapsedTime
         {
             get { return node.elapsedTime; }
@@ -80,7 +83,7 @@ namespace TaskStreamer.BT
         {
             return true;
         }
-        
+
 
         public virtual void OnStart() { }
 
