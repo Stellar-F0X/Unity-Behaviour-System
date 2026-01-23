@@ -1,4 +1,4 @@
-namespace TaskStreamer.FSM
+namespace TaskStreamer.Runtime.FSM
 {
     public abstract class ActionState : StateBase
     {

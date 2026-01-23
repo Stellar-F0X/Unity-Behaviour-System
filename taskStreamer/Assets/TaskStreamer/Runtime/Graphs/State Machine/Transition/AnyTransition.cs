@@ -2,7 +2,7 @@ using System;
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer.FSM
+namespace TaskStreamer.Runtime.FSM
 {
     [Serializable, GeneratePropertyBag, Readable]
     internal class AnyTransition : Transition

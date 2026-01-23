@@ -1,7 +1,7 @@
 using System;
 using Unity.Properties;
 
-namespace TaskStreamer.BT
+namespace TaskStreamer.Runtime.BT
 {
     [Serializable, GeneratePropertyBag, Readable]
     public class UntilForNode : DecoratorNode

@@ -1,10 +1,10 @@
 using System;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace TaskStreamer.FSM
+namespace TaskStreamer.Runtime.FSM
 {
     [Serializable, GeneratePropertyBag, Readable]
     internal class Transition : Task

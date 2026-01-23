@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     [Serializable, Readable, Comparable(Comparison.EQ | Comparison.NE | Comparison.GT | Comparison.LT)]
     public class Vector2Condition : Condition<Vector2>

@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.Utility;
 using UnityEngine;
 using UnityEngine.Pool;
 
-namespace TaskStreamer.BT
+namespace TaskStreamer.Runtime.BT
 {
     public partial class BehaviorTree
     {

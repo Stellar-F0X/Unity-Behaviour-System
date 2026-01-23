@@ -1,16 +1,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 using UnityEngine;
-using ObjectFactory = TaskStreamer.Utility.ObjectFactory;
+using ObjectFactory = TaskStreamer.Runtime.Utility.ObjectFactory;
 
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     [Serializable, GeneratePropertyBag, Readable]
     public abstract partial class Graph : IEquatable<Graph>, IGraphIterable

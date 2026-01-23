@@ -1,5 +1,6 @@
 using System;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime;
+using TaskStreamer.Runtime.Utility;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEditor.SceneManagement;
@@ -8,7 +9,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
-using ObjectFactory = TaskStreamer.Utility.ObjectFactory;
+using ObjectFactory = TaskStreamer.Runtime.Utility.ObjectFactory;
 
 namespace TaskStreamer.Tool
 {
@@ -423,7 +424,7 @@ namespace TaskStreamer.Tool
         {
             GameObject gameObject = Selection.activeGameObject;
 
-            if (gameObject != null && gameObject.TryGetComponent(out TaskStreamer streamer))
+            if (gameObject != null && gameObject.TryGetComponent(out TaskStreamer.Runtime.TaskStreamer streamer))
             {
                 GraphAsset gotGraphAsset = streamer.graphAsset;
 

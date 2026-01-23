@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     public abstract partial class Graph
     {

@@ -3,13 +3,13 @@ using UnityEditor;
 #endif
 using System;
 using System.Collections.Generic;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 using UnityEngine;
 using UnityEngine.Pool;
 using Object = UnityEngine.Object;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     /// <summary>
     /// Represents a container for managing and interacting with a collection of Graph objects.

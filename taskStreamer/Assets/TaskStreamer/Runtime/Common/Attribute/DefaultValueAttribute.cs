@@ -1,6 +1,6 @@
 using System;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     /// <summary> Used for initializing default values for Blackboard Variables. </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]

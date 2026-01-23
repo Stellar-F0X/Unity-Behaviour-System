@@ -1,6 +1,6 @@
 using System;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     [Serializable, Readable]
     internal class IntVariable : BlackboardVariable<int> { }

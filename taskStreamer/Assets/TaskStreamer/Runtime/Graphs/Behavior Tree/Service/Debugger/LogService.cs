@@ -2,7 +2,7 @@ using System;
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer.BT
+namespace TaskStreamer.Runtime.BT
 {
     [Serializable, GeneratePropertyBag, Readable]
     public class LogService : ServiceBase

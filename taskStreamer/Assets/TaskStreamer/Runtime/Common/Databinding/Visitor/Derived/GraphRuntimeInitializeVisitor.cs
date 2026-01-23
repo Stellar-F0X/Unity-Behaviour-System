@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using TaskStreamer.BT;
-using TaskStreamer.FSM;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.BT;
+using TaskStreamer.Runtime.FSM;
+using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     /// <summary> 런타임에서 그래프 탐색 및 처리를 활성화하는 클래스 </summary>
     internal class GraphRuntimeInitializeVisitor : GraphVisitorBase, 

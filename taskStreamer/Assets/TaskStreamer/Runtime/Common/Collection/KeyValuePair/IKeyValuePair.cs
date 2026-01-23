@@ -1,4 +1,4 @@
-namespace TaskStreamer.Utility
+namespace TaskStreamer.Runtime.Utility
 {
     internal interface IKeyValuePair<TKey, TValue>
     {

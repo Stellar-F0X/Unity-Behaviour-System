@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using TaskStreamer.BT;
-using TaskStreamer.FSM;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.FSM;
+using TaskStreamer.Runtime.BT;
+using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
 #if UNITY_EDITOR
     /// <summary> GUID를 재할당하는 프로세서를 구현합니다. </summary>

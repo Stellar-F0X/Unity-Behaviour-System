@@ -1,10 +1,10 @@
 using System;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace TaskStreamer.FSM
+namespace TaskStreamer.Runtime.FSM
 {
     /// <summary>
     /// 유한 상태 머신(FSM)의 상태 노드 중 하나로, 특정 서브그래프의 동작을 캡슐화하는 추상 클래스.

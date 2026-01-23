@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.Utility;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     /// <summary>주어진 컨텍스트 및 값 정보를 포함하는 변수를 다루는 클래스입니다.</summary>
     public class VariableHandle

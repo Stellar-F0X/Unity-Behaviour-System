@@ -9,7 +9,7 @@ using Unity.Properties;
 using Debug = UnityEngine.Debug;
 using UTypeUtility = Unity.Properties.TypeUtility;
 
-namespace TaskStreamer.Utility
+namespace TaskStreamer.Runtime.Utility
 {
     public static class TypeUtility
     {

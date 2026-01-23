@@ -1,6 +1,6 @@
-using TaskStreamer.BT;
+using TaskStreamer.Runtime.BT;
 
-namespace TaskStreamer.Utility
+namespace TaskStreamer.Runtime.Utility
 {
     /// <summary> 트리 순회 정보를 담는 구조체 </summary>
     public readonly struct TreeTraversal

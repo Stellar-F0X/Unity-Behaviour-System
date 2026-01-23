@@ -1,11 +1,11 @@
 using System.Collections.Generic;
-using TaskStreamer.BT;
-using TaskStreamer.FSM;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.BT;
+using TaskStreamer.Runtime.FSM;
+using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     internal abstract class GraphVisitorBase : ReadableVisitorBase, IVisitPropertyAdapter<KeyValuePair<UGUID, Graph>>, IVisitPropertyAdapter<GraphDictionary>
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer.Utility
+namespace TaskStreamer.Runtime.Utility
 {
     [Serializable]
     internal class UGUIDBasedDictionary<TPair, TValue> : Dictionary<UGUID, TValue>, ISerializationCallbackReceiver where TPair : IKeyValuePair<UGUID, TValue>, new()

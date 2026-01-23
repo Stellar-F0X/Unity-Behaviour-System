@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace TaskStreamer.BT
+namespace TaskStreamer.Runtime.BT
 {
     public abstract class CompositeNode : BehaviorNodeBase, IChildProvider
     {

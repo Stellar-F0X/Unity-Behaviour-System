@@ -1,12 +1,12 @@
 using System;
-using TaskStreamer.BT;
-using TaskStreamer.FSM;
-using TaskStreamer;
+using TaskStreamer.Runtime;
+using TaskStreamer.Runtime.BT;
+using TaskStreamer.Runtime.FSM;
 using Unity.Properties;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace TaskStreamer.Utility
+namespace TaskStreamer.Runtime.Utility
 {
     /// <summary> 'T'ask 'S'treamer Object Factory </summary>
     internal static class ObjectFactory

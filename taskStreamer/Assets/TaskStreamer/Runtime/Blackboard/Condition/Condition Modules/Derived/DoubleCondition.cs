@@ -1,6 +1,6 @@
 using System;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     [Serializable, Readable, Comparable(Comparison.EQ | Comparison.NE | Comparison.GT | Comparison.LT | Comparison.GE | Comparison.LE)]
     public class DoubleCondition : Condition<double>

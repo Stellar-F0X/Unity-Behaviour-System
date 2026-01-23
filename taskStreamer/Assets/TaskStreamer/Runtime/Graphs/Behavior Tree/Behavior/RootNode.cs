@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Unity.Properties;
 
-namespace TaskStreamer.BT
+namespace TaskStreamer.Runtime.BT
 {
     [GeneratePropertyBag, Readable]
     public sealed class RootNode : BehaviorNodeBase, IChildProvider

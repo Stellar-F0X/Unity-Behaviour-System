@@ -1,3 +1,5 @@
+using TaskStreamer.Runtime;
+
 namespace TaskStreamer.Tool
 {
     internal interface IRefreshableField

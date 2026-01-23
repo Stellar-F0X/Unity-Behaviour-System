@@ -1,8 +1,8 @@
 using System;
-using TaskStreamer;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime;
+using TaskStreamer.Runtime.Utility;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     /// <summary>Condition 클래스의 확장 메서드를 포함합니다.</summary>
     public static class ConditionExtension

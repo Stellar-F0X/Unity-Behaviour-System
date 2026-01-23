@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace TaskStreamer.Utility
+namespace TaskStreamer.Runtime.Utility
 {
     public static class StringUtility
     {

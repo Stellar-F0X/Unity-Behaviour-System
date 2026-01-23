@@ -1,8 +1,8 @@
 using System;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.Utility;
 using UnityEngine;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     /// <summary> Represents a wrapper for variables used in a blackboard system. </summary>
     [Serializable, Readable]

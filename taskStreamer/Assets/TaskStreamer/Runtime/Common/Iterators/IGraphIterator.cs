@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     public interface IGraphIterator : IEnumerable<NodeBase> { }
 }

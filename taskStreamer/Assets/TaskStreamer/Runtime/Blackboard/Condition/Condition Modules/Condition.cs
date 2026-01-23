@@ -2,7 +2,7 @@ using System;
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     /// <summary>Condition 클래스는 다양한 비교 조건을 정의하는 기본 추상 클래스입니다.</summary>
     [Serializable, Readable]

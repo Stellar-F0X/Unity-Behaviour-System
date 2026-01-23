@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 using UnityEngine;
-using ObjectFactory = TaskStreamer.Utility.ObjectFactory;
+using ObjectFactory = TaskStreamer.Runtime.Utility.ObjectFactory;
 
-namespace TaskStreamer.FSM
+namespace TaskStreamer.Runtime.FSM
 {
     [Serializable]
     public partial class StateMachine : Graph

@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     public class LogView : MonoBehaviour
     {

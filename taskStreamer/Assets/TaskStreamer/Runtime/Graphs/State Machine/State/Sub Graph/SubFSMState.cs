@@ -1,6 +1,6 @@
 using Unity.Properties;
 
-namespace TaskStreamer.FSM
+namespace TaskStreamer.Runtime.FSM
 {
     [GeneratePropertyBag, Readable]
     internal class SubFSMState : SubGraphState 

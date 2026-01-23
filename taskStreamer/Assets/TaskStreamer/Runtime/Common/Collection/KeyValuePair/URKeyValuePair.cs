@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace TaskStreamer.Utility
+namespace TaskStreamer.Runtime.Utility
 {
     /// <summary> Unity Serializable Referenced Key Value Pair </summary>
     [Serializable]

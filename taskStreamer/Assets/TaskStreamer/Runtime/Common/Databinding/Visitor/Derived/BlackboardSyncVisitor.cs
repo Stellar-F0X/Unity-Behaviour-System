@@ -1,19 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TaskStreamer.BT;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.BT;
+using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 using UnityEngine;
-using BBCondition = TaskStreamer.BlackboardBasedCondition;
+using BBCondition = TaskStreamer.Runtime.BlackboardBasedCondition;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
 #if UNITY_EDITOR
     /// <summary> Blackboard 교체될 때, 이미 등록되어 있는 BlackboardVariable을 해제하는 용도로 사용되는 객체. </summary>
     internal class BlackboardSyncVisitor : GraphVisitorBase,
                                            IVisitPropertyAdapter<NodeDictionary>,
-                                           IVisitPropertyAdapter<BBCondition>, 
+                                           IVisitPropertyAdapter<BlackboardBasedCondition>, 
                                            IVisitPropertyAdapter<List<ServiceBase>>,
                                            IVisitContravariantPropertyAdapter<BlackboardVariable>
     {
@@ -68,7 +68,7 @@ namespace TaskStreamer
         /// <param name="context">방문 컨텍스트 정보입니다.</param>
         /// <param name="container">속성이 포함된 컨테이너 객체입니다.</param>
         /// <param name="value">방문 중인 NodeDictionary 값입니다.</param>
-        public void Visit<TContainer>(in VisitContext<TContainer, BBCondition> context, ref TContainer container, ref BBCondition value)
+        public void Visit<TContainer>(in VisitContext<TContainer, BlackboardBasedCondition> context, ref TContainer container, ref BlackboardBasedCondition value)
         {
             if (value.modules is null || value.modules.Count == 0)
             {

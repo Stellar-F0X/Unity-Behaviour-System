@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using TaskStreamer.BT;
-using TaskStreamer.FSM;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.BT;
+using TaskStreamer.Runtime.FSM;
+using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     /// <summary> ReadableAttribute가 수식된 클래스들 대상으로만 방문한다. </summary>
     public abstract class ReadableVisitorBase : PropertyVisitor

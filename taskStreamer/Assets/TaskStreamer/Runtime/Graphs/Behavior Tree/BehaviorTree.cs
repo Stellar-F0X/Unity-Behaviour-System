@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace TaskStreamer.BT
+namespace TaskStreamer.Runtime.BT
 {
     [Serializable]
     public partial class BehaviorTree : Graph

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace TaskStreamer.Utility
+namespace TaskStreamer.Runtime.Utility
 {
     public class FixedList<T>
     {

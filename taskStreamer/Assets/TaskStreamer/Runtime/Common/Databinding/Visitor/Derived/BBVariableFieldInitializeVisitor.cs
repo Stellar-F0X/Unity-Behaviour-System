@@ -1,9 +1,9 @@
 using System;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
 #if UNITY_EDITOR
     /// <summary> 에디터에서 노드가 생성될때 쓰이는 PropertyVisitor로, 'Node 객체를 대상'으로 필드의 BlackboardVariable을 할당한다. </summary>

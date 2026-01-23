@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer.BT
+namespace TaskStreamer.Runtime.BT
 {
     [Serializable]
     public abstract class BehaviorNodeBase : NodeBase

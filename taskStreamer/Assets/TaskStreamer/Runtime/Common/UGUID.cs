@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer.Utility
+namespace TaskStreamer.Runtime.Utility
 {
     /// <summary> Serializable Unity GUID </summary>
     [StructLayout(LayoutKind.Explicit), Serializable]

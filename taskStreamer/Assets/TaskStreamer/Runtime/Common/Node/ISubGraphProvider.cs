@@ -1,6 +1,6 @@
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.Utility;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     public interface ISubGraphProvider
     {

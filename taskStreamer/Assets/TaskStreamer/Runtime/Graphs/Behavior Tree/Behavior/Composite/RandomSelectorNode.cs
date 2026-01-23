@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Unity.Properties;
 using Random = UnityEngine.Random;
 
-namespace TaskStreamer.BT
+namespace TaskStreamer.Runtime.BT
 {
     [GeneratePropertyBag, Readable]
     public class RandomSelectorNode : CompositeNode

@@ -1,9 +1,7 @@
 {
-    "name": "TaskStreamer",
-    "rootNamespace": "TaskStreamer",
-    "references": [
-        "GUID:75469ad4d38634e559750d17036d5f7c"
-    ],
+    "name": "TaskStreamer.Runtime",
+    "rootNamespace": "TaskStreamer.Runtime",
+    "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

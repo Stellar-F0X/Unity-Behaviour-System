@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 using UnityEngine;
 using UnityEngine.Assertions;
-using TypeUtility = TaskStreamer.Utility.TypeUtility;
+using TypeUtility = TaskStreamer.Runtime.Utility.TypeUtility;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     /// <summary> TaskStreamer 라이브러리의 기본 추상 클래스. 이름, 태그, 설명 등의 공통 필드를 포함하며, 상속을 통해 특정 작업의 세부 동작을 정의할 수 있음. </summary>
     [Serializable, Readable]

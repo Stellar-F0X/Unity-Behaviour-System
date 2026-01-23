@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     [Serializable, GeneratePropertyBag, Readable]
     public sealed partial class BlackboardBasedCondition

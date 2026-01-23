@@ -1,7 +1,7 @@
 using System;
 using Unity.Properties;
 
-namespace TaskStreamer.FSM
+namespace TaskStreamer.Runtime.FSM
 {
     [Serializable, GeneratePropertyBag, Readable]
     public class WaitState : ActionState

@@ -6,7 +6,7 @@ using System.IO;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace TaskStreamer.Utility
+namespace TaskStreamer.Runtime.Utility
 {
     public static class PathUtility
     {

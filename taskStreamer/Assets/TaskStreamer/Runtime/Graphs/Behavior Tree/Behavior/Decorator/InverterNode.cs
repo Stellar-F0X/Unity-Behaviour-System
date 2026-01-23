@@ -1,6 +1,6 @@
 using Unity.Properties;
 
-namespace TaskStreamer.BT
+namespace TaskStreamer.Runtime.BT
 {
     [GeneratePropertyBag, Readable]
     public class InverterNode : DecoratorNode

@@ -1,9 +1,9 @@
 using System;
-using TaskStreamer;
-using TaskStreamer.BT;
+using TaskStreamer.Runtime;
+using TaskStreamer.Runtime.BT;
 using Unity.Properties;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     [Serializable, GeneratePropertyBag, Readable]
     public partial class BBBasedConditionService : ServiceBase

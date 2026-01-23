@@ -1,4 +1,4 @@
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     public class StickyNoteContainer 
     {

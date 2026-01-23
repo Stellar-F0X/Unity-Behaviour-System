@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     [Serializable, Readable, Comparable(Comparison.EQ | Comparison.NE)]
     public class EnumCondition : Condition<Enum>

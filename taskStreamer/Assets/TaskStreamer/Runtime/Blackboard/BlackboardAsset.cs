@@ -1,14 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.Utility;
 using UnityEngine;
 using UnityEngine.Pool;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     /// <summary> 블랙보드 데이터를 저장하는 ScriptableObject </summary>
     public sealed class BlackboardAsset : ScriptableObject

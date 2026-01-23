@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.Utility;
 using UnityEngine;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     /// <summary>Blackboard 데이터 관리 클래스입니다.</summary>
     [Serializable]

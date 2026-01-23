@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.Utility;
 using UnityEngine;
 
-namespace TaskStreamer.BT
+namespace TaskStreamer.Runtime.BT
 {
     /// <summary> Behavior Tree의 노드 호출 스택과 서브트리 중단 기능을 관리하는 클래스 </summary>
     public class TreeInterrupter

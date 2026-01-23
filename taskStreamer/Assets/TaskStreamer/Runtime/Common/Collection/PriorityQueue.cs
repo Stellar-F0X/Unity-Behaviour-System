@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TaskStreamer.Utility
+namespace TaskStreamer.Runtime.Utility
 {
     /// <summary> 우선순위 정렬 방향을 나타내는 열거형 </summary>
     public enum PriorityOrder

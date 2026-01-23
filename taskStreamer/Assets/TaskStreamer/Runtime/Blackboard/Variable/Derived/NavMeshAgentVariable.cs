@@ -1,7 +1,7 @@
 using System;
 using UnityEngine.AI;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     [Serializable, Readable]
     public class NavMeshAgentVariable : BlackboardVariable<NavMeshAgent> { }

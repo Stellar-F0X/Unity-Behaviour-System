@@ -1,6 +1,6 @@
 using System;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     [Serializable, Readable, Comparable(Comparison.EQ | Comparison.NE)]
     public class BoolCondition : Condition<bool>

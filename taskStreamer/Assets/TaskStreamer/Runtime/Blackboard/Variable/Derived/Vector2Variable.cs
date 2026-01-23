@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     [Serializable, Readable]
     public class Vector2Variable : BlackboardVariable<Vector2> { }

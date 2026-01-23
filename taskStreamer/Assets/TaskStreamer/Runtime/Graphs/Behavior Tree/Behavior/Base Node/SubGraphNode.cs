@@ -1,9 +1,9 @@
 ﻿using System;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer.BT
+namespace TaskStreamer.Runtime.BT
 {
     [Serializable]
     internal abstract class SubGraphNode : BehaviorNodeBase, ISubGraphProvider

@@ -1,10 +1,11 @@
+using TaskStreamer.Runtime;
 using UnityEditor;
 using UnityEngine;
 using UEditorUtility = UnityEditor.EditorUtility;
 
 namespace TaskStreamer.Tool
 {
-    [CustomEditor(typeof(TaskStreamer))]
+    [CustomEditor(typeof(TaskStreamer.Runtime.TaskStreamer))]
     public class TaskStreamerInspector : Editor
     {
         private void OnEnable()

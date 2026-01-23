@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     /// <summary> 상태 머신(FSM)에서 사용되는 노드의 유형을 정의합니다. </summary>
     public enum StateNodeType : byte

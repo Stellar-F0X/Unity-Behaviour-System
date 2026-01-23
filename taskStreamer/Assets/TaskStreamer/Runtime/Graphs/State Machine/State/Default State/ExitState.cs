@@ -1,7 +1,7 @@
 using Unity.Properties;
 using UnityEngine;
 
-namespace TaskStreamer.FSM
+namespace TaskStreamer.Runtime.FSM
 {
     [GeneratePropertyBag, Readable]
     public class ExitState : StateBase

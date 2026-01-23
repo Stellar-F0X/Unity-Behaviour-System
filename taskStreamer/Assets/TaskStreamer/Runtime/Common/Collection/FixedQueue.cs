@@ -1,4 +1,4 @@
-namespace TaskStreamer.Utility
+namespace TaskStreamer.Runtime.Utility
 {
     public class FixedQueue<T> 
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace TaskStreamer
+namespace TaskStreamer.Runtime
 {
     [DefaultExecutionOrder(-1)]
     public sealed class TaskStreamer : MonoBehaviour, ISerializationCallbackReceiver

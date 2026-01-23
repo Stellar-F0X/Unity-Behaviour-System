@@ -1,6 +1,6 @@
 using System;
-using TaskStreamer.BT;
-using TaskStreamer.Utility;
+using TaskStreamer.Runtime.BT;
+using TaskStreamer.Runtime.Utility;
 using UnityEngine;
 
 namespace TaskStreamer.Tool

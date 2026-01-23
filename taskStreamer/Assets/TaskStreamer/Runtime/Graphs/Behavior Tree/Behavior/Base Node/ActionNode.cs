@@ -1,4 +1,4 @@
-namespace TaskStreamer.BT
+namespace TaskStreamer.Runtime.BT
 {
     public abstract class ActionNode : BehaviorNodeBase
     {
