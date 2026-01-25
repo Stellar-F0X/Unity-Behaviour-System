@@ -1,0 +1,98 @@
+.line {
+    border-top-width: 1px;
+    border-right-width: 0;
+    border-bottom-width: 1px;
+    border-left-width: 0;
+    border-left-color: rgb(35, 35, 35);
+    border-right-color: rgb(35, 35, 35);
+    border-top-color: rgb(35, 35, 35);
+    border-bottom-color: rgb(35, 35, 35);
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 1px;
+    margin-bottom: 1px;
+    width: 100%;
+    height: 0;
+}
+
+.label-header {
+    font-size: 13px;
+    -unity-font-style: bold;
+    -unity-text-align: middle-left;
+    overflow: hidden;
+    visibility: visible;
+    display: flex;
+    flex-grow: 1;
+    margin-top: 3px;
+    margin-bottom: 2px;
+    padding-left: 2px;
+    padding-right: 2px;
+    border-bottom-width: 2px;
+    border-left-color: rgb(45, 45, 45);
+    border-right-color: rgb(45, 45, 45);
+    border-top-color: rgb(45, 45, 45);
+    border-bottom-color: rgb(45, 45, 45);
+    background-color: rgba(255, 255, 255, 0.04);
+    border-bottom-left-radius: 1px;
+    border-bottom-right-radius: 1px;
+    padding-bottom: 2px;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+}
+
+Label {
+    width: 150px;
+}
+
+#container {
+    flex-grow: 0;
+}
+
+#description-content > #unity-text-input {
+    height: 50px;
+    min-height: initial;
+    max-height: initial;
+}
+
+#container > #main-header > #unity-content {
+    margin-left: 5px;
+}
+
+#container > #main-header > .unity-foldout__toggle > .unity-foldout__input {
+    margin-left: 21px;
+}
+
+#container > #main-header > .unity-foldout__toggle {
+    background-color: rgba(255, 255, 255, 0.1);
+    height: 18px;
+}
+
+#container > #enable-toggle {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    margin-left: 3px;
+    top: 1px;
+    bottom: 1px;
+    left: 3px;
+    position: absolute;
+}
+
+#container > #delete-button {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    position: absolute;
+    top: 1px;
+    bottom: 1px;
+    right: 3px;
+    width: auto;
+    height: auto;
+    min-width: 45px;
+    min-height: 14px;
+    margin-right: 3px;
+    margin-left: 0;
+    padding-top: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+}

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using TaskStreamer.Runtime.BT;
 using TaskStreamer.Runtime.Utility;
 using UnityEngine.UIElements;
@@ -10,7 +9,7 @@ namespace TaskStreamer.Tool
     {
         public ServiceView(ServiceBase service)
         {
-            TaskStreamerResourceLoader.serviceBlock.CloneTree(this);
+            TSEditor.serviceBlock.CloneTree(this);
             Type serviceType = service.GetType();
             base.userData = service;
             

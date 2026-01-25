@@ -1,0 +1,26 @@
+#container > #list-container > .unity-list-view--with-header > #unity-list-view__foldout-header {
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    padding-bottom: 0;
+    padding-top: 0;
+    padding-left: 2px;
+    padding-right: 1px;
+}
+
+#container > #list-container > #condition-list-view > #unity-list-view__foldout-header > .unity-collection-view__scroll-view > #unity-content-and-vertical-scroll-container > #unity-content-viewport > #unity-content-container {
+    background-color: rgb(53, 53, 53);
+}
+
+#container > #list-container > #condition-list-view > #unity-list-view__foldout-header > .unity-foldout__toggle > .unity-foldout__input {
+    background-color: rgb(88, 88, 88);
+    border-top-width: 1px;
+    border-right-width: 1px;
+    border-bottom-width: 1px;
+    border-left-width: 1px;
+    border-left-color: rgb(45, 45, 45);
+    border-right-color: rgb(45, 45, 45);
+    border-top-color: rgb(45, 45, 45);
+    border-bottom-color: rgb(45, 45, 45);
+}

@@ -4,7 +4,6 @@ using System.Linq;
 using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 using UnityEngine;
-using ObjectFactory = TaskStreamer.Runtime.Utility.ObjectFactory;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -251,7 +250,7 @@ namespace TaskStreamer.Runtime
                 Undo.RecordObject(this.graphAsset, "Task Streamer (CreateNode)");
             }
 
-            NodeBase node = ObjectFactory.CreateNode(nodeType, position);
+            NodeBase node = TSObjectFactory.CreateNode(nodeType, position);
 
             if (node is null)
             {

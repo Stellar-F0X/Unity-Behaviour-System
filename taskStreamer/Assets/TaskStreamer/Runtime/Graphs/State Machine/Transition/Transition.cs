@@ -76,7 +76,7 @@ namespace TaskStreamer.Runtime.FSM
             
             if (conditions.modules.Count > 0)
             {
-                return this.conditions.Execute();
+                return this.conditions.Execute(this.sourceNode);
             }
             else
             {

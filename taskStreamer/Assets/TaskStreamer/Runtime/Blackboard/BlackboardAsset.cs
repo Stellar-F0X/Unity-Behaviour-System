@@ -158,7 +158,7 @@ namespace TaskStreamer.Runtime
             {
                 if (string.IsNullOrEmpty(variable.key))
                 {
-                    Debug.LogError($"Invalid key: {variable.implementedType.Name}");
+                    Debug.LogError($"Invalid key: {variable.genericVariableType.Name}");
                     continue;
                 }
 

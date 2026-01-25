@@ -15,7 +15,7 @@ namespace TaskStreamer.Runtime.FSM
     /// 서브클래스는 사용하려는 서브그래프의 구체적인 동작과 유형을 반드시 구현해야 한다.
     /// </remarks>
     [Serializable, GeneratePropertyBag, Readable]
-    internal abstract class SubGraphState : StateBase, ISubGraphProvider
+    internal abstract class SubGraphState : StateBase, ISubGraph
     {
         /// <summary>
         /// 특정 상태가 실행 중(execution)에도 전이(transition)가 가능한지를 나타내는 변수입니다.

@@ -1,0 +1,25 @@
+{
+    "name": "TaskStreamer.Test.Tool",
+    "rootNamespace": "TaskStreamer.Test.Tool",
+    "references": [
+        "GUID:9bf4f0e57f03dc34981062dbd1ef8ab1",
+        "GUID:591e76298d9f64d4497b69da86171ced",
+        "GUID:27619889b8ba8c24980f49ee34dbb44a",
+        "GUID:0acc523941302664db1f4e527237feb3"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

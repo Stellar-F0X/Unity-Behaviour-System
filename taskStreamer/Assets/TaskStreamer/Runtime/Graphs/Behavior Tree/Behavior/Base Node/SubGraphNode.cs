@@ -6,7 +6,7 @@ using UnityEngine;
 namespace TaskStreamer.Runtime.BT
 {
     [Serializable]
-    internal abstract class SubGraphNode : BehaviorNodeBase, ISubGraphProvider
+    internal abstract class SubGraphNode : BehaviorNodeBase, ISubGraph
     {
         [DontCreateProperty]
         private Graph _subGraph;

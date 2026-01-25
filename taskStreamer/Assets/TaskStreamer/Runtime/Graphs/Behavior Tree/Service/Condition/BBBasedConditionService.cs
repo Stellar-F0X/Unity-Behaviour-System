@@ -2,13 +2,15 @@ using System;
 using TaskStreamer.Runtime;
 using TaskStreamer.Runtime.BT;
 using Unity.Properties;
+using UnityEngine;
 
 namespace TaskStreamer.Runtime
 {
     [Serializable, GeneratePropertyBag, Readable]
     public partial class BBBasedConditionService : ServiceBase
     {
-        public BlackboardBasedCondition conditions = new BlackboardBasedCondition();
+        [SerializeField]
+        internal BlackboardBasedCondition conditions = new BlackboardBasedCondition();
 
 
         public override bool CanVisit()
@@ -17,10 +19,8 @@ namespace TaskStreamer.Runtime
             {
                 return false;
             }
-            else
-            {
-                return this.conditions.Execute();
-            }
+
+            return this.conditions.Execute(base.node);
         }
     }
 }

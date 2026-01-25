@@ -1,3 +1,0 @@
-#container > #comparison-type-field > .unity-popup-field__input > .unity-base-popup-field__text {
-    -unity-text-align: middle-center;
-}

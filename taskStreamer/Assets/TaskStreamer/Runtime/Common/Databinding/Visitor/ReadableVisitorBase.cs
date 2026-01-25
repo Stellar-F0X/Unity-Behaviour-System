@@ -74,6 +74,11 @@ namespace TaskStreamer.Runtime
                 return false;
             }
 
+            if (typeof(ISerializableCollection).IsAssignableFrom(type))
+            {
+                return false;
+            }
+
             if (type.HasAttribute<ReadableAttribute>())
             {
                 _VisitAvailable.Add(type);

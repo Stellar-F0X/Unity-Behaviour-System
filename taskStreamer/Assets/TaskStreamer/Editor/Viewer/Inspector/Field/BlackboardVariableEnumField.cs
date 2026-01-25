@@ -32,9 +32,9 @@ namespace TaskStreamer.Tool
         {
             Assert.IsTrue(_blackboardVariable.valueType.IsEnum, "The value type of the blackboard variable must be an enum type");
 
-            Undo.RecordObject(TaskStreamerEditor.Instance.graphAsset, "TaskStreamer (ChangeBBVariableValue)");
+            Undo.RecordObject(TSEditor.Instance.graphAsset, "TaskStreamer (ChangeBBVariableValue)");
             _blackboardVariable.boxedValue = newValue;
-            UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
+            UnityEditor.EditorUtility.SetDirty(TSEditor.Instance.graphAsset);
         }
     }
 }

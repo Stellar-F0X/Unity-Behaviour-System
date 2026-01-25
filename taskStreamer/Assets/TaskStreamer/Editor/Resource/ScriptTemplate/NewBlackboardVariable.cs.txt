@@ -1,8 +1,0 @@
-using System;
-using UnityEngine;
-using TaskStreamer;
-
-    #ROOTNAMESPACEBEGIN#
-[Serializable, Readable]
-public class #SCRIPTNAME# : BlackboardVariable<> { }
-#ROOTNAMESPACEEND#

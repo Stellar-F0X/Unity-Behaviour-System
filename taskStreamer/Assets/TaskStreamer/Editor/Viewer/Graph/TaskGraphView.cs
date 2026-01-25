@@ -24,7 +24,7 @@ namespace TaskStreamer.Tool
             this.AddManipulator(new RectangleSelector());
             this.AddManipulator(new GraphZoomer(2f, 0.2f));
 
-            styleSheets.Add(TaskStreamerResourceLoader.windowStyle);
+            styleSheets.Add(TSEditor.windowStyle);
         }
         
         /// <summary>내부에서 그래프 뷰 동작을 관리하는 필드입니다.</summary>
@@ -46,7 +46,7 @@ namespace TaskStreamer.Tool
         /// <summary>현재 활성화된 그래프를 반환합니다.</summary>
         public Graph focusGraph
         {
-            get { return TaskStreamerEditor.Instance.currentGraph; }
+            get { return TSEditor.Instance.currentGraph; }
         }
 
 
@@ -131,7 +131,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            float interval = TaskStreamerEditor.settings.updateInterval;
+            float interval = TSEditor.settings.updateInterval;
             this._nextUpdateTime = Time.unscaledTime + interval;
 
             foreach (Node node in this.nodes)
@@ -148,7 +148,7 @@ namespace TaskStreamer.Tool
         /// <param name="onNodeCreated">노드 생성 후 실행할 콜백입니다.</param>
         public void OpenContextualMenuWindow(Vector2 mousePosition, Action<NodeViewBase> onNodeCreated = null)
         {
-            if (TaskStreamerEditor.canEditGraph == false)
+            if (TSEditor.canEditGraph == false)
             {
                 return;
             }
@@ -186,12 +186,12 @@ namespace TaskStreamer.Tool
 
         public void CallSelectionEvent(ISelectableView selectedView)
         {
-            if (TaskStreamerEditor.isLoadingTreeToView)
+            if (TSEditor.isLoadingTreeToView)
             {
                 return;
             }
 
-            FloatingInspector inspector = TaskStreamerEditor.Instance.inspectorView;
+            FloatingInspector inspector = TSEditor.Instance.inspectorView;
             Assert.IsNotNull(inspector, $"floating inspector is null reference");
 
             GraphElement graphElement = selectedView as GraphElement;
@@ -251,7 +251,7 @@ namespace TaskStreamer.Tool
         /// <param name="user">사용자 입력을 나타내는 객체입니다.</param>
         private void OnDeleteSelectionElements(string operationName, AskUser user)
         {
-            if (TaskStreamerEditor.canEditGraph == false)
+            if (TSEditor.canEditGraph == false)
             {
                 return;
             }
@@ -272,7 +272,7 @@ namespace TaskStreamer.Tool
         /// <param name="data"> Node Group View를 생성하기 위한 Node Group Data 입니다. </param>
         private void RecreateNodeGroupView(NodeGroup data)
         {
-            NodeGroupView nodeGroupView = new NodeGroupView(data, TaskStreamerEditor.settings.nodeGroupColor);
+            NodeGroupView nodeGroupView = new NodeGroupView(data, TSEditor.settings.nodeGroupColor);
             nodeGroupView.AddElements(nodes.Where(n => n is NodeViewBase v && data.Contains(v.targetNode.guid)));
             nodeGroupView.SetPosition(new Rect(data.position, Vector2.zero));
             base.AddElement(nodeGroupView);
@@ -312,7 +312,7 @@ namespace TaskStreamer.Tool
         public NodeGroupView CreateNewNodeGroupView(string title, Vector2 position)
         {
             NodeGroup nodeNodeGroupData = focusGraph.CreateGroupDataAndAddToList(title, position);
-            NodeGroupView groupView = new NodeGroupView(nodeNodeGroupData, TaskStreamerEditor.settings.nodeGroupColor);
+            NodeGroupView groupView = new NodeGroupView(nodeNodeGroupData, TSEditor.settings.nodeGroupColor);
 
             groupView.SetPosition(new Rect(position, Vector2.zero));
 

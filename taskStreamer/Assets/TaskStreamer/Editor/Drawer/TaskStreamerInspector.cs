@@ -31,7 +31,7 @@ namespace TaskStreamer.Tool
             base.Repaint();
             
             SerializedProperty graphAsset = serializedObject.FindProperty("_graphAsset");
-            TaskStreamerEditor.OpenWindow(graphAsset.objectReferenceValue as GraphAsset); 
+            TSEditor.OpenWindow(graphAsset.objectReferenceValue as GraphAsset); 
         }
 
         
@@ -46,7 +46,6 @@ namespace TaskStreamer.Tool
             SerializedProperty runtimeBlackboard = serializedObject.FindProperty("_runtimeBlackboard");
 
             GraphAsset previousGraph = graphAsset.objectReferenceValue as GraphAsset;
-
             
             
             //Graph Asset
@@ -62,8 +61,7 @@ namespace TaskStreamer.Tool
                     this.HandleGraphAssetChange(previousGraph, graphAsset);
                 }
             }
-
-
+            
 
             //Tick Mode
             {
@@ -76,8 +74,7 @@ namespace TaskStreamer.Tool
                     Undo.RecordObject(target, "Change Tick Mode");
                 }
             }
-
-
+            
 
             //Pasue Update
             {
@@ -90,14 +87,12 @@ namespace TaskStreamer.Tool
                     Undo.RecordObject(target, "Change Pause Update");
                 }
             }
-
             
             
             this.DrawEditorButtons(graphAsset);
-            
             this.DrawRuntimeBlackboardField(runtimeBlackboard);
 
-
+            
             if (serializedObject.hasModifiedProperties)
             {
                 serializedObject.ApplyModifiedProperties();
@@ -117,7 +112,6 @@ namespace TaskStreamer.Tool
             }
 
             EditorGUI.BeginChangeCheck();
-
             EditorGUILayout.PropertyField(runtimeBlackboard);
 
             if (EditorGUI.EndChangeCheck())
@@ -134,18 +128,18 @@ namespace TaskStreamer.Tool
         /// <param name="graphAsset">현재 선택된 그래프 자산을 나타내는 SerializedProperty입니다.</param>
         private void HandleGraphAssetChange(GraphAsset previousGraph, SerializedProperty graphAsset)
         {
-            if (EditorWindow.HasOpenInstances<TaskStreamerEditor>() == false)
+            if (EditorWindow.HasOpenInstances<TSEditor>() == false)
             {
                 return;
             }
 
             if (previousGraph != graphAsset.objectReferenceValue)
             {
-                TaskStreamerEditor.OpenWindow(graphAsset.objectReferenceValue as GraphAsset);
+                TSEditor.OpenWindow(graphAsset.objectReferenceValue as GraphAsset);
             }
             else if (graphAsset.objectReferenceValue == null)
             {
-                TaskStreamerEditor.ClearWindow();
+                TSEditor.ClearWindow();
             }
         }
 
@@ -159,7 +153,7 @@ namespace TaskStreamer.Tool
             {
                 if (GUILayout.Button("Open Stream Editor", GUILayout.ExpandWidth(true)) && graphAsset.objectReferenceValue != null)
                 {
-                    TaskStreamerEditor.OpenWindow(graphAsset.objectReferenceValue as GraphAsset);
+                    TSEditor.OpenWindow(graphAsset.objectReferenceValue as GraphAsset);
                 }
 
                 if (GUILayout.Button("Open Editor Settings", GUILayout.ExpandWidth(true)))

@@ -4,7 +4,6 @@ using System.Linq;
 using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 using UnityEngine;
-using ObjectFactory = TaskStreamer.Runtime.Utility.ObjectFactory;
 
 namespace TaskStreamer.Runtime.FSM
 {
@@ -193,7 +192,7 @@ namespace TaskStreamer.Runtime.FSM
             // GraphAsset과 from 노드 모두 기록
             UnityEditor.Undo.RecordObject(_graphAsset, "State Machine (Connect)");
 
-            Transition newTransition = ObjectFactory.CreateTransition(from, to);
+            Transition newTransition = TSObjectFactory.CreateTransition(from, to);
             from.AddTransition(newTransition);
             UnityEditor.EditorUtility.SetDirty(_graphAsset);
             return newTransition;

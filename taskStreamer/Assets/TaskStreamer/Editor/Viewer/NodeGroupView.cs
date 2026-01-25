@@ -76,12 +76,12 @@ namespace TaskStreamer.Tool
         
         private bool IsEditorAddDisabled()
         {
-            if (TaskStreamerEditor.Instance is null || _groupData is null)
+            if (TSEditor.Instance is null || _groupData is null)
             {
                 return true;
             }
 
-            if (TaskStreamerEditor.canEditGraph == false || TaskStreamerEditor.isLoadingTreeToView)
+            if (TSEditor.canEditGraph == false || TSEditor.isLoadingTreeToView)
             {
                 return true;
             }

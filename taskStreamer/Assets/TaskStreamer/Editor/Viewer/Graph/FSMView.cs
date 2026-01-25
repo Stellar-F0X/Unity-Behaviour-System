@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using TaskStreamer.Runtime;
 using TaskStreamer.Runtime.FSM;
 using UnityEditor.Experimental.GraphView;
-using UnityEngine;
 using UnityEngine.Assertions;
 using Edge = UnityEditor.Experimental.GraphView.Edge;
 
@@ -48,7 +47,7 @@ namespace TaskStreamer.Tool
                 return false;
             }
 
-            ArrowEdge transitionEdge = new ArrowEdge(transition)
+            FSMEdge transitionEdge = new FSMEdge(transition)
             {
                 isGhostEdgeMode = false,
                 output = outputPort,
@@ -60,7 +59,7 @@ namespace TaskStreamer.Tool
             outputPort.Connect(transitionEdge);
             inputPort.Connect(transitionEdge);
 
-            TaskStreamerEditor.Instance.taskGraphView.AddElement(transitionEdge);
+            TSEditor.Instance.taskGraphView.AddElement(transitionEdge);
             return true;
         }
 
@@ -110,13 +109,16 @@ namespace TaskStreamer.Tool
             return BindingWindowBuilder.GetBuilder("State Machine", reuse: true)
                                        .AddFactoryModule(
                                            () => new NodeFactoryModule<ActionState>(graphView, "Action"),
-                                           () => new TypeTreeProvider(true))
+                                           () => new RelatedTypeTreeProvider(true))
                                        .AddFactoryModule(
                                            () => new NodeFactoryModule<SubGraphState>(graphView, "Graph"),
-                                           () => new TypeTreeProvider(true))
+                                           () => new RelatedTypeTreeProvider(true))
                                        .AddFactoryModule(
                                            () => new NodeGroupFactoryModule<NodeGroup>(graphView, "Utility"),
-                                           () => new TypeTreeProvider(false))
+                                           () => new RelatedTypeTreeProvider(false))
+                                       .AddFactoryModule( 
+                                           ()=> new ScriptCreationFactoryModule<CreateNewStateScriptCommand>(graphView, "New Node"),
+                                           () => new RelatedTypeTreeProvider(false))
                                        .Build();
         }
 
@@ -191,7 +193,7 @@ namespace TaskStreamer.Tool
 
                 Transition transition = fsm.ConnectStates(sourceNode, targetNode);
 
-                if (transition is null || edge is not ArrowEdge transitionView)
+                if (transition is null || edge is not FSMEdge transitionView)
                 {
                     //graphViewChange는 Graph의 변경사항을 담은 컨테이너.
                     //그 안에 Edges가 이 함수의 매개변수로 전달되는데,
@@ -219,7 +221,7 @@ namespace TaskStreamer.Tool
                 return null;
             }
 
-            NodeViewBase nodeView = StateNodeView.Create(node, TaskStreamerResourceLoader.stateNode);
+            NodeViewBase nodeView = StateNodeView.Create(node, TSEditor.stateNode);
             Assert.IsNotNull(nodeView, $"{nameof(TaskGraphView)}: NodeViewBase is null");
 
             return nodeView;
@@ -234,7 +236,7 @@ namespace TaskStreamer.Tool
         /// <param name="sourceState">연결을 끊으려는 소스 노드를 나타내는 노드입니다.</param>
         public void TryDisconnectSourceToOriginal(NodeViewBase sourceState)
         {
-            StateMachine fsm = TaskStreamerEditor.Instance.currentGraph as StateMachine;
+            StateMachine fsm = TSEditor.Instance.currentGraph as StateMachine;
             Assert.IsNotNull(fsm, "fsm graph is null referenced");
 
             //enter 노드만이 하나의 아웃풋 포트를 가지므로, enter 노드인지만 확인한다.
@@ -245,7 +247,7 @@ namespace TaskStreamer.Tool
             }
 
             fsm.DisconnectStates(enter, enter.transitions[0].destinationNode as StateBase);
-            TaskStreamerEditor.Instance.taskGraphView.DeleteElements(sourceState.outputPort.connections);
+            TSEditor.Instance.taskGraphView.DeleteElements(sourceState.outputPort.connections);
         }
 
 

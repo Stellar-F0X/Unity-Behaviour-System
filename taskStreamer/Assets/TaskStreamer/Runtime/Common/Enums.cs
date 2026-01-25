@@ -55,37 +55,6 @@ namespace TaskStreamer.Runtime
     
     
     
-    /// <summary> 값 비교 연산에 사용되는 비교 타입을 정의합니다. </summary>
-    [Flags]
-    public enum Comparison : byte
-    {
-        /// <summary>Equals (==)</summary>
-        [Tooltip("Equal (==)")]
-        EQ = 1 << 0,
-
-        /// <summary>Not Equals (!=)</summary>
-        [Tooltip("Not Equal (!=)")]
-        NE = 1 << 1,
-
-        /// <summary>Greater Than (&gt;)</summary>
-        [Tooltip("Greater Than (>)")]
-        GT = 1 << 2,
-
-        /// <summary>Greater Than or Equal (&gt;=)</summary>
-        [Tooltip("Greater Than or Equal (>=)")]
-        GE = 1 << 3,
-
-        /// <summary>Less Than (&lt;)</summary>
-        [Tooltip("Less Than (<)")]
-        LT = 1 << 4,
-
-        /// <summary>Less Than or Equal (&lt;=)</summary>
-        [Tooltip("Less Than or Equal (<=)")]
-        LE = 1 << 5
-    };
-    
-    
-    
     /// <summary> Parallel 노드에서 자식 노드들의 성공/실패를 평가하는 정책을 정의합니다. </summary>
     public enum ParallelPolicy : byte
     {
@@ -270,6 +239,8 @@ namespace TaskStreamer.Runtime
         /// <summary> 리스트에 요소가 추가됨을 나타냅니다. </summary>
         [Tooltip("Represents the addition of an element to the list.")]
         Add = 1,
+        Change = 2,
+        Clear = 3
     }
 
 

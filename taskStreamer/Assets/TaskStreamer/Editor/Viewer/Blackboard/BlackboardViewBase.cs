@@ -40,13 +40,12 @@ namespace TaskStreamer.Tool
         
         private void BuildMyContextMenu(ContextualMenuPopulateEvent evt)
         {
-            if (TaskStreamerEditor.canEditGraph == false)
+            if (TSEditor.canEditGraph == false)
             {
                 return;
             }
             
             evt.menu.AppendAction("Delete", this.DeleteSelectedBlackboardItems);
-            
             evt.StopImmediatePropagation(); //기본 메뉴 빌드 방지
         }
 
@@ -59,14 +58,17 @@ namespace TaskStreamer.Tool
             {
                 return;
             }
+            
+            items.ForEach(RemoveInvisibleTextFields);
+            return;
 
-            foreach (BlackboardField field in items)
+            void RemoveInvisibleTextFields(BlackboardField field)
             {
                 TextField textField = field.Q<TextField>("textField");
                 
                 if (textField is null || textField.style.display == DisplayStyle.Flex)
                 {
-                    continue;
+                    return;
                 }
                 
                 field.RemoveFromHierarchy(); 

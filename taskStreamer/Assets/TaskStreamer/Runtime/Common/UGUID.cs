@@ -129,7 +129,7 @@ namespace TaskStreamer.Runtime.Utility
 
         /// <summary> 주어진 컬렉션이 비어있는지 여부를 확인합니다. </summary>
         /// <returns> 컬렉션이 비어있다면 true, 그렇지 않다면 false를 반환합니다. </returns>
-        public bool IsEmpty()
+        public readonly bool IsEmpty()
         {
             return this._value0 == 0U && this._value1 == 0U && this._value2 == 0U && this._value3 == 0U;
         }

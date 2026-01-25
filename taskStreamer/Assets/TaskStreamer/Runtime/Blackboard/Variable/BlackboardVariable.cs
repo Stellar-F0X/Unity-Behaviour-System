@@ -43,16 +43,10 @@ namespace TaskStreamer.Runtime
 
 
         /// <summary> 블랙보드 변수에서 구현된 타입 정보를 나타내는 프로퍼티 </summary>
-        internal Type implementedType
+        internal Type genericVariableType
         {
             get;
             set;
-        }
-
-        /// <summary> 제네릭 변수의 타입을 나타내는 속성 </summary>
-        internal abstract Type genericVariableType
-        {
-            get;
         }
 
         /// <summary> 이 변수의 실제 데이터 유형을 반환 </summary>
@@ -116,11 +110,11 @@ namespace TaskStreamer.Runtime
         /// <returns>생성된 블랙보드 변수 인스턴스를 반환합니다.</returns>
         internal static BlackboardVariable Create(Type implementedType, bool shared)
         {
-            Debug.Assert(implementedType is not null, $"{typeof(ObjectFactory)}: Wrong blackboard variable type");
+            Debug.Assert(implementedType is not null, $"{typeof(TSObjectFactory)}: Wrong blackboard variable type");
             BlackboardVariable createdVariable = Activator.CreateInstance(implementedType) as BlackboardVariable;
-            Debug.Assert(createdVariable is not null, $"{typeof(ObjectFactory)}: Failed to create a blackboard variable.");
+            Debug.Assert(createdVariable is not null, $"{typeof(TSObjectFactory)}: Failed to create a blackboard variable.");
 
-            createdVariable.implementedType = implementedType;
+            createdVariable.genericVariableType = implementedType;
             createdVariable._typeName = implementedType.AssemblyQualifiedName;
             createdVariable._isShared = shared;
             return createdVariable;
@@ -162,16 +156,16 @@ namespace TaskStreamer.Runtime
         /// <remarks> 타입이 null이면 디버그 검사를 통해 경고를 발생시킵니다. </remarks>
         public void OnBeforeSerialize()
         {
-            if (implementedType is null)
+            if (genericVariableType is null)
             {
                 //필드명아 바뀌거나, 제네릭 타입이 바뀌면 필드가 초기화되는데, 
                 //그때 implementedType, TypeName이 마찬가지로 사라지므로 다시 대입.
-                this.implementedType = this.GetType();
+                this.genericVariableType = this.GetType();
             }
 
-            if (implementedType is not null)
+            if (genericVariableType is not null)
             {
-                this._typeName = implementedType.AssemblyQualifiedName;
+                this._typeName = genericVariableType.AssemblyQualifiedName;
             }
             else
             {
@@ -185,7 +179,7 @@ namespace TaskStreamer.Runtime
         {
             if (_typeName.IsNotNullOrEmpty())
             {
-                this.implementedType = Type.GetType(_typeName);
+                this.genericVariableType = Type.GetType(_typeName);
             }
             else
             {
@@ -237,13 +231,6 @@ namespace TaskStreamer.Runtime
             get { return this.GetValue(); }
 
             set { this.SetValue(value); }
-        }
-
-
-        /// <summary> 제네릭 변수의 타입을 나타내는 프로퍼티 </summary>
-        internal override sealed Type genericVariableType
-        {
-            get { return typeof(BlackboardVariable<TValue>); }
         }
 
 
@@ -368,10 +355,10 @@ namespace TaskStreamer.Runtime
         /// <return> 복제된 BlackboardVariable 객체. </return>
         internal override BlackboardVariable Duplicate()
         {
-            BlackboardVariable<TValue> clone = Create(implementedType, _isShared) as BlackboardVariable<TValue>;
+            BlackboardVariable<TValue> clone = Create(genericVariableType, _isShared) as BlackboardVariable<TValue>;
             Debug.Assert(clone is not null, "Failed to duplicate a blackboard variable.");
 
-            clone.implementedType = this.implementedType;
+            clone.genericVariableType = this.genericVariableType;
             clone._typeName = this._typeName;
             clone._keyHash = this._keyHash;
             clone._key = this._key;

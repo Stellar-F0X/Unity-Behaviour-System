@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using TaskStreamer.Runtime;
 using TaskStreamer.Runtime.FSM;
 using TaskStreamer.Runtime.Utility;
@@ -19,7 +18,7 @@ namespace TaskStreamer.Tool
             base.title = nodeName;
 
             this._elementGroup.AddToClassList($"state-node");
-            this.Indicator = new StateNodeIndicator(this, TaskStreamerEditor.settings);
+            this.Indicator = new StateNodeIndicator(this, TSEditor.settings);
             this.Indicator.ApplyBorderColorByState();
         }
 

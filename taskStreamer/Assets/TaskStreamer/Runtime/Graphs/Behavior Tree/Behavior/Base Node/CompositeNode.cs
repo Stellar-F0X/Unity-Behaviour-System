@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace TaskStreamer.Runtime.BT
 {
-    public abstract class CompositeNode : BehaviorNodeBase, IChildProvider
+    public abstract class CompositeNode : BehaviorNodeBase, IChildNode
     {
         protected int _currentChildrenIndex = 0;
 

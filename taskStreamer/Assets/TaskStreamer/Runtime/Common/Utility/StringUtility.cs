@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace TaskStreamer.Runtime.Utility
@@ -50,7 +51,7 @@ namespace TaskStreamer.Runtime.Utility
         {
             if (string.IsNullOrEmpty(nodeName))
             {
-                throw new ArgumentException($"{typeof(ObjectFactory)}: NodeName is null or empty");
+                throw new ArgumentException($"{typeof(TSObjectFactory)}: NodeName is null or empty");
             }
 
             if (string.IsNullOrEmpty(removeName) == false && nodeName.EndsWith(removeName))
@@ -59,6 +60,40 @@ namespace TaskStreamer.Runtime.Utility
             }
 
             return UnityEditor.ObjectNames.NicifyVariableName(nodeName);
+        }
+
+
+        public static bool IsValidScriptName(string scriptName, out string errorMessage)
+        {
+            if (string.IsNullOrEmpty(scriptName))
+            {
+                errorMessage = "Node file name is required.";
+                return false;
+            }
+			
+            if (char.IsDigit(scriptName[0]) || scriptName[0] == '_')
+            {
+                errorMessage = "Node file name cannot start with a number or an underscore.";
+                return false;
+            }
+
+            if (scriptName.Contains(" "))
+            {
+                errorMessage = "Node file name cannot contain spaces.";
+                return false;
+            }
+			
+            if (scriptName.All(c => c == '_' || char.IsLetterOrDigit(c)))
+            {
+                errorMessage = null;
+                return true;
+            }
+            else
+            {
+                errorMessage = "Node file name must contain only letters, numbers and underscores.";
+            }
+
+            return false;
         }
 #endif
     }

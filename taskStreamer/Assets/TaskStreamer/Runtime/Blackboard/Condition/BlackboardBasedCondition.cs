@@ -1,73 +1,80 @@
 using System;
 using System.Collections.Generic;
+using TaskStreamer.Runtime.Utility;
 using Unity.Properties;
 using UnityEngine;
 
 namespace TaskStreamer.Runtime
 {
-    [Serializable, GeneratePropertyBag, Readable]
-    public sealed partial class BlackboardBasedCondition
-    {
-        [DontCreateProperty]
-        public EvaluationPolicy evaluationPolicy = EvaluationPolicy.All;
-        
-        [SerializeReference]
-        public List<Condition> modules = new List<Condition>();
-        
+	[Serializable, GeneratePropertyBag, Readable]
+	internal sealed partial class BlackboardBasedCondition
+	{
+		[DontCreateProperty]
+		public EvaluationPolicy evaluationPolicy = EvaluationPolicy.All;
 
-        public bool Execute()
-        {
-            if (modules is null)
-            {
-                Debug.LogWarning("Blackboard variables is not set for this condition.");
-                return false;
-            }
+		[SerializeReference]
+		public List<Condition> modules = new List<Condition>();
 
-            if (modules.Count == 0)
-            {
-                return false;
-            }
-
-            switch (evaluationPolicy)
-            {
-                case EvaluationPolicy.Any: return EvaluateWithOrLogic(modules.Count);
-
-                case EvaluationPolicy.All: return EvaluateWithAndLogic(modules.Count);
-                
-                default: return false;
-            }
-        }
+		[SerializeField, DontCreateProperty]
+		private UGUID _guid = UGUID.Create();
 
 
-        private bool EvaluateWithOrLogic(int count)
-        {
-            for (int index = 0; index < count; ++index)
-            {
-                Condition condition = this.modules[index];
-                
-                if (condition.Execute(condition.comparisonValue))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
+		public UGUID guid
+		{
+			get { return _guid; }
+		}
 
 
-        private bool EvaluateWithAndLogic(int count)
-        {
-            for (int index = 0; index < count; ++index)
-            {
-                Condition condition = this.modules[index];
-                
-                if (condition.Execute(condition.comparisonValue) == false)
-                {
-                    return false;
-                }
-            }
 
-            return true;
-        }
-    }
+		public bool Execute(NodeBase calledNode)
+		{
+			if (modules is null)
+			{
+				Debug.LogWarning("Blackboard variables is not set for this condition.");
+				return false;
+			}
+
+			if (modules.Count == 0)
+			{
+				return false;
+			}
+
+			switch (evaluationPolicy)
+			{
+				case EvaluationPolicy.Any: return this.EvaluateWithOrLogic(calledNode, modules.Count);
+
+				case EvaluationPolicy.All: return this.EvaluateWithAndLogic(calledNode, modules.Count);
+			}
+
+			return false;
+		}
+
+
+		private bool EvaluateWithOrLogic(NodeBase calledNode, int count)
+		{
+			for (int index = 0; index < count; ++index)
+			{
+				if (this.modules[index].Execute(calledNode))
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+
+		private bool EvaluateWithAndLogic(NodeBase calledNode, int count)
+		{
+			for (int index = 0; index < count; ++index)
+			{
+				if (this.modules[index].Execute(calledNode) == false)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+	}
 }

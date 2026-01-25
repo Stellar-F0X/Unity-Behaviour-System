@@ -1,0 +1,14 @@
+using System;
+using Unity.Properties;
+using TaskStreamer.Runtime;
+
+    #ROOTNAMESPACEBEGIN#
+[Serializable, GeneratePropertyBag, Readable]
+public class #SCRIPTNAME# : Condition
+{
+    public override bool Execute(NodeBase calledNode)
+    {
+        return false;
+    }
+}
+#ROOTNAMESPACEEND#

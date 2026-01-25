@@ -1,0 +1,25 @@
+using System;
+using TaskStreamer.Runtime;
+using TaskStreamer.Runtime.FSM;
+using Unity.Properties;
+
+    #ROOTNAMESPACEBEGIN#
+[Serializable, GeneratePropertyBag, Readable]
+public partial class #SCRIPTNAME# : ActionState
+{
+    protected override void OnEnter() 
+    {
+    
+    }
+
+    protected override void OnUpdate()
+    {
+    
+    }
+
+    protected override void OnExit()
+    {
+    
+    }
+}
+#ROOTNAMESPACEEND#

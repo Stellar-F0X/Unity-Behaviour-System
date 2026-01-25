@@ -3,8 +3,8 @@ using TaskStreamer.Runtime;
 using TaskStreamer.Runtime.Utility;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
-using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 using Object = UnityEngine.Object;
 
@@ -27,7 +27,7 @@ namespace TaskStreamer.Tool
             this.editTextRequested += this.OnEditElementTitleText;
             this.removeItemRequest += this.OnRemoveItemRequest;
             
-            this.styleSheets.Add(TaskStreamerResourceLoader.blackboardStyle);
+            this.styleSheets.Add(TSEditor.blackboardStyle);
             
             this._addElementButton = this.Q<Button>("addButton");
             this._contentContainer = this.Q<VisualElement>("contentContainer");
@@ -55,24 +55,22 @@ namespace TaskStreamer.Tool
         {
             get
             {
-                if (TaskStreamerEditor.hasBlackboard)
+                if (TSEditor.hasBlackboard)
                 {
-                    return TaskStreamerEditor.Instance.graphAsset?.blackboard;
+                    return TSEditor.Instance.graphAsset?.blackboard;
                 }
-                else
-                {
-                    return null;
-                }
+
+                return null;
             }
             
             set
             {
-                if (TaskStreamerEditor.Instance.graphAsset is null)
+                if (TSEditor.Instance.graphAsset == null)
                 {
                     return;
                 }
 
-                TaskStreamerEditor.Instance.graphAsset.blackboard = value;
+                TSEditor.Instance.graphAsset.blackboard = value;
             }
         }
         
@@ -82,9 +80,14 @@ namespace TaskStreamer.Tool
         /// <summary>변수 리스트를 다시 렌더링하여 블랙보드 뷰를 갱신합니다.</summary>
         public void OnUndoPerformed()
         {
-            this._contentContainer.Clear(); 
+            this._contentContainer.Clear();
 
-            this.blackboard = TaskStreamerEditor.Instance.graphAsset?.blackboard;
+            if (TSEditor.Instance.graphAsset == null)
+            {
+                return;
+            }
+
+            this.blackboard = TSEditor.Instance.graphAsset.blackboard;
 
             if (blackboard == null)
             {
@@ -103,15 +106,21 @@ namespace TaskStreamer.Tool
         public void ClearView()
         {
             this.Clear();
-            
-            TaskStreamerEditor.Instance.inspectorView.ClearInspector();
+            TSEditor.Instance.inspectorView.ClearInspector();
         }
 
 
 
         public void Show(ChangeEvent<bool> evt)
         {
-            this.style.display = evt.newValue ? DisplayStyle.Flex : DisplayStyle.None;
+            if (evt.newValue)
+            {
+                this.style.display = DisplayStyle.Flex;
+            }
+            else
+            {
+                this.style.display = DisplayStyle.None;
+            }
         }
 
         
@@ -124,13 +133,13 @@ namespace TaskStreamer.Tool
             this.blackboard?.UpdateAppliedVersion();
             this.blackboard = newBlackboard;
             
-            if (newBlackboard is null)
+            if (newBlackboard != null)
             {
-                this.ClearView();
+                this.UpdateView(newBlackboard);
             }
             else
             {
-                this.UpdateView(newBlackboard);
+                this.ClearView();
             }
         }
 
@@ -163,16 +172,10 @@ namespace TaskStreamer.Tool
         /// <returns>생성된 BlackboardField 객체를 반환합니다.</returns>
         private BlackboardField CreateBlackboardField(BlackboardVariable variable)
         {
-            string typeName = variable.implementedType.Name.Replace("Variable", string.Empty);
-            Debug.Assert(typeName.IsNotNullOrEmpty(), "BB Variable Type is null or empty");
-
-            
             BlackboardField fieldView = new BlackboardField
             {
-                typeText = StringUtility.ToNicifyName(typeName),
-                
+                typeText = StringUtility.ToNicifyName(variable.valueType.Name),
                 userData = variable,
-                
                 text = variable.key,
             };
 
@@ -186,9 +189,7 @@ namespace TaskStreamer.Tool
         private void RecordAndAddVariable(BlackboardVariable variable)
         {
             Undo.RecordObject(blackboard, "Task Streamer (AddBlackboardVariable)");
-            
             this.blackboard.AddVariable(variable);
-            
             this.Add(this.CreateBlackboardField(variable));
         }
 
@@ -199,18 +200,15 @@ namespace TaskStreamer.Tool
         private void OpenContextualMenuWindow(Blackboard blackboardView)
         {
             //블랙보드가 null이거나, 현재 그래프를 편집할 수 없는 상태인 경우에는 아무 작업도 하지 않는다.
-            if (TaskStreamerEditor.canEditGraph == false || this.blackboard == null)
+            if (TSEditor.canEditGraph == false || this.blackboard == null)
             {
                 return;
             }
 
             BindingWindow window = BindingWindowBuilder.GetBuilder("Blackboard Variables", false)
                                                        .AddFactoryModule(
-                                                           () => new BlackboardVariableFactoryModule("Variables", 0),
-                                                           () => new TypeTreeProvider(true))
-                                                       .AddFactoryModule(
-                                                           () => new EnumBlackboardVariableFactoryModule("Enums", 1),
-                                                           () => new TypeTreeProvider(true))
+                                                           () => new BBVariableFactoryModule("Variables", 0),
+                                                           () => new BBVariableTypeProvider())
                                                        .Build();
 
             window.RegisterCreationCallbackOnce((Action<BlackboardVariable>)RecordAndAddVariable);
@@ -254,17 +252,17 @@ namespace TaskStreamer.Tool
             BlackboardVariable foundVariable = blackboardField.userData as BlackboardVariable;
             Debug.Assert(foundVariable is not null, "foundVariable is null");
             
-            Object[] objects = { blackboard, TaskStreamerEditor.Instance.graphAsset };
+            Object[] objects = { blackboard, TSEditor.Instance.graphAsset };
             Undo.RecordObjects(objects, "Task Streamer (RemoveBlackboardVariable)");
 
             blackboard.RemoveVariable(foundVariable);
 
             //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
-            TaskStreamerEditor.Instance.graphAsset.TrySynchronizeVariablesOfNodes();
-            TaskStreamerEditor.Instance.inspectorView.RefreshInspector();
+            TSEditor.Instance.graphAsset.TrySynchronizeVariablesOfNodes();
+            TSEditor.Instance.inspectorView.RefreshInspector();
             
             UnityEditor.EditorUtility.SetDirty(blackboard);
-            UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
+            UnityEditor.EditorUtility.SetDirty(TSEditor.Instance.graphAsset);
         }
 #endregion
     }

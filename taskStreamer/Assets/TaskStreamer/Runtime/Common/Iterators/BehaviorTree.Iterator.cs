@@ -55,7 +55,7 @@ namespace TaskStreamer.Runtime.BT
 
                     yield return traversal.node; 
 
-                    if (traversal.node is not IChildProvider provider) 
+                    if (traversal.node is not IChildNode provider) 
                     {
                         continue;
                     }
@@ -93,7 +93,7 @@ namespace TaskStreamer.Runtime.BT
 
                     yield return info.node;
 
-                    if (info.node is not IChildProvider provider)
+                    if (info.node is not IChildNode provider)
                     {
                         continue;
                     }

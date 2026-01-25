@@ -1,11 +1,10 @@
 using System;
 using TaskStreamer.Runtime;
+using TaskStreamer.Runtime.Utility;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UIElements;
-using ObjectFactory = TaskStreamer.Runtime.Utility.ObjectFactory;
 
 namespace TaskStreamer.Tool
 {
@@ -15,7 +14,7 @@ namespace TaskStreamer.Tool
     {
         protected BlackboardVariableField()
         {
-            TaskStreamerResourceLoader.blackboardVariableField.CloneTree(this);
+            TSEditor.bbVariableField.CloneTree(this);
             
             this._variableNameLabel = this.Q<Label>("name-field");
             this._valueFieldContainer = this.Q<VisualElement>("value-field");
@@ -40,12 +39,12 @@ namespace TaskStreamer.Tool
             this.CreateVariableFieldByType(this._blackboardVariable.isShared);
 
             this._unlinkButton.clickable.clicked += this.OnConvertSharedToLocal;
-            this._unlinkButton.iconImage = TaskStreamerResourceLoader.deleteButton;
-            this._unlinkButton.enabledSelf = TaskStreamerEditor.canEditGraph && TaskStreamerEditor.hasBlackboard;
+            this._unlinkButton.iconImage = TSEditor.deleteButton;
+            this._unlinkButton.enabledSelf = TSEditor.canEditGraph && TSEditor.hasBlackboard;
 
             this._linkToSharedButton.clickable.clickedWithEventInfo += this.OnOpenSharedVariableSelector;
-            this._linkToSharedButton.iconImage = TaskStreamerResourceLoader.bindingButton;
-            this._linkToSharedButton.enabledSelf = TaskStreamerEditor.canEditGraph && TaskStreamerEditor.hasBlackboard;
+            this._linkToSharedButton.iconImage = TSEditor.bindingButton;
+            this._linkToSharedButton.enabledSelf = TSEditor.canEditGraph && TSEditor.hasBlackboard;
         }
 
 
@@ -124,12 +123,12 @@ namespace TaskStreamer.Tool
         protected virtual void UpdateBlackboardVariableValue(TValue newValue)
         {
             BlackboardVariable<TValue> typedVariable = _blackboardVariable as BlackboardVariable<TValue>;
-            Type impType = _blackboardVariable.implementedType;
+            Type impType = _blackboardVariable.genericVariableType;
             Assert.IsNotNull(typedVariable, $"{impType} is Cannot cast the BlackboardVariable<{typeof(TValue).Name}>");
 
-            Undo.RecordObject(TaskStreamerEditor.Instance.graphAsset, "TaskStreamer (ChangeBBVariableValue)");
+            Undo.RecordObject(TSEditor.Instance.graphAsset, "TaskStreamer (ChangeBBVariableValue)");
             typedVariable.value = newValue;
-            UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
+            UnityEditor.EditorUtility.SetDirty(TSEditor.Instance.graphAsset);
         }
 
 
@@ -166,7 +165,7 @@ namespace TaskStreamer.Tool
 
             //여기서 결정해도 InitializeBlackboardVariableField 함수에서 런타임 중인지 아닌지에 따라 활성화가 다시 결정된다.
             this._localVariableInputField.enabledSelf = readOnly is null;
-            this._linkToSharedButton.enabledSelf = readOnly is null || !TaskStreamerEditor.canEditGraph;
+            this._linkToSharedButton.enabledSelf = readOnly is null || !TSEditor.canEditGraph;
         }
 
 
@@ -209,7 +208,7 @@ namespace TaskStreamer.Tool
         /// <returns> 생성된 VisualElement Dropdown 필드입니다. </returns>
         private VisualElement CreateSharedVariableDisplayField()
         {
-            BlackboardAsset blackboardAsset = TaskStreamerEditor.Instance.graphAsset?.blackboard;
+            BlackboardAsset blackboardAsset = TSEditor.Instance.graphAsset?.blackboard;
 
             //이 경우 블랙보드가 제거되면서 필드에 등록된 BBVariable들도 모두 제거됐어야 정상이다.
             if (blackboardAsset == null || blackboardAsset.count == 0 || _blackboardVariable is null)
@@ -247,7 +246,7 @@ namespace TaskStreamer.Tool
             variable.usage = _blackboardVariable.usage;
             this._variableHandle.SetValue(sharedVariable);
 
-            UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
+            UnityEditor.EditorUtility.SetDirty(TSEditor.Instance.graphAsset);
 
             this._blackboardVariable = variable;
             this.CreateVariableFieldByType(true);
@@ -285,11 +284,11 @@ namespace TaskStreamer.Tool
 
             if (setValue is not null)
             {
-                newLocal = ObjectFactory.CreateBlackboardVariable(_variableHandle.fieldType, defaultValue: setValue.defaultValue);
+                newLocal = TSObjectFactory.CreateBlackboardVariable(_variableHandle.fieldType, defaultValue: setValue.defaultValue);
             }
             else
             {
-                newLocal = ObjectFactory.CreateBlackboardVariable(_variableHandle.fieldType);
+                newLocal = TSObjectFactory.CreateBlackboardVariable(_variableHandle.fieldType);
             }
 
             Assert.IsNotNull(newLocal, "newVariable is null");
@@ -297,7 +296,7 @@ namespace TaskStreamer.Tool
             newLocal.usage = _blackboardVariable.usage;
             this._variableHandle.SetValue(newLocal);
 
-            UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
+            UnityEditor.EditorUtility.SetDirty(TSEditor.Instance.graphAsset);
 
             this._blackboardVariable = newLocal;
             this.CreateVariableFieldByType(false);

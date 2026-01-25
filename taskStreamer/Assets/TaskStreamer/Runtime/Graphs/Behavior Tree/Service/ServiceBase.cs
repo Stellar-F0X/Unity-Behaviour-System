@@ -16,8 +16,7 @@ namespace TaskStreamer.Runtime.BT
             this.canEditName = false;
 #endif
         }
-
-
+        
 
         public bool enable = true;
 

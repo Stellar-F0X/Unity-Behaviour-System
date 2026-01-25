@@ -82,7 +82,7 @@ namespace TaskStreamer.Tool
             _titleBar.RegisterCallback<MouseMoveEvent>(this.OnTitleBarMouseMove);
             _titleBar.RegisterCallback<MouseUpEvent>(this.OnTitleBarMouseUp);
 
-            _resizer.style.backgroundImage = TaskStreamerResourceLoader.resizeHandle;
+            _resizer.style.backgroundImage = TSEditor.resizeHandle;
             _resizer.RegisterCallback<MouseDownEvent>(this.OnResizerMouseDown);
             _resizer.RegisterCallback<MouseMoveEvent>(this.OnResizerMouseMove);
             _resizer.RegisterCallback<MouseUpEvent>(this.OnResizerMouseUp);

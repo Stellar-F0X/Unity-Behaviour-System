@@ -4,7 +4,7 @@ using Unity.Properties;
 namespace TaskStreamer.Runtime.BT
 {
     [GeneratePropertyBag, Readable]
-    public sealed class RootNode : BehaviorNodeBase, IChildProvider
+    public sealed class RootNode : BehaviorNodeBase, IChildNode
     {
         public RootNode()
         {

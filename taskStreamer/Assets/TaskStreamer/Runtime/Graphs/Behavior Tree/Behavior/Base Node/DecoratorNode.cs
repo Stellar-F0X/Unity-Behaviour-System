@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace TaskStreamer.Runtime.BT
 {
-    public abstract class DecoratorNode : BehaviorNodeBase, IChildProvider
+    public abstract class DecoratorNode : BehaviorNodeBase, IChildNode
     {
         public DecoratorNode()
         {

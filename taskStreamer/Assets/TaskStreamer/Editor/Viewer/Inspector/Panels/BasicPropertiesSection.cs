@@ -16,7 +16,7 @@ namespace TaskStreamer.Tool
         /// <summary> 작업(Task)의 기본 속성을 표시하고 편집할 수 있는 UI 패널입니다. </summary>
         public BasicPropertiesSection(Task targetTask, Action<string> renamingCallback)
         {
-            TaskStreamerResourceLoader.basicPropertiesSectionPanel.CloneTree(this);
+            TSEditor.basicPropertiesSectionPanel.CloneTree(this);
 
             _nameField = this.Q<TextField>("name-field");
             _monoScriptField = this.Q<ObjectField>("script-field");
@@ -92,7 +92,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            if (newValue is ArrowEdge edgeView)
+            if (newValue is FSMEdge edgeView)
             {
                 this._targetTask = edgeView.targetTransition;
                 this.InitializeFields(edgeView.targetTransition);
@@ -115,7 +115,7 @@ namespace TaskStreamer.Tool
             _desContentField.SetValueWithoutNotify(task.description);
             _baseTitleHeader.text = ObjectNames.NicifyVariableName(_nodeType.Name);
 
-            List<string> tags = TaskStreamerEditor.settings.tagList;
+            List<string> tags = TSEditor.settings.tagList;
             _tagSelectionField.value = tags.IndexOf(task.tag) == -1 ? tags[0] : task.tag;
             _tagSelectionField.choices = tags.Where(tag => tag.IsNotNullOrEmpty()).ToList();
         }

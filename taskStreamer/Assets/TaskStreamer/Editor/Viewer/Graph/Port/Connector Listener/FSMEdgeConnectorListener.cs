@@ -23,7 +23,7 @@ namespace TaskStreamer.Tool
         {
             ((FSMView)_taskView.graphView).TryDisconnectSourceToOriginal(sourceView);
 
-            StateMachine stateMachine = TaskStreamerEditor.Instance.currentGraph as StateMachine;
+            StateMachine stateMachine = TSEditor.Instance.currentGraph as StateMachine;
             Debug.Assert(stateMachine is not null, "stateMachine is null");
 
             stateMachine.ConnectStates((StateBase)sourceView.targetNode, (StateBase)newView.targetNode);
@@ -42,7 +42,7 @@ namespace TaskStreamer.Tool
         {
             ((FSMView)_taskView.graphView).TryDisconnectSourceToOriginal(sourceView);
 
-            StateMachine stateMachine = TaskStreamerEditor.Instance.currentGraph as StateMachine;
+            StateMachine stateMachine = TSEditor.Instance.currentGraph as StateMachine;
             Debug.Assert(stateMachine is not null, "stateMachine is null");
 
             stateMachine.ConnectStates((StateBase)newView.targetNode, (StateBase)sourceView.targetNode);

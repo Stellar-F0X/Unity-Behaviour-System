@@ -31,7 +31,7 @@ namespace TaskStreamer.Tool
             }
 
             Rect foldoutRect = new Rect(position.x, position.y, position.width, EditorGUIUtility.singleLineHeight);
-            variablesProperty.isExpanded = EditorGUI.Foldout(foldoutRect, variablesProperty.isExpanded, label);
+            variablesProperty.isExpanded = EditorGUI.Foldout(foldoutRect, variablesProperty.isExpanded, label, true);
 
             if (variablesProperty.isExpanded == false)
             {

@@ -12,7 +12,7 @@ namespace TaskStreamer.Tool
     {
         public ServiceSection()
         {
-            TaskStreamerResourceLoader.serviceSectionPanel.CloneTree(this);
+            TSEditor.serviceSectionPanel.CloneTree(this);
 
             _headerFoldout = this.Q<Foldout>("main-header"); 
             _fieldListView = this.Q<ListView>("field-list"); 
@@ -22,8 +22,8 @@ namespace TaskStreamer.Tool
             _fieldListView.makeItem += () => new VisualElement();
             _fieldListView.bindItem += this.BindItem;
             _deleteButton.clicked += this.OnDeleteButtonClicked;
-            _deleteButton.iconImage = TaskStreamerResourceLoader.deleteButton;
-            _deleteButton.enabledSelf = TaskStreamerEditor.canEditGraph;
+            _deleteButton.iconImage = TSEditor.deleteButton;
+            _deleteButton.enabledSelf = TSEditor.canEditGraph;
 
             _enableToggle.RegisterValueChangedCallback(evt => service.enable = evt.newValue); 
             _headerFoldout.RegisterValueChangedCallback(evt => service.isExpanded = evt.newValue); 
@@ -76,7 +76,7 @@ namespace TaskStreamer.Tool
         /// </summary>
         private void OnDeleteButtonClicked()
         {
-            if (TaskStreamerEditor.canEditGraph == false || _service is null)
+            if (TSEditor.canEditGraph == false || _service is null)
             {
                 return;
             }
@@ -128,7 +128,7 @@ namespace TaskStreamer.Tool
         {
             switch (handle.initialValue)
             {
-                case BlackboardVariable: return VisualUtility.GetFieldByValueType(handle);
+                case BlackboardVariable: return TSVisualUtility.GetFieldByValueType(handle);
 
                 case BlackboardBasedCondition: return new ConditionListField(handle);
                 

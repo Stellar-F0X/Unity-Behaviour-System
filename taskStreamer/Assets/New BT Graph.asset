@@ -1,0 +1,105 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-3834305147918256388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed9e9b92832e4aae97d34577304b1d3e, type: 3}
+  m_Name: Blackboard
+  m_EditorClassIdentifier: 
+  _blackboardData:
+    _appliedVersion:
+      _value0: 2286399222
+      _value1: 1328785976
+      _value2: 3566106763
+      _value3: 640224960
+    _variables: []
+  references:
+    version: 2
+    RefIds: []
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 41ff390c6a0488f41b85a84e73c6e39b, type: 3}
+  m_Name: New BT Graph
+  m_EditorClassIdentifier: 
+  blackboard: {fileID: -3834305147918256388}
+  _graphGuid:
+    _value0: 3955008739
+    _value1: 1174626059
+    _value2: 2908351898
+    _value3: 1703655117
+  _main:
+    rid: 7608686522799226945
+  _graphTreeMap:
+    cachedPair: []
+  _graphMap:
+    cachedPair:
+    - _key:
+        _value0: 1225251548
+        _value1: 1326741929
+        _value2: 2749778349
+        _value3: 4142642550
+      _value:
+        rid: 7608686522799226945
+  _isGraphInitialized: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 7608686522799226945
+      type: {class: BehaviorTree, ns: TaskStreamer.Runtime.BT, asm: TaskStreamer.Runtime}
+      data:
+        _name: BT
+        _guid:
+          _value0: 1225251548
+          _value1: 1326741929
+          _value2: 2749778349
+          _value3: 4142642550
+        _baseGraphGuid:
+          _value0: 0
+          _value1: 0
+          _value2: 0
+          _value3: 0
+        _nodeGroup: []
+        _graphAsset: {fileID: 11400000}
+        _nodeLookup:
+          cachedPair:
+          - _key:
+              _value0: 3562336188
+              _value1: 1092611290
+              _value2: 3977767055
+              _value3: 2036820884
+            _value:
+              rid: 7608686522799226946
+    - rid: 7608686522799226946
+      type: {class: RootNode, ns: TaskStreamer.Runtime.BT, asm: TaskStreamer.Runtime}
+      data:
+        name: Root
+        tag: 
+        description: 
+        _guid:
+          _value0: 3562336188
+          _value1: 1092611290
+          _value2: 3977767055
+          _value3: 2036820884
+        canEditName: 1
+        _script: {fileID: 0}
+        position: {x: 0, y: 0}
+        _parent:
+          rid: -2
+        _services: []
+        _children:
+        - rid: -2

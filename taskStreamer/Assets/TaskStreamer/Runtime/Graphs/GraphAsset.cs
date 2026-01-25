@@ -50,6 +50,11 @@ namespace TaskStreamer.Runtime
         /// <summary> 메인 그래프와 해당 에셋의 모든 서브 그래프를 저장 및 관리하는 사전 컨테이너이다. </summary>
         [SerializeField]
         private GraphDictionary _graphMap = new GraphDictionary();
+        
+        
+        /// <summary> 처음 그래프가 생성될때 초기화됐는지 여부, 만약 True라면 다시 초기화하지 않습니다. </summary>
+        [SerializeField, DontCreateProperty]
+        private bool _isGraphInitialized = false;
 
 
 
@@ -92,6 +97,16 @@ namespace TaskStreamer.Runtime
         }
 
 
+#if UNITY_EDITOR
+        internal bool isGraphInitialized
+        {
+            get { return _isGraphInitialized; }
+            
+            set { _isGraphInitialized = value; }
+        }
+#endif
+
+
         /// <summary> 그래프를 런타임용으로 복제한다. </summary>
         /// <param name="streamer"> 그래프가 런타임에 필요한 객체들을 위해 그래프를 실행시키는 TaskStreamer를 매개변수로 받는다. </param>
         /// <param name="runtimeData"> 런타임 시 사용할 블랙보드 데이터를 매개변수로 받는다. </param>
@@ -115,7 +130,7 @@ namespace TaskStreamer.Runtime
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
 
             GraphContext context = new GraphContext(newGraphAsset, newBlackboard, streamer);
-            bag.Accept(new GraphRuntimeInitializeVisitor(context), ref newGraphAsset);
+            bag.Accept(new RuntimeGraphInitializer(context), ref newGraphAsset);
             return newGraphAsset;
         }
 
@@ -145,16 +160,16 @@ namespace TaskStreamer.Runtime
 
 
         /// <summary> 지정된 UGUID에 해당하는 그래프를 반환한다. </summary>
-        /// <param name="graphGuid"> 검색할 그래프의 UGUID. </param>
+        /// <param name="targetGraphGuid"> 검색할 그래프의 UGUID. </param>
         /// <returns> UGUID에 해당하는 그래프를 반환하거나, 없으면 null을 반환한다. </returns>
-        internal Graph GetGraph(UGUID graphGuid)
+        internal Graph GetGraph(UGUID targetGraphGuid)
         {
-            if (_graphMap.TryGetValue(graphGuid, out Graph graph))
+            if (_graphMap.TryGetValue(targetGraphGuid, out Graph graph))
             {
                 return graph;
             }
 
-            Debug.Log($"GetGraph: {graphGuid} is not found.");
+            Debug.Log($"GetGraph: {targetGraphGuid} is not found.");
             return null;
         }
 
@@ -193,7 +208,7 @@ namespace TaskStreamer.Runtime
                 return;
             }
 
-            GuidReassignmentVisitor visitor = new GuidReassignmentVisitor(new GraphContext(this));
+            GraphAndNodeGuidReassigner visitor = new GraphAndNodeGuidReassigner(new GraphContext(this));
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;
             bag.Accept(visitor, ref reference);
@@ -206,7 +221,7 @@ namespace TaskStreamer.Runtime
         {
             Debug.Assert(PropertyBag.Exists<GraphAsset>(), "GraphAsset does not have a property bag.");
 
-            BlackboardSyncVisitor visitor = new BlackboardSyncVisitor(new GraphContext(this, blackboard));
+            BBSynchronizer visitor = new BBSynchronizer(new GraphContext(this, blackboard));
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
             GraphAsset reference = this;
             bag.Accept(visitor, ref reference);

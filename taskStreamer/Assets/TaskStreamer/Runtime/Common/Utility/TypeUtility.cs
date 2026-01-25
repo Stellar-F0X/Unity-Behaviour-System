@@ -1,7 +1,9 @@
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEngine.Assertions;
 #endif
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -13,37 +15,37 @@ namespace TaskStreamer.Runtime.Utility
 {
     public static class TypeUtility
     {
+        /// <summary>
+        /// 어트리뷰트 캐시. 키는 (provider, attributeType, inherit) 조합.
+        /// ConcurrentDictionary로 스레드 안전성 보장.
+        /// </summary>
+        private readonly static ConcurrentDictionary<(ICustomAttributeProvider, Type, bool), Attribute[]> _AttributeCache = new ConcurrentDictionary<(ICustomAttributeProvider, Type, bool), Attribute[]>();
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// MonoScript 캐시. 에디터 전용.
+        /// </summary>
+        private readonly static ConcurrentDictionary<Type, MonoScript> _MonoScriptCache = new ConcurrentDictionary<Type, MonoScript>();
+#endif
+
+
         public static bool HasAttribute<T>(this ICustomAttributeProvider provider, bool inherit = false) where T : Attribute
         {
-            if (provider.GetAttribute<T>(inherit) is null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return provider.GetAttribute<T>(inherit) != null;
         }
 
 
         public static bool HasAttribute<T>(this ICustomAttributeProvider provider, out T attribute, bool inherit = false) where T : Attribute
         {
             attribute = provider.GetAttribute<T>(inherit);
-
-            if (attribute is null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return attribute != null;
         }
 
 
         public static T GetAttribute<T>(this ICustomAttributeProvider provider, bool inherit = false) where T : Attribute
         {
-            return provider.GetAttributes<T>(inherit).FirstOrDefault();
+            var attributes = provider.GetAttributesCached<T>(inherit);
+            return attributes.Length > 0 ? attributes[0] : null;
         }
 
 
@@ -55,14 +57,42 @@ namespace TaskStreamer.Runtime.Utility
 
         public static IEnumerable<T> GetAttributes<T>(this ICustomAttributeProvider provider, bool inherit) where T : Attribute
         {
-            try
-            {
-                return provider.GetCustomAttributes(typeof(T), inherit)?.Cast<T>();
-            }
-            catch
+            return GetAttributesCached<T>(provider, inherit);
+        }
+
+
+        /// <summary>
+        /// 캐시된 어트리뷰트 배열 반환. 내부 사용 전용.
+        /// 반환된 배열을 수정하지 마세요.
+        /// </summary>
+        private static T[] GetAttributesCached<T>(this ICustomAttributeProvider provider, bool inherit) where T : Attribute
+        {
+            if (provider == null)
             {
                 return Array.Empty<T>();
             }
+
+            var key = (provider, typeof(T), inherit);
+
+            if (_AttributeCache.TryGetValue(key, out var cached))
+            {
+                return cached as T[] ?? Array.Empty<T>();
+            }
+
+            T[] result;
+            
+            try
+            {
+                var attrs = provider.GetCustomAttributes(typeof(T), inherit);
+                result = attrs?.Length > 0 ? attrs.Cast<T>().ToArray() : Array.Empty<T>();
+            }
+            catch
+            {
+                result = Array.Empty<T>();
+            }
+
+            _AttributeCache.TryAdd(key, result);
+            return result;
         }
 
 
@@ -74,6 +104,12 @@ namespace TaskStreamer.Runtime.Utility
                 return null;
             }
 
+            // 캐시 조회
+            if (_MonoScriptCache.TryGetValue(pocoType, out var cachedScript))
+            {
+                return cachedScript;
+            }
+
             Assembly assembly = pocoType.Assembly;
             int targetToken = pocoType.MetadataToken;
             ReadableAttribute readable = pocoType.GetAttribute<ReadableAttribute>();
@@ -81,6 +117,7 @@ namespace TaskStreamer.Runtime.Utility
             if (readable is null)
             {
                 Debug.LogError("ReadableAttribute is not found. Make sure the type is marked with [Readable] attribute.");
+                _MonoScriptCache.TryAdd(pocoType, null);
                 return null;
             }
 
@@ -89,6 +126,7 @@ namespace TaskStreamer.Runtime.Utility
 
             if (script == null)
             {
+                _MonoScriptCache.TryAdd(pocoType, null);
                 return null;
             }
 
@@ -96,9 +134,11 @@ namespace TaskStreamer.Runtime.Utility
 
             if (scriptType?.Assembly == assembly && scriptType.MetadataToken == targetToken)
             {
+                _MonoScriptCache.TryAdd(pocoType, script);
                 return script;
             }
 
+            _MonoScriptCache.TryAdd(pocoType, null);
             return null;
         }
 
@@ -115,7 +155,7 @@ namespace TaskStreamer.Runtime.Utility
             }
 
             PriorityQueue<VariableHandle> targetProperties = new PriorityQueue<VariableHandle>(PriorityOrder.Ascending);
-            propertyBag.Accept(new ReadableFieldCollectorVisitor(targetProperties), ref targetReference);
+            propertyBag.Accept(new ReadableFieldCollector(targetProperties), ref targetReference);
             List<VariableHandle> properties = new List<VariableHandle>(targetProperties.Count);
             
             while (targetProperties.Count > 0)
@@ -159,6 +199,21 @@ namespace TaskStreamer.Runtime.Utility
                     return false;
                 }
             }
+        }
+
+
+
+        public static T As<T>(this Object target, bool callExceptionIfConvertedObjectIsNull = true) where T : class
+        {
+            Assert.IsTrue(target != null);
+            T converted = target as T;
+
+            if (callExceptionIfConvertedObjectIsNull)
+            {
+                Assert.IsTrue(converted != null);
+            }
+
+            return converted;
         }
 
 
@@ -245,7 +300,7 @@ namespace TaskStreamer.Runtime.Utility
         {
             if (argumentType.IsEnum)
             {
-                result = typeof(EnumVariable);
+                result = typeof(BlackboardVariable<Enum>);
                 return true;
             }
 

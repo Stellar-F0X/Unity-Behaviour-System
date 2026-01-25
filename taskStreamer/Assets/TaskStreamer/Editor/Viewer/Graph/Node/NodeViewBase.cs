@@ -120,7 +120,7 @@ namespace TaskStreamer.Tool
         /// 노드 선택 이벤트를 트리거하며, 데이터 로딩 중에는 동작하지 않습니다.
         public override void OnSelected()
         {
-            TaskStreamerEditor.Instance.taskGraphView.CallSelectionEvent(this);
+            TSEditor.Instance.taskGraphView.CallSelectionEvent(this);
         }
 
         
@@ -129,7 +129,7 @@ namespace TaskStreamer.Tool
         /// TaskStreamerEditor에서 로드 중에는 실행되지 않습니다.
         public override void OnUnselected()
         {
-            TaskStreamerEditor.Instance.taskGraphView.CallUnselectionEvent(this);
+            TSEditor.Instance.taskGraphView.CallUnselectionEvent(this);
         }
 
 
@@ -142,9 +142,9 @@ namespace TaskStreamer.Tool
         /// <param name="newName">변경할 새로운 노드 이름</param>
         private void ChangeNodeViewName(string newName)
         {
-            if (_targetNode is ISubGraphProvider subGraphNode)
+            if (_targetNode is ISubGraph subGraphNode)
             {
-                Graph subGraph = TaskStreamerEditor.Instance.graphAsset.GetGraph(subGraphNode.subGraphGuid);
+                Graph subGraph = TSEditor.Instance.graphAsset.GetGraph(subGraphNode.subGraphGuid);
                 Debug.Assert(subGraph != null, $"SubGraph {subGraphNode.subGraphGuid} is null");
                 subGraph.name = newName;
             }
@@ -161,12 +161,12 @@ namespace TaskStreamer.Tool
         {
             base.SetPosition(newPos);
 
-            Undo.RecordObject(TaskStreamerEditor.Instance.graphAsset, "Behaviour System (Set Position)");
+            Undo.RecordObject(TSEditor.Instance.graphAsset, "Behaviour System (Set Position)");
 
             _targetNode.position.x = Mathf.RoundToInt(newPos.xMin);
             _targetNode.position.y = Mathf.RoundToInt(newPos.yMin);
 
-            UnityEditor.EditorUtility.SetDirty(TaskStreamerEditor.Instance.graphAsset);
+            UnityEditor.EditorUtility.SetDirty(TSEditor.Instance.graphAsset);
         }
 
 
@@ -183,7 +183,7 @@ namespace TaskStreamer.Tool
                 return;
             }
 
-            port.pickingMode = TaskStreamerEditor.canEditGraph ? PickingMode.Position : PickingMode.Ignore;
+            port.pickingMode = TSEditor.canEditGraph ? PickingMode.Position : PickingMode.Ignore;
             port.style.flexDirection = direction;
             port.portName = portName;
             port.AddToClassList("cursor-link");

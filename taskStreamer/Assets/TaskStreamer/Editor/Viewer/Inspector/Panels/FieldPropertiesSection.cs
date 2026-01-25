@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Linq;
 using TaskStreamer.Runtime;
-using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 
@@ -11,7 +9,7 @@ namespace TaskStreamer.Tool
     {
         public FieldPropertiesSection(List<VariableHandle> variableHandles)
         {
-            TaskStreamerResourceLoader.fieldPropertiesSection.CloneTree(this);
+            TSEditor.fieldPropertiesSection.CloneTree(this);
 
             this._headerLabel = this.Q<Label>("main-header");
             this._fieldListView = this.Q<ListView>("field-list");
@@ -82,7 +80,7 @@ namespace TaskStreamer.Tool
         {
             switch (handle.initialValue)
             {
-                case BlackboardVariable: field = VisualUtility.GetFieldByValueType(handle); break;
+                case BlackboardVariable: field = TSVisualUtility.GetFieldByValueType(handle); break;
 
                 case BlackboardBasedCondition: field = new ConditionListField(handle); break;
 

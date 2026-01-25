@@ -12,9 +12,9 @@ namespace TaskStreamer.Tool
         {
             switch (graphType)
             {
-                case GraphType.BT: base.m_EdgeConnector = new EdgeConnector<LinearEdge>(new BTEdgeConnectorListener()); break;
+                case GraphType.BT: base.m_EdgeConnector = new EdgeConnector<BTEdge>(new BTEdgeConnectorListener()); break;
 
-                case GraphType.FSM: base.m_EdgeConnector = new EdgeConnector<ArrowEdge>(new FSMEdgeConnectorListener()); break;
+                case GraphType.FSM: base.m_EdgeConnector = new EdgeConnector<FSMEdge>(new FSMEdgeConnectorListener()); break;
                 
                 default: throw new ArgumentOutOfRangeException(nameof(graphType), graphType, null);
             }

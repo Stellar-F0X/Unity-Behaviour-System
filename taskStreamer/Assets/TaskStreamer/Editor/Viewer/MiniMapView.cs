@@ -8,7 +8,7 @@ namespace TaskStreamer.Tool
     {
         public MiniMapView(TaskGraphView graphView)
         {
-            this.style.backgroundColor = TaskStreamerEditor.settings.minimapColor;
+            this.style.backgroundColor = TSEditor.settings.minimapColor;
             this._activated = false;
             this.visible = false;
             this.anchored = true;

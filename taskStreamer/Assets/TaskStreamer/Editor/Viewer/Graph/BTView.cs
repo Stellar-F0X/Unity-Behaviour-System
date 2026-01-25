@@ -4,7 +4,6 @@ using TaskStreamer.Runtime;
 using TaskStreamer.Runtime.BT;
 using TaskStreamer.Runtime.Utility;
 using UnityEditor.Experimental.GraphView;
-using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Pool;
 
@@ -40,7 +39,7 @@ namespace TaskStreamer.Tool
             Assert.IsNotNull(sourceView.outputPort, $"{nameof(TaskGraphView)}: sourceView's outputPort is null");
             Assert.IsNotNull(targetView.inputPort, $"{nameof(TaskGraphView)}: targetView's inputPort is null");
 
-            LinearEdge linkedEdge = sourceView.outputPort.ConnectTo<LinearEdge>(targetView.inputPort);
+            BTEdge linkedEdge = sourceView.outputPort.ConnectTo<BTEdge>(targetView.inputPort);
             BehaviorNodeView connectionTargetView = targetView as BehaviorNodeView;
             Assert.IsNotNull(connectionTargetView, "The target node is not a BehaviorNodeView. Connection failed.");
             
@@ -70,7 +69,7 @@ namespace TaskStreamer.Tool
             // 부모-자식 관계에 따른 노드 연결
             foreach (NodeBase parentNodeBase in graph.GetIterator(GraphIteratorType.LS))
             {
-                if (parentNodeBase is IChildProvider provider && provider.childCount != 0)
+                if (parentNodeBase is IChildNode provider && provider.childCount != 0)
                 {
                     foreach (NodeBase child in provider.GetChildren())
                     {
@@ -144,7 +143,7 @@ namespace TaskStreamer.Tool
         {
             Assert.IsNotNull(node, $"{nameof(TaskGraphView)}: NodeBase is null");
 
-            NodeViewBase nodeView = BehaviorNodeView.Create(node, TaskStreamerResourceLoader.behaviorNode);
+            NodeViewBase nodeView = BehaviorNodeView.Create(node, TSEditor.behaviorNode);
             Assert.IsNotNull(nodeView, $"{nameof(TaskGraphView)}: NodeViewBase is null");
             return nodeView;
         }
@@ -208,19 +207,22 @@ namespace TaskStreamer.Tool
             return BindingWindowBuilder.GetBuilder("Behavior Tree", reuse: true)
                                        .AddFactoryModule(
                                            () => new NodeFactoryModule<ActionNode>(graphView, "Action"),
-                                           () => new TypeTreeProvider(true))
+                                           () => new RelatedTypeTreeProvider(true))
                                        .AddFactoryModule(
                                            () => new NodeFactoryModule<DecoratorNode>(graphView, "Decorator"),
-                                           () => new TypeTreeProvider(true))
+                                           () => new RelatedTypeTreeProvider(true))
                                        .AddFactoryModule(
                                            () => new NodeFactoryModule<CompositeNode>(graphView, "Composite"),
-                                           () => new TypeTreeProvider(true))
+                                           () => new RelatedTypeTreeProvider(true))
                                        .AddFactoryModule(
                                            () => new NodeFactoryModule<SubGraphNode>(graphView, "Graph"),
-                                           () => new TypeTreeProvider(true))
+                                           () => new RelatedTypeTreeProvider(true))
                                        .AddFactoryModule(
                                            () => new NodeGroupFactoryModule<NodeGroup>(graphView, "Utility"),
-                                           () => new TypeTreeProvider(false))
+                                           () => new RelatedTypeTreeProvider(false))
+                                       .AddFactoryModule(
+                                           () => new ScriptCreationFactoryModule<CreateNewBTNodeScriptCommandBase>(graphView, "New Node"),
+                                           () => new RelatedTypeTreeProvider(true))
                                        .Build();
         }
 
@@ -309,7 +311,7 @@ namespace TaskStreamer.Tool
         /// <param name="port">The port on the parent node associated with the connection.</param>
         private void DisconnectAndDeleteEdge(NodeViewBase parentView, NodeViewBase childView, Edge edge, Port port)
         {
-            BehaviorTree behaviorTree = TaskStreamerEditor.Instance.currentGraph as BehaviorTree;
+            BehaviorTree behaviorTree = TSEditor.Instance.currentGraph as BehaviorTree;
             Assert.IsNotNull(behaviorTree, $"{nameof(TaskGraphView)}: BehaviorTree is null");
 
             behaviorTree.DisconnectNodes((BehaviorNodeBase)parentView.targetNode, (BehaviorNodeBase)childView.targetNode);
@@ -317,7 +319,7 @@ namespace TaskStreamer.Tool
 
             List<GraphElement> edges = ListPool<GraphElement>.Get();
             edges.Add(edge);
-            TaskStreamerEditor.Instance.taskGraphView.DeleteElements(edges);
+            TSEditor.Instance.taskGraphView.DeleteElements(edges);
             ListPool<GraphElement>.Release(edges);
         }
     }

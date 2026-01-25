@@ -63,13 +63,13 @@ namespace TaskStreamer.Tool
 
         private void OnDoubleClick(MouseDownEvent evt, NodeViewBase clickedElement)
         {
-            if (clickedElement.targetNode is ISubGraphProvider subGraph)
+            if (clickedElement.targetNode is ISubGraph subGraph)
             {
-                Graph graph = TaskStreamerEditor.Instance.graphAsset.GetGraph(subGraph.subGraphGuid);
+                Graph graph = TSEditor.Instance.graphAsset.GetGraph(subGraph.subGraphGuid);
 
                 if (graph != null)
                 {
-                    TaskStreamerEditor.Instance.ChangeGraph(graph, true);
+                    TSEditor.Instance.ChangeGraph(graph, true);
                 }
                 else
                 {

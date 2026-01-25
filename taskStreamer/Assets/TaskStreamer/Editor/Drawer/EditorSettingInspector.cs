@@ -21,7 +21,7 @@ namespace TaskStreamer.Tool
             
             
             
-            VisualElement inspectorView = TaskStreamerResourceLoader.settings.CloneTree();
+            VisualElement inspectorView = TSEditor.settingsPanel.CloneTree();
 
             
             
