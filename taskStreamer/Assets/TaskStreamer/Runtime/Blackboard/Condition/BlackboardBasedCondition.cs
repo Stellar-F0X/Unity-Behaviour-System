@@ -54,6 +54,11 @@ namespace TaskStreamer.Runtime
 		{
 			for (int index = 0; index < count; ++index)
 			{
+				if (this.modules[index].enable == false)
+				{
+					continue;
+				}
+				
 				if (this.modules[index].Execute(calledNode))
 				{
 					return true;
@@ -68,6 +73,11 @@ namespace TaskStreamer.Runtime
 		{
 			for (int index = 0; index < count; ++index)
 			{
+				if (this.modules[index].enable == false)
+				{
+					continue;
+				}
+				
 				if (this.modules[index].Execute(calledNode) == false)
 				{
 					return false;

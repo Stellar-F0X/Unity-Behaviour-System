@@ -1,4 +1,4 @@
-namespace TaskStreamer.Tool.Control
+namespace TaskStreamer.Tool
 {
 	public class SaveCommand
 	{

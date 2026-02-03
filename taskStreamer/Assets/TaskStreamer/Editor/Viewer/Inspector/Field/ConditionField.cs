@@ -18,12 +18,15 @@ namespace TaskStreamer.Tool
 			_headerFoldout = this.Q<Foldout>("main-header");
 			_fieldListView = this.Q<ListView>("field-list");
 			_enableToggle = this.Q<Toggle>("enable-toggle");
+			_contentMask = this.Q<VisualElement>("content-mask");
 			_conditionDeleteButton = this.Q<Button>("delete-button");
 			_conditionDeleteButton.iconImage = TSEditor.deleteButton;
 
 			_fieldListView.makeItem += () => new VisualElement();
 			_fieldListView.bindItem += this.BindItem;
 
+			_enableToggle.RegisterValueChangedCallback(this.UpdateServiceEnableState);
+				
 			_conditionDeleteButton.UnregisterCallback<ClickEvent>(this.OnDeleteButtonClicked);
 			_conditionDeleteButton.RegisterCallback<ClickEvent>(this.OnDeleteButtonClicked);
 		}
@@ -31,6 +34,9 @@ namespace TaskStreamer.Tool
 
 		/// <summary> 삭제 요청 이벤트를 발생시킵니다. </summary>
 		public event Action<ConditionField> OnDeleteRequested;
+		
+
+		private readonly VisualElement _contentMask;
 
 
 		/// _headerFoldout 변수는 UI의 Foldout 요소를 참조하며, 서비스 섹션의 확장/축소 상태를 관리합니다.
@@ -106,6 +112,23 @@ namespace TaskStreamer.Tool
 			}
 
 			this.OnDeleteRequested?.Invoke(this);
+		}
+		
+		
+		
+		private void UpdateServiceEnableState(ChangeEvent<bool> evt)
+		{
+			if (evt.newValue)
+			{
+				_contentMask.style.display = DisplayStyle.None;
+			}
+			else
+			{
+				_contentMask.style.display = DisplayStyle.Flex;
+			}
+
+			this._conditionValue.enable = evt.newValue;
+			this._contentMask.enabledSelf = !evt.newValue;
 		}
 	}
 }
