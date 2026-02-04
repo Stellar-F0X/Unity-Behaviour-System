@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TaskStreamer.Runtime.BT
 {
-    [Serializable, GeneratePropertyBag, Readable]
+    [Serializable, GeneratePropertyBag, TaskDescription]
     public class TimeLimitNode : DecoratorNode
     {
         [DefaultValue(1f)]

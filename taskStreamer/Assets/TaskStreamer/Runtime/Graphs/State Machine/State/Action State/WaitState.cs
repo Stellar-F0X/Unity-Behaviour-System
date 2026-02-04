@@ -3,7 +3,7 @@ using Unity.Properties;
 
 namespace TaskStreamer.Runtime.FSM
 {
-    [Serializable, GeneratePropertyBag, Readable]
+    [Serializable, GeneratePropertyBag, TaskDescription]
     public class WaitState : ActionState
     {
         [DefaultValue(1f)]

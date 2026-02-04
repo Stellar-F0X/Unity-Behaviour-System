@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TaskStreamer.Runtime.BT
 {
-	[Serializable, GeneratePropertyBag, Readable]
+	[Serializable, GeneratePropertyBag, TaskDescription]
 	public sealed class BBBasedConditionNode : DecoratorNode
 	{
 		[SerializeField]

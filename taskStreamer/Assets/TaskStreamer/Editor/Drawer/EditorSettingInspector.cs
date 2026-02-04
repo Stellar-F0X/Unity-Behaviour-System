@@ -4,24 +4,21 @@ using UnityEngine.UIElements;
 
 namespace TaskStreamer.Tool
 {
-    //TODO: Settings에 코드 제네레이션할 타입들을 저장할건데, 그걸 여기서 바인딩하는 로직을 추가할거라, 굳이 UI Toolkit을 사용했음.  
-    
-    //TODO: Undo 동작 안되는 버그 수정해야 됨. 
-    [CustomEditor(typeof(EditorSettings))]
+    [CustomEditor(typeof(TSEditorSettings))]
     public class EditorSettingInspector : Editor
     {
-        private EditorSettings _settings;
+        private TSEditorSettings _settings;
         
         
         
         
         public override VisualElement CreateInspectorGUI()
         {
-            this._settings = (EditorSettings)target;
+            this._settings = (TSEditorSettings)target;
             
             
             
-            VisualElement inspectorView = TSEditor.settingsPanel.CloneTree();
+            VisualElement inspectorView = TSUIElementSettings.instance.Settings.CloneTree();
 
             
             

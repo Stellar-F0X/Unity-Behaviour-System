@@ -1,8 +1,9 @@
+using System;
 using Unity.Properties;
 
 namespace TaskStreamer.Runtime.BT
 {
-    [GeneratePropertyBag, Readable]
+    [Serializable, GeneratePropertyBag, TaskDescription]
     public sealed class SequencerNode : CompositeNode
     {
         protected override Status OnUpdate()

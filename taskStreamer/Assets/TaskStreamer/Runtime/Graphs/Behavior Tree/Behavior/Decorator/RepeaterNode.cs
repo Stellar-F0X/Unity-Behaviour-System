@@ -3,7 +3,7 @@ using Unity.Properties;
 
 namespace TaskStreamer.Runtime.BT
 {
-    [Serializable, GeneratePropertyBag, Readable]
+    [Serializable, GeneratePropertyBag, TaskDescription]
     public class RepeaterNode : DecoratorNode
     {
         [DefaultValue(5)]

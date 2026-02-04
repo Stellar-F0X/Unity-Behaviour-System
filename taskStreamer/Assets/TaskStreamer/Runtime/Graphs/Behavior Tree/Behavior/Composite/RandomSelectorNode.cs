@@ -1,10 +1,11 @@
+using System;
 using System.Collections.Generic;
 using Unity.Properties;
 using Random = UnityEngine.Random;
 
 namespace TaskStreamer.Runtime.BT
 {
-    [GeneratePropertyBag, Readable]
+    [Serializable, GeneratePropertyBag, TaskDescription]
     public class RandomSelectorNode : CompositeNode
     {
         private readonly List<int> _randomIndices = new List<int>();

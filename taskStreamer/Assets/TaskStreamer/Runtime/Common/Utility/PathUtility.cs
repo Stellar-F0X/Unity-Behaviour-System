@@ -35,20 +35,15 @@ namespace TaskStreamer.Runtime.Utility
 		{
 #if USE_ASSETS_PATH
 			Span<char> filePathSpan = stackalloc char[_ASSETS_BASE_PATH.Length + fileName.Length];
-
 			_ASSETS_BASE_PATH.AsSpan().CopyTo(filePathSpan);
 			fileName.AsSpan().CopyTo(filePathSpan[_ASSETS_BASE_PATH.Length..]);
-
 			string filePath = new string(filePathSpan);
 #else
             Span<char> filePathSpan = stackalloc char[PACKAGES_BASE_PATH.Length + fileName.Length];
-
             PACKAGES_BASE_PATH.AsSpan().CopyTo(filePathSpan);
             fileName.AsSpan().CopyTo(filePathSpan[PACKAGES_BASE_PATH.Length..]);
-
             string filePath = new string(filePathSpan);
 #endif
-			
 			T cachedAsset = AssetDatabase.LoadAssetAtPath<T>(filePath);
 			Assert.IsTrue(cachedAsset != null, $"Cannot load {typeof(T).Name}.");
 			return cachedAsset;

@@ -12,7 +12,7 @@ namespace TaskStreamer.Tool
 	{
 		public FloatingInspector()
 		{
-			TSEditor.floatingInspector.CloneTree(this);
+			TSUIElementSettings.instance.Inspector.CloneTree(this);
 			this.AddToClassList("inspector-window");
 		}
 
@@ -24,19 +24,19 @@ namespace TaskStreamer.Tool
 			get { return _focusedElement; }
 		}
 
-		private BasicPropertiesSection basicPropertiesPanel
+		private TaskHeaderSection taskHeaderSection
 		{
-			get { return container[0] as BasicPropertiesSection; }
+			get { return container[0] as TaskHeaderSection; }
 		}
 
-		private FieldPropertiesSection fieldPropertiesPanel
+		private BBVariableFieldsPanel bbVariableFieldsPanel
 		{
-			get { return container[1] as FieldPropertiesSection; }
+			get { return container[1] as BBVariableFieldsPanel; }
 		}
 
-		private ServiceContainer serviceContainerPanel
+		private ServiceSectionsPanel serviceSectionsPanel
 		{
-			get { return container[2] as ServiceContainer; }
+			get { return container[2] as ServiceSectionsPanel; }
 		}
 
 
@@ -58,11 +58,83 @@ namespace TaskStreamer.Tool
 
 			if (container.childCount == 0)
 			{
-				this.CreateInspectorContent(selectedElement);
+				this.CreateInspector(selectedElement);
 			}
 			else
 			{
-				this.RefreshInspectorWithNewValue(selectedElement);
+				this.UpdateInspector(selectedElement);
+			}
+		}
+		
+		
+		
+		/// <summary> 주어진 그래프 요소의 데이터를 기반으로 플로팅 인스펙터 뷰의 패널을 갱신합니다. </summary>
+		/// <param name="graphElement"> 갱신에 사용될 그래프 요소 </param>
+		private void UpdateInspector(GraphElement graphElement)
+		{
+			switch (graphElement)
+			{
+				case BehaviorNodeView bNodeView:
+				{
+					taskHeaderSection.RefreshPanelWithNewValue(bNodeView);
+					bbVariableFieldsPanel.RefreshPanelWithNewValue(bNodeView.targetNode.variableHandles);
+					serviceSectionsPanel.RefreshPanelWithNewValue(bNodeView.observableServiceList);
+					serviceSectionsPanel.style.display = DisplayStyle.Flex;
+					break;
+				}
+
+				case StateNodeView sNodeView:
+				{
+					serviceSectionsPanel.style.display = DisplayStyle.None;
+					taskHeaderSection.RefreshPanelWithNewValue(sNodeView);
+					bbVariableFieldsPanel.RefreshPanelWithNewValue(sNodeView.targetNode.variableHandles);
+					break;
+				}
+
+				case FSMEdge edgeView:
+				{
+					serviceSectionsPanel.style.display = DisplayStyle.None;
+					taskHeaderSection.RefreshPanelWithNewValue(edgeView);
+					bbVariableFieldsPanel.RefreshPanelWithNewValue(edgeView.targetTransition.variableHandles);
+					break;
+				}
+			}
+
+			taskHeaderSection.style.display = DisplayStyle.Flex;
+			bbVariableFieldsPanel.style.display = DisplayStyle.Flex;
+		}
+
+
+
+		/// <summary> 그래프 요소 타입에 적합한 인스펙터 콘텐츠를 생성 및 추가합니다. </summary>
+		/// <param name="graphElement"> 콘텐츠를 생성할 대상 그래프 요소 </param>
+		private void CreateInspector(GraphElement graphElement)
+		{
+			switch (graphElement)
+			{
+				case BehaviorNodeView bNodeView:
+				{
+					container.Add(new TaskHeaderSection(bNodeView.targetNode, bNodeView.onRenamingNode));
+					container.Add(new BBVariableFieldsPanel(bNodeView.targetNode.variableHandles));
+					container.Add(new ServiceSectionsPanel(bNodeView.observableServiceList));
+					break;
+				}
+
+				case StateNodeView sNodeView:
+				{
+					container.Add(new TaskHeaderSection(sNodeView.targetNode, sNodeView.onRenamingNode));
+					container.Add(new BBVariableFieldsPanel(sNodeView.targetNode.variableHandles));
+					container.Add(new ServiceSectionsPanel() { style = { display = DisplayStyle.None } });
+					break;
+				}
+
+				case FSMEdge edgeView:
+				{
+					container.Add(new TaskHeaderSection(edgeView.targetTransition, null));
+					container.Add(new BBVariableFieldsPanel(edgeView.targetTransition.variableHandles));
+					container.Add(new ServiceSectionsPanel() { style = { display = DisplayStyle.None } });
+					break;
+				}
 			}
 		}
 
@@ -107,83 +179,11 @@ namespace TaskStreamer.Tool
 		public void RefreshInspector()
 		{
 			Assert.IsNotNull(container, "Failed to refresh inspector: Content container is disabled");
-			
 			Assert.IsTrue(container.enabledSelf, "Cannot refresh inspector when container is disabled");
 
-			container.Children()
-			         .OfType<IRefreshablePanel>()
-			         .ForEach(child => child.RefreshPanel());
-		}
-
-
-
-		/// <summary> 주어진 그래프 요소의 데이터를 기반으로 플로팅 인스펙터 뷰의 패널을 갱신합니다. </summary>
-		/// <param name="graphElement"> 갱신에 사용될 그래프 요소 </param>
-		private void RefreshInspectorWithNewValue(GraphElement graphElement)
-		{
-			switch (graphElement)
+			foreach (IRefreshablePanel panel in container.Children())
 			{
-				case BehaviorNodeView bNodeView:
-				{
-					basicPropertiesPanel.RefreshPanelWithNewValue(bNodeView);
-					fieldPropertiesPanel.RefreshPanelWithNewValue(bNodeView.targetNode.variableHandles);
-					serviceContainerPanel.RefreshPanelWithNewValue(bNodeView.observableServiceList);
-					serviceContainerPanel.style.display = DisplayStyle.Flex;
-					break;
-				}
-
-				case StateNodeView sNodeView:
-				{
-					serviceContainerPanel.style.display = DisplayStyle.None;
-					basicPropertiesPanel.RefreshPanelWithNewValue(sNodeView);
-					fieldPropertiesPanel.RefreshPanelWithNewValue(sNodeView.targetNode.variableHandles);
-					break;
-				}
-
-				case FSMEdge edgeView:
-				{
-					serviceContainerPanel.style.display = DisplayStyle.None;
-					basicPropertiesPanel.RefreshPanelWithNewValue(edgeView);
-					fieldPropertiesPanel.RefreshPanelWithNewValue(edgeView.targetTransition.variableHandles);
-					break;
-				}
-			}
-
-			basicPropertiesPanel.style.display = DisplayStyle.Flex;
-			fieldPropertiesPanel.style.display = DisplayStyle.Flex;
-		}
-
-
-
-		/// <summary> 그래프 요소 타입에 적합한 인스펙터 콘텐츠를 생성 및 추가합니다. </summary>
-		/// <param name="graphElement"> 콘텐츠를 생성할 대상 그래프 요소 </param>
-		private void CreateInspectorContent(GraphElement graphElement)
-		{
-			switch (graphElement)
-			{
-				case BehaviorNodeView bNodeView:
-				{
-					container.Add(new BasicPropertiesSection(bNodeView.targetNode, bNodeView.onRenamingNode));
-					container.Add(new FieldPropertiesSection(bNodeView.targetNode.variableHandles));
-					container.Add(new ServiceContainer(bNodeView.observableServiceList));
-					break;
-				}
-
-				case StateNodeView sNodeView:
-				{
-					container.Add(new BasicPropertiesSection(sNodeView.targetNode, sNodeView.onRenamingNode));
-					container.Add(new FieldPropertiesSection(sNodeView.targetNode.variableHandles));
-					container.Add(new ServiceContainer() { style = { display = DisplayStyle.None } });
-					break;
-				}
-
-				case FSMEdge edgeView:
-				{
-					container.Add(new BasicPropertiesSection(edgeView.targetTransition, null));
-					container.Add(new FieldPropertiesSection(edgeView.targetTransition.variableHandles));
-					container.Add(new ServiceContainer() { style = { display = DisplayStyle.None } });
-					break;
-				}
+				panel?.RefreshPanel();
 			}
 		}
 	}

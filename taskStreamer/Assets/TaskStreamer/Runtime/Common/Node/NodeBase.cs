@@ -7,7 +7,7 @@ using UnityEngine.Assertions;
 
 namespace TaskStreamer.Runtime
 {
-    [Serializable, Readable]
+    [Serializable]
     public abstract class NodeBase : Task
     {
         protected Action<NodeBase> onNodeEnter;
@@ -15,7 +15,7 @@ namespace TaskStreamer.Runtime
 
         
 #if UNITY_EDITOR
-        [SerializeField, DontCreateProperty]
+        [SerializeField]
         internal Vector2Int position;
 #endif
 

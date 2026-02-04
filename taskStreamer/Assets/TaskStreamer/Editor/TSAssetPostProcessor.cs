@@ -57,8 +57,8 @@ namespace TaskStreamer.Tool
 			                                 .Select(static guid => AssetDatabase.GUIDToAssetPath(guid))
 			                                 .Select(static path => AssetDatabase.LoadAssetAtPath<GraphAsset>(path))
 			                                 .Where(a => a != null && a.graphGuid == asset.graphGuid)
-			                                 .Skip(1) // 자기 자신 하나 건너뜀
-			                                 .Any();  // 두 번째가 존재하면 중복
+			                                 .Skip(1) //자기 자신 하나 건너뜀.
+			                                 .Any();  //두 번째가 존재하면 중복.
 
 			if (isDuplicated)
 			{

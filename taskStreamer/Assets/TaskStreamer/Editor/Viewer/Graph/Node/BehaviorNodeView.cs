@@ -35,7 +35,7 @@ namespace TaskStreamer.Tool
 
 			List<ServiceBase> services = ((BehaviorNodeBase)targetNode).services;
 			this._observableServiceList = new ObservableList<ServiceBase>(services);
-			services.ForEach(s => this._serviceContainerView.Add(new ServiceView(s)));
+			services.ForEach(s => this._serviceContainerView.Add(new ServiceBlock(s)));
 			this._observableServiceList.onChanged += this.OnObservableServiceViewListChanged;
 		}
 
@@ -103,7 +103,7 @@ namespace TaskStreamer.Tool
 
 			switch (action)
 			{
-				case NotifyListChanged.Add: this._serviceContainerView.Add(new ServiceView(service)); break;
+				case NotifyListChanged.Add: this._serviceContainerView.Add(new ServiceBlock(service)); break;
 
 				case NotifyListChanged.Remove: this._serviceContainerView.RemoveAt(index); break;
 			}

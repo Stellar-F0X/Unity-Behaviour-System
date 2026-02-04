@@ -1,12 +1,11 @@
 using System;
-using TaskStreamer.Runtime;
 using TaskStreamer.Runtime.BT;
 using Unity.Properties;
 using UnityEngine;
 
 namespace TaskStreamer.Runtime
 {
-    [Serializable, GeneratePropertyBag, Readable]
+    [Serializable, GeneratePropertyBag, TaskDescription]
     public partial class SetFloatAnimatorParameter : ServiceBase
     {
         public BlackboardVariable<Animator> animator;

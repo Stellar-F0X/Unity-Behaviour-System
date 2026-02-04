@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace TaskStreamer.Runtime.BT
 {
-    [Serializable, GeneratePropertyBag, Readable]
+    [Serializable, GeneratePropertyBag, TaskDescription]
     public class ParallelNode : CompositeNode
     {
         [Tooltip("Determines how success or failure is evaluated among child nodes.")]

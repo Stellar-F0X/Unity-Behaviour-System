@@ -5,7 +5,7 @@ using UnityEngine;
 namespace TaskStreamer.Runtime.BT
 {
     /// <summary> Behavior Tree의 노드 호출 스택과 서브트리 중단 기능을 관리하는 클래스 </summary>
-    public class TreeInterrupter
+    internal class TreeInterrupter
     {
         /// <summary> Behavior Tree의 중단(Abort) 작업 처리를 위한 필수 정보를 나타내는 구조체 </summary>
         private readonly struct AbortInfo

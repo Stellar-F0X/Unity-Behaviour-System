@@ -2,7 +2,7 @@ using Unity.Properties;
 
 namespace TaskStreamer.Runtime.BT
 {
-    [GeneratePropertyBag, Readable]
+    [GeneratePropertyBag, TaskDescription]
     internal class SubBTNode : SubGraphNode
     {
         public override GraphType subGraphType

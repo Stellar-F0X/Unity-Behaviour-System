@@ -27,7 +27,7 @@ namespace TaskStreamer.Tool
             this.editTextRequested += this.OnEditElementTitleText;
             this.removeItemRequest += this.OnRemoveItemRequest;
             
-            this.styleSheets.Add(TSEditor.blackboardStyle);
+            this.styleSheets.Add(TSUIElementSettings.instance.BlackboardStyle);
             
             this._addElementButton = this.Q<Button>("addButton");
             this._contentContainer = this.Q<VisualElement>("contentContainer");

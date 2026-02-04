@@ -79,7 +79,7 @@ namespace TaskStreamer.Runtime
                 return false;
             }
 
-            if (type.HasAttribute<ReadableAttribute>())
+            if (type.HasAttribute<TaskDescriptionAttribute>())
             {
                 _VisitAvailable.Add(type);
                 return false; //Ignore filtering

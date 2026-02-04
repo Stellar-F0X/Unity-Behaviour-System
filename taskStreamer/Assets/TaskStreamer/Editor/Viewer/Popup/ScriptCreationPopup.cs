@@ -10,7 +10,7 @@ namespace TaskStreamer.Tool
 	{
 		public ScriptCreationPopup()
 		{
-			TSEditor.nodeScriptCreationPopup.CloneTree(this);
+			TSUIElementSettings.instance.ScriptCreationPopup.CloneTree(this);
 
 			this.style.flexGrow = 1f;
 			this.style.position = Position.Absolute;

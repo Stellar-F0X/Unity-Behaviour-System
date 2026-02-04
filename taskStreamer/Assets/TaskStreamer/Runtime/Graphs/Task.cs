@@ -9,7 +9,7 @@ using TypeUtility = TaskStreamer.Runtime.Utility.TypeUtility;
 namespace TaskStreamer.Runtime
 {
     /// <summary> TaskStreamer 라이브러리의 기본 추상 클래스. 이름, 태그, 설명 등의 공통 필드를 포함하며, 상속을 통해 특정 작업의 세부 동작을 정의할 수 있음. </summary>
-    [Serializable, Readable]
+    [Serializable, TaskDescription]
     public abstract class Task
     {
         /// 태스크의 이름을 나타내는 문자열 필드로, 태스크를 식별하거나 UI에 표시하기 위해 사용됩니다.

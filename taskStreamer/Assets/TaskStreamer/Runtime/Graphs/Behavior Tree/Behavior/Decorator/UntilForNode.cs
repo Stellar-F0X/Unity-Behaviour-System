@@ -3,7 +3,7 @@ using Unity.Properties;
 
 namespace TaskStreamer.Runtime.BT
 {
-    [Serializable, GeneratePropertyBag, Readable]
+    [Serializable, GeneratePropertyBag, TaskDescription]
     public class UntilForNode : DecoratorNode
     {
         [DefaultValue(UntilCondition.Success)]

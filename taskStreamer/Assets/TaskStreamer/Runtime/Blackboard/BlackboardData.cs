@@ -88,7 +88,7 @@ namespace TaskStreamer.Runtime
         /// <summary>적용된 버전과 다른지 여부를 확인합니다.</summary>
         /// <param name="lastAppliedVersion">마지막으로 적용된 버전의 UGUID입니다.</param>
         /// <returns>현재 저장된 버전과 전달된 버전이 다르면 true를 반환합니다.</returns>
-        public bool RequiresUpdate(UGUID lastAppliedVersion)
+        public bool IsRequiresUpdate(UGUID lastAppliedVersion)
         {
             if (this._appliedVersion != lastAppliedVersion)
             {

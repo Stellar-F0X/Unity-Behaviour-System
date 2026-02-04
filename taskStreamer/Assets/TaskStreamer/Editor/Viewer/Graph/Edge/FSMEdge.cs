@@ -15,7 +15,7 @@ namespace TaskStreamer.Tool
         /// Represents a custom Unity edge with arrow functionality for graph-based tools.
         public FSMEdge()
         {
-            this.styleSheets.Add(TSEditor.edgeStyle); //USS 추가
+            this.styleSheets.Add(TSUIElementSettings.instance.EdgeStyle); //USS 추가
             this.generateVisualContent = this.DrawArrow;
             this.isGhostEdgeMode = true;
 

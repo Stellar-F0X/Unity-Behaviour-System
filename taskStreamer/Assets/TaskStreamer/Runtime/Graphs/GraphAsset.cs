@@ -15,7 +15,7 @@ namespace TaskStreamer.Runtime
     /// Represents a container for managing and interacting with a collection of Graph objects.
     /// This class supports operations like adding, removing, and linking subgraphs.
     /// </summary>
-    [Readable, GeneratePropertyBag]
+    [TaskDescription, GeneratePropertyBag]
     public partial class GraphAsset : ScriptableObject, IEquatable<GraphAsset>
     {
         /// <summary> 그래프 에셋이 생성될 때 설정되는 메인 그래프의 타입. </summary>

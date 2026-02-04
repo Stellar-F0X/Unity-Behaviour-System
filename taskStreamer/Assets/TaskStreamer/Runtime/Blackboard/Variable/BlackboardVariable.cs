@@ -5,7 +5,7 @@ using UnityEngine;
 namespace TaskStreamer.Runtime
 {
     /// <summary> Represents a wrapper for variables used in a blackboard system. </summary>
-    [Serializable, Readable]
+    [Serializable, TaskDescription]
     public abstract class BlackboardVariable : ISerializationCallbackReceiver
     {
         /// <summary> 변수의 기본 이름으로 사용되는 상수 </summary>
@@ -195,7 +195,7 @@ namespace TaskStreamer.Runtime
 
 
     /// <summary> Abstract base class representing a variable within the Blackboard system </summary>
-    [Serializable, Readable]
+    [Serializable, TaskDescription]
     public class BlackboardVariable<TValue> : BlackboardVariable, ISharedBlackboardVariable
     {
         /// <summary> BlackboardVariable의 값을 저장하는 필드. </summary>

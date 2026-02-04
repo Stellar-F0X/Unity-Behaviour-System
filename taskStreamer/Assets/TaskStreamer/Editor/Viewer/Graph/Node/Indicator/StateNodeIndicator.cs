@@ -2,7 +2,7 @@ namespace TaskStreamer.Tool
 {
     internal class StateNodeIndicator : NodeIndicatorBase
     {
-        internal StateNodeIndicator(NodeViewBase nodeView, EditorSettings settings) : base(nodeView, settings) { }
+        internal StateNodeIndicator(NodeViewBase nodeView, TSEditorSettings settings) : base(nodeView, settings) { }
 
 
         protected override void OnHighlightStart() { }

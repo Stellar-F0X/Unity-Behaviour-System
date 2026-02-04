@@ -2,7 +2,7 @@ using TaskStreamer.Runtime.Utility;
 
 namespace TaskStreamer.Runtime
 {
-    public interface ISubGraph
+    internal interface ISubGraph
     {
         public UGUID subGraphGuid { get; set; }
 

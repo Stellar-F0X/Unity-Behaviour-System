@@ -14,7 +14,7 @@ namespace TaskStreamer.Runtime.FSM
     /// <see cref="SubGraphState"/> 클래스의 각 인스턴스는 고유 식별자로 정의된 개별 서브그래프를 나타낸다.
     /// 서브클래스는 사용하려는 서브그래프의 구체적인 동작과 유형을 반드시 구현해야 한다.
     /// </remarks>
-    [Serializable, GeneratePropertyBag, Readable]
+    [Serializable, GeneratePropertyBag, TaskDescription]
     internal abstract class SubGraphState : StateBase, ISubGraph
     {
         /// <summary>

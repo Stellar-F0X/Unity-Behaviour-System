@@ -50,7 +50,7 @@ namespace TaskStreamer.Tool
 
             if (s.Count > 0)
             {
-                return s.OrderByNameAndFilterAbstracts();
+                return s.OrderByNameAndFilterAbstracts(typeof(HideInCallstackAttribute));
             }
             else
             {

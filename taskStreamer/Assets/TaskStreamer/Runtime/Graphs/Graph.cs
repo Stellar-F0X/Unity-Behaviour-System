@@ -11,7 +11,7 @@ using UnityEditor;
 
 namespace TaskStreamer.Runtime
 {
-    [Serializable, GeneratePropertyBag, Readable]
+    [Serializable, GeneratePropertyBag, TaskDescription]
     public abstract partial class Graph : IEquatable<Graph>, IGraphIterable
     {
         protected Graph(string graphName, GraphAsset graphAsset)

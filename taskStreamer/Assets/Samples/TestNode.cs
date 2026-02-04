@@ -3,7 +3,7 @@ using TaskStreamer.Runtime;
 using TaskStreamer.Runtime.BT;
 using Unity.Properties;
 
-[Serializable, GeneratePropertyBag, Readable]
+[Serializable, GeneratePropertyBag, TaskDescription]
 public partial class TestNode : ActionNode
 {
     protected override void OnEnter() 

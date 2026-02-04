@@ -143,7 +143,7 @@ namespace TaskStreamer.Tool
         {
             Assert.IsNotNull(node, $"{nameof(TaskGraphView)}: NodeBase is null");
 
-            NodeViewBase nodeView = BehaviorNodeView.Create(node, TSEditor.behaviorNode);
+            NodeViewBase nodeView = BehaviorNodeView.Create(node, TSUIElementSettings.instance.BTNode);
             Assert.IsNotNull(nodeView, $"{nameof(TaskGraphView)}: NodeViewBase is null");
             return nodeView;
         }

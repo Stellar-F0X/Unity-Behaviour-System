@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace TaskStreamer.Runtime.FSM
 {
-    [GeneratePropertyBag, Readable]
+    [GeneratePropertyBag, TaskDescription]
     public class ExitState : StateBase
     {
         public override StateNodeType nodeType

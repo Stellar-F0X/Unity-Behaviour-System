@@ -2,7 +2,7 @@ using Unity.Properties;
 
 namespace TaskStreamer.Runtime.FSM
 {
-    [GeneratePropertyBag, Readable]
+    [GeneratePropertyBag, TaskDescription]
     internal class SubBTState : SubGraphState
     {
         public override GraphType subGraphType

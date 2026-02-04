@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eaff9a2157e04e509a390b5619da2bc9, type: 3}
+  m_Name: UIElementSettings
+  m_EditorClassIdentifier: 
+  TaskHeaderSection: {fileID: 9197481963319205126, guid: 1e4e5aed60bcc1d4e8fd8e5c1001dea6, type: 3}
+  BBVariableFieldsPanel: {fileID: 9197481963319205126, guid: 61220085881b0744bace1f6808f6cd9a, type: 3}
+  ServiceSectionsPanel: {fileID: 9197481963319205126, guid: 1bb0e106e7f38ff4ba915fb65b266e08, type: 3}
+  ServiceSection: {fileID: 9197481963319205126, guid: 18b831c40eb1c5c46b0e34f7ab2d0d4a, type: 3}
+  ConditionSection: {fileID: 9197481963319205126, guid: 8f6749f2ba031714ab7d92b52a286630, type: 3}
+  ConditionSectionsPanel: {fileID: 9197481963319205126, guid: 3e8cdbcf3380d30489431adef531c03c, type: 3}
+  BBVariableField: {fileID: 9197481963319205126, guid: 7b6d1ff5e43fc864f9b810038ca669f1, type: 3}
+  Settings: {fileID: 9197481963319205126, guid: 5c48b9bc236747847a51ebd4ef08230d, type: 3}
+  Inspector: {fileID: 9197481963319205126, guid: 585f553f8e3fc144a9885f78d678906a, type: 3}
+  BTNode: {fileID: 9197481963319205126, guid: 541193e97a9200f48afb0a976ac925c1, type: 3}
+  FSMNode: {fileID: 9197481963319205126, guid: 6aa28b0b670b4d74a85c8b057dfda01b, type: 3}
+  ServiceBlock: {fileID: 9197481963319205126, guid: c3dcfa33ad2b16c4a9e978c0c5b936e8, type: 3}
+  Window: {fileID: 9197481963319205126, guid: e97556cb6f1cfe64da771ca095336409, type: 3}
+  ScriptCreationPopup: {fileID: 9197481963319205126, guid: f07b3907728c5314583053a3b630a49d, type: 3}
+  WindowStyle: {fileID: 7433441132597879392, guid: 9f7ef0b4ed1e21f4580d6f651abac776, type: 3}
+  SettingsStyle: {fileID: 7433441132597879392, guid: c3008b48ac881364d8c155d3be3c25e4, type: 3}
+  EdgeStyle: {fileID: 7433441132597879392, guid: 29a258d5084ec5e45959762c4d55791a, type: 3}
+  BlackboardStyle: {fileID: 7433441132597879392, guid: 6fc75957a5cd1cf4ba64b2ad0e65c418, type: 3}
+  ResizeHandleImage: {fileID: 2800000, guid: 4d2a6806a1146da45ab58d1ec7151c12, type: 3}
+  DeleteButtonImage: {fileID: 2800000, guid: f2fc44ccac922cb4c91a00a9adbd9e01, type: 3}
+  BindingButtonImage: {fileID: 2800000, guid: abb05fd611a40854eb4dc5acec87c0f1, type: 3}
+  AddButtonImage: {fileID: 2800000, guid: b81ad4471ec9f394092398600153c162, type: 3}

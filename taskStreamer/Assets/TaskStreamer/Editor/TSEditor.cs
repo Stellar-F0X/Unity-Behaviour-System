@@ -15,7 +15,7 @@ namespace TaskStreamer.Tool
     internal partial class TSEditor : EditorWindow
     {
         /// <summary>Task Streamer 에디터의 설정 정보를 위한 정적 참조입니다.</summary>
-        private static EditorSettings _settings;
+        private static TSEditorSettings _settings;
 
 
         /// <summary>그래프 탐색 시 그래프 계층 구조를 표시하고 관리하는 ToolbarBreadcrumbs를 나타냅니다.</summary>
@@ -37,13 +37,13 @@ namespace TaskStreamer.Tool
 
 
         /// <summary>Task Streamer 에디터의 설정 정보를 제공하는 정적 속성입니다.</summary>
-        public static EditorSettings settings
+        public static TSEditorSettings settings
         {
             get
             {
                 if (_settings == null)
                 {
-                    _settings = TSEditorUtility.FindAssetByName<EditorSettings>($"t:{nameof(EditorSettings)}");
+                    _settings = TSEditorUtility.FindAssetByName<TSEditorSettings>($"t:{nameof(TSEditorSettings)}");
                 }
 
                 if (_settings == null)
@@ -152,9 +152,7 @@ namespace TaskStreamer.Tool
         [MenuItem("Tools/Task Streamer")]
         public static void OpenWindow()
         {
-            TSEditor wnd = GetWindow<TSEditor>();
-            wnd.titleContent = new GUIContent("Task Streamer");
-            Instance = wnd;
+            Instance = GetWindow<TSEditor>("Task Streamer");
         }
 
 
@@ -229,8 +227,8 @@ namespace TaskStreamer.Tool
             Instance = this;
             this._requiresGraphUpdate = true;
 
-            window.CloneTree(rootVisualElement);
-            rootVisualElement.styleSheets.Add(windowStyle);
+            TSUIElementSettings.instance.Window.CloneTree(rootVisualElement);
+            rootVisualElement.styleSheets.Add(TSUIElementSettings.instance.WindowStyle);
 
             this.taskGraphView = rootVisualElement.Q<TaskGraphView>();
             this._navigationBreadcrumbs = rootVisualElement.Q<NavigationBreadcrumbs>();

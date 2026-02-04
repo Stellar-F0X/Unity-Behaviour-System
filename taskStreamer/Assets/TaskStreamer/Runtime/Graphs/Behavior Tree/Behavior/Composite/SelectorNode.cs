@@ -2,7 +2,7 @@ using Unity.Properties;
 
 namespace TaskStreamer.Runtime.BT
 {
-    [GeneratePropertyBag, Readable]
+    [GeneratePropertyBag, TaskDescription]
     public sealed class SelectorNode : CompositeNode
     {
         protected override Status OnUpdate()

@@ -122,7 +122,8 @@ namespace TaskStreamer.Runtime.BT
 
             if (this.CanVisit() == false)
             {
-                return Status.Failure;
+                this.status = Status.Failure;
+                return this.status;
             }
 
             if (callState == NodeCallState.BeforeEnter)
@@ -147,6 +148,7 @@ namespace TaskStreamer.Runtime.BT
                     return Status.Running;
                 }
 
+                //만약 Tree의 마지막 실행 노드가 자기 자신이 아니라면 현재 노드를 실행 스택에서 빼고 실행을 중단한다.
                 if (this.tree.interrupter.GetCurrentNode(callStackID) != this)
                 {
                     this.tree.interrupter.AbortSubtreeFrom(callStackID, this);

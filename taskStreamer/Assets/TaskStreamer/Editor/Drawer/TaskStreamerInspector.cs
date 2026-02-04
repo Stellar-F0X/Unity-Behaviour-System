@@ -158,7 +158,7 @@ namespace TaskStreamer.Tool
 
                 if (GUILayout.Button("Open Editor Settings", GUILayout.ExpandWidth(true)))
                 {
-                    SettingsService.OpenProjectSettings(SettingRegister.SettingsResistryPath);
+                    SettingsService.OpenProjectSettings(TSSettingRegister.SettingsRegistryPath);
                 }
             }
         }

@@ -6,7 +6,7 @@ using UnityEngine.Assertions;
 
 namespace TaskStreamer.Runtime.FSM
 {
-    [Serializable, GeneratePropertyBag, Readable]
+    [Serializable, GeneratePropertyBag, TaskDescription]
     internal class Transition : Task
     {
         internal Transition(NodeBase sourceNode, NodeBase destinationNode) : base()

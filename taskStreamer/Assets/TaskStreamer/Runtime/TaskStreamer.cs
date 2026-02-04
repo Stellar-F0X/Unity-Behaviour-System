@@ -46,6 +46,7 @@ namespace TaskStreamer.Runtime
             set { _tickMode = value; }
         }
 
+        
 
         private void Awake()
         {
@@ -69,6 +70,7 @@ namespace TaskStreamer.Runtime
             }
         }
 
+        
 
         private void OnDestroy()
         {
@@ -80,6 +82,7 @@ namespace TaskStreamer.Runtime
         }
 
 
+        
         private bool TryExecuteGraph(TickMode callingTickMethodType)
         {
             if (callingTickMethodType != this._tickMode || this.pause)
@@ -102,19 +105,22 @@ namespace TaskStreamer.Runtime
             return true;
         }
 
+        
 
         private void Update()
         {
             this.TryExecuteGraph(TickMode.ManualUpdate);
         }
 
+        
 
         private void FixedUpdate()
         {
             this.TryExecuteGraph(TickMode.FixedUpdate);
             this.onNodeFixedUpdate?.Invoke();
         }
-
+        
+        
 
         private void LateUpdate()
         {
@@ -122,25 +128,27 @@ namespace TaskStreamer.Runtime
             this.onNodeLateUpdate?.Invoke();
         }
 
+        
 
         private void OnDrawGizmos()
         {
             this.onNodeGizmosUpdate?.Invoke();
         }
 
+        
 
         public void ExternalUpdate()
         {
-            if (_tickMode == TickMode.ExternalUpdate)
+            if (_tickMode != TickMode.ExternalUpdate)
             {
-                this.TryExecuteGraph(TickMode.ExternalUpdate);
+                Debug.LogWarning($"{nameof(tickMode)}가 {TickMode.ExternalUpdate}가 아닙니다.");
+                return;
             }
-            else
-            {
-                Debug.LogWarning("ExternalUpdate는 tickMode가 ExternalUpdate로 설정되어 있을 때만 호출해야 합니다.");
-            }
+
+            this.TryExecuteGraph(TickMode.ExternalUpdate);
         }
 
+        
 
         public void SetVariable<TValue>(in string key, TValue value)
         {
@@ -157,10 +165,11 @@ namespace TaskStreamer.Runtime
                 return;
             }
 
-            throw new KeyNotFoundException($"키 '{key}'에 해당하는 프로퍼티를 찾을 수 없습니다.");
+            throw new KeyNotFoundException($"키 '{key}', 타입 '{typeof(TValue)}' 에 해당하는 프로퍼티를 찾을 수 없습니다.");
         }
 
 
+        
         public TValue GetVariable<TValue>(in string key)
         {
             if (this._runtimeBlackboard is null || enabled == false)
@@ -175,7 +184,7 @@ namespace TaskStreamer.Runtime
                 return valueVariable.value;
             }
 
-            throw new KeyNotFoundException($"키 '{key}'에 해당하는 프로퍼티를 찾을 수 없습니다.");
+            throw new KeyNotFoundException($"키 '{key}', 타입 '{typeof(TValue)}' 에 해당하는 프로퍼티를 찾을 수 없습니다.");
         }
 
 
@@ -186,7 +195,6 @@ namespace TaskStreamer.Runtime
             for (int index = _runtimeBlackboard.count - 1; index >= 0; --index)
             { 
                 BlackboardVariable original = _runtimeBlackboard.variables[index];
-                
                 BlackboardVariable replica = _graphAsset.blackboard.FindVariable(original.guid);
 
                 if (replica is null)
@@ -232,7 +240,7 @@ namespace TaskStreamer.Runtime
             }
             
             //마지막 반영 버전과 같으면 굳이 다시 업데이트하지 않고 함수를 종료한다.
-            if (_runtimeBlackboard.RequiresUpdate(_graphAsset.blackboard.appliedVersion))
+            if (_runtimeBlackboard.IsRequiresUpdate(_graphAsset.blackboard.appliedVersion))
             {
                 this.UpdateRuntimeBlackboardVariables();
             }

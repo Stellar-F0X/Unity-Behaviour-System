@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TaskStreamer.Runtime.BT
 {
-    [Readable, GeneratePropertyBag, Serializable]
+    [TaskDescription, GeneratePropertyBag, Serializable]
     public class WaitNode : ActionNode
     {
         [DefaultValue(1.0f)]

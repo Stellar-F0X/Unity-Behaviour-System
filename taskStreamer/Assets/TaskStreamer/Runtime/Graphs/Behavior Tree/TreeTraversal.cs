@@ -3,7 +3,7 @@ using TaskStreamer.Runtime.BT;
 namespace TaskStreamer.Runtime.Utility
 {
     /// <summary> 트리 순회 정보를 담는 구조체 </summary>
-    public readonly struct TreeTraversal
+    internal readonly struct TreeTraversal
     {
         public TreeTraversal(BehaviorNodeBase node, int depth = 0, int stackID = 0)
         {

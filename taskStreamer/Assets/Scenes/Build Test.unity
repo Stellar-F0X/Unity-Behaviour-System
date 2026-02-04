@@ -1291,17 +1291,35 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _tickMode: 1
   _pauseUpdate: 0
-  _graphAsset: {fileID: 11400000, guid: 3e311bbeba7425242bd45c0f8cf515c1, type: 2}
+  _graphAsset: {fileID: 11400000, guid: e8ba2cf2d3662564aad12fad9ec2c973, type: 2}
   _runtimeBlackboard:
     _appliedVersion:
-      _value0: 2877549022
-      _value1: 1333552182
-      _value2: 2710580357
-      _value3: 3442739994
-    _variables: []
+      _value0: 3452047732
+      _value1: 1144960524
+      _value2: 2032460947
+      _value3: 4134926257
+    _variables:
+    - rid: 7608686541984497903
   references:
     version: 2
-    RefIds: []
+    RefIds:
+    - rid: 7608686541984497903
+      type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: TaskStreamer.Runtime, asm: TaskStreamer.Runtime}
+      data:
+        _key: String
+        _keyHash: -1726826593
+        _guid:
+          _value0: 380732832
+          _value1: 1333112858
+          _value2: 1276358318
+          _value3: 378533943
+        _typeName: TaskStreamer.Runtime.BlackboardVariable`1[[System.String, mscorlib,
+          Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]], TaskStreamer.Runtime,
+          Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+        _isShared: 0
+        _usage: 0
+        _value: '%%%%%'
+        _blackboard: {fileID: 0}
 --- !u!4 &2094057941
 Transform:
   m_ObjectHideFlags: 0

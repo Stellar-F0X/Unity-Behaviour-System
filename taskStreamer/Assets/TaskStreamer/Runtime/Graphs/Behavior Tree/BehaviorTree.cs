@@ -13,10 +13,10 @@ namespace TaskStreamer.Runtime.BT
         private BehaviorTree(string graphName, GraphAsset graphAsset) : base(graphName, graphAsset) { }
 
 
-        public TreeInterrupter interrupter
+        internal TreeInterrupter interrupter
         {
             get;
-            internal set;
+            set;
         }
 
         public override GraphType graphType

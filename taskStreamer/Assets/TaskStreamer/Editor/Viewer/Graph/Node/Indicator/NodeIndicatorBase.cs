@@ -8,7 +8,7 @@ namespace TaskStreamer.Tool
     /// </summary>
     internal abstract class NodeIndicatorBase
     {
-        internal NodeIndicatorBase(NodeViewBase nodeView, EditorSettings settings)
+        internal NodeIndicatorBase(NodeViewBase nodeView, TSEditorSettings settings)
         {
             this._settings = settings;
             this._nodeView = nodeView;
@@ -25,7 +25,7 @@ namespace TaskStreamer.Tool
 
 
         /// NodeIndicatorBase에서 사용되는 설정 정보로, 에디터 내 노드 강조 효과의 동작 방식을 정의합니다.
-        protected readonly EditorSettings _settings;
+        protected readonly TSEditorSettings _settings;
 
 
         /// 노드가 강조(Highlight) 중인지 여부를 나타내는 플래그 변수입니다.

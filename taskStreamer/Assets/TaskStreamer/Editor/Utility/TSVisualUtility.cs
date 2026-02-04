@@ -61,79 +61,79 @@ namespace TaskStreamer.Tool
 
             if (type == null) 
             {
-                return new UnsupportedTypeField(context.context);
+                return new ErrorField(context.context);
             }
 
             if (type == typeof(float))
             {
-                return new BlackboardVariableField<float, FloatField>(context);
+                return new BBVariableField<float, FloatField>(context);
             }
 
             if (type == typeof(double))
             {
-                return new BlackboardVariableField<double, DoubleField>(context);
+                return new BBVariableField<double, DoubleField>(context);
             }
 
             if (type == typeof(int))
             {
-                return new BlackboardVariableField<int, IntegerField>(context);
+                return new BBVariableField<int, IntegerField>(context);
             }
 
             if (type == typeof(bool))
             {
-                return new BlackboardVariableField<bool, Toggle>(context);
+                return new BBVariableField<bool, Toggle>(context);
             }
 
             if (type == typeof(string))
             {
-                return new BlackboardVariableField<string, TextField>(context);
+                return new BBVariableField<string, TextField>(context);
             }
 
             if (type.IsEnum)
             {
                 if (type.GetAttribute<FlagsAttribute>() is null)
                 {
-                    return new BlackboardVariableEnumField<EnumField>(context);
+                    return new BBVariableEnumField<EnumField>(context);
                 }
                 else
                 {
-                    return new BlackboardVariableEnumField<EnumFlagsField>(context);
+                    return new BBVariableEnumField<EnumFlagsField>(context);
                 }
             }
 
             if (type == typeof(Vector2))
             {
-                return new BlackboardVariableField<Vector2, Vector2Field>(context);
+                return new BBVariableField<Vector2, Vector2Field>(context);
             }
 
             if (type == typeof(Vector3))
             {
-                return new BlackboardVariableField<Vector3, Vector3Field>(context);
+                return new BBVariableField<Vector3, Vector3Field>(context);
             }
 
             if (type == typeof(Quaternion))
             {
-                return new BlackboardVariableField<Quaternion, QuaternionField>(context);
+                return new BBVariableField<Quaternion, QuaternionField>(context);
             }
             
             if (type == typeof(Vector4))
             {
-                return new BlackboardVariableField<Vector4, Vector4Field>(context);
+                return new BBVariableField<Vector4, Vector4Field>(context);
             }
 
             if (type == typeof(Vector2Int))
             {
-                return new BlackboardVariableField<Vector2Int, Vector2IntField>(context);
+                return new BBVariableField<Vector2Int, Vector2IntField>(context);
             }
 
             if (type == typeof(Vector3Int))
             {
-                return new BlackboardVariableField<Vector3Int, Vector3IntField>(context);
+                return new BBVariableField<Vector3Int, Vector3IntField>(context);
             }
 
             if (type == typeof(Color))
             {
-                return new BlackboardVariableField<Color, ColorField>(context);
+                return new BBVariableField<Color, ColorField>(context);
             }
 
             bool isComponentOrObject = typeof(GameObject).IsAssignableFrom(type);
@@ -143,7 +143,7 @@ namespace TaskStreamer.Tool
 
             if (isComponentOrObject)
             {
-                var objectField = new BlackboardVariableField<Object, ObjectField>(context);
+                var objectField = new BBVariableField<Object, ObjectField>(context);
                 ObjectField localObjectField = objectField.localVariableInputField;
                 localObjectField.allowSceneObjects = false;
                 localObjectField.objectType = type;

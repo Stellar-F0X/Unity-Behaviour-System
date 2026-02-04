@@ -221,7 +221,7 @@ namespace TaskStreamer.Tool
                 return null;
             }
 
-            NodeViewBase nodeView = StateNodeView.Create(node, TSEditor.stateNode);
+            NodeViewBase nodeView = StateNodeView.Create(node, TSUIElementSettings.instance.FSMNode);
             Assert.IsNotNull(nodeView, $"{nameof(TaskGraphView)}: NodeViewBase is null");
 
             return nodeView;

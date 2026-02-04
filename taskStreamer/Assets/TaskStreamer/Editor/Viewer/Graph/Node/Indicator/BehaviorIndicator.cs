@@ -6,7 +6,7 @@ namespace TaskStreamer.Tool
 {
     internal class BehaviorIndicator : NodeIndicatorBase
     {
-        internal BehaviorIndicator(NodeViewBase nodeView, EditorSettings settings) : base(nodeView, settings)
+        internal BehaviorIndicator(NodeViewBase nodeView, TSEditorSettings settings) : base(nodeView, settings)
         {
             this.ApplyBorderColorByState();
         }
@@ -42,7 +42,7 @@ namespace TaskStreamer.Tool
         {
             base.ApplyBorderColorByState();
             
-            switch (((BehaviorNodeBase)_nodeView.targetNode).status)
+            switch (((BehaviorNodeBase)_nodeView.targetNode).status)    
             {
                 case Status.Failure: _nodeView.nodeBorder.style.SetBorderColor(TSEditor.settings.failureNodeColor); break;
 

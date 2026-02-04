@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace TaskStreamer.Runtime.FSM
 {
-    [Serializable, GeneratePropertyBag, Readable]
+    [Serializable, GeneratePropertyBag, TaskDescription]
     internal class AnyTransition : Transition
     {
         internal AnyTransition(NodeBase sourceNode, NodeBase destinationNode) : base(sourceNode, destinationNode) { }
