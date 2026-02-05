@@ -5,7 +5,7 @@ using TaskStreamer.Runtime.BT;
 using Unity.Properties;
 
     #ROOTNAMESPACEBEGIN#
-[Serializable, GeneratePropertyBag, Readable]
+[Serializable, GeneratePropertyBag, TaskDescription]
 public partial class #SCRIPTNAME# : DecoratorNode
 {
     protected override void OnEnter() 

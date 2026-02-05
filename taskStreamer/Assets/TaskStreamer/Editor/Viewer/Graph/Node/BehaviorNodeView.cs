@@ -31,11 +31,20 @@ namespace TaskStreamer.Tool
 			this._serviceContainerView = this.Q<VisualElement>("service-container");
 			this._elementGroup.AddToClassList($"behavior-node");
 
-			this.Indicator = new BehaviorIndicator(this, TSEditor.settings);
+			this.Indicator = new BehaviorIndicator(this, TSEditorSettings.Instance);
 
 			List<ServiceBase> services = ((BehaviorNodeBase)targetNode).services;
 			this._observableServiceList = new ObservableList<ServiceBase>(services);
-			services.ForEach(s => this._serviceContainerView.Add(new ServiceBlock(s)));
+
+			// Missing Object(스크립트 삭제)로 인해 null인 서비스는 스킵
+			foreach (ServiceBase service in services)
+			{
+				if (service != null)
+				{
+					this._serviceContainerView.Add(new ServiceBlock(service));
+				}
+			}
+
 			this._observableServiceList.onChanged += this.OnObservableServiceViewListChanged;
 		}
 

@@ -39,7 +39,7 @@ namespace TaskStreamer.Runtime
         
 
         /// <summary> 런타임에서 BlackboardVariable을 바인딩합니다. Local이면 복제, Shared면 블랙보드에서 찾아 연결합니다. </summary>
-        public static BlackboardVariable BindForRuntime(BlackboardVariable source, GraphContext context)
+        public static BlackboardVariable BindForRuntime(BlackboardVariable source, GraphVisitContext visitContext)
         {
             Assert.IsNotNull(source);
 
@@ -48,9 +48,9 @@ namespace TaskStreamer.Runtime
                 return source.Duplicate();
             }
             
-            Assert.IsFalse(context.blackboard == null || context.blackboard.count == 0, "Shared variable requires a valid blackboard.");
+            Assert.IsFalse(visitContext.blackboard == null || visitContext.blackboard.count == 0, "Shared variable requires a valid blackboard.");
             
-            BlackboardVariable shared = TSObjectFactory.CreateSharedBlackboardVariable(source.genericVariableType, context.blackboard, source.guid);
+            BlackboardVariable shared = TSObjectFactory.CreateSharedBlackboardVariable(source.genericVariableType, visitContext.blackboard, source.guid);
             Assert.IsNotNull(shared, "Variable not found in blackboard.");
             
             shared.usage = source.usage;

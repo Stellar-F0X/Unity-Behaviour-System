@@ -115,7 +115,7 @@ namespace TaskStreamer.Tool
             _desContentField.SetValueWithoutNotify(task.description);
             _baseTitleHeader.text = ObjectNames.NicifyVariableName(_nodeType.Name);
 
-            List<string> tags = TSEditor.settings.tagList;
+            List<string> tags = TSEditorSettings.Instance.tagList;
             _tagSelectionField.value = tags.IndexOf(task.tag) == -1 ? tags[0] : task.tag;
             _tagSelectionField.choices = tags.Where(tag => tag.IsNotNullOrEmpty()).ToList();
         }

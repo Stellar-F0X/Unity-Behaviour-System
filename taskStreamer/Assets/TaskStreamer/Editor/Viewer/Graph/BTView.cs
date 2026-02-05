@@ -221,7 +221,7 @@ namespace TaskStreamer.Tool
                                            () => new NodeGroupFactoryModule<NodeGroup>(graphView, "Utility"),
                                            () => new RelatedTypeTreeProvider(false))
                                        .AddFactoryModule(
-                                           () => new ScriptCreationFactoryModule<CreateNewBTNodeScriptCommandBase>(graphView, "New Node"),
+                                           () => new ScriptCreationFactoryModule<CreateNewBTNodeScriptCommand>(graphView, "New Node"),
                                            () => new RelatedTypeTreeProvider(true))
                                        .Build();
         }

@@ -24,6 +24,25 @@ namespace TaskStreamer.Tool
 
 				TSAssetPostProcessor.CheckForInitialization(asset);
 				TSAssetPostProcessor.CheckForDuplicate(asset);
+				TSAssetPostProcessor.RemoveMissingObjects(asset);
+			}
+		}
+
+
+
+
+		/// <summary>
+		/// Missing Object(스크립트 삭제/변경으로 인해 null이 된 SerializeReference)를 제거합니다.
+		/// Node, Service, Condition에서 Missing Object를 감지하고 제거합니다.
+		/// </summary>
+		private static void RemoveMissingObjects(GraphAsset asset)
+		{
+			bool hasCleaned = MissingObjectCleaner.RemoveMissingObjects(asset);
+
+			if (hasCleaned)
+			{
+				EditorUtility.SetDirty(asset);
+				AssetDatabase.SaveAssets();
 			}
 		}
 
@@ -62,7 +81,7 @@ namespace TaskStreamer.Tool
 
 			if (isDuplicated)
 			{
-				asset.ReassignAllGraphElementGuids();
+				TaskGraphGuidChanger.ReassignAllGraphElementGuids(asset);
 				EditorUtility.SetDirty(asset);
 				AssetDatabase.SaveAssets();
 			}

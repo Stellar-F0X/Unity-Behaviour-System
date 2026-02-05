@@ -80,80 +80,8 @@ namespace TaskStreamer.Tool
 
 		
 
-		/// <summary> 노드 스크립트 생성 (BT/FSM 노드용) </summary>
-		internal static void CreateNewNodeScript<TCallback>(ScriptCreationCommandBase command, string scriptTemplateFullName, string nodeName) where TCallback : IScriptCreationCompletedCallback, new()
-		{
-			string scriptAssetPath = CreateScriptFile(scriptTemplateFullName, nodeName);
-
-			PendingScriptCreationData data = new PendingScriptCreationData
-			{
-				scriptName = nodeName,
-				scriptAssetPath = scriptAssetPath,
-				graphGuid = command.view.focusGraph.guid,
-				position = command.position,
-				focusOnCreated = true
-			};
-
-			const ImportAssetOptions refreshOps = ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport;
-			PendingCreationHandler.RequestScriptCreation<TCallback>(data);
-			AssetDatabase.Refresh(refreshOps);
-			CompilationPipeline.RequestScriptCompilation();
-			EditorUtility.RequestScriptReload();
-		}
-		
-
-
-		/// <summary> 서비스 스크립트 생성 </summary>
-		internal static void CreateNewServiceScript<TCallback>(ScriptCreationCommandBase command, NodeViewBase focusedNodeView, string scriptTemplateFullName, string serviceName) where TCallback : IScriptCreationCompletedCallback, new()
-		{
-			string scriptAssetPath = CreateScriptFile(scriptTemplateFullName, serviceName);
-
-			PendingScriptCreationData data = new PendingScriptCreationData
-			{
-				scriptName = serviceName,
-				scriptAssetPath = scriptAssetPath,
-				graphGuid = command.view.focusGraph.guid,
-				targetGuid = focusedNodeView.targetNode.guid,
-				position = command.position,
-				focusOnCreated = true
-			};
-
-			const ImportAssetOptions refreshOps = ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport;
-			PendingCreationHandler.RequestScriptCreation<TCallback>(data);
-			AssetDatabase.Refresh(refreshOps);
-			CompilationPipeline.RequestScriptCompilation();
-			EditorUtility.RequestScriptReload();
-		}
-
-		
-
-		/// <summary> Condition 스크립트 생성 </summary>
-		internal static void CreateNewConditionScript<TCallback>(ScriptCreationCommandBase command, UGUID targetGuid, UGUID bbConditionGuid, string scriptTemplateFullName, string conditionName) where TCallback : IScriptCreationCompletedCallback, new()
-		{
-			string scriptAssetPath = CreateScriptFile(scriptTemplateFullName, conditionName);
-
-			PendingScriptCreationData data = new PendingScriptCreationData
-			{
-				scriptName = conditionName,
-				scriptAssetPath = scriptAssetPath,
-				graphGuid = command.view.focusGraph.guid,
-				targetGuid = targetGuid,
-				extraGuid = bbConditionGuid,
-				position = command.position,
-				focusOnCreated = true
-			};
-
-			const ImportAssetOptions refreshOps = ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport;
-			PendingCreationHandler.RequestScriptCreation<TCallback>(data);
-			AssetDatabase.Refresh(refreshOps);
-			CompilationPipeline.RequestScriptCompilation();
-			EditorUtility.RequestScriptReload();
-		}
-
-		
-
 		/// <summary> 템플릿에서 스크립트 파일 생성 </summary>
-		private static string CreateScriptFile(string scriptTemplateFullName, string scriptName)
+		internal static string CreateScriptFile(string scriptTemplateFullName, string scriptName)
 		{
 			TextAsset templateFile = LoadTemplateScript(scriptTemplateFullName);
 			Assert.IsNotNull(templateFile, "스크립트 템플릿을 불러오기 실패했습니다.");
@@ -169,7 +97,7 @@ namespace TaskStreamer.Tool
 
 		private static string GetContent(TextAsset templateFile, string nodeName)
 		{
-			string content = templateFile.text.Replace("#NODEGUID#", UGUID.Create().ToString());
+			string content = templateFile.text;
 
 			if (UnityEditor.EditorSettings.projectGenerationRootNamespace.IsNotNullOrEmpty())
 			{

@@ -131,7 +131,7 @@ namespace TaskStreamer.Tool
 				return;
 			}
 
-			float interval = TSEditor.settings.updateInterval;
+			float interval = TSEditorSettings.Instance.updateInterval;
 			this._nextUpdateTime = Time.unscaledTime + interval;
 
 			foreach (Node node in this.nodes)
@@ -272,7 +272,7 @@ namespace TaskStreamer.Tool
 		/// <param name="data"> Node Group View를 생성하기 위한 Node Group Data 입니다. </param>
 		private void RecreateNodeGroupView(NodeGroup data)
 		{
-			NodeGroupView nodeGroupView = new NodeGroupView(data, TSEditor.settings.nodeGroupColor);
+			NodeGroupView nodeGroupView = new NodeGroupView(data, TSEditorSettings.Instance.nodeGroupColor);
 			nodeGroupView.AddElements(nodes.Where(n => n is NodeViewBase v && data.Contains(v.targetNode.guid)));
 			nodeGroupView.SetPosition(new Rect(data.position, Vector2.zero));
 			base.AddElement(nodeGroupView);
@@ -312,7 +312,7 @@ namespace TaskStreamer.Tool
 		public NodeGroupView CreateNewNodeGroupView(string title, Vector2 position)
 		{
 			NodeGroup nodeNodeGroupData = focusGraph.CreateGroupDataAndAddToList(title, position);
-			NodeGroupView groupView = new NodeGroupView(nodeNodeGroupData, TSEditor.settings.nodeGroupColor);
+			NodeGroupView groupView = new NodeGroupView(nodeNodeGroupData, TSEditorSettings.Instance.nodeGroupColor);
 
 			groupView.SetPosition(new Rect(position, Vector2.zero));
 

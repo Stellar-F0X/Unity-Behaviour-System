@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 namespace TaskStreamer.Tool
 {
 #if USE_ASSETS_PATH
-	[CreateAssetMenu(fileName = "New UIElementSettings", menuName = "Task Streamer/UIElementSettings")]
+	[CreateAssetMenu(fileName = "New UIElementSettings", menuName = "Task Streamer/Settings/UIElementSettings")]
 #endif
 	public class TSUIElementSettings : ScriptableObject
 	{

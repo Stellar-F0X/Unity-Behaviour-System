@@ -105,6 +105,14 @@ namespace TaskStreamer.Tool
 
 			ServiceBase service = (ServiceBase)_serviceListView.itemsSource[index];
 
+			// Missing Object(스크립트 삭제)로 인해 null인 경우 스킵
+			if (service == null)
+			{
+				servicePanel.style.display = DisplayStyle.None;
+				return;
+			}
+
+			servicePanel.style.display = DisplayStyle.Flex;
 			servicePanel.onDeleteRequested -= this.OnServiceDeletionRequested;
 			servicePanel.onDeleteRequested += this.OnServiceDeletionRequested;
 

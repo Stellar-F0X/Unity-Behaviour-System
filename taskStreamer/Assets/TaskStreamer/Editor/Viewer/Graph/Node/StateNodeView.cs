@@ -18,7 +18,7 @@ namespace TaskStreamer.Tool
             base.title = nodeName;
 
             this._elementGroup.AddToClassList($"state-node");
-            this.Indicator = new StateNodeIndicator(this, TSEditor.settings);
+            this.Indicator = new StateNodeIndicator(this, TSEditorSettings.Instance);
             this.Indicator.ApplyBorderColorByState();
         }
 

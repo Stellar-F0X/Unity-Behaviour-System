@@ -29,7 +29,6 @@ namespace TaskStreamer.Runtime.BT
         public static BehaviorTree CreateGraph(string graphName, GraphAsset graphAsset)
         {
             BehaviorTree graph = new BehaviorTree(graphName, graphAsset);
-
             graph.entry = graph.CreateAndAddNodeToList("Root", typeof(RootNode), new Vector2Int(0, 0));
 
             return graph;

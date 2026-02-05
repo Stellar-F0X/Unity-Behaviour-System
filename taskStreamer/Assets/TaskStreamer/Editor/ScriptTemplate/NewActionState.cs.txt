@@ -4,7 +4,7 @@ using TaskStreamer.Runtime.FSM;
 using Unity.Properties;
 
     #ROOTNAMESPACEBEGIN#
-[Serializable, GeneratePropertyBag, Readable]
+[Serializable, GeneratePropertyBag, TaskDescription]
 public partial class #SCRIPTNAME# : ActionState
 {
     protected override void OnEnter() 

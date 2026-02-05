@@ -6,7 +6,7 @@ using UnityEngine;
 namespace TaskStreamer.Runtime.BT
 {
     [Serializable]
-    public abstract class BehaviorNodeBase : NodeBase
+    public abstract class BehaviorNodeBase : NodeBase, IMissingTaskRemovable
     {
         /// 이 변수는 현재 노드가 속한 BehaviorTree를 참조하며, 부모-자식 노드 구조 관리 및 실행 흐름을 담당합니다.
         /// 내부적으로만 접근 및 설정 가능합니다.
@@ -245,5 +245,21 @@ namespace TaskStreamer.Runtime.BT
         /// 노드의 핵심 동작을 업데이트하는 추상 메서드로, 파생 클래스에서 구현되어야 합니다.
         /// <return> 노드 동작의 실행 결과를 반환합니다.
         protected abstract Status OnUpdate();
+
+        
+
+#if UNITY_EDITOR
+        /// <summary>
+        /// Missing Object(null)가 된 자식 노드와 서비스들을 제거합니다.
+        /// 스크립트가 삭제되거나 이름이 변경된 경우 SerializeReference가 null이 됩니다.
+        /// </summary>
+        /// <returns>제거된 객체 수 (자식 노드 + 서비스)</returns>
+        int IMissingTaskRemovable.RemoveMissingTasks()
+        {
+            int removedCount = _children.RemoveAll(static c => c == null);
+            removedCount += _services.RemoveAll(static s => s == null);
+            return removedCount;
+        }
+#endif
     }
 }

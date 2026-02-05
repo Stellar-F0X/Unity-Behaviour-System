@@ -3,8 +3,18 @@ using UnityEngine;
 
 namespace TaskStreamer.Tool
 {
+#if USE_ASSETS_PATH
+    [CreateAssetMenu(fileName = "New EditorSettings", menuName = "Task Streamer/Settings/EditorSettings")]
+#endif
     public class TSEditorSettings : ScriptableObject
     {
+        private static TSEditorSettings _instance;
+        
+        public static TSEditorSettings Instance
+        {
+	        get { return _instance = _instance == null ? TSEditorUtility.FindAssetByName<TSEditorSettings>($"t:{nameof(TSEditorSettings)}") : _instance; }
+        }
+        
         public float highlightDuration = 0.5f;
         public uint updatesPerSecond = 10;
         

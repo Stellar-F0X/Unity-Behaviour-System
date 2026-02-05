@@ -138,6 +138,13 @@ MonoBehaviour:
               _value3: 3219882036
             _value:
               rid: 7608686544733864014
+          - _key:
+              _value0: 631276331
+              _value1: 1192993307
+              _value2: 1727238538
+              _value3: 3087040594
+            _value:
+              rid: 7608686551860248662
     - rid: 7608686541984497876
       type: {class: RootNode, ns: TaskStreamer.Runtime.BT, asm: TaskStreamer.Runtime}
       data:
@@ -170,7 +177,7 @@ MonoBehaviour:
           _value3: 1603362615
         canEditName: 1
         _script: {fileID: 11500000, guid: 2ed0c02321058e24cabc1881149d1e4c, type: 3}
-        position: {x: 285, y: 237}
+        position: {x: 299, y: 228}
         _parent:
           rid: 7608686541984497876
         _services: []
@@ -180,6 +187,7 @@ MonoBehaviour:
         - rid: 7608686541984497881
         - rid: 7608686541984497904
         - rid: 7608686544733864014
+        - rid: 7608686551860248662
     - rid: 7608686541984497880
       type: {class: StateMachine, ns: TaskStreamer.Runtime.FSM, asm: TaskStreamer.Runtime}
       data:
@@ -460,7 +468,7 @@ MonoBehaviour:
           _value2: 3679909813
           _value3: 4025468586
         canEditName: 0
-        _script: {fileID: 0}
+        _script: {fileID: 11500000, guid: cc4b697a2ad84a35920e4a0328ac1eb5, type: 3}
         _blockTransition:
           _key: _blockTransition
           _keyHash: -1193254290
@@ -992,7 +1000,7 @@ MonoBehaviour:
           _value3: 2512458799
         canEditName: 1
         _script: {fileID: 11500000, guid: a3c8c0d96de24290be31f8c7a3b802f7, type: 3}
-        position: {x: 493, y: 438}
+        position: {x: 494, y: 438}
         _parent:
           rid: 7608686541984497878
         _services:
@@ -1153,6 +1161,7 @@ MonoBehaviour:
           evaluationPolicy: 1
           modules:
           - rid: 7608686544733864010
+          - rid: -2
           _guid:
             _value0: 1623163481
             _value1: 1133752805
@@ -1278,7 +1287,7 @@ MonoBehaviour:
           _value3: 3219882036
         canEditName: 1
         _script: {fileID: 11500000, guid: 84266bc38451e2e49bb68af89b374249, type: 3}
-        position: {x: 707, y: 438}
+        position: {x: 708, y: 463}
         _parent:
           rid: 7608686541984497878
         _services: []
@@ -1298,6 +1307,69 @@ MonoBehaviour:
           _usage: 0
           _value: 1
           _blackboard: {fileID: 0}
+    - rid: 7608686551860248662
+      type: {class: LogNode, ns: TaskStreamer.Runtime.BT, asm: TaskStreamer.Runtime}
+      data:
+        name: 'Log '
+        tag: 
+        description: 
+        _guid:
+          _value0: 631276331
+          _value1: 1192993307
+          _value2: 1727238538
+          _value3: 3087040594
+        canEditName: 1
+        _script: {fileID: 11500000, guid: a3c8c0d96de24290be31f8c7a3b802f7, type: 3}
+        position: {x: 908, y: 452}
+        _parent:
+          rid: 7608686541984497878
+        _services: []
+        _children: []
+        onEnterMessages:
+          _key: onEnterMessages
+          _keyHash: 131359777
+          _guid:
+            _value0: 524845356
+            _value1: 1118914631
+            _value2: 1479187853
+            _value3: 626566279
+          _typeName: TaskStreamer.Runtime.BlackboardVariable`1[[System.String, mscorlib,
+            Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]],
+            TaskStreamer.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 0
+          _value: 
+          _blackboard: {fileID: 0}
+        onUpdateMessages:
+          _key: onUpdateMessages
+          _keyHash: -116426459
+          _guid:
+            _value0: 2264893645
+            _value1: 1259305297
+            _value2: 2957495183
+            _value3: 2960989032
+          _typeName: TaskStreamer.Runtime.BlackboardVariable`1[[System.String, mscorlib,
+            Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]],
+            TaskStreamer.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 0
+          _value: 
+          _blackboard: {fileID: 0}
+        onExitMessages:
+          _key: onExitMessages
+          _keyHash: -735184534
+          _guid:
+            _value0: 2049662237
+            _value1: 1141260530
+            _value2: 2175539106
+            _value3: 3580574446
+          _typeName: TaskStreamer.Runtime.BlackboardVariable`1[[System.String, mscorlib,
+            Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]],
+            TaskStreamer.Runtime, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+          _isShared: 0
+          _usage: 0
+          _value: 
+          _blackboard: {fileID: 0}
 --- !u!114 &7764533266195845136
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1312,10 +1384,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _blackboardData:
     _appliedVersion:
-      _value0: 4093101968
-      _value1: 1081562849
-      _value2: 237402804
-      _value3: 44956940
+      _value0: 3773281381
+      _value1: 1103050544
+      _value2: 2717661601
+      _value3: 3137640767
     _variables:
     - rid: 7608686541984497902
   references:

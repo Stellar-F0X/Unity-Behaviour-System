@@ -44,9 +44,9 @@ namespace TaskStreamer.Tool
             
             switch (((BehaviorNodeBase)_nodeView.targetNode).status)    
             {
-                case Status.Failure: _nodeView.nodeBorder.style.SetBorderColor(TSEditor.settings.failureNodeColor); break;
+                case Status.Failure: _nodeView.nodeBorder.style.SetBorderColor(TSEditorSettings.Instance.failureNodeColor); break;
 
-                case Status.Success: _nodeView.nodeBorder.style.SetBorderColor(TSEditor.settings.successNodeColor); break;
+                case Status.Success: _nodeView.nodeBorder.style.SetBorderColor(TSEditorSettings.Instance.successNodeColor); break;
             }
         }
     }

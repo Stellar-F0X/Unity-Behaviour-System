@@ -1,0 +1,24 @@
+using System;
+using TaskStreamer.Runtime;
+using TaskStreamer.Runtime.BT;
+using Unity.Properties;
+
+    
+[Serializable, GeneratePropertyBag, TaskDescription]
+public partial class TestService : ServiceBase
+{
+    public override void OnStart()
+    {
+    
+    }
+
+    public override void OnUpdate()
+    {
+    
+    }
+
+    public override void OnStop()
+    {
+    
+    }
+}

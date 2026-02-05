@@ -207,7 +207,7 @@ namespace TaskStreamer.Runtime.Utility
 			}
 
 			PriorityQueue<VariableHandle> targetProperties = new PriorityQueue<VariableHandle>(PriorityOrder.Ascending);
-			propertyBag.Accept(new ReadableFieldCollector(targetProperties), ref targetReference);
+			propertyBag.Accept(new TaskGraphFieldCollector(targetProperties), ref targetReference);
 			List<VariableHandle> properties = new List<VariableHandle>(targetProperties.Count);
 
 			while (targetProperties.Count > 0)

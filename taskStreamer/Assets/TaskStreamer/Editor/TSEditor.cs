@@ -14,10 +14,6 @@ namespace TaskStreamer.Tool
     /// <summary> Task Streamer 작업을 수행하기 위한 유니티 에디터 커스텀 창 클래스입니다. </summary>
     internal partial class TSEditor : EditorWindow
     {
-        /// <summary>Task Streamer 에디터의 설정 정보를 위한 정적 참조입니다.</summary>
-        private static TSEditorSettings _settings;
-
-
         /// <summary>그래프 탐색 시 그래프 계층 구조를 표시하고 관리하는 ToolbarBreadcrumbs를 나타냅니다.</summary>
         private NavigationBreadcrumbs _navigationBreadcrumbs;
 
@@ -32,32 +28,6 @@ namespace TaskStreamer.Tool
 
         /// <summary>그래프 업데이트가 필요한 상태를 나타내는 플래그입니다.</summary>
         private bool _requiresGraphUpdate;
-
-
-
-
-        /// <summary>Task Streamer 에디터의 설정 정보를 제공하는 정적 속성입니다.</summary>
-        public static TSEditorSettings settings
-        {
-            get
-            {
-                if (_settings == null)
-                {
-                    _settings = TSEditorUtility.FindAssetByName<TSEditorSettings>($"t:{nameof(TSEditorSettings)}");
-                }
-
-                if (_settings == null)
-                { 
-                    Debug.LogError($"{nameof(TSEditor)}: EditorSettings asset not found.");
-                }
-                else
-                {
-                    return _settings;
-                }
-
-                return null;
-            }
-        }
 
 
         /// <summary>Task Streamer 에디터의 싱글톤 인스턴스를 참조합니다.</summary>
@@ -189,6 +159,15 @@ namespace TaskStreamer.Tool
             {
                 TSEditor.ClearWindow();
                 return;
+            }
+
+            // Missing Object 정리 (스크립트 삭제/변경으로 인한 null 참조 제거)
+            if (MissingObjectCleaner.RemoveMissingObjects(graphAsset))
+            {
+                // 인스펙터 UI 초기화 (Missing Object가 제거된 후 UI 갱신)
+                Instance.inspectorView?.ClearInspector(true);
+                UnityEditor.EditorUtility.SetDirty(graphAsset);
+                UnityEditor.AssetDatabase.SaveAssets();
             }
 
             if (Instance.graphAsset != graphAsset)
@@ -425,7 +404,7 @@ namespace TaskStreamer.Tool
             GraphAsset previousAsset = this.graphAsset;
 
 
-            //변경할 그래프가 없거나, 
+            //변경할 그래프가 없거나,
             if (this.TryGetGraphAsset() == false)
             {
                 return;
@@ -439,6 +418,15 @@ namespace TaskStreamer.Tool
 
             this._requiresGraphUpdate = false;
 
+            // Missing Object 정리 (스크립트 삭제/변경으로 인한 null 참조 제거)
+            // 새 에셋을 열거나 뷰 갱신이 필요한 경우 실행
+            if (MissingObjectCleaner.RemoveMissingObjects(graphAsset))
+            {
+                // 인스펙터 UI 초기화 (Missing Object가 제거된 후 UI 갱신)
+                this.inspectorView?.ClearInspector(true);
+                EditorUtility.SetDirty(graphAsset);
+                AssetDatabase.SaveAssets();
+            }
 
             if (this.ChangeGraph(graphAsset.main) && graphAsset.blackboard != null)
             {
@@ -560,7 +548,7 @@ namespace TaskStreamer.Tool
             this._blackboardField.SetValueWithoutNotify(fresh);
 
             //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
-            this.graphAsset.TrySynchronizeVariablesOfNodes();
+            BBVariableSynchronizer.TrySynchronizeVariablesOfNodes(this.graphAsset);
             this.inspectorView.ClearInspector(true);
 
             UnityEditor.EditorUtility.SetDirty(graphAsset);

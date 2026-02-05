@@ -48,7 +48,6 @@ namespace TaskStreamer.Tool
 		private void InitializeConditionListView(VariableHandle fieldInfo)
 		{
 			_bbCondition = fieldInfo.GetValue<BlackboardBasedCondition>();
-
 			_conditionListView.headerTitle = StringUtility.ToNicifyName(fieldInfo.context);
 			_conditionListView.itemsSource = _bbCondition!.modules;
 			_conditionListView.bindItem = this.BindConditionItem;
@@ -99,7 +98,6 @@ namespace TaskStreamer.Tool
 
 			conditionSection.OnDeleteRequested -= this.OnVariableDeleteRequested;
 			conditionSection.OnDeleteRequested += this.OnVariableDeleteRequested;
-
 			conditionSection.Setup(this._bbCondition.modules[index]);
 		}
 

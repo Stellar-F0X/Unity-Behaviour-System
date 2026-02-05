@@ -4,7 +4,7 @@ using TaskStreamer.Runtime.BT;
 using Unity.Properties;
 
     #ROOTNAMESPACEBEGIN#
-[Serializable, GeneratePropertyBag, Readable]
+[Serializable, GeneratePropertyBag, TaskDescription]
 public partial class #SCRIPTNAME# : ServiceBase
 {
     public override void OnStart()

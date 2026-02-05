@@ -129,8 +129,8 @@ namespace TaskStreamer.Runtime
 
             IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
 
-            GraphContext context = new GraphContext(newGraphAsset, newBlackboard, streamer);
-            bag.Accept(new RuntimeGraphInitializer(context), ref newGraphAsset);
+            GraphVisitContext visitContext = new GraphVisitContext(newGraphAsset, newBlackboard, streamer);
+            bag.Accept(new RuntimeTaskGraphInitializer(visitContext), ref newGraphAsset);
             return newGraphAsset;
         }
 
@@ -199,40 +199,6 @@ namespace TaskStreamer.Runtime
 
 
 #if UNITY_EDITOR
-        /// <summary> 모든 그래프 요소의 GUID를 새로 생성된 GUID로 재할당한다. </summary>
-        internal void ReassignAllGraphElementGuids()
-        {
-            if (PropertyBag.Exists<GraphAsset>() == false)
-            {
-                Debug.LogError("GraphAsset does not have a property bag.");
-                return;
-            }
-
-            GraphAndNodeGuidReassigner visitor = new GraphAndNodeGuidReassigner(new GraphContext(this));
-            IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
-            GraphAsset reference = this;
-            bag.Accept(visitor, ref reference);
-            this.graphGuid = UGUID.Create();
-        }
-
-
-        /// <summary> 그래프의 변수 중 현재 Blackboard에 없는 변수들을 정리한다. </summary>
-        internal void TrySynchronizeVariablesOfNodes()
-        {
-            Debug.Assert(PropertyBag.Exists<GraphAsset>(), "GraphAsset does not have a property bag.");
-
-            BBSynchronizer visitor = new BBSynchronizer(new GraphContext(this, blackboard));
-            IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
-            GraphAsset reference = this;
-            bag.Accept(visitor, ref reference);
-
-            if (Application.isPlaying == false && Undo.isProcessing == false)
-            {
-                EditorUtility.SetDirty(this);
-            }
-        }
-
-
         /// <summary> 서브 그래프를 추가한다. </summary>
         /// <param name="baseGuid"> 기준 그래프의 GUID. </param>
         /// <param name="graph"> 추가할 서브 그래프 객체. </param>
