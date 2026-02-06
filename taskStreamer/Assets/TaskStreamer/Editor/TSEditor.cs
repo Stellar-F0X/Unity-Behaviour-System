@@ -99,6 +99,12 @@ namespace TaskStreamer.Tool
             private set; 
         }
 
+        public CommandProcessor commandProcessor
+        {
+            get;
+            private set;
+        }
+
 
 
 #region Static Methods
@@ -162,7 +168,7 @@ namespace TaskStreamer.Tool
             }
 
             // Missing Object 정리 (스크립트 삭제/변경으로 인한 null 참조 제거)
-            if (MissingObjectCleaner.RemoveMissingObjects(graphAsset))
+            if (graphAsset.TryRemoveMissingTasks())
             {
                 // 인스펙터 UI 초기화 (Missing Object가 제거된 후 UI 갱신)
                 Instance.inspectorView?.ClearInspector(true);
@@ -232,6 +238,12 @@ namespace TaskStreamer.Tool
 
             VisualElement container = rootVisualElement.Q<VisualElement>("container");
             container.Add(this.creationPopup);
+            
+            this.commandProcessor = new CommandProcessor();
+            rootVisualElement.schedule
+                             .Execute(commandProcessor.Process)
+                             .Every(50);
+            
             this.OnSelectionChange();
         }
 
@@ -420,7 +432,7 @@ namespace TaskStreamer.Tool
 
             // Missing Object 정리 (스크립트 삭제/변경으로 인한 null 참조 제거)
             // 새 에셋을 열거나 뷰 갱신이 필요한 경우 실행
-            if (MissingObjectCleaner.RemoveMissingObjects(graphAsset))
+            if (graphAsset.TryRemoveMissingTasks())
             {
                 // 인스펙터 UI 초기화 (Missing Object가 제거된 후 UI 갱신)
                 this.inspectorView?.ClearInspector(true);
@@ -548,7 +560,7 @@ namespace TaskStreamer.Tool
             this._blackboardField.SetValueWithoutNotify(fresh);
 
             //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
-            BBVariableSynchronizer.TrySynchronizeVariablesOfNodes(this.graphAsset);
+            this.graphAsset.TrySynchronizeVariablesOfTasks();
             this.inspectorView.ClearInspector(true);
 
             UnityEditor.EditorUtility.SetDirty(graphAsset);

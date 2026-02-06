@@ -37,25 +37,6 @@ namespace TaskStreamer.Runtime
 
 		private readonly GraphVisitContext _visitContext;
 
-		
-
-
-		/// <summary> 그래프의 변수 중 현재 Blackboard에 없는 변수들을 정리한다. </summary>
-		internal static void TrySynchronizeVariablesOfNodes(GraphAsset asset)
-		{
-			Debug.Assert(PropertyBag.Exists<GraphAsset>(), "GraphAsset does not have a property bag.");
-
-			BBVariableSynchronizer visitor = new BBVariableSynchronizer(new GraphVisitContext(asset, asset.blackboard));
-			IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
-			GraphAsset reference = asset;
-			bag.Accept(visitor, ref reference);
-
-			if (Application.isPlaying == false && Undo.isProcessing == false)
-			{
-				EditorUtility.SetDirty(asset);
-			}
-		}
-
 
 
 		//──────────────────────────────────────────────────────────────────

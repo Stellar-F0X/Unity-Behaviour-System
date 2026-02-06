@@ -1,5 +1,6 @@
 #if UNITY_EDITOR
 using UnityEditor;
+using UnityEngine.Assertions;
 #endif
 using System;
 using System.Collections.Generic;
@@ -332,6 +333,82 @@ namespace TaskStreamer.Runtime
             {
                 _graphTreeMap.Remove(from);
             }
+        }
+        
+        
+        
+        /// <summary>
+        /// GraphAsset에서 Missing Object를 제거합니다.
+        /// </summary>
+        /// <param name="asset">정리할 GraphAsset</param>
+        /// <returns>제거된 항목이 있으면 true, 없으면 false</returns>
+        internal bool TryRemoveMissingTasks()
+        {
+            if (Application.isPlaying || Undo.isProcessing)
+            {
+                return false;
+            }
+            
+            bool hasCleaned = false;
+
+            // Unity SerializationUtility를 사용하여 Missing Type 제거
+            // [SerializeReference]로 저장된 객체의 타입이 삭제되면 ManagedReferenceMissingType이 됨
+            if (SerializationUtility.HasManagedReferencesWithMissingTypes(this))
+            {
+                SerializationUtility.ClearAllManagedReferencesWithMissingTypes(this);
+                hasCleaned = true;
+            }
+
+            // PropertyBag을 사용한 추가 정리 (null 참조 제거)
+            if (PropertyBag.Exists<GraphAsset>())
+            {
+                IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
+                MissingObjectCleaner cleaner = new MissingObjectCleaner();
+                GraphAsset reference = this;
+                bag.Accept(cleaner, ref reference);
+                return hasCleaned || cleaner.hasCleaned;
+            }
+            else
+            {
+                return hasCleaned;
+            }
+        }
+        
+        
+        
+        /// <summary> 그래프의 변수 중 현재 Blackboard에 없는 변수들을 정리한다. </summary>
+        internal void TrySynchronizeVariablesOfTasks()
+        {
+            Assert.IsTrue(PropertyBag.Exists<GraphAsset>(), "GraphAsset does not have a property bag.");
+            
+            if (Application.isPlaying || Undo.isProcessing)
+            {
+                return;
+            }
+            
+            BBVariableSynchronizer visitor = new BBVariableSynchronizer(new GraphVisitContext(this, this.blackboard));
+            IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
+            GraphAsset reference = this;
+            bag.Accept(visitor, ref reference);
+            EditorUtility.SetDirty(this);
+        }
+        
+        
+        
+        internal void TryChangeAllGuidsOfTasks()
+        {
+            Assert.IsTrue(PropertyBag.Exists<GraphAsset>(), "GraphAsset does not have a property bag.");
+            
+            if (Application.isPlaying || Undo.isProcessing)
+            {
+                return;
+            }
+            
+            TaskGraphGuidChanger visitor = new TaskGraphGuidChanger(new GraphVisitContext(this));
+            IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
+            GraphAsset reference = this;
+            bag.Accept(visitor, ref reference);
+            this.graphGuid = UGUID.Create();
         }
 #endif
     }

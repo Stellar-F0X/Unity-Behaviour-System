@@ -37,9 +37,7 @@ namespace TaskStreamer.Tool
 		/// </summary>
 		private static void RemoveMissingObjects(GraphAsset asset)
 		{
-			bool hasCleaned = MissingObjectCleaner.RemoveMissingObjects(asset);
-
-			if (hasCleaned)
+			if (asset.TryRemoveMissingTasks())
 			{
 				EditorUtility.SetDirty(asset);
 				AssetDatabase.SaveAssets();
@@ -81,7 +79,7 @@ namespace TaskStreamer.Tool
 
 			if (isDuplicated)
 			{
-				TaskGraphGuidChanger.ReassignAllGraphElementGuids(asset);
+				asset.TryChangeAllGuidsOfTasks();
 				EditorUtility.SetDirty(asset);
 				AssetDatabase.SaveAssets();
 			}

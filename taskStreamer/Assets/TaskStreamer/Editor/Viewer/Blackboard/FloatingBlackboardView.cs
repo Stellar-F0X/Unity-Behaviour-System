@@ -258,7 +258,7 @@ namespace TaskStreamer.Tool
             blackboard.RemoveVariable(foundVariable);
 
             //블랙보드가 교체될 때, 기존 블랙보드가 있었다면 블랙보드의 변수가 등록되어 있는 노드들의 variable들을 초기화.
-            BBVariableSynchronizer.TrySynchronizeVariablesOfNodes(TSEditor.Instance.graphAsset);
+            TSEditor.Instance.graphAsset.TrySynchronizeVariablesOfTasks();
             TSEditor.Instance.inspectorView.RefreshInspector();
             
             UnityEditor.EditorUtility.SetDirty(blackboard);

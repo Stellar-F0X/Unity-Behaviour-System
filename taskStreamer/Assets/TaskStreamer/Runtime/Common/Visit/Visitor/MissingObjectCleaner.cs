@@ -52,43 +52,6 @@ namespace TaskStreamer.Runtime
 		}
 
 
-		/// <summary>
-		/// GraphAsset에서 Missing Object를 제거합니다.
-		/// </summary>
-		/// <param name="asset">정리할 GraphAsset</param>
-		/// <returns>제거된 항목이 있으면 true, 없으면 false</returns>
-		internal static bool RemoveMissingObjects(GraphAsset asset)
-		{
-			if (asset == null || asset.main is null)
-			{
-				return false;
-			}
-
-			bool hasCleaned = false;
-
-			// Unity SerializationUtility를 사용하여 Missing Type 제거
-			// [SerializeReference]로 저장된 객체의 타입이 삭제되면 ManagedReferenceMissingType이 됨
-			if (SerializationUtility.HasManagedReferencesWithMissingTypes(asset))
-			{
-				SerializationUtility.ClearAllManagedReferencesWithMissingTypes(asset);
-				Debug.Log($"{_LOG_PREFIX} ManagedReference를 제거했습니다. (Asset: {asset.name})");
-				hasCleaned = true;
-			}
-
-			// PropertyBag을 사용한 추가 정리 (null 참조 제거)
-			if (PropertyBag.Exists<GraphAsset>())
-			{
-				IPropertyBag<GraphAsset> bag = PropertyBag.GetPropertyBag<GraphAsset>();
-				MissingObjectCleaner cleaner = new MissingObjectCleaner();
-				GraphAsset reference = asset;
-				bag.Accept(cleaner, ref reference);
-				hasCleaned = cleaner.hasCleaned;
-			}
-
-			return hasCleaned;
-		}
-
-
 		//──────────────────────────────────────────────────────────────────
 		// GraphDictionary 방문
 		//──────────────────────────────────────────────────────────────────
